@@ -19,6 +19,8 @@ public class SecurityConfig {
             auth.requestMatchers("/**").permitAll();
         });
 
+        http.headers((headers) -> headers.frameOptions().sameOrigin());
+
         http.csrf(AbstractHttpConfigurer::disable);
 
         return http.build();
