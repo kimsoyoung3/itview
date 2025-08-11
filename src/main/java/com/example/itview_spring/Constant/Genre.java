@@ -11,7 +11,11 @@ public enum Genre {
     COMEDY("코미디"),
     DRAMA("드라마"),
     THRILLER("스릴러"),
-    HORROR("호러");
+    HORROR("호러"),
+    FANTASY("판타지"),
+    ROMANCE("로맨스"),
+    NATURAL_SCIENCE("자연과학"),
+    KPOP("KPOP");
 
     private final String genreName;
 }

@@ -40,5 +40,5 @@ public class CreditEntity {
     private String role;
 
     @Column(length = 255)
-    private String character;
+    private String characterName;
 }

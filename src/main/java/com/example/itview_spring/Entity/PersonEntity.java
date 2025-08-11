@@ -24,7 +24,7 @@ public class PersonEntity {
     @Column(nullable = false, length = 255)
     private String name;
 
-    @Column(nullable = false, length = 1024)
+    @Column(length = 1024)
     private String profile;
 
     @Column(nullable = false, length = 255)

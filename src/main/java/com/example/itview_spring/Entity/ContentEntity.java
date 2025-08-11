@@ -15,6 +15,7 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.Lob;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 
@@ -45,7 +46,7 @@ public class ContentEntity {
     @Column(nullable = false, length = 255)
     private String nation;
 
-    @Column(length = 1024)
+    @Lob
     private String description;
 
     @Column(nullable = false, length = 255)
