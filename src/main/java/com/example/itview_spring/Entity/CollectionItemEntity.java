@@ -24,10 +24,12 @@ public class CollectionItemEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
+    // 컬렉션
     @JoinColumn(name = "collection_id", nullable = false)
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private CollectionEntity collection;
 
+    // 컨텐츠
     @JoinColumn(name = "content_id", nullable = false)
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private ContentEntity content;

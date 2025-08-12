@@ -25,16 +25,20 @@ public class VideoEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
+    // 컨텐츠
     @JoinColumn(name = "content_id", nullable = false)
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private ContentEntity content;
 
+    // 비디오 제목
     @Column(nullable = false, length = 255)
     private String title;
 
+    // 비디오 썸네일 URL
     @Column(nullable = false, length = 1024)
     private String image;
 
+    // 비디오 URL
     @Column(nullable = false, length = 1024)
     private String url;
 }

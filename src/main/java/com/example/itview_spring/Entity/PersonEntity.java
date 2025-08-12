@@ -21,12 +21,15 @@ public class PersonEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
+    // 이름
     @Column(nullable = false, length = 255)
     private String name;
 
+    // 프로필 사진 링크
     @Column(length = 1024)
     private String profile;
 
+    // 직업
     @Column(nullable = false, length = 255)
     private String job;
 }
