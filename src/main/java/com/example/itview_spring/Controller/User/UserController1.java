@@ -1,4 +1,4 @@
-package com.example.itview_spring.Controller;
+package com.example.itview_spring.Controller.User;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
