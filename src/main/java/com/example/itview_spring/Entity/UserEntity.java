@@ -26,22 +26,28 @@ public class UserEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
+    // 유저 역할 (예: ADMIN, USER 등)
     @Column(nullable = false, length = 255)
     @Enumerated(EnumType.STRING)
     private Role role;
 
+    // 유저 닉네임
     @Column(nullable = false, length = 255)
     private String nickname;
 
+    // 유저 이메일
     @Column(nullable = false, length = 255)
     private String email;
 
+    // 유저 비밀번호
     @Column(nullable = false, length = 255)
     private String password;
 
+    // 유저 프로필 사진 링크
     @Column(length = 1024)
     private String profile;
 
+    // 유저 소개
     @Column(length = 1024)
     private String introduction;
 }
