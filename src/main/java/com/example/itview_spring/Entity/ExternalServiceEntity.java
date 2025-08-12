@@ -30,14 +30,17 @@ public class ExternalServiceEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
+    // 컨텐츠
     @JoinColumn(name = "content_id", nullable = false)
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private ContentEntity content;
 
+    // 외부 서비스 타입 (예: 넷플릭스, 왓챠 등)
     @Column(nullable = false, length = 255)
     @Enumerated(EnumType.STRING)
     private Channel type;
 
+    // 외부 서비스 링크
     @Column(nullable = false, length = 1024)
     private String href;
 }

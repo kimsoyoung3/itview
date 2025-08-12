@@ -26,10 +26,12 @@ public class GalleryEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
+    // 컨텐츠
     @JoinColumn(name = "content_id", nullable = false)
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private ContentEntity content;
 
+    // 사진 URL
     @Column(nullable = false, length = 1024)
     private String photo;
 }
