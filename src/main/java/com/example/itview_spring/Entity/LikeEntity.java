@@ -28,13 +28,16 @@ public class LikeEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
+    // 유저
     @JoinColumn(name = "user_id", nullable = false)
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private UserEntity user;
 
+    // 좋아요 대상 타입 (컨텐츠, 댓글 등)
     @Column(nullable = false, length = 255)
     private Replyable targetType;
 
+    // 좋아요 대상 ID
     @Column(nullable = false)
     private Integer targetId;
 }
