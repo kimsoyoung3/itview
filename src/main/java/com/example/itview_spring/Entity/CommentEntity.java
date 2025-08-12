@@ -33,17 +33,21 @@ public class CommentEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
+    // 코멘트 작성자
     @JoinColumn(name = "user_id", nullable = false)
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private UserEntity user;
 
+    // 코멘트가 달린 컨텐츠
     @JoinColumn(name = "content_id", nullable = false)
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private ContentEntity content;
 
+    // 코멘트 내용
     @Column(nullable = false, length = 1024)
     private String text;
 
+    // 코멘트 작성 시간
     @CreatedDate
     @Column(nullable = false, updatable = false)
     private LocalDateTime createdAt;
