@@ -34,21 +34,26 @@ public class CollectionEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
+    // 컬렉션 소유자
     @JoinColumn(name = "user_id", nullable = false)
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private UserEntity user;
 
+    // 컬렉션 이름
     @Column(nullable = false, length = 255)
     private String title;
 
+    // 컬렉션 생성 시간
     @CreatedDate
     @Column(nullable = false, updatable = false)
     private LocalDateTime createdAt;
 
+    // 컬렉션 수정 시간
     @LastModifiedDate
     @Column(nullable = false)
     private LocalDateTime updatedAt;
 
+    // 컬렉션 설명
     @Column(length = 1024)
     private String description;
 }

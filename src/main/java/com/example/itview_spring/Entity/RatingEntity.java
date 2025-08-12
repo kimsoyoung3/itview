@@ -25,14 +25,17 @@ public class RatingEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
+    // 유저
     @JoinColumn(name = "user_id", nullable = false)
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private UserEntity user;
 
+    // 컨텐츠
     @JoinColumn(name = "content_id", nullable = false)
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private ContentEntity content;
 
+    // 평점 (1~10)
     @Column(nullable = false)
     private Integer score;
 }
