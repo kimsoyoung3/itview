@@ -112,6 +112,11 @@ const Header = () => {
     const openReset = () => setResetOpen(true);
     const closeReset = () => setResetOpen(false);
 
+    /*비빌번호 찾기 이메일인증 모달*/
+    const [isResetCheckOpen, setResetCheckOpen] = useState(false);
+    const openResetCheck = () => setResetCheckOpen(true);
+    const closeResetCheck = () => setResetCheckOpen(false);
+
     return (
         <>
             <header className="header">
@@ -277,15 +282,38 @@ const Header = () => {
                                 if (email) {
                                     handleCreateVerification(email);
                                     closeReset();
+                                    openResetCheck();
                                 }
-                            }}
-                        >
+                            }}>
                             <input type="email" placeholder="이메일" />
                             <button type="submit" className="reset-submit">이메일 보내기</button>
                         </form>
                     </div>
                 </div>
             )}
+
+            {/*비밀번호 찾기 이메일인증 모달창*/}
+            {isResetCheckOpen && (
+                <div className="modal-overlay" onClick={closeResetCheck}>
+                    <div className="reset-modal" onClick={(e) => e.stopPropagation()}>
+                        <button className="close-button" onClick={closeResetCheck}><i className="bi bi-x-lg"></i></button>
+                        <h2>비밀번호 재설정</h2>
+                        <div></div>
+                        <p>인증번호를 입력하세요</p>
+                        <form
+                            onSubmit={(e) => {
+                                e.preventDefault();
+                            }}>
+                            <input type="text" placeholder="인증번호" />
+                            <button type="submit" className="reset-submit">입력</button>
+                        </form>
+                    </div>
+                </div>
+            )}
+
+
+
+
 
 
         </>
