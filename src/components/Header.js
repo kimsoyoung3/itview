@@ -45,11 +45,9 @@ const Header = () => {
                 email: loginEmail,
                 password: loginPassword
             });
-            alert('로그인이 완료되었습니다.');
             closeLogin();
             window.location.reload();
         } catch (error) {
-
             setLoginError('로그인에 실패했습니다. 다시 시도해주세요.');
             setErrorModalOpen(true);
         }
@@ -59,7 +57,6 @@ const Header = () => {
         // 로그아웃 로직 처리
         try {
             await logoutUser();
-            alert('로그아웃이 완료되었습니다.');
             setIsLoggedIn(false);
             setUserInfo(null);
             window.location.reload();
@@ -96,9 +93,13 @@ const Header = () => {
     const openSignup = () => setSignupOpen(true);
     const closeSignup = () => setSignupOpen(false);
 
-    // 모달 바깥 클릭 시 이벤트 전파 차단용
+    /*모달 바깥 클릭 시 이벤트 전파 차단용*/
     const stopPropagation = (e) => e.stopPropagation();
 
+    /*비빌번호 찾기 모달*/
+    const [isResetOpen, setResetOpen] = useState(false);
+    const openReset = () => setResetOpen(true);
+    const closeReset = () => setResetOpen(false);
 
     return (
         <>
@@ -172,14 +173,29 @@ const Header = () => {
                     <div className="login-modal" onClick={(e) => e.stopPropagation()}>
                         <h1><img src="/logo.svg" alt=""/></h1>
                         <h2>로그인</h2>
-                        <input type="email" placeholder="이메일" onChange={(e) => setLoginEmail(e.target.value)}/>
-                        <input type="password" placeholder="비밀번호" onChange={(e) => setLoginPassword(e.target.value)}/>
-                        <button className="login-submit" onClick={handleLogin}>로그인</button>
-                        <p className="login-text-top">비밀번호를 잊어버리셨나요?</p>
-                        <p className="login-text-bottom">계정이 없으신가요?
+                        <form onSubmit={(e) => {
+                            e.preventDefault();
+                            handleLogin();
+                        }}>
+                            <input
+                                type="email"
+                                placeholder="이메일"
+                                onChange={(e) => setLoginEmail(e.target.value)}
+                            />
+                            <input
+                                type="password"
+                                placeholder="비밀번호"
+                                onChange={(e) => setLoginPassword(e.target.value)}
+                            />
+                            <button type="submit" className="login-submit">로그인</button>
+                        </form>
+                        <p onClick={openReset} className="login-text-top">비밀번호를 잊어버리셨나요?</p>
+                        <p className="login-text-bottom">
+                            계정이 없으신가요?
                             <span onClick={() => {
-                            closeLogin();
-                            openSignup();}}>회원가입</span>
+                                closeLogin();
+                                openSignup();
+                            }}>회원가입</span>
                         </p>
                     </div>
                 </div>
@@ -191,14 +207,33 @@ const Header = () => {
                     <div className="login-modal" onClick={(e) => e.stopPropagation()}>
                         <h1><img src="/logo.svg" alt=""/></h1>
                         <h2>회원가입</h2>
-                        <input type="text" placeholder="닉네임" onChange={(e) => setSignupNickname(e.target.value)}/>
-                        <input type="email" placeholder="이메일" onChange={(e) => setSignupEmail(e.target.value)} />
-                        <input type="password" placeholder="비밀번호" onChange={(e) => setSignupPassword(e.target.value)} />
-                        <button className="login-submit" onClick={handleSignup}>회원가입</button>
-                        <p  className="login-text-bottom">이미 가입하셨나요?
+                        <form onSubmit={(e) => {
+                            e.preventDefault();
+                            handleSignup();
+                        }}>
+                            <input
+                                type="text"
+                                placeholder="닉네임"
+                                onChange={(e) => setSignupNickname(e.target.value)}
+                            />
+                            <input
+                                type="email"
+                                placeholder="이메일"
+                                onChange={(e) => setSignupEmail(e.target.value)}
+                            />
+                            <input
+                                type="password"
+                                placeholder="비밀번호"
+                                onChange={(e) => setSignupPassword(e.target.value)}
+                            />
+                            <button type="submit" className="login-submit">회원가입</button>
+                        </form>
+                        <p className="login-text-bottom">
+                            이미 가입하셨나요?
                             <span onClick={() => {
                                 closeSignup();
-                                openLogin();}}>로그인</span>
+                                openLogin();
+                            }}>로그인</span>
                         </p>
                     </div>
                 </div>
@@ -210,6 +245,32 @@ const Header = () => {
                     <div className="modal-content" onClick={e => e.stopPropagation()}>
                         <p>{loginError}</p>
                         <button onClick={closeErrorModal}>닫기</button>
+                    </div>
+                </div>
+            )}
+
+            {/*비밀번호 찾기 모달창*/}
+            {isResetOpen && (
+                <div className="modal-overlay" onClick={closeReset}>
+                    <div className="reset-modal" onClick={(e) => e.stopPropagation()}>
+                        <h2>비밀번호 재설정</h2>
+                        <div></div>
+                        <p>비밀번호를 잊으셨나요?</p>
+                        <p>가입했던 이메일을 입력해주세요.</p>
+                        <p>입력하신 이메일 주소로 비밀번호 변경 메일을 보낼게요</p>
+                        <form
+                            onSubmit={(e) => {
+                                e.preventDefault();
+                                alert("비밀번호 재설정 이메일을 전송했습니다.");
+                                closeReset();
+                            }}
+                        >
+                            <input type="email" placeholder="가입한 이메일을 입력하세요" />
+                            <button type="submit" className="login-submit">이메일 전송</button>
+                        </form>
+                        <p className="login-text-bottom">
+                            <span onClick={closeReset}>돌아가기</span>
+                        </p>
                     </div>
                 </div>
             )}

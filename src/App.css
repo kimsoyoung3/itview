@@ -111,8 +111,18 @@ body {
   background: transparent;
 }
 
-.user-menu button.active {
-  color: #000;
+.user-menu button:hover {
+  color: #888;
+}
+
+.user-menu a {
+  color: rgba(136,136,136,0.5);
+  color: #cccccc;
+  font-size: 0.8rem;
+}
+
+.user-menu a:hover {
+  color: #888;
 }
 
 /*로그인 모달창 스타일*/
@@ -185,8 +195,8 @@ body {
   color: #22C55E;
   font-size: 0.8rem;
   font-weight: bold;
+  cursor: pointer;
 }
-
 
 .login-text-bottom {
   color: #9d9d9d;
@@ -198,6 +208,63 @@ body {
   color: #22C55E;
   margin-left: 15px;
   cursor: pointer;
+}
+
+/*로그인실패 모달창 스타일*/
+.modal-content {
+  background: white;
+  padding: 30px 20px 20px 20px;
+  width: 300px;
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+  position: relative;
+  text-align: center;
+  border-radius: 4px;
+}
+
+.modal-content p {
+  font-size: 0.9rem;
+  margin-bottom:30px;
+}
+
+.modal-content button {
+  border-radius: 4px;
+  margin: 0 auto;
+  font-size: 0.8rem;
+  border: none;
+  padding: 5px 20px;
+  background-color: #888;
+  color: #fff;
+}
+
+/*비밀번호 찾기 모달창 스타일*/
+.reset-modal {
+  background: white;
+  padding: 50px 20px 30px 20px;
+  width: 360px;
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+  position: relative;
+  z-index: 2001;
+}
+
+.reset-modal h2 {
+  font-size: 1.3rem;
+  font-weight: bold;
+}
+
+.reset-modal div {
+  width: 100%;
+  height: 1px;
+  background-color: #d9d9d9;
+}
+
+.reset-modal p:nth-of-type(1) {
+  font-size: 1rem;
+  font-weight: bold;
+}
+
+.reset-modal p {
+  font-size: 0.8rem;
+  margin-bottom: 15px;
 }
 
 /*코멘트 라지 스타일*/
