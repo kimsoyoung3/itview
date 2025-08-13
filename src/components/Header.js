@@ -253,6 +253,7 @@ const Header = () => {
             {isResetOpen && (
                 <div className="modal-overlay" onClick={closeReset}>
                     <div className="reset-modal" onClick={(e) => e.stopPropagation()}>
+                        <button className="close-button" onClick={closeReset}><i className="bi bi-x-lg"></i></button>
                         <h2>비밀번호 재설정</h2>
                         <div></div>
                         <p>비밀번호를 잊으셨나요?</p>
@@ -263,14 +264,10 @@ const Header = () => {
                                 e.preventDefault();
                                 alert("비밀번호 재설정 이메일을 전송했습니다.");
                                 closeReset();
-                            }}
-                        >
-                            <input type="email" placeholder="가입한 이메일을 입력하세요" />
-                            <button type="submit" className="login-submit">이메일 전송</button>
+                            }}>
+                            <input type="email" placeholder="이메일" />
+                            <button type="submit" className="reset-submit">이메일 보내기</button>
                         </form>
-                        <p className="login-text-bottom">
-                            <span onClick={closeReset}>돌아가기</span>
-                        </p>
                     </div>
                 </div>
             )}
