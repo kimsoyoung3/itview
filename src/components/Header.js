@@ -280,8 +280,8 @@ const Header = () => {
                                 }
                             }}
                         >
-                            <input type="email" placeholder="가입한 이메일을 입력하세요" />
-                            <button type="submit" className="login-submit">이메일 전송</button>
+                            <input type="email" placeholder="이메일" />
+                            <button type="submit" className="reset-submit">이메일 보내기</button>
                         </form>
                     </div>
                 </div>
