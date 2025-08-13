@@ -20,8 +20,6 @@ public class SecurityConfig {
                 .anyRequest().permitAll()
         );
 
-        http.headers((headers) -> headers.frameOptions().sameOrigin());
-
         http.csrf(AbstractHttpConfigurer::disable);
 
         http.formLogin(login -> login
