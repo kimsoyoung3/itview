@@ -1,12 +1,13 @@
 package com.example.itview_spring.Service;
 
+import com.example.itview_spring.Config.CustomUserDetails;
 import com.example.itview_spring.Constant.Role;
 import com.example.itview_spring.DTO.RegisterDTO;
 import com.example.itview_spring.Entity.UserEntity;
 import com.example.itview_spring.Repository.RegisterRepository;
-import com.fasterxml.jackson.annotation.OptBoolean;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -15,6 +16,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -30,10 +32,13 @@ public class RegisterService implements UserDetailsService {
         Optional<UserEntity> userEntity = registerRepository.findByEmail(email);
 
         if (userEntity.isPresent()) {
-            return User.withUsername(userEntity.get().getEmail())
-                    .password(userEntity.get().getPassword())
-                    .roles(userEntity.get().getRole().name())
-                    .build();
+            return new CustomUserDetails(
+                userEntity.get().getId(),
+                userEntity.get().getEmail(),
+                userEntity.get().getPassword(),
+                List.of(new SimpleGrantedAuthority(userEntity.get().getRole().name()))
+            );
+
         } else {
             throw new UsernameNotFoundException(email);
         }

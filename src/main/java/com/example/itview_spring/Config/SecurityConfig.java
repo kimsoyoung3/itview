@@ -27,10 +27,7 @@ public class SecurityConfig {
             .csrf(csrf -> csrf.disable())
             .formLogin(form -> form.disable())
             .httpBasic(basic -> basic.disable())
-            .logout(logout -> logout.disable())
-            .exceptionHandling(ex -> ex
-                .authenticationEntryPoint(new RestAuthenticationEntryPoint()) // 401 JSON 응답
-            );
+            .logout(logout -> logout.disable());
 
         return http.build();
     }

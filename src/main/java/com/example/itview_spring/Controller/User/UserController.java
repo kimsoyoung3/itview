@@ -1,5 +1,6 @@
 package com.example.itview_spring.Controller.User;
 
+import com.example.itview_spring.Config.CustomUserDetails;
 import com.example.itview_spring.DTO.LoginDTO;
 import com.example.itview_spring.DTO.RegisterDTO;
 import com.example.itview_spring.Service.RegisterService;
@@ -12,10 +13,12 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.context.SecurityContextRepository;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -33,7 +36,11 @@ public class UserController {
 
     @PostMapping
     public ResponseEntity<Void> registerPost(@RequestBody RegisterDTO registerDTO) {
-        registerService.createUser(registerDTO);
+        try {
+            registerService.createUser(registerDTO);
+        } catch (IllegalStateException e) {
+            return ResponseEntity.badRequest().build(); // 이미 가입한 회원인 경우
+        }
         return ResponseEntity.ok().build();
     }
 
@@ -55,5 +62,11 @@ public class UserController {
         securityContextRepository.saveContext(context, request, response);
 
         return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("/me")
+    public ResponseEntity<Integer> me(@AuthenticationPrincipal CustomUserDetails user) {
+        if (user == null) return ResponseEntity.status(401).build();
+        return ResponseEntity.ok(user.getId());
     }
 }
