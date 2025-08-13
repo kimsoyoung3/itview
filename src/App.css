@@ -104,12 +104,93 @@ body {
   font-weight: 600;
 }
 
-.user-menu a {
+.user-menu button {
   color: rgba(136,136,136,0.5);
+  border: none;
+  background: transparent;
 }
 
-.user-menu a.active {
+.user-menu button.active {
   color: #000;
+}
+
+/*로그인 모달창 스타일*/
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.4);
+  display: flex;
+  align-items: center;      /* 수직 중앙 */
+  justify-content: center;  /* 수평 중앙 */
+  z-index: 1000;
+}
+
+.login-modal {
+  background: white;
+  padding: 40px 20px;
+  width: 360px;
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+  position: relative;
+  text-align: center;
+}
+
+.login-modal h1 {
+  margin-bottom: 20px;
+}
+
+.login-modal h2 {
+  font-size: 1.5rem;
+  font-weight: bold;
+  margin-bottom: 30px;
+}
+
+.login-modal input {
+  display: block;
+  width: 100%;
+  padding: 8px;
+  margin-top: 10px;
+  border:none;
+  border-radius: 4px;
+  background-color: #eee;
+}
+
+.login-modal input::placeholder {
+  color: rgba(136,136,136,0.8);
+  font-size: 1.1rem;
+  font-weight: 500;
+}
+
+.login-submit {
+  width: 100%;
+  margin: 30px 0;
+  padding: 10px;
+  background: #22C55E;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.login-text-top {
+  color: #22C55E;
+  font-size: 0.8rem;
+  font-weight: bold;
+}
+
+
+.login-text-bottom {
+  color: #9d9d9d;
+  font-size: 0.9rem;
+  font-weight: bold;
+}
+
+.login-text-bottom span {
+  color: #22C55E;
+  margin-left: 15px;
+  cursor: pointer;
 }
 
 /*코멘트 라지 스타일*/
