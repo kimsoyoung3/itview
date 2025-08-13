@@ -26,7 +26,7 @@ public class ContentController {
     @GetMapping("/content/new")
     public String newContent() {
 
-        return "register" ;
+        return "content/register" ;
     }
 
     //동록 강의저장후 목록 으로 이동
@@ -56,7 +56,7 @@ public class ContentController {
         PageInfoDTO pageInfoDTO = pageInfo.getPageInfo(contentDTOS);
         model.addAttribute("pageInfoDTO", pageInfoDTO);
       
-        return "list" ;
+        return "content/list" ;
 
 ////////////////////////////////////////////////////////////////////////////////////////////
 //   페이지 작업전
@@ -72,7 +72,7 @@ public class ContentController {
         model.addAttribute("contentDTO",contentDTO);
         //     System.out.printf("contentDTO.getContentId==",contentDTO.getContentId());
         //     System.out.printf("contentDTO.            ==",contentDTO);
-        return "detail" ;
+        return "content/detail" ;
     }
 
     //수정페이지 이동
@@ -80,7 +80,7 @@ public class ContentController {
     public String editContent(@RequestParam("id") Integer id ,Model model) {
         ContentDTO contentDTO =contentService.read(id);
         model.addAttribute("contentDTO",contentDTO);
-        return  "edit";
+        return  "content/edit";
     }
 
     //수정된 강위저장후 목록으로이동
