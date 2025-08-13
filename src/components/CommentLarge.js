@@ -4,7 +4,7 @@ import "../App.css"; // CSS 따로 관리
 
 const CommentLarge = () => {
     return (
-        <div className="comment-card comment-small">
+        <div className="comment-card container-sm">
             {/* 헤더 */}
             <div className="comment-header">
                 <div className="comment-header-left">
@@ -21,6 +21,17 @@ const CommentLarge = () => {
 
             {/* 내용 */}
             <div className="comment-content">
+                <div className="comment-content-top">
+                    <div className="comment-content-left">
+                        <img src="/logo.svg" alt=""/>
+                    </div>
+                    <ul className="comment-content-right m-0 p-0">
+                        <li>제목</li>
+                        <li>컨텐츠 타입 &middot; <span>개봉 날짜</span></li>
+                        <li className="rating">평균 별점</li>
+                    </ul>
+
+                </div>
                 <p>컨텐츠 내용을 입력하세요</p>
             </div>
 
