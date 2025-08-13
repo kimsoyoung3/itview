@@ -12,6 +12,7 @@ public enum Channel {
     WATCHA("왓챠"),
     TVING("티빙"),
     TVN("tvN"),
+    APPLE_TV_PLUS("애플티비플러스"),
 
     ALADIN("알라딘"),
     YES24("예스24"),
