@@ -2,7 +2,7 @@ import React, {useEffect, useState} from 'react';
 import {Link, NavLink} from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import '../App.css'; // 스타일 불러오기
-import { getMyInfo, loginUser, logoutUser, registerUser } from '../API/UserApi';
+import { checkEmail, createVerification, getMyInfo, loginUser, logoutUser, registerUser } from '../API/UserApi';
 
 const Header = () => {
     // 로그인 상태 관리
@@ -62,6 +62,17 @@ const Header = () => {
             window.location.reload();
         } catch (error) {
             alert('로그아웃에 실패했습니다. 다시 시도해주세요.');
+        }
+    };
+
+    const handleCreateVerification = async (email) => {
+        // 이메일 인증 로직 처리
+        try {
+            await checkEmail({ email });
+            alert('인증 번호를 전송했습니다. 메일을 확인해주세요.');
+            await createVerification({ email });
+        } catch (error) {
+            alert('인증 이메일 전송에 실패했습니다. 다시 시도해주세요.');
         }
     };
 
@@ -261,8 +272,11 @@ const Header = () => {
                         <form
                             onSubmit={(e) => {
                                 e.preventDefault();
-                                alert("비밀번호 재설정 이메일을 전송했습니다.");
-                                closeReset();
+                                const email = e.target[0].value;
+                                if (email) {
+                                    handleCreateVerification(email);
+                                    closeReset();
+                                }
                             }}
                         >
                             <input type="email" placeholder="가입한 이메일을 입력하세요" />
