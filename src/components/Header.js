@@ -117,6 +117,11 @@ const Header = () => {
     const openResetCheck = () => setResetCheckOpen(true);
     const closeResetCheck = () => setResetCheckOpen(false);
 
+    /*비빌번호 찾기 새비밀번호 입력 모달*/
+    const [isResetNewOpen, setResetNewOpen] = useState(false);
+    const openResetNew = () => setResetNewOpen(true);
+    const closeResetNew = () => setResetNewOpen(false);
+
     return (
         <>
             <header className="header">
@@ -311,7 +316,24 @@ const Header = () => {
                 </div>
             )}
 
-
+            {/*비밀번호 찾기 새 비밀번호 모달창*/}
+            {isResetNewOpen && (
+                <div className="modal-overlay" onClick={closeResetNew}>
+                    <div className="reset-modal" onClick={(e) => e.stopPropagation()}>
+                        <button className="close-button" onClick={closeResetNew}><i className="bi bi-x-lg"></i></button>
+                        <h2>비밀번호 재설정</h2>
+                        <div></div>
+                        <p>새로운 비밀번호를 입력해주세요</p>
+                        <form
+                            onSubmit={(e) => {
+                                e.preventDefault();
+                            }}>
+                            <input type="password" placeholder="비밀번호" />
+                            <button type="submit" className="login-submit">비밀번호 재설정</button>
+                        </form>
+                    </div>
+                </div>
+            )}
 
 
 
