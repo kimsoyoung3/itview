@@ -6,7 +6,13 @@ import AdCard from "../../components/AdCard"; // CSS 따로 관리
 const Home = () => {
     return (
         <div className="container">
-            <div style={{ display: 'flex', gap: '20px', padding: '40px' }}>
+            {/*배너*/}
+            <div className="banner">
+                <img src="/banner.jpg" alt=""/>
+            </div>
+
+            {/*광고라인*/}
+            <div style={{ display: 'flex', gap: '20px', marginTop: '20px' }}>
                 <AdCard
                     badge="인기 아티클"
                     tag="🎬 아티클"
@@ -33,7 +39,16 @@ const Home = () => {
                     link="https://watcha.com/trailer/3"
                 />
             </div>
+
+            {/*컨텐츠 라인*/}
+            <div className="home-content">
+                <h2 className="home-content-title">
+                    잇뷰 영화 HOT 랭킹
+                </h2>
+            </div>
         </div>
+
+
     )
 }
 export default Home

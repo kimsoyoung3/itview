@@ -90,6 +90,7 @@ const Header = () => {
                             />
                         </div>
 
+
                         {/*로그인&회원가입&마이페이지*/}
                         <div className="user-menu">
                             <button onClick={openLogin} className="login-button">로그인</button>
