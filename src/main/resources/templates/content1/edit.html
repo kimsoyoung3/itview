@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>콘텐츠 수정</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+<div class="container mt-4">
+    <h2>콘텐츠 수정</h2>
+    <form th:action="@{/content/edit}" method="post">
+        <input type="hidden" name="id" th:value="${contentDTO.id}">
+        <div class="mb-3">
+            <label class="form-label">제목</label>
+            <input type="text" name="title" class="form-control" th:value="${contentDTO.title}" required>
+        </div>
+        <div class="mb-3">
+            <label class="form-label">콘텐츠 타입</label>
+            <input type="text" name="contentType" class="form-control" th:value="${contentDTO.contentType}">
+        </div>
+        <div class="mb-3">
+            <label class="form-label">출시일</label>
+            <input type="date" name="releaseDate" class="form-control" th:value="${contentDTO.releaseDate}">
+        </div>
+        <div class="mb-3">
+            <label class="form-label">국가</label>
+            <input type="text" name="nation" class="form-control" th:value="${contentDTO.nation}">
+        </div>
+        <div class="mb-3">
+            <label class="form-label">설명</label>
+            <textarea name="description" class="form-control" th:text="${contentDTO.description}"></textarea>
+        </div>
+        <button type="submit" class="btn btn-primary">수정 완료</button>
+        <a th:href="@{/content/list}" class="btn btn-secondary">목록으로</a>
+    </form>
+</div>
+</body>
+</html>

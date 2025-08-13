@@ -14,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 
 @Service
@@ -68,7 +69,13 @@ public class ContentService {
     //public ProductDTO read(Integer id) {    ex)
     public ContentDTO read(Integer id) {
         //해당내용을 조회
+        if (id == null) {
+            throw new IllegalArgumentException("id는 null일 수 없습니다.");
+        }
         Optional<ContentEntity> contentEntity = contentRepository.findById(id);
+        if (contentEntity.isEmpty()) {
+            throw new NoSuchElementException("해당 ID에 대한 콘텐츠를 찾을 수 없습니다: " + id);
+        }
         ContentDTO contentDTO = modelMapper.map(contentEntity.get(), ContentDTO.class);
         return contentDTO;
     }

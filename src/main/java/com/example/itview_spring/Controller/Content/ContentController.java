@@ -57,17 +57,11 @@ public class ContentController {
         model.addAttribute("pageInfoDTO", pageInfoDTO);
       
         return "content/list" ;
-
-////////////////////////////////////////////////////////////////////////////////////////////
-//   페이지 작업전
-//        List<ContentEntity> contents = contentRepository.findAll();
-//        List<ContentDTO> contentDTOS = Arrays.asList(modelMapper.map(contents, ContentDTO[].class));
-//        return contentDTOS;
-////////////////////////////////////////////////////////////////////////////////////////////
     }
+
     //상세보기
     @GetMapping("/content/view")
-    public String detailContent(Integer id ,Model model) {
+    public String detailContent(@RequestParam("id") Integer id ,Model model) {
         ContentDTO contentDTO =contentService.read(id);
         model.addAttribute("contentDTO",contentDTO);
         //     System.out.printf("contentDTO.getContentId==",contentDTO.getContentId());
@@ -83,7 +77,7 @@ public class ContentController {
         return  "content/edit";
     }
 
-    //수정된 강위저장후 목록으로이동
+    //수정된 콘텐츠 저장후 목록으로이동
     @PostMapping("/content/edit")
     public String editContentProc(ContentDTO contentDTO) {
         contentService.update(contentDTO);
@@ -92,7 +86,7 @@ public class ContentController {
 
     //삭제처리
     @GetMapping("/content/delete")
-    public String deleteContent(Integer id) {
+    public String deleteContent(@RequestParam("id") Integer id) {
         contentService.delete(id);
         return "redirect:/content/list";
     }
