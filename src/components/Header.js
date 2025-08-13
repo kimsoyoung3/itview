@@ -132,7 +132,7 @@ const Header = () => {
                     {/*메인 로고*/}
                     <div className="header_inner header_left">
                         <NavLink to="/" className="logo">
-                            <img src="/logo.svg"/>
+                            <img src="/logo.svg" alt=""/>
                         </NavLink>
 
                         {/*목록 부분*/}
