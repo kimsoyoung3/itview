@@ -17,7 +17,7 @@ public class SecurityConfig {
         http.authorizeHttpRequests(auth -> {
             auth.requestMatchers("/", "api/user/login", "api/user", "api/user/logout"
             , "user/login", "user/register").permitAll();
-            auth.anyRequest().authenticated();
+            auth.anyRequest().permitAll();
         });
 
         http.headers((headers) -> headers.frameOptions().sameOrigin());
