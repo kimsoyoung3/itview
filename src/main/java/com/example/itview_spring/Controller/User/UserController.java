@@ -1,9 +1,11 @@
 package com.example.itview_spring.Controller.User;
 
 import com.example.itview_spring.Config.CustomUserDetails;
+import com.example.itview_spring.DTO.EmailDTO;
+import com.example.itview_spring.DTO.EmailVerificationDTO;
 import com.example.itview_spring.DTO.LoginDTO;
 import com.example.itview_spring.DTO.RegisterDTO;
-import com.example.itview_spring.Service.RegisterService;
+import com.example.itview_spring.Service.UserService;
 
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
@@ -31,10 +33,11 @@ import org.springframework.web.bind.annotation.RestController;
 @CrossOrigin(origins = "http://localhost:3000", allowCredentials = "true")
 public class UserController {
     
-    private final RegisterService registerService;
+    private final UserService registerService;
     private final AuthenticationManager authenticationManager;
     private final SecurityContextRepository securityContextRepository;
 
+    // 회원가입
     @PostMapping
     public ResponseEntity<Void> registerPost(@RequestBody RegisterDTO registerDTO) {
         try {
@@ -45,6 +48,7 @@ public class UserController {
         return ResponseEntity.ok().build();
     }
 
+    // 로그인
     @PostMapping("/login")
     public ResponseEntity<Void> loginPost(@RequestBody LoginDTO loginDTO, HttpServletRequest request, HttpServletResponse response) {
         // loginDTO로 인증 토큰 생성
@@ -65,12 +69,14 @@ public class UserController {
         return ResponseEntity.ok().build();
     }
 
+    // 현재 로그인된 사용자 정보 조회
     @GetMapping("/me")
     public ResponseEntity<Integer> me(@AuthenticationPrincipal CustomUserDetails user) {
         if (user == null) return ResponseEntity.status(401).build();
         return ResponseEntity.ok(user.getId());
     }
 
+    // 로그아웃
     @PostMapping("/logout")
     public ResponseEntity<Void> logout(HttpServletRequest request, HttpServletResponse response) {
         // SecurityContext를 비워서 로그아웃 처리
@@ -88,6 +94,35 @@ public class UserController {
         cookie.setMaxAge(0); // 즉시 만료
         response.addCookie(cookie);
         
+        return ResponseEntity.ok().build();
+    }
+
+    // 존재하는 이메일인지 확인
+    @PostMapping("/email")
+    public ResponseEntity<Void> emailCheck(@RequestBody EmailDTO emailDTO) {
+        if (registerService.isUserExists(emailDTO.getEmail())) {
+            return ResponseEntity.ok().build(); // 이미 가입된 이메일인 경우
+        }
+        return ResponseEntity.badRequest().build(); // 가입되지 않은 이메일인 경우
+    }
+
+    // 이메일 인증번호 생성
+    @PostMapping("/verification")
+    public ResponseEntity<Void> verificationPost(@RequestBody EmailDTO emailDTO) {
+        try {
+            registerService.createVerifyingCode(emailDTO);
+        } catch (IllegalStateException e) {
+            return ResponseEntity.badRequest().build(); // 가입되지 않은 이메일인 경우
+        }
+        return ResponseEntity.ok().build();
+    }
+
+    // 이메일 인증번호 확인
+    @GetMapping("/verification")
+    public ResponseEntity<Void> verificationGet(@RequestBody EmailVerificationDTO emailVerificationDTO) {
+        
+        
+        // 현재는 단순히 OK 응답을 반환
         return ResponseEntity.ok().build();
     }
 }

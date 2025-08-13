@@ -2,6 +2,11 @@ package com.example.itview_spring.Entity;
 
 import lombok.Getter;
 import lombok.Setter;
+
+import java.time.LocalDateTime;
+
+import org.springframework.cglib.core.Local;
+
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -33,4 +38,8 @@ public class EmailVerificationEntity {
     // 인증 코드
     @Column(nullable = false, length = 255)
     private String code;
+
+    // 유효 시간
+    @Column(nullable = false)
+    private LocalDateTime expired_time = LocalDateTime.now().plusMinutes(10);
 }
