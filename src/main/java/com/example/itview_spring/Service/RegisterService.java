@@ -4,7 +4,7 @@ import com.example.itview_spring.Config.CustomUserDetails;
 import com.example.itview_spring.Constant.Role;
 import com.example.itview_spring.DTO.RegisterDTO;
 import com.example.itview_spring.Entity.UserEntity;
-import com.example.itview_spring.Repository.RegisterRepository;
+import com.example.itview_spring.Repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -23,7 +23,7 @@ import java.util.Optional;
 @RequiredArgsConstructor
 @Transactional
 public class RegisterService implements UserDetailsService {
-    private final RegisterRepository registerRepository;
+    private final UserRepository registerRepository;
     private final ModelMapper modelMapper;
     private final PasswordEncoder passwordEncoder;
 

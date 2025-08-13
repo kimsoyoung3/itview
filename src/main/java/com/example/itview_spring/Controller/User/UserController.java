@@ -5,6 +5,7 @@ import com.example.itview_spring.DTO.LoginDTO;
 import com.example.itview_spring.DTO.RegisterDTO;
 import com.example.itview_spring.Service.RegisterService;
 
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -68,5 +69,25 @@ public class UserController {
     public ResponseEntity<Integer> me(@AuthenticationPrincipal CustomUserDetails user) {
         if (user == null) return ResponseEntity.status(401).build();
         return ResponseEntity.ok(user.getId());
+    }
+
+    @PostMapping("/logout")
+    public ResponseEntity<Void> logout(HttpServletRequest request, HttpServletResponse response) {
+        // SecurityContext를 비워서 로그아웃 처리
+        SecurityContextHolder.clearContext();
+        
+        // 기존 세션 무효화
+        if (request.getSession(false) != null) {
+            request.getSession(false).invalidate();
+        }
+        
+        // JSESSIONID 쿠키 삭제
+        Cookie cookie = new Cookie("JSESSIONID", null);
+        cookie.setPath("/");
+        cookie.setHttpOnly(true);
+        cookie.setMaxAge(0); // 즉시 만료
+        response.addCookie(cookie);
+        
+        return ResponseEntity.ok().build();
     }
 }
