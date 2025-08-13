@@ -6,8 +6,8 @@ import 'bootstrap-icons/font/bootstrap-icons.css';
 
 const Layout = ({ children }) => {
     return (
+        
         <div className="layout">
-            <Header />
             <main>{children}</main>
         </div>
     );
