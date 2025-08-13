@@ -1,12 +1,52 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {NavLink} from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import '../App.css'; // 스타일 불러오기
-import { registerUser } from '../API/UserApi';
+import { getMyInfo, loginUser, registerUser } from '../API/UserApi';
 
 const Header = () => {
+    // 로그인 상태 관리
+    // isLoggedIn: 로그인 여부, userInfo: 사용자 이메일
+    const [isLoggedIn, setIsLoggedIn] = useState(false);
+    const [userInfo, setUserInfo] = useState(null);
+    const checkLoginStatus = async () => {
+        try {
+            const response = await getMyInfo();
+            setIsLoggedIn(true);
+            setUserInfo(response.data);
+        } catch (error) {
+            setIsLoggedIn(false);
+            setUserInfo(null);
+        }
+    };
+
+    useEffect(() => {
+        console.log(isLoggedIn, userInfo);
+    }, [isLoggedIn, userInfo]);
+
+    // 컴포넌트가 마운트될 때 로그인 상태 확인
+    useEffect(() => {
+        checkLoginStatus();
+    }, []);
+
     /*로그인 모달*/
     const [isLoginOpen, setLoginOpen] = useState(false);
+    const [loginEmail, setLoginEmail] = useState('');
+    const [loginPassword, setLoginPassword] = useState('');
+    const handleLogin = async () => {
+        // 로그인 로직 처리
+        try {
+            await loginUser({
+                email: loginEmail,
+                password: loginPassword
+            });
+            alert('로그인이 완료되었습니다.');
+            closeLogin();
+        } catch (error) {
+            alert('로그인에 실패했습니다. 다시 시도해주세요.');
+        }
+    };
+
     /*회원가입 모달*/
     const [isSignupOpen, setSignupOpen] = useState(false);
     const [signupNickname, setSignupNickname] = useState('');
@@ -14,17 +54,16 @@ const Header = () => {
     const [signupPassword, setSignupPassword] = useState('');
     const handleSignup = async () => {
         // 회원가입 로직 처리
-        const res = await registerUser({
-            nickname: signupNickname,
-            email: signupEmail,
-            password: signupPassword
-        });
-
-        if (res.status === 200) {
+        try {
+            await registerUser({
+                nickname: signupNickname,
+                email: signupEmail,
+                password: signupPassword
+            });
             alert('회원가입이 완료되었습니다.');
             closeSignup();
-        } else {
-            alert('회원가입에 실패했습니다. 다시 시도해주세요.');
+        } catch (error) {
+            alert('이미 존재하는 이메일입니다. 다시 시도해주세요.');
         }
     };
 
@@ -106,9 +145,9 @@ const Header = () => {
                     <div className="login-modal" onClick={(e) => e.stopPropagation()}>
                         <h1><img src="/logo.svg" alt=""/></h1>
                         <h2>로그인</h2>
-                        <input type="email" placeholder="이메일" />
-                        <input type="password" placeholder="비밀번호" />
-                        <button className="login-submit">로그인</button>
+                        <input type="email" placeholder="이메일" onChange={(e) => setLoginEmail(e.target.value)}/>
+                        <input type="password" placeholder="비밀번호" onChange={(e) => setLoginPassword(e.target.value)}/>
+                        <button className="login-submit" onClick={handleLogin}>로그인</button>
                         <p className="login-text-top">비밀번호를 잊어버리셨나요?</p>
                         <p className="login-text-bottom">계정이 없으신가요?
                             <span onClick={() => {
