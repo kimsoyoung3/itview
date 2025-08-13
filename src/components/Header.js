@@ -2,12 +2,31 @@ import React, {useState} from 'react';
 import {NavLink} from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import '../App.css'; // 스타일 불러오기
+import { registerUser } from '../API/UserApi';
 
 const Header = () => {
     /*로그인 모달*/
     const [isLoginOpen, setLoginOpen] = useState(false);
     /*회원가입 모달*/
     const [isSignupOpen, setSignupOpen] = useState(false);
+    const [signupNickname, setSignupNickname] = useState('');
+    const [signupEmail, setSignupEmail] = useState('');
+    const [signupPassword, setSignupPassword] = useState('');
+    const handleSignup = async () => {
+        // 회원가입 로직 처리
+        const res = await registerUser({
+            nickname: signupNickname,
+            email: signupEmail,
+            password: signupPassword
+        });
+
+        if (res.status === 200) {
+            alert('회원가입이 완료되었습니다.');
+            closeSignup();
+        } else {
+            alert('회원가입에 실패했습니다. 다시 시도해주세요.');
+        }
+    };
 
     /*로그인 모달*/
     const openLogin = () => setLoginOpen(true);
@@ -19,6 +38,8 @@ const Header = () => {
 
     // 모달 바깥 클릭 시 이벤트 전파 차단용
     const stopPropagation = (e) => e.stopPropagation();
+
+
     return (
         <>
             <header className="header">
@@ -103,10 +124,10 @@ const Header = () => {
                     <div className="login-modal" onClick={(e) => e.stopPropagation()}>
                         <h1><img src="/logo.svg" alt=""/></h1>
                         <h2>회원가입</h2>
-                        <input type="text" placeholder="닉네임" />
-                        <input type="email" placeholder="이메일" />
-                        <input type="password" placeholder="비밀번호" />
-                        <button className="login-submit">회원가입</button>
+                        <input type="text" placeholder="닉네임" onChange={(e) => setSignupNickname(e.target.value)}/>
+                        <input type="email" placeholder="이메일" onChange={(e) => setSignupEmail(e.target.value)} />
+                        <input type="password" placeholder="비밀번호" onChange={(e) => setSignupPassword(e.target.value)} />
+                        <button className="login-submit" onClick={handleSignup}>회원가입</button>
                         <p  className="login-text-bottom">이미 가입하셨나요?
                             <span onClick={() => {
                                 closeSignup();
