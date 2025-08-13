@@ -2,7 +2,7 @@ import React, {useEffect, useState} from 'react';
 import {Link, NavLink} from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import '../App.css'; // 스타일 불러오기
-import { getMyInfo, loginUser, registerUser } from '../API/UserApi';
+import { getMyInfo, loginUser, logoutUser, registerUser } from '../API/UserApi';
 
 const Header = () => {
     // 로그인 상태 관리
@@ -52,6 +52,19 @@ const Header = () => {
 
             setLoginError('로그인에 실패했습니다. 다시 시도해주세요.');
             setErrorModalOpen(true);
+        }
+    };
+
+    const handleLogout = async () => {
+        // 로그아웃 로직 처리
+        try {
+            await logoutUser();
+            alert('로그아웃이 완료되었습니다.');
+            setIsLoggedIn(false);
+            setUserInfo(null);
+            window.location.reload();
+        } catch (error) {
+            alert('로그아웃에 실패했습니다. 다시 시도해주세요.');
         }
     };
 
@@ -141,7 +154,7 @@ const Header = () => {
                         {isLoggedIn ? (
                             <div className="user-menu">
                                 <Link to="/MyPage" className="login-button">마이페이지</Link>
-                                <button onClick={openLogin} className="login-button">로그아웃</button>
+                                <button onClick={handleLogout} className="login-button">로그아웃</button>
                             </div>
                         ) : (
                             <div className="user-menu">
