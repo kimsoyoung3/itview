@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {NavLink} from 'react-router-dom';
+import {Link, NavLink} from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import '../App.css'; // 스타일 불러오기
 import { getMyInfo, loginUser, registerUser } from '../API/UserApi';
@@ -33,6 +33,11 @@ const Header = () => {
     const [isLoginOpen, setLoginOpen] = useState(false);
     const [loginEmail, setLoginEmail] = useState('');
     const [loginPassword, setLoginPassword] = useState('');
+    const [loginError, setLoginError] = useState(null); // 에러 메시지 저장용
+    const [isErrorModalOpen, setErrorModalOpen] = useState(false);
+
+    const closeErrorModal = () => setErrorModalOpen(false);
+
     const handleLogin = async () => {
         // 로그인 로직 처리
         try {
@@ -42,8 +47,11 @@ const Header = () => {
             });
             alert('로그인이 완료되었습니다.');
             closeLogin();
+            window.location.reload();
         } catch (error) {
-            alert('로그인에 실패했습니다. 다시 시도해주세요.');
+
+            setLoginError('로그인에 실패했습니다. 다시 시도해주세요.');
+            setErrorModalOpen(true);
         }
     };
 
@@ -129,12 +137,18 @@ const Header = () => {
                             />
                         </div>
 
-
                         {/*로그인&회원가입&마이페이지*/}
-                        <div className="user-menu">
-                            <button onClick={openLogin} className="login-button">로그인</button>
-                            <button onClick={openSignup} className="signUp-button">회원가입</button>
-                        </div>
+                        {isLoggedIn ? (
+                            <div className="user-menu">
+                                <Link to="/MyPage" className="login-button">마이페이지</Link>
+                                <button onClick={openLogin} className="login-button">로그아웃</button>
+                            </div>
+                        ) : (
+                            <div className="user-menu">
+                                <button onClick={openLogin} className="login-button">로그인</button>
+                                <button onClick={openSignup} className="signUp-button">회원가입</button>
+                            </div>
+                        )}
                     </div>
                 </div>
             </header>
@@ -176,6 +190,18 @@ const Header = () => {
                     </div>
                 </div>
             )}
+
+            {/*로그인 실패 모달창*/}
+            {isErrorModalOpen && (
+                <div className="modal-overlay" onClick={closeErrorModal}>
+                    <div className="modal-content" onClick={e => e.stopPropagation()}>
+                        <p>{loginError}</p>
+                        <button onClick={closeErrorModal}>닫기</button>
+                    </div>
+                </div>
+            )}
+
+
         </>
     );
 };
