@@ -10,14 +10,15 @@
 </head>
 <body>
 <main layout:fragment="content">
-    <h1>Welcome to the Dashboard</h1>
-    <p>This is your main content area.</p>
+  <!--  <h1>Welcome to the Dashboard</h1>  -->
+  <!--  <p>This is your main content area.</p>  -->
+
     <!--전체 내용을 보는 페이지(일반적으로 표(카드)로 구현-->
     <div class="container mt-3">
         <h2>콘텐츠 목록</h2>
         <!--삽입버튼 추가(Controller로 지시하는 태그는 a, button)-->
         <!--부트스트랩5 클래스구조(모양 색상(글자) 색상(배경) 세부조정)-->
-        <a th:href="@{/content/new}" type="button" class="btn btn-primary"><i class="bi bi-trash"></i> 등록</a>
+        <a th:href="@{/content/register}" type="button" class="btn btn-primary"><i class="bi bi-trash"></i> 등록</a>
 
         <p>현재 등록한 콘텐츠 목록입니다:</p>
 
@@ -35,6 +36,7 @@
                 <th>이용가제한</th>
                 <th>감독이름</th>
                 <th>채널이름</th>
+                <th></th>
                 <th>작업선택</th>
             </tr>
             </thead>
@@ -47,7 +49,7 @@
                 <td><!--타이틀을 클릭하면 상세보기를 이동한다.-->
                     <a th:href="@{/content/view(id=${data.id})}" th:text="${data.title}">영화</a>
                 </td>
-                <td th:text="${data.contentType}">타입</td>
+                <td th:text="${data.contentType.getDescription()}">타입</td>
                 <td th:text="${data.releaseDate}">20025-08-25</td>
                 <td th:text="${data.poster}">포스터</td>
                 <td th:text="${data.nation}">한국</td>
@@ -55,13 +57,13 @@
                 <td th:text="${data.duration}">2시간30분</td>
                 <td th:text="${data.age}">19세이상가</td>
                 <td th:text="${data.creatorName}">봉준호</td>
-                <td th:text="${data.channelName}">웹튠</td>
+                <td th:text="${data.channelName.getDescription()}">웹튠</td>
                 <td></td>
                 <td>
                     <!--th:href에서 맵핑에 변수를 전달하려면 (변수명=값)-->
                     <!--Controller public String updateHtml(Integer id, 참고-->
                     <!--수정을 버튼을 누르면 수정페이지로 이동, 삭제를 버튼을 누르면 삭제처리로 이동-->
-                    <a th:href="@{/content/edit(id=${data.id})}" type="button"
+                    <a th:href="@{/content/{id}/update(id=${data.id})}" type="button"
                        class="btn btn-primary">수정</a>
                     <a th:href="@{/content/delete(id=${data.id})}" type="button"
                        class="btn btn-primary">삭제</a>
