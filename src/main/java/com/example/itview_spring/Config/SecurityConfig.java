@@ -11,15 +11,14 @@ import org.springframework.security.web.SecurityFilterChain;
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
-    
+
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        http.authorizeHttpRequests(auth -> {
-            auth.requestMatchers("/", "api/user/login", "api/user", "api/user/logout"
-            , "user/login", "user/register").permitAll();
-        });
-
-        http.headers((headers) -> headers.frameOptions().sameOrigin());
+        http.authorizeHttpRequests(auth -> auth
+                .requestMatchers("/", "api/user/login", "api/user", "api/user/logout"
+                        , "user/login", "user/register").permitAll()
+                .anyRequest().permitAll()
+        );
 
         http.csrf(AbstractHttpConfigurer::disable);
 
