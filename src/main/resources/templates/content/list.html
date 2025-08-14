@@ -47,7 +47,7 @@
             <tr th:each="data:${contentDTOS}"><!--th개수=td개수 똑같이, 아래쪽 tr은 삭제-->
                 <td th:text="${data.id}">001</td>
                 <td><!--타이틀을 클릭하면 상세보기를 이동한다.-->
-                    <a th:href="@{/content/view(id=${data.id})}" th:text="${data.title}">영화</a>
+                    <a th:href="@{/content/detail(id=${data.id})}" th:text="${data.title}">영화</a>
                 </td>
                 <td th:text="${data.contentType.getDescription()}">타입</td>
                 <td th:text="${data.releaseDate}">20025-08-25</td>
@@ -57,7 +57,11 @@
                 <td th:text="${data.duration}">2시간30분</td>
                 <td th:text="${data.age}">19세이상가</td>
                 <td th:text="${data.creatorName}">봉준호</td>
-                <td th:text="${data.channelName.getDescription()}">웹튠</td>
+
+           <!--     <td th:text="${#strings.isEmpty(data.channelName?.getDescription()) ? '' : ''}">웹튠</td> -->
+                <!--      <td th:text="${data.channelName.getDescription()}">웹튠</td>  -->
+                <!--      <td th:text="${#strings.isEmpty(data.channelName?.getDescription()) ? '' : data.channelName.getDescription()}">웹튠</td> -->
+                <td th:text="${data.channelName != null && data.channelName.getDescription() != null} ? '' : ''">웹튠</td>
                 <td></td>
                 <td>
                     <!--th:href에서 맵핑에 변수를 전달하려면 (변수명=값)-->

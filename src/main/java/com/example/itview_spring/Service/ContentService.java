@@ -1,6 +1,7 @@
 package com.example.itview_spring.Service;
 
-import com.example.itview_spring.DTO.ContentDTO;
+import com.example.itview_spring.DTO.AdminContentDTO;
+import com.example.itview_spring.DTO.AdminContentDTO;
 import com.example.itview_spring.Entity.ContentEntity;
 import com.example.itview_spring.Repository.ContentRepository;
 import lombok.RequiredArgsConstructor;
@@ -40,21 +41,21 @@ public class ContentService {
      * @return 결과
      */
 
-    public Page<ContentDTO> getAllContents(Pageable page) {
+    public Page<AdminContentDTO> getAllContents(Pageable page) {
         int currentPage = page.getPageNumber()-1;
         int pageLimits = 10 ;
 
         Pageable pageable = PageRequest.of(currentPage,pageLimits, Sort.by(Sort.Direction.DESC, "id"));
         Page<ContentEntity> contentEntities = contentRepository.findAll(pageable) ;
-        Page<ContentDTO> contentDTOS = contentEntities.map(data->modelMapper.map(
-                data, ContentDTO.class));
+        Page<AdminContentDTO> contentDTOS = contentEntities.map(data->modelMapper.map(
+                data, AdminContentDTO.class));
         return contentDTOS;
     }
-//    public List<ContentDTO> List() {
+//    public List<AdminContentDTO> List() {
 //        //읽기,수정/저장/삭제 ==>Repository
 //        List<ContentEntity> contentEntities = contentRepository.findAll();
 //        //Entity =있으면 밑에 DTO변환
-//        List<ContentDTO> contentDTOs = Arrays.asList(modelMapper.map(contentEntities, ContentDTO[].class));
+//        List<AdminContentDTO> contentDTOs = Arrays.asList(modelMapper.map(contentEntities, AdminContentDTO[].class));
 //        //DTO가 보이면 return DTO를지정
 //        return contentDTOs;
 //    }
@@ -65,7 +66,7 @@ public class ContentService {
     //주문번호를 받아서 해당하는 DTO에 전달
     //public ProductDTO 역시 안알려줌(Integer id) {
     //public ProductDTO read(Integer id) {    ex)
-    public ContentDTO read(Integer id) {
+    public AdminContentDTO read(Integer id) {
         //해당내용을 조회
         if (id == null) {
             throw new IllegalArgumentException("id는 null일 수 없습니다.");
@@ -74,28 +75,28 @@ public class ContentService {
         if (contentEntity.isEmpty()) {
             throw new NoSuchElementException("해당 ID에 대한 콘텐츠를 찾을 수 없습니다: " + id);
         }
-        ContentDTO contentDTO = modelMapper.map(contentEntity.get(), ContentDTO.class);
-        return contentDTO;
+        AdminContentDTO adminContentDTO = modelMapper.map(contentEntity.get(), AdminContentDTO.class);
+        return adminContentDTO;
     }
 
     //등록(저장)
     //DTO를 받아서 저장
     //public void 내맘대로 (ProductDTO productDTO) {
     //public void create (ProductDTO productDTO) {  ex)
-    public ContentDTO create(ContentDTO dto) {
+    public AdminContentDTO create(AdminContentDTO dto) {
         //DTO가 이있으면 반드시 Entity 변환
      //   System.out.println("dto:"+dto);
         ContentEntity contentEntity = modelMapper.map(dto, ContentEntity.class);
      //   System.out.println("entity:"+ContentEntity);
         contentRepository.save(contentEntity);
-        return modelMapper.map(contentEntity, ContentDTO.class);
+        return modelMapper.map(contentEntity, AdminContentDTO.class);
     }
 
     //수정
     //주문번호와 DTO를 받아서, 주문번호로 조회해서 DTO의 내용을 저장
     // public void 수정할까(Integer orderId, ProductDTO productDTO) {
     // public void update(Integer orderId, ProductDTO productDTO) {   ex)
-    public ContentDTO update(Integer id, ContentDTO dto) {
+    public AdminContentDTO update(Integer id, AdminContentDTO dto) {
         //해당내용찾기
 //        System.out.println("dto:"+dto);
         ContentEntity contentEntity = modelMapper.map(dto, ContentEntity.class);
@@ -117,7 +118,7 @@ public class ContentService {
         contentEntity.setChannelName(dto.getChannelName());
 
         contentRepository.save(contentEntity);
-        return modelMapper.map(contentEntity, ContentDTO.class);
+        return modelMapper.map(contentEntity, AdminContentDTO .class);
     }
 
     //삭제
