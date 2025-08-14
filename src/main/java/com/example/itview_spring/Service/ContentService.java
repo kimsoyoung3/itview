@@ -12,8 +12,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Arrays;
-import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 
 @Service
@@ -68,7 +67,13 @@ public class ContentService {
     //public ProductDTO read(Integer id) {    ex)
     public ContentDTO read(Integer id) {
         //해당내용을 조회
+        if (id == null) {
+            throw new IllegalArgumentException("id는 null일 수 없습니다.");
+        }
         Optional<ContentEntity> contentEntity = contentRepository.findById(id);
+        if (contentEntity.isEmpty()) {
+            throw new NoSuchElementException("해당 ID에 대한 콘텐츠를 찾을 수 없습니다: " + id);
+        }
         ContentDTO contentDTO = modelMapper.map(contentEntity.get(), ContentDTO.class);
         return contentDTO;
     }
@@ -90,13 +95,15 @@ public class ContentService {
     //주문번호와 DTO를 받아서, 주문번호로 조회해서 DTO의 내용을 저장
     // public void 수정할까(Integer orderId, ProductDTO productDTO) {
     // public void update(Integer orderId, ProductDTO productDTO) {   ex)
-    public ContentDTO update(ContentDTO dto) {
+    public ContentDTO update(Integer id, ContentDTO dto) {
         //해당내용찾기
+//        System.out.println("dto:"+dto);
         ContentEntity contentEntity = modelMapper.map(dto, ContentEntity.class);
 
         if (contentEntity == null) {
             return null;
         }
+//        System.out.println("entity:"+contentEntity);
         //내용을 저장(@Id가 있는 변수는 저장 불가)
         contentEntity.setTitle(dto.getTitle());
         contentEntity.setContentType(dto.getContentType());

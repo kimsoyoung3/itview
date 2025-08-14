@@ -10,9 +10,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
+
+import static org.springframework.data.jpa.domain.AbstractPersistable_.id;
 
 @Controller
 @RequiredArgsConstructor
@@ -23,18 +23,19 @@ public class ContentController {
 
     //강의등록페이지
 
-    @GetMapping("/content/new")
+    @GetMapping("/content/register")
     public String newContent() {
 
-        return "register" ;
+        return "content/register" ;
     }
 
     //동록 강의저장후 목록 으로 이동
-    @PostMapping("/content/new")
+    @PostMapping("/content/register")
     public String newContent(ContentDTO contentDTO) {
         //데이터 저장처리 (Service -> Controller
         contentService.create(contentDTO);
-        return "redirect:/content/list";
+         return "redirect:/content/list";
+    //    return "redirect:/content/{id}/genre";
     }
     //localhost:8080/content/list 확인함(@GetMppping
     //전체강의 조회후 (list.html)로이동
@@ -56,43 +57,38 @@ public class ContentController {
         PageInfoDTO pageInfoDTO = pageInfo.getPageInfo(contentDTOS);
         model.addAttribute("pageInfoDTO", pageInfoDTO);
       
-        return "list" ;
-
-////////////////////////////////////////////////////////////////////////////////////////////
-//   페이지 작업전
-//        List<ContentEntity> contents = contentRepository.findAll();
-//        List<ContentDTO> contentDTOS = Arrays.asList(modelMapper.map(contents, ContentDTO[].class));
-//        return contentDTOS;
-////////////////////////////////////////////////////////////////////////////////////////////
+        return "content/list" ;
     }
+
     //상세보기
     @GetMapping("/content/view")
-    public String detailContent(Integer id ,Model model) {
+    public String detailContent(@RequestParam("id") Integer id ,Model model) {
         ContentDTO contentDTO =contentService.read(id);
         model.addAttribute("contentDTO",contentDTO);
         //     System.out.printf("contentDTO.getContentId==",contentDTO.getContentId());
         //     System.out.printf("contentDTO.            ==",contentDTO);
-        return "detail" ;
+        return "content/detail" ;
     }
 
     //수정페이지 이동
-    @GetMapping("/content/edit")
-    public String editContent(@RequestParam("id") Integer id ,Model model) {
+    @GetMapping("/content/{id}/update")
+    public String updateContent(@PathVariable("id") Integer id ,Model model) {
         ContentDTO contentDTO =contentService.read(id);
         model.addAttribute("contentDTO",contentDTO);
-        return  "edit";
+        return  "content/update";
     }
 
-    //수정된 강위저장후 목록으로이동
-    @PostMapping("/content/edit")
-    public String editContentProc(ContentDTO contentDTO) {
-        contentService.update(contentDTO);
+    //수정된 콘텐츠 저장후 목록으로이동
+    @PostMapping("/content/{id}/update")
+    public String updateContentProc(@PathVariable("id") Integer id, ContentDTO contentDTO) {
+        contentService.update(id ,contentDTO);
+
         return "redirect:/content/list";
     }
 
     //삭제처리
     @GetMapping("/content/delete")
-    public String deleteContent(Integer id) {
+    public String deleteContent(@RequestParam("id") Integer id) {
         contentService.delete(id);
         return "redirect:/content/list";
     }
