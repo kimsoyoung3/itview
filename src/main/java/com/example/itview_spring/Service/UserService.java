@@ -98,4 +98,24 @@ public class UserService implements UserDetailsService {
         Message.setText("인증 코드: " + code);
         mailSender.send(Message);
     }
+
+    // 이메일 인증 코드 확인
+    public boolean verifyCode(EmailVerificationDTO emailVerificationDTO) {
+        // 이메일로 사용자 조회
+        Optional<UserEntity> userEntity = registerRepository.findByEmail(emailVerificationDTO.getEmail());
+        if (userEntity.isEmpty()) {
+            throw new IllegalStateException("가입되지 않은 이메일입니다.");
+        }
+
+        // 인증 코드 조회
+        String code = emailVerificationRepository.findCode(userEntity.get().getId());
+
+        if (code != null && code.equals(emailVerificationDTO.getCode())) {
+            // 인증 코드가 유효한 경우
+            return true;
+        } else {
+            // 인증 코드가 유효하지 않은 경우
+            return false;
+        }
+    }
 }

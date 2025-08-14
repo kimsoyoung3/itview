@@ -107,7 +107,7 @@ public class UserController {
     }
 
     // 이메일 인증번호 생성
-    @PostMapping("/verification")
+    @PostMapping("/createVerification")
     public ResponseEntity<Void> verificationPost(@RequestBody EmailDTO emailDTO) {
         try {
             registerService.createVerifyingCode(emailDTO);
@@ -118,11 +118,17 @@ public class UserController {
     }
 
     // 이메일 인증번호 확인
-    @GetMapping("/verification")
+    @PostMapping("/checkVerification")
     public ResponseEntity<Void> verificationGet(@RequestBody EmailVerificationDTO emailVerificationDTO) {
+        try {
+            boolean isValid = registerService.verifyCode(emailVerificationDTO);
+            if (!isValid) {
+                return ResponseEntity.badRequest().build(); // 인증 코드가 유효하지 않은 경우
+            }
+        } catch (IllegalStateException e) {
+            return ResponseEntity.badRequest().build(); // 가입되지 않은 이메일인 경우
+        }
         
-        
-        // 현재는 단순히 OK 응답을 반환
         return ResponseEntity.ok().build();
     }
 }
