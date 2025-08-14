@@ -2,7 +2,7 @@ import React, {useEffect, useState} from 'react';
 import {Link, NavLink} from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import '../App.css'; // 스타일 불러오기
-import { checkEmail, checkVerification, createVerification, getMyInfo, loginUser, logoutUser, registerUser } from '../API/UserApi';
+import { checkEmail, checkVerification, createVerification, getMyInfo, loginUser, logoutUser, registerUser, setPassword } from '../API/UserApi';
 
 const Header = () => {
     // 로그인 상태 관리
@@ -70,8 +70,11 @@ const Header = () => {
         // 이메일 인증 로직 처리
         try {
             await checkEmail({ email });
+            setVerifyingEmail(email);
             alert('인증 번호를 전송했습니다. 메일을 확인해주세요.');
-            await createVerification({ email });
+            createVerification({ email });
+            closeReset();
+            openResetCheck();
         } catch (error) {
             alert('인증 이메일 전송에 실패했습니다. 다시 시도해주세요.');
         }
@@ -82,8 +85,22 @@ const Header = () => {
         try {
             await checkVerification({ email, code });
             alert('인증이 완료되었습니다. 비밀번호를 재설정해주세요.');
+            closeResetCheck();
+            openResetNew();
         } catch (error) {
             alert('인증 코드가 잘못되었습니다. 다시 시도해주세요.');
+        }
+    };
+
+    const handleSetPassword = async (newPassword) => {
+        // 새 비밀번호 설정 로직 처리
+        try {
+            await setPassword({ email: verifyingEmail, newPassword });
+            alert('비밀번호가 성공적으로 변경되었습니다.');
+            closeResetNew();
+            openLogin();
+        } catch (error) {
+            alert('비밀번호 변경에 실패했습니다. 다시 시도해주세요.');
         }
     };
 
@@ -297,9 +314,6 @@ const Header = () => {
                                 const email = e.target[0].value;
                                 if (email) {
                                     handleCreateVerification(email);
-                                    setVerifyingEmail(email);
-                                    closeReset();
-                                    openResetCheck();
                                 }
                             }}>
                             <input type="email" placeholder="이메일" />
@@ -322,7 +336,6 @@ const Header = () => {
                                 e.preventDefault();
                                 const code = e.target[0].value;
                                 if (code) {
-                                    console.log(verifyingEmail, code);
                                     handleCheckVerification(verifyingEmail, code);
                                 }
                             }}>
@@ -344,6 +357,10 @@ const Header = () => {
                         <form
                             onSubmit={(e) => {
                                 e.preventDefault();
+                                const newPassword = e.target[0].value;
+                                if (newPassword) {
+                                    handleSetPassword(newPassword);
+                                }
                             }}>
                             <input type="password" placeholder="비밀번호" />
                             <button type="submit" className="login-submit">비밀번호 재설정</button>

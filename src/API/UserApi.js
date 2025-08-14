@@ -7,3 +7,4 @@ export const logoutUser = () => axios.post('http://localhost:8080/api/user/logou
 export const createVerification = (data) => axios.post('http://localhost:8080/api/user/createVerification', data, {withCredentials: true});
 export const checkEmail = (data) => axios.post('http://localhost:8080/api/user/email', data, {withCredentials: true});
 export const checkVerification = (data) => axios.post('http://localhost:8080/api/user/checkVerification', data, {withCredentials: true});
+export const setPassword = (data) => axios.post('http://localhost:8080/api/user/setPW', data, {withCredentials: true});
