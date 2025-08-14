@@ -4,6 +4,7 @@ import com.example.itview_spring.Config.CustomUserDetails;
 import com.example.itview_spring.DTO.EmailDTO;
 import com.example.itview_spring.DTO.EmailVerificationDTO;
 import com.example.itview_spring.DTO.LoginDTO;
+import com.example.itview_spring.DTO.NewPasswordDTO;
 import com.example.itview_spring.DTO.RegisterDTO;
 import com.example.itview_spring.Service.UserService;
 
@@ -129,6 +130,17 @@ public class UserController {
             return ResponseEntity.badRequest().build(); // 가입되지 않은 이메일인 경우
         }
         
+        return ResponseEntity.ok().build();
+    }
+
+    // 비밀번호 변경
+    @PostMapping("/setPW")
+    public ResponseEntity<Void> setPassword(@RequestBody NewPasswordDTO newPasswordDTO) {
+        try {
+            registerService.setPassword(newPasswordDTO);
+        } catch (IllegalStateException e) {
+            return ResponseEntity.badRequest().build(); // 비밀번호 변경 실패
+        }
         return ResponseEntity.ok().build();
     }
 }

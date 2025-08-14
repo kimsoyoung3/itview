@@ -4,6 +4,7 @@ import com.example.itview_spring.Config.CustomUserDetails;
 import com.example.itview_spring.Constant.Role;
 import com.example.itview_spring.DTO.EmailDTO;
 import com.example.itview_spring.DTO.EmailVerificationDTO;
+import com.example.itview_spring.DTO.NewPasswordDTO;
 import com.example.itview_spring.DTO.RegisterDTO;
 import com.example.itview_spring.Entity.EmailVerificationEntity;
 import com.example.itview_spring.Entity.UserEntity;
@@ -117,5 +118,20 @@ public class UserService implements UserDetailsService {
             // 인증 코드가 유효하지 않은 경우
             return false;
         }
+    }
+
+    // 비밀번호 변경
+    public void setPassword(NewPasswordDTO newPasswordDTO) {
+        // 이메일로 사용자 조회
+        Optional<UserEntity> userEntity = registerRepository.findByEmail(newPasswordDTO.getEmail());
+        if (userEntity.isEmpty()) {
+            throw new IllegalStateException("가입되지 않은 이메일입니다.");
+        }
+
+        // 비밀번호 암호화
+        String encodedPassword = passwordEncoder.encode(newPasswordDTO.getNewPassword());
+        userEntity.get().setPassword(encodedPassword);
+
+        registerRepository.save(userEntity.get());
     }
 }
