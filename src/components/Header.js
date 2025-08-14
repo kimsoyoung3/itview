@@ -2,7 +2,7 @@ import React, {useEffect, useState} from 'react';
 import {Link, NavLink} from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import '../App.css'; // 스타일 불러오기
-import { checkEmail, createVerification, getMyInfo, loginUser, logoutUser, registerUser } from '../API/UserApi';
+import { checkEmail, checkVerification, createVerification, getMyInfo, loginUser, logoutUser, registerUser } from '../API/UserApi';
 
 const Header = () => {
     // 로그인 상태 관리
@@ -65,6 +65,7 @@ const Header = () => {
         }
     };
 
+    const [verifyingEmail, setVerifyingEmail] = useState('');
     const handleCreateVerification = async (email) => {
         // 이메일 인증 로직 처리
         try {
@@ -73,6 +74,16 @@ const Header = () => {
             await createVerification({ email });
         } catch (error) {
             alert('인증 이메일 전송에 실패했습니다. 다시 시도해주세요.');
+        }
+    };
+
+    const handleCheckVerification = async (email, code) => {
+        // 인증 코드 확인 로직 처리
+        try {
+            await checkVerification({ email, code });
+            alert('인증이 완료되었습니다. 비밀번호를 재설정해주세요.');
+        } catch (error) {
+            alert('인증 코드가 잘못되었습니다. 다시 시도해주세요.');
         }
     };
 
@@ -281,6 +292,7 @@ const Header = () => {
                                 const email = e.target[0].value;
                                 if (email) {
                                     handleCreateVerification(email);
+                                    setVerifyingEmail(email);
                                     closeReset();
                                     openResetCheck();
                                 }
@@ -303,6 +315,11 @@ const Header = () => {
                         <form
                             onSubmit={(e) => {
                                 e.preventDefault();
+                                const code = e.target[0].value;
+                                if (code) {
+                                    console.log(verifyingEmail, code);
+                                    handleCheckVerification(verifyingEmail, code);
+                                }
                             }}>
                             <input type="text" placeholder="인증번호" />
                             <button type="submit" className="reset-submit">입력</button>
@@ -310,12 +327,6 @@ const Header = () => {
                     </div>
                 </div>
             )}
-
-
-
-
-
-
         </>
     );
 };
