@@ -13,7 +13,7 @@ import java.time.LocalDate;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class AdminContentDTO {
+public class ContentCreateDTO {
     private Integer id;
     private String title;
     private ContentType contentType;

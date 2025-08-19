@@ -18,7 +18,7 @@
         <h2>콘텐츠 목록</h2>
         <!--삽입버튼 추가(Controller로 지시하는 태그는 a, button)-->
         <!--부트스트랩5 클래스구조(모양 색상(글자) 색상(배경) 세부조정)-->
-        <a th:href="@{/content/register}" type="button" class="btn btn-primary"><i class="bi bi-trash"></i> 등록</a>
+        <a th:href="@{/content/register}" type="button" class="btn btn-primary float-end"><i class="bi bi-trash"></i> 등록</a>
 
         <p>현재 등록한 콘텐츠 목록입니다:</p>
 
@@ -36,7 +36,6 @@
                 <th>이용가제한</th>
                 <th>감독이름</th>
                 <th>채널이름</th>
-                <th></th>
                 <th>작업선택</th>
             </tr>
             </thead>
@@ -61,8 +60,12 @@
            <!--     <td th:text="${#strings.isEmpty(data.channelName?.getDescription()) ? '' : ''}">웹튠</td> -->
                 <!--      <td th:text="${data.channelName.getDescription()}">웹튠</td>  -->
                 <!--      <td th:text="${#strings.isEmpty(data.channelName?.getDescription()) ? '' : data.channelName.getDescription()}">웹튠</td> -->
-                <td th:text="${data.channelName != null && data.channelName.getDescription() != null} ? '' : ''">웹튠</td>
-                <td></td>
+                <td th:if="${data.channelName != null and data.channelName.description != null}"
+                    th:text="${data.channelName.description}">웹툰</td>
+                <td th:unless="${data.channelName != null and data.channelName.description != null}"></td>
+<!--                <td th:text="(${data.channelName != null} and ${data.channelName.description != null}) ? ${data.channelName.description} : ''">웹툰</td>-->
+
+
                 <td>
                     <!--th:href에서 맵핑에 변수를 전달하려면 (변수명=값)-->
                     <!--Controller public String updateHtml(Integer id, 참고-->
