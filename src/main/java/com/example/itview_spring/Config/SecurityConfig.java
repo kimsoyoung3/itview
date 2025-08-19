@@ -26,7 +26,8 @@ public class SecurityConfig {
         http
             .csrf(csrf -> csrf.disable())
             .formLogin(form -> form.disable())
-            .httpBasic(basic -> basic.disable());
+            .httpBasic(basic -> basic.disable())
+            .oauth2Login(oauth2 -> oauth2.defaultSuccessUrl("http://localhost:3000/"));
 
         return http.build();
     }
