@@ -1,7 +1,6 @@
 package com.example.itview_spring.Service;
 
 import com.example.itview_spring.DTO.AdminContentDTO;
-import com.example.itview_spring.DTO.AdminContentDTO;
 import com.example.itview_spring.Entity.ContentEntity;
 import com.example.itview_spring.Repository.ContentRepository;
 import lombok.RequiredArgsConstructor;
