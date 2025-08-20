@@ -2,7 +2,7 @@ import React, {useEffect, useState} from 'react';
 import {Link, NavLink} from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import '../App.css'; // 스타일 불러오기
-import { checkEmail, checkVerification, createVerification, getMyInfo, loginUser, logoutUser, registerUser, setPassword } from '../API/UserApi';
+import { checkEmail, checkVerification, createVerification, getMyInfo, google, loginUser, logoutUser, registerUser, setPassword } from '../API/UserApi';
 
 const Header = () => {
     // 로그인 상태 관리
@@ -205,6 +205,10 @@ const Header = () => {
                             <div className="user-menu">
                                 <Link to="/MyPage" className="login-button">마이페이지</Link>
                                 <button onClick={handleLogout} className="login-button">로그아웃</button>
+                                <a href="http://localhost:8080/oauth2/authorization/google"
+                                   onClick={google}>
+                                    구글 로그인
+                                </a>
                             </div>
                         ) : (
                             <div className="user-menu">
@@ -368,10 +372,6 @@ const Header = () => {
                     </div>
                 </div>
             )}
-
-
-
-
         </>
     );
 };

@@ -18,4 +18,4 @@ const DetailPage = () => {
         </div>
     )
 }
-export default DetailPage
+export default DetailPage;
