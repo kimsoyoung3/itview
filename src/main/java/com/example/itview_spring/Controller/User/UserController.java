@@ -149,6 +149,6 @@ public class UserController {
         var auth = SecurityContextHolder.getContext().getAuthentication();
         request.getSession().setAttribute("ORIGINAL_AUTH", auth);
         request.getSession().setAttribute("LINK_FLOW", Boolean.TRUE);
-        System.out.println("Link account: " + auth.getName());
+        request.getSession().setAttribute("USER_ID", ((CustomUserDetails) auth.getPrincipal()).getId());
     }
 }
