@@ -1,9 +1,29 @@
-import React from "react";
+import React, { use, useEffect, useState } from "react";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import "../App.css";
 import {NavLink} from "react-router-dom"; // CSS 따로 관리
+import { getContentDetail } from "../API/ContentApi";
 
-const DetailPage = ( ) => {
+const DetailPage = () => {
+    const [contentDetail, setContentDetail] = useState(null);
+
+    useEffect(() => {
+        const fetchContentDetail = async () => {
+            try {
+                const response = await getContentDetail(window.location.pathname.split('/').pop());
+                setContentDetail(response.data);
+            } catch (error) {
+                console.error('Error fetching content detail:', error);
+            }
+        }
+
+        fetchContentDetail();
+    }, []);
+
+    useEffect(() => {
+        console.log(contentDetail)
+    }, [contentDetail]);
+
     return (
         <div className="detail">
             <div className="detail-banner">
