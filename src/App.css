@@ -20,9 +20,14 @@ body {
 
 /* 헤더 스타일 */
 .header {
+  width: 100%;
   background: white;
   box-shadow: 1px 2px 2px rgba(0,0,0,0.1);
   padding: 15px 0 ;
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 9999;
 }
 
 .header_width {
@@ -645,6 +650,49 @@ body {
 
 .home-content-title {
   font-size: 1.3rem;
+  font-weight: bold;
+}
+
+/*컨텐츠 상세페이지 스타일*/
+.detail {
+  width: 100%;
+}
+
+.detail-banner {
+  width: 100%;
+  position: relative;
+  height: 600px;
+}
+
+.banner-post {
+  width: 100%;
+  height: inherit;
+}
+
+.banner-post>img {
+  width: 100%;
+  height: inherit;
+  object-fit: cover;
+}
+
+.post-dec {
+  width: 100%;
+  color: white;
+}
+
+.post-dec>ul {
+  position: absolute;
+  padding: 0;
+  margin: 0;
+  top: 70%;
+}
+
+.post-dec>ul>li {
+  padding-bottom: 5px;
+}
+
+.post-dec>ul>li:nth-of-type(1) {
+  font-size: 2rem;
   font-weight: bold;
 }
 
