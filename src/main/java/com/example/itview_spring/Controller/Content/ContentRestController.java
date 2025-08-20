@@ -1,6 +1,12 @@
 package com.example.itview_spring.Controller.Content;
 
+import java.util.List;
+
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.method.P;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -8,8 +14,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.itview_spring.DTO.ContentDetailDTO;
-import com.example.itview_spring.DTO.ContentResponseDTO;
+import com.example.itview_spring.DTO.CreditDTO;
 import com.example.itview_spring.Service.ContentService;
+import com.example.itview_spring.Service.CreditService;
 
 import lombok.RequiredArgsConstructor;
 
@@ -20,10 +27,16 @@ import lombok.RequiredArgsConstructor;
 public class ContentRestController {
 
     private final ContentService contentService;
+    private final CreditService creditService;
 
     @GetMapping("/{id}")
     public ResponseEntity<ContentDetailDTO> getContentDetail(@PathVariable("id") Integer id) {
         ContentDetailDTO contentDetail = contentService.getContentDetail(id);
         return ResponseEntity.ok(contentDetail);
+    }
+
+    @GetMapping("/{id}/credit")
+    public ResponseEntity<Page<CreditDTO>> getContentCredit(@PageableDefault(page=1) Pageable pageable, @PathVariable("id") Integer id) {
+        return ResponseEntity.ok(creditService.getCreditByContentId(pageable, id));
     }
 }
