@@ -1,8 +1,12 @@
 package com.example.itview_spring.Service;
 
 import com.example.itview_spring.DTO.AdminContentDTO;
+import com.example.itview_spring.DTO.ContentResponseDTO;
+import com.example.itview_spring.DTO.GenreDTO;
 import com.example.itview_spring.Entity.ContentEntity;
+import com.example.itview_spring.Repository.ContentGenreRepository;
 import com.example.itview_spring.Repository.ContentRepository;
+
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
@@ -12,6 +16,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 
@@ -21,6 +26,7 @@ import java.util.Optional;
 public class ContentService {
     //반드시 사용할 Repository (방금 작업한 파일)와 MOdelMapper추가
     private final ContentRepository contentRepository;
+    private final ContentGenreRepository contentGenreRepository;
     private final ModelMapper modelMapper;
 
     //전체조회
@@ -130,5 +136,15 @@ public class ContentService {
             return true;
         }
         return false;
+    }
+
+    public ContentResponseDTO getContentDetail(Integer contentId) {
+        ContentResponseDTO contentResponseDTO = contentRepository.findContentWithAvgRating(contentId);
+        List<GenreDTO> genres = contentGenreRepository.findByContentId(contentId);
+        contentResponseDTO.setGenres(genres);
+        // 컨텐츠 정보 출력
+        System.out.println("컨텐츠 : " + contentResponseDTO);    
+
+        return contentResponseDTO;
     }
 }

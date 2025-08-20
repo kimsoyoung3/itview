@@ -20,7 +20,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.security.web.context.SecurityContextRepository;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -145,9 +144,11 @@ public class UserController {
         return ResponseEntity.ok().build();
     }
 
-    @GetMapping("/google")
-    public String getUserEmail (@AuthenticationPrincipal OAuth2User user) {
-        if (user == null) return "로그인되지 않았습니다.";
-        return user.getAttribute("email");
+    @PostMapping("/google")
+    public void linkGoogle(HttpServletRequest request, HttpServletResponse response) {
+        var auth = SecurityContextHolder.getContext().getAuthentication();
+        request.getSession().setAttribute("ORIGINAL_AUTH", auth);
+        request.getSession().setAttribute("LINK_FLOW", Boolean.TRUE);
+        System.out.println("Link account: " + auth.getName());
     }
 }
