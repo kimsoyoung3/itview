@@ -16,6 +16,9 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
+
+import static org.springframework.data.jpa.domain.AbstractPersistable_.id;
 
 @Controller
 @RequiredArgsConstructor
@@ -43,8 +46,10 @@ public class ContentController {
     @PostMapping("/content/register")
     public String newContent(ContentCreateDTO contentDTO) {
         //데이터 저장처리 (Service -> Controller
-        ContentCreateDTO savedContent = contentService.create(contentDTO);
-        return "redirect:/content/" + savedContent.getId() + "/genre";
+        ContentCreateDTO savedContent = contentService.create(contentDTO); // 저장 후
+
+        System.out.println(" 00 savedContent =="+savedContent);
+        return "redirect:/content/" + savedContent.getId() + "/genre";     // 장르 등록 폼으로 이동
         //   return "redirect:/content/list";
     }
 
@@ -65,7 +70,7 @@ public class ContentController {
         //keyword  추가 ****
         Page<ContentCreateDTO> contentDTOS = contentService.getAllContents(pageable);
         model.addAttribute("contentDTOS", contentDTOS);
-    //    System.out.printf("contentDTO.            ==", contentDTOS);
+    //    System.out.println("contentDTO.            ==", contentDTOS);
 
         PageInfoDTO pageInfoDTO = pageInfo.getPageInfo(contentDTOS);
         model.addAttribute("pageInfoDTO", pageInfoDTO);
@@ -80,8 +85,8 @@ public class ContentController {
         // URL 경로 변수인 {id}를 받으려면 @PathVariable을 써야 합니다.
         ContentCreateDTO contentDTO = contentService.read(id);
         model.addAttribute("contentDTO", contentDTO);
-        //     System.out.printf("contentDTO.getContentId==",contentDTO.getContentId());
-        //     System.out.printf("contentDTO.            ==",contentDTO);
+        //     System.out.println("contentDTO.getContentId==",contentDTO.getContentId());
+        //     System.out.println("contentDTO.            ==",contentDTO);
         return "content/detail";
     }
 
@@ -93,11 +98,14 @@ public class ContentController {
         return "content/update";
     }
 
-    // 수정 처리
+    // 수정 처리 (→ 장르 수정 화면으로 리디렉트)
     @PostMapping("/content/{id}/update")
     public String updateContentProc(@PathVariable("id") Integer id, ContentCreateDTO contentDTO) {
-        contentService.update(id, contentDTO);
-        return "redirect:/content/list";
+//        contentService.update(id, contentDTO);
+//        return "redirect:/content/list";
+        ContentCreateDTO savedContent = contentService.update(id, contentDTO);
+        System.out.println(" 22 savedContent =="+savedContent)   ;
+        return "redirect:/content/" + savedContent.getId() + "/genre";     // 장르 수정 폼으로 이동
     }
 
     //삭제처리
@@ -111,22 +119,142 @@ public class ContentController {
     //콘텐츠 장르 등록/수정 페이지 {/content/{id}/genre)
     // 장르 선택/수정 폼
     @GetMapping("/content/{contentId}/genre")
-    public String showGenreForm(@PathVariable("contentId") Integer contentId, Model model) {
-        List<Genre> allGenres = Arrays.asList(Genre.values());
-       // List<Genre> selectedGenres = List.of(Genre.DRAMA); // 예시로 DRAMA만 선택됨
-        List<Genre> selectedGenres = contentService.getGenresByContentId(contentId);
 
+    public String showGenreForm(@PathVariable Integer contentId, Model model) {
+        ContentCreateDTO contentDTO = contentService.read(contentId);
+
+        List<Genre> selectedGenres = contentService.getGenresByContentId(contentId); // 이 메서드가 Enum List 반환
+        List<String> selectedGenreNames = selectedGenres.stream().map(Enum::name).toList(); // ✅ 변환
+
+        model.addAttribute("contentId", contentId);
+        model.addAttribute("allGenres", Genre.values());
+//        model.addAttribute("selectedGenres", genreService.getSelectedGenreNames(contentId));  // 이미 선택된 경우 표시
+//        model.addAttribute("genreTranslations", genreService.getGenreTranslations()); // 한글 이름 맵핑
+
+        // 해당 contentId로 ContentDTO, 모든 장르 리스트, 선택된 장르 리스트, 장르 번역 등을 모델에 추가
+        model.addAttribute("contentDTO", contentDTO);
+        model.addAttribute("allGenres",Genre.values());
+        model.addAttribute("selectedGenres", selectedGenres);
+
+        Genre[] allGenres = Genre.values();
+        Map<String, String> genreTranslations = Map.of(
+                "ACTION", "액션",
+                "DRAMA", "드라마",
+                "ROMANCE", "로맨스",
+                "HORROR", "호러",
+                "THRILLER", "스릴러",
+                "COMEDY", "코미디",
+                "FANTASY", "판타지",
+                "ADVENTURE", "어드벤처",
+                "NATURAL_SCIENCE", "자연과학",
+                "KPOP", "K-POP"
+        );
+
+
+
+        System.out.println(" get33 contentDTO =="+contentDTO);
+        System.out.println(" get33 contentId =="+contentId);
+        System.out.println(" get33 allGenres =="+allGenres);
+        System.out.println(" get33 selectedGenres =="+selectedGenres);
+        System.out.println(" get33 genreTranslations =="+genreTranslations);
+        System.out.println(" ---------------------")   ;
+
+
+        model.addAttribute("contentId", contentId);
         model.addAttribute("allGenres", allGenres);
         model.addAttribute("selectedGenres", selectedGenres);
-        model.addAttribute("contentId", contentId); // 중요
-        return "content/genreForm";
+        model.addAttribute("genreTranslations", genreTranslations);
+
+        return "content/genreForm"; // 장르 선택 HTML
     }
+ //********************************************************************************//
+//    public String showGenreForm(@PathVariable("contentId") Integer contentId, Model model) {
+////        model.addAttribute("contentId", id);
+////        model.addAttribute("allGenres", Genre.values());
+//
+//        List<Genre> allGenres = Arrays.asList(Genre.values());
+//
+//        List<Genre> selectedGenres = contentService.getGenresByContentId(contentId);
+//        List<String> selectedGenreNames = selectedGenres.stream()
+//                .map(Enum::name)
+//                .toList();
+//
+//        System.out.println(" get33 contentId ==",contentId)   ;
+//        System.out.println(" get33 allgenres ==",allGenres)   ;
+//        System.out.println(" get33 selectdGenreNames ==",selectedGenreNames)   ;
+//        System.out.println(" ---------------------")   ;
+//
+//        Map<String, String> genreTranslations = Map.of(
+//                "ACTION", "액션",
+//                "DRAMA", "드라마",
+//                "ROMANCE", "로맨스",
+//                "HORROR", "호러",
+//                "THRILLER", "스릴러",
+//                "COMEDY", "코미디",
+//                "FANTASY", "판타지",
+//                "ADVENTURE", "어드벤처",
+//                "NATURAL_SCIENCE", "자연과학",
+//                "KPOP", "K-POP"
+//        );
+//        model.addAttribute("contentId", contentId); // ✅ 반드시 필요
+//        model.addAttribute("allGenres", allGenres);
+//        model.addAttribute("selectedGenres", selectedGenreNames);// ✅ 문자열만 전달
+//        model.addAttribute("genreTranslations", genreTranslations);
+//
+//
+//        return "content/genreForm";
+//    }
+    //********************************************************************************//
     // 장르 저장
     @PostMapping("/content/{contentId}/genre")
     public String submitGenres(@PathVariable("contentId") Integer contentId,
-                               @RequestParam(required = false) List<Genre> genres,
+                               @RequestParam(value = "genres" ,required = false) List<Genre> genres,
                                Model model) {
-        contentService.updateGenres(contentId, genres != null ? genres : List.of());
+        if (contentId == null) {
+            contentService.addGenres(contentId, genres != null ? genres :
+                    List.of());
+
+            System.out.println(" post null contentId  =="+contentId);
+            System.out.println(" post null genress    =="+genres);
+            System.out.println(" ---------------------")   ;
+        }else {
+
+            System.out.println(" post44 contentId  =="+contentId);
+            System.out.println(" post44 genress    =="+genres);
+            System.out.println(" ---------------------")   ;
+               contentService.updateGenres(contentId, genres != null ? genres :
+                    List.of());
+        }
+        // 모델에 필요한 데이터 다시 담기 (✅ 중요)
+        ContentCreateDTO contentDTO = contentService.read(contentId);
+        List<Genre> selectedGenres = contentService.getGenresByContentId(contentId);
+        List<String> selectedGenreNames = selectedGenres.stream().map(Enum::name).toList();
+
+        Genre[] allGenres = Genre.values();
+        Map<String, String> genreTranslations = Map.of(
+                "ACTION", "액션",
+                "DRAMA", "드라마",
+                "ROMANCE", "로맨스",
+                "HORROR", "호러",
+                "THRILLER", "스릴러",
+                "COMEDY", "코미디",
+                "FANTASY", "판타지",
+                "ADVENTURE", "어드벤처",
+                "NATURAL_SCIENCE", "자연과학",
+                "KPOP", "K-POP"
+        );
+
+        model.addAttribute("contentDTO", contentDTO);
+        model.addAttribute("contentId", contentId);
+        model.addAttribute("allGenres", allGenres);
+        model.addAttribute("selectedGenres", selectedGenreNames);
+        model.addAttribute("genreTranslations", genreTranslations);
+
+
+
+//        model.addAttribute("selectedGenres", genres);
+//        model.addAttribute("allGenres", Arrays.asList(Genre.values()));
+
         return "redirect:/content/" + contentId + "/genre";
 
     }
