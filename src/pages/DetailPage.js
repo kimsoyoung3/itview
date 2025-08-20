@@ -3,7 +3,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import "../App.css";
 import {NavLink} from "react-router-dom"; // CSS 따로 관리
 
-const DetailPage = () => {
+const DetailPage = ( ) => {
     return (
         <div className="detail">
             <div className="detail-banner">
