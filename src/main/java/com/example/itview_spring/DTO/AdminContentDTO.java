@@ -2,7 +2,6 @@ package com.example.itview_spring.DTO;
 
 import com.example.itview_spring.Constant.Channel;
 import com.example.itview_spring.Constant.ContentType;
-import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -14,7 +13,7 @@ import java.time.LocalDate;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class ContentDTO {
+public class AdminContentDTO {
     private Integer id;
     private String title;
     private ContentType contentType;

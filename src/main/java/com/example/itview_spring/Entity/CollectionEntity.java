@@ -36,7 +36,7 @@ public class CollectionEntity {
 
     // 컬렉션 소유자
     @JoinColumn(name = "user_id", nullable = false)
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.LAZY)
     private UserEntity user;
 
     // 컬렉션 이름

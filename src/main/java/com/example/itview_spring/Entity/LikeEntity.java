@@ -30,7 +30,7 @@ public class LikeEntity {
 
     // 유저
     @JoinColumn(name = "user_id", nullable = false)
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.LAZY)
     private UserEntity user;
 
     // 좋아요 대상 타입 (컨텐츠, 댓글 등)

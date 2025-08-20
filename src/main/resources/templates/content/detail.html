@@ -23,7 +23,14 @@
                     <!--model.addAttribute("contentDTO",-->
                     <p>콘텐츠 ID : <span th:text="${contentDTO.id}"></span></p>
                     <p>콘텐츠 제목 : <span th:text="${contentDTO.title}"></span></p>
-                    <p>콘텐츠 타입 : <span th:text="${contentDTO.contentType.getDescription()}"></span></p>
+                  <!---->
+                    <p th:if="${contentDTO != null}">콘텐츠 제목: <span th:text="${contentDTO.title}">제목 없음</span></p>
+                    <p th:unless="${contentDTO != null}">데이터가 없습니다.</p>
+                   <!------>
+
+                    <p th:if="${contentDTO.contentType != null}">콘텐츠 타입 : <span th:text="${contentDTO.contentType.description}"></span></p>
+
+           <!--     <p>콘텐츠 타입 : <span th:text="${contentDTO.contentType.getDescription}"></span></p> -->
                     <p>출시 날짜   : <span th:text="${contentDTO.releaseDate}"></span></p>
                     <p>포스터 url  : <span th:text="${contentDTO.poster}"></span></p>
                     <p>국가   : <span th:text="${contentDTO.nation}"></span></p>
@@ -31,7 +38,9 @@
                     <p>영화 런링타임: <span th:text="${contentDTO.duration}"></span></p>
                     <p>이용가 제한 : <span th:text="${contentDTO.age}"></span></p>
                     <p>영화감독이름: <span th:text="${contentDTO.creatorName}"></span></p>
-                    <p>채널이름  : <span th:text="${contentDTO.channelName.getDescription()}"></span></p>
+<!--                    <p>채널이름  : <span th:text="${contentDTO.channelName.getDescription}"></span></p>-->
+                    <p th:if="${contentDTO.channelName != null}">채녈이름 : <span th:text="${contentDTO.channelName.description}"></span></p>
+
                 </div>
                 <div class="card-footer">
                     <a th:href="@{/content/list}" class="btn btn-primary">목록으로 이동</a>

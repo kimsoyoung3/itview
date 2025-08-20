@@ -37,7 +37,7 @@ public class ReplyEntity {
 
     // 댓글 작성자
     @JoinColumn(name = "user_id", nullable = false)
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.LAZY)
     private UserEntity user;
 
     // 댓글이 달린 대상 (컨텐츠, 컬렉션 등)
