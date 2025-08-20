@@ -7,4 +7,4 @@ const DetailPage = () => {
         <div className=""></div>
     )
 }
-export default DetailPage
+export default DetailPage;
