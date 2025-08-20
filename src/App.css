@@ -42,7 +42,7 @@ body {
 
 
 .logo {
-  width: 150px;
+  max-width: 150px;
 }
 
 .logo img {
@@ -103,6 +103,7 @@ body {
   color: #cccccc;
   font-size: 0.8rem;
   font-weight: 600;
+  white-space: nowrap;
 }
 
 .user-menu button {
@@ -119,6 +120,7 @@ body {
   color: rgba(136,136,136,0.5);
   color: #cccccc;
   font-size: 0.8rem;
+  font-weight: 600;
 }
 
 .user-menu a:hover {
@@ -792,6 +794,9 @@ body {
     font-size: 0.5rem;
   }
 
+  .user-menu a {
+    font-size: 0.5rem;
+  }
   /*코멘트 라지 스타일*/
 
   .comment-card {

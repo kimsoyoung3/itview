@@ -174,7 +174,7 @@ const Header = () => {
                         </ul>
 
                         <div className="nav-item dropdown">
-                            <NavLink className="nav-link dropdown-toggle" to="/" role="button" data-bs-toggle="dropdown"
+                            <NavLink className="nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown"
                                aria-expanded="false">
                                 홈
                             </NavLink>
