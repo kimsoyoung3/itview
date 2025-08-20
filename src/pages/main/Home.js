@@ -5,7 +5,7 @@ import AdCard from "../../components/AdCard"; // CSS 따로 관리
 
 const Home = () => {
     return (
-        <div className="container">
+        <div className="container home">
             {/*배너*/}
             <div className="banner">
                 <img src="/banner.jpg" alt=""/>
