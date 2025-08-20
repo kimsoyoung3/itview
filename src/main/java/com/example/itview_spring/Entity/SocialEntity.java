@@ -2,7 +2,6 @@ package com.example.itview_spring.Entity;
 
 import lombok.Getter;
 import lombok.Setter;
-import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
@@ -18,26 +17,20 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-public class VideoEntity {
+public class SocialEntity {
     
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    // 컨텐츠
-    @JoinColumn(name = "content_id", nullable = false)
+    // 유저
+    @JoinColumn(name = "user_id", nullable = false)
     @ManyToOne(fetch = FetchType.LAZY)
-    private ContentEntity content;
+    private UserEntity user;
 
-    // 비디오 제목
-    @Column(nullable = false, length = 255)
-    private String title;
+    // 소셜 플랫폼 이름 (예: "KAKAO", "NAVER", "GOOGLE")
+    private String provider;
 
-    // 비디오 썸네일 URL
-    @Column(nullable = false, length = 1024)
-    private String image;
-
-    // 비디오 URL
-    @Column(nullable = false, length = 1024)
-    private String url;
+    // 소셜 플랫폼에서 제공하는 고유 ID
+    private String providerId;
 }

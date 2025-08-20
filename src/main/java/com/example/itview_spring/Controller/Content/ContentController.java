@@ -106,7 +106,4 @@ public class ContentController {
         contentService.delete(id);
         return "redirect:/content/list";
     }
-
-
-
 }
