@@ -9,10 +9,11 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class ContentDetailDTO {
+public class ImageDTO {
     
-    // 컨텐츠 정보
-    ContentResponseDTO contentInfo;
-    // 사진 정보
-    ImageDTO image;
+    // 이미지 ID
+    Integer id;
+
+    // 이미지 URL
+    String imageUrl;
 }

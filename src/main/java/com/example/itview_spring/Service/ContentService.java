@@ -1,6 +1,7 @@
 package com.example.itview_spring.Service;
 
 import com.example.itview_spring.DTO.AdminContentDTO;
+import com.example.itview_spring.DTO.ContentDetailDTO;
 import com.example.itview_spring.DTO.ContentResponseDTO;
 import com.example.itview_spring.DTO.GenreDTO;
 import com.example.itview_spring.Entity.ContentEntity;
@@ -138,13 +139,15 @@ public class ContentService {
         return false;
     }
 
-    public ContentResponseDTO getContentDetail(Integer contentId) {
+    public ContentDetailDTO getContentDetail(Integer contentId) {
+        ContentDetailDTO contentDetail = new ContentDetailDTO();
+
         ContentResponseDTO contentResponseDTO = contentRepository.findContentWithAvgRating(contentId);
         List<GenreDTO> genres = contentGenreRepository.findByContentId(contentId);
         contentResponseDTO.setGenres(genres);
-        // 컨텐츠 정보 출력
-        System.out.println("컨텐츠 : " + contentResponseDTO);    
 
-        return contentResponseDTO;
+        contentDetail.setContentInfo(contentResponseDTO);
+
+        return contentDetail;
     }
 }
