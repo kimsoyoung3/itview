@@ -151,13 +151,31 @@ public class ContentService {
     //주문번호를 받아서 삭제
     //  public void 삭제가될까(Integer id) {
     //  public void delete(Integer id) {
-    public boolean delete(Integer id) {
-        if(contentRepository.existsById(id)) { //데이터가 존재하면
-            contentRepository.deleteById(id); //삭제
-            return true;
-        }
-        return false;
+//    public boolean delete(Integer id) {
+//        // First delete related entries in content_genre_entity
+//        if(contentRepository.existsById(id)) { //데이터가 존재하면
+//            contentGenreRepository.deleteByContentId(id); // Assuming you have a method in repository for this
+//
+//            // Then delete the content entity
+//            contentRepository.deleteById(id); //삭제
+//            return true;
+//        }
+//        return false;
+//    }
+
+
+    @Transactional
+    public void delete(Integer id) {
+        ContentEntity content = contentRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("콘텐츠 ID가 유효하지 않습니다. id: " + id));
+
+        // Delete the related genres first
+        contentGenreRepository.deleteByContent(content);
+
+        // Now delete the content entity
+        contentRepository.delete(content);
     }
+
 
     public ContentDetailDTO getContentDetail(Integer contentId) {
         ContentDetailDTO contentDetail = new ContentDetailDTO();

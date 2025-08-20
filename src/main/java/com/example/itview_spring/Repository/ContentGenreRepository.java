@@ -19,6 +19,7 @@ public interface ContentGenreRepository extends JpaRepository<ContentGenreEntity
 
     // 삭제 시: 특정 컨텐츠에 연관된 모든 장르 삭제
     void deleteByContent (ContentEntity content);
+    void deleteByContentId(Integer contentId);
 
     @Query(value = """
                 SELECT new com.example.itview_spring.DTO.GenreDTO(cg.genre)
