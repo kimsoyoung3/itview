@@ -15,7 +15,20 @@ public enum Genre {
     FANTASY("판타지"),
     ROMANCE("로맨스"),
     NATURAL_SCIENCE("자연과학"),
-    KPOP("KPOP");
+    KPOP("KPOP"),
+    ANIMATION("애니메이션"),
+    SPORTS("스포츠"),
+    MYSTERY("미스터리"),
+    DOCUMENTARY("다큐멘터리"),
+    SF("SF"),
+    MUSIC("음악"),
+    FAMILY("가족"),
+    CONCERT("공연실황"),
+    MUSICAL("뮤지컬"),
+    BIOPIC("전기"),
+    HISTORY("역사"),
+    CRIME("범죄"),
+    KIDS("키즈");
 
     private final String genreName;
 }
