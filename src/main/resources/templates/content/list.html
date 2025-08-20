@@ -57,7 +57,7 @@
                 <td th:text="${data.duration}">2시간30분</td>
                 <td th:text="${data.age}">19세이상가</td>
                 <td th:text="${data.creatorName}">봉준호</td>
-                <td th:text="${data.channelName.getDescription()}">웹튠</td>
+                <td th:text="${data.channelName != null ? data.channelName.getDescription() : ''}">웹튠</td>
                 <td></td>
                 <td>
                     <!--th:href에서 맵핑에 변수를 전달하려면 (변수명=값)-->
