@@ -3,10 +3,17 @@ package com.example.itview_spring.Service;
 import com.example.itview_spring.DTO.AdminContentDTO;
 import com.example.itview_spring.DTO.ContentDetailDTO;
 import com.example.itview_spring.DTO.ContentResponseDTO;
+import com.example.itview_spring.DTO.ExternalServiceDTO;
 import com.example.itview_spring.DTO.GenreDTO;
+import com.example.itview_spring.DTO.ImageDTO;
+import com.example.itview_spring.DTO.VideoDTO;
 import com.example.itview_spring.Entity.ContentEntity;
+import com.example.itview_spring.Entity.GalleryEntity;
 import com.example.itview_spring.Repository.ContentGenreRepository;
 import com.example.itview_spring.Repository.ContentRepository;
+import com.example.itview_spring.Repository.ExternalServiceRepository;
+import com.example.itview_spring.Repository.GalleryRepository;
+import com.example.itview_spring.Repository.VideoRepository;
 
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
@@ -28,6 +35,9 @@ public class ContentService {
     //반드시 사용할 Repository (방금 작업한 파일)와 MOdelMapper추가
     private final ContentRepository contentRepository;
     private final ContentGenreRepository contentGenreRepository;
+    private final GalleryRepository galleryRepository;
+    private final VideoRepository videoRepository;
+    private final ExternalServiceRepository externalServiceRepository;
     private final ModelMapper modelMapper;
 
     //전체조회
@@ -142,11 +152,26 @@ public class ContentService {
     public ContentDetailDTO getContentDetail(Integer contentId) {
         ContentDetailDTO contentDetail = new ContentDetailDTO();
 
+        // 컨텐츠 정보 조회
         ContentResponseDTO contentResponseDTO = contentRepository.findContentWithAvgRating(contentId);
+        // 컨텐츠 장르 조회
         List<GenreDTO> genres = contentGenreRepository.findByContentId(contentId);
-        contentResponseDTO.setGenres(genres);
-
+        genres.forEach(genre -> {
+            contentResponseDTO.getGenres().add(genre.getGenre().getGenreName());
+        });
         contentDetail.setContentInfo(contentResponseDTO);
+
+        // 갤러리 이미지 조회
+        List<ImageDTO> images = galleryRepository.findByContentId(contentId);
+        contentDetail.setGallery(images);
+
+        // 동영상 조회
+        List<VideoDTO> videos = videoRepository.findByContentId(contentId);
+        contentDetail.setVideos(videos);
+
+        // 외부 서비스 조회
+        List<ExternalServiceDTO> externalServices = externalServiceRepository.findByContentId(contentId);
+        contentDetail.setExternalServices(externalServices);
 
         return contentDetail;
     }

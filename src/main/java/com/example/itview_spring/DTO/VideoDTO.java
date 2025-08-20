@@ -4,18 +4,19 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import lombok.ToString;
 
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@ToString
-public class ImageDTO {
-    
-    // 이미지 ID
-    private Integer id;
+public class VideoDTO {
 
-    // 이미지 URL
-    private String imageUrl;
+    // 비디오 ID
+    private Integer id;
+    // 영상 제목
+    private String title;
+    // 썸네일 URL
+    private String image;
+    // 영상 URL
+    private String url;
 }

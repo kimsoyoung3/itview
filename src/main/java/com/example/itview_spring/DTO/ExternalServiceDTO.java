@@ -1,21 +1,22 @@
 package com.example.itview_spring.DTO;
 
+import com.example.itview_spring.Constant.Channel;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import lombok.ToString;
 
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@ToString
-public class ImageDTO {
+public class ExternalServiceDTO {
     
-    // 이미지 ID
+    // 외부 서비스 ID
     private Integer id;
-
-    // 이미지 URL
-    private String imageUrl;
+    // 외부 서비스 타입
+    private Channel type;
+    // 외부 서비스 URL
+    private String href;
 }

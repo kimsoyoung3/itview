@@ -1,6 +1,7 @@
 package com.example.itview_spring.DTO;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 import com.example.itview_spring.Constant.ContentType;
@@ -35,7 +36,7 @@ public class ContentResponseDTO {
     // 포스터 이미지 URL
     private String poster;
     // 장르 리스트
-    private List<GenreDTO> genres;
+    private List<String> genres = new ArrayList<>();
     // 연령 등급
     private String age;
     // 길이
