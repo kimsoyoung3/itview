@@ -1,6 +1,6 @@
 package com.example.itview_spring.Service;
 
-import com.example.itview_spring.DTO.AdminContentDTO;
+import com.example.itview_spring.DTO.ContentCreateDTO;
 import com.example.itview_spring.DTO.ContentDetailDTO;
 import com.example.itview_spring.DTO.ContentResponseDTO;
 import com.example.itview_spring.DTO.ExternalServiceDTO;
@@ -46,7 +46,6 @@ public class ContentService {
     private final GalleryRepository galleryRepository;
     private final VideoRepository videoRepository;
     private final ExternalServiceRepository externalServiceRepository;
-    private final ContentGenreRepository contentGenreRepository;
     private final ModelMapper modelMapper;
 
     //전체조회
