@@ -106,9 +106,9 @@ public class SecurityConfig {
                 session.removeAttribute("USER_ID");
                 
                 if (existing.isPresent()) { // 이미 등록된 소셜 계정인 경우
-                    sendRedirectWithFlashError(response, "이미 등록된 소셜 계정입니다.");
+                    sendRedirectWithFlashMessage(response, "이미 등록된 소셜 계정입니다.");
                 } else { // 새로 연동된 경우
-                    response.sendRedirect("http://localhost:3000/");
+                    sendRedirectWithFlashMessage(response, "소셜 계정이 성공적으로 연동되었습니다.");
                 }
                 return;
             }
@@ -143,19 +143,19 @@ public class SecurityConfig {
                         return;
                     } else {
                         // 소셜 계정이 등록되지 않은 경우
-                        sendRedirectWithFlashError(response, "등록되지 않은 소셜 계정입니다.");
+                        sendRedirectWithFlashMessage(response, "등록되지 않은 소셜 계정입니다.");
                         return;
                     }
 
                 } catch (Exception e) {
-                    sendRedirectWithFlashError(response, "소셜 로그인 처리 중 오류가 발생했습니다");
+                    sendRedirectWithFlashMessage(response, "소셜 로그인 처리 중 오류가 발생했습니다");
                     return;
                 }
             }
         };
     }
 
-    private void sendRedirectWithFlashError(HttpServletResponse response, String errorMessage) throws IOException {
+    private void sendRedirectWithFlashMessage(HttpServletResponse response, String errorMessage) throws IOException {
         String encoded = URLEncoder.encode(errorMessage, StandardCharsets.UTF_8).replace("+", "%20");
         Cookie flash = new Cookie("FLASH_ERROR", encoded);
         flash.setHttpOnly(false);
