@@ -2,6 +2,7 @@ package com.example.itview_spring.Entity;
 
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
@@ -16,6 +17,7 @@ import lombok.NoArgsConstructor;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@ToString
 @Entity
 public class SocialEntity {
     

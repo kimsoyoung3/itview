@@ -20,7 +20,7 @@ public class CreditService {
 
     public Page<CreditDTO> getCreditByContentId(Pageable page, Integer contentId) {
         int currentPage = page.getPageNumber()-1;
-        int pageSize = 3;
+        int pageSize = 12;
 
         Pageable pageable = PageRequest.of(currentPage, pageSize, Sort.by(Sort.Direction.ASC, "id"));
         
