@@ -5,7 +5,6 @@ import lombok.Setter;
 
 import java.time.LocalDateTime;
 
-import org.springframework.cglib.core.Local;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
