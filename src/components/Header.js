@@ -27,6 +27,15 @@ const Header = () => {
     // 컴포넌트가 마운트될 때 로그인 상태 확인
     useEffect(() => {
         checkLoginStatus();
+        const match = document.cookie.match(/(?:^|;\s*)FLASH_ERROR=([^;]+)/);
+        if (!match) return;
+        const msg = decodeURIComponent(match[1]);
+        if (msg) {
+            alert(msg); // 쿠키에 저장된 메시지를 alert로 표시
+        }
+
+        // 쿠키는 일회성으로 쓰고 바로 지우기
+        document.cookie = "FLASH_ERROR=; Max-Age=0; Path=/";
     }, []);
 
     /*로그인 모달*/
@@ -214,6 +223,9 @@ const Header = () => {
                             <div className="user-menu">
                                 <button onClick={openLogin} className="login-button">로그인</button>
                                 <button onClick={openSignup} className="signUp-button">회원가입</button>
+                                <a href="http://localhost:8080/oauth2/authorization/google">
+                                    구글 로그인
+                                </a>
                             </div>
                         )}
                     </div>
