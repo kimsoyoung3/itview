@@ -66,18 +66,29 @@ const DetailPage = () => {
         const fetchContentCredit = async () => {
             try {
                 const id = window.location.pathname.split('/').pop();
-                const page = 1; // 기본 1로 지정
-                const response = await getContentCredit(id, page);
-                setContentCredit(response.data);
+                let page = 1;
+                const allPages = [];
 
+                while (true) {
+                    const response = await getContentCredit(id, page);
+                    const data = response.data;
+
+                    allPages.push(data);
+
+                    // 마지막 페이지라면 종료
+                    if (data.last || data.content.length === 0) break;
+
+                    page++;
+                }
+
+                setContentCredit({ pages: allPages });
             } catch (error) {
                 console.error('Error fetching content credit:', error);
             }
-        }
+        };
 
         fetchContentCredit();
     }, []);
-    
 
     useEffect(() => {
         console.log(contentDetail)
@@ -180,13 +191,35 @@ const DetailPage = () => {
 
                  <div className="credit-list">
 
-                     {contentCredit?.content.length > 0 ? (
-                         contentCredit.content.map((credit) => (
-                             <CreditOrPersonCard key={credit.id} type="credit" data={credit}/>
-                         ))
+                     {contentCredit?.pages?.length > 0 ? (
+                         <Swiper
+                             modules={[Navigation]}
+                             navigation={{
+                                 prevEl: ".credit-prev",
+                                 nextEl: ".credit-next",
+                             }}
+                             spaceBetween={20}
+                             slidesPerView={1}
+                             className="credit-swiper"
+                         >
+                             {contentCredit.pages
+                                 .filter(pageData => pageData.content && pageData.content.length > 0) // ✅ 빈 페이지 제외
+                                 .map((pageData, pageIndex) => (
+                                     <SwiperSlide key={pageIndex}>
+                                         <div className="credit-list">
+                                             {pageData.content.map((credit) => (
+                                                 <CreditOrPersonCard key={credit.id} type="credit" data={credit} />
+                                             ))}
+                                         </div>
+                                     </SwiperSlide>
+                                 ))}
+                         </Swiper>
+
                      ) : (
                          <p>크레딧 정보가 없습니다.</p>
                      )}
+                     <div className="credit-prev"><img src="/arrow-left.svg" alt=""/></div>
+                     <div className="credit-next"><img src="/arrow-right.svg" alt=""/></div>
 
                  </div>
 
@@ -197,28 +230,33 @@ const DetailPage = () => {
                 <section className="detail-content detail-gallary container">
                     <div className="detail-gallary-inner">
                         <p className="detail-category">갤러리</p>
-                        <Swiper
-                            modules={[Navigation, Pagination, Autoplay]}
-                            spaceBetween={16}
-                            slidesPerView={3}
-                            navigation
-                            breakpoints={{
-                                480: {slidesPerView: 1},
-                                768: {slidesPerView: 2},
-                                1020: {slidesPerView: 3},
-                            }}
-                            className="gallay-swiper">
+                        <div className="gallary-wrapper">
+                            <Swiper
+                                modules={[Navigation, Autoplay]}
+                                spaceBetween={16}
+                                slidesPerView={3}
+                                navigation={{
+                                    prevEl: ".gallary-wrapper .gallary-prev",
+                                    nextEl: ".gallary-wrapper .gallary-next",
+                                }}
+                                breakpoints={{
+                                    480: {slidesPerView: 1},
+                                    768: {slidesPerView: 2},
+                                    1020: {slidesPerView: 3},
+                                }}
+                                className="gallary-swiper">
 
-                            {contentDetail?.gallery?.map((gallary, idx) => (
-                                <SwiperSlide className="swiper-slide" key={gallary.id}>
-                                    <div className="slide-image" onClick={() => openModal(idx)} style={{cursor: 'pointer'}}>
-                                        <img src={gallary.imageUrl} alt=""/>
-                                    </div>
-                                </SwiperSlide>
-                            ))}
-
-
-                        </Swiper>
+                                {contentDetail?.gallery?.map((gallary, idx) => (
+                                    <SwiperSlide className="swiper-slide" key={gallary.id}>
+                                        <div className="slide-image" onClick={() => openModal(idx)} style={{cursor: 'pointer'}}>
+                                            <img src={gallary.imageUrl} alt=""/>
+                                        </div>
+                                    </SwiperSlide>
+                                ))}
+                            </Swiper>
+                            <div className="gallary-prev"><img src="/arrow-left.svg" alt=""/></div>
+                            <div className="gallary-next"><img src="/arrow-right.svg" alt=""/></div>
+                        </div>
                     </div>
 
                     {/* 모달 */}
@@ -229,10 +267,10 @@ const DetailPage = () => {
                                     modules={[Navigation, Pagination]}
                                     initialSlide={modalStartIndex}
                                     navigation
-                                    pagination={{ clickable: true }}
                                     spaceBetween={10}
                                     slidesPerView={1}
                                     className="gallary-modal-swiper">
+
                                     {contentDetail?.gallery?.map((gallery) => (
                                         <SwiperSlide key={gallery.id}>
                                             <div className="modal-slide-wrapper">
@@ -255,18 +293,21 @@ const DetailPage = () => {
                 <section className="detail-content detail-video container">
                     <div className="detail-video-inner">
                         <p className="detail-category">동영상</p>
-                        <Swiper
-                            modules={[Navigation, Pagination, Autoplay]}
-                            spaceBetween={16}
-                            slidesPerView={3}
-                            navigation
-                            breakpoints={{
-                                480: {slidesPerView: 1},
-                                768: {slidesPerView: 2},
-                                1020: {slidesPerView: 3},
-                            }}
-                            className="gallay-swiper">
-                            <div className="swiper-wrapper">
+                        <div className="video-wrapper">
+                            <Swiper
+                                modules={[Navigation, Autoplay]}
+                                spaceBetween={16}
+                                slidesPerView={3}
+                                navigation={{
+                                    prevEl: ".video-wrapper .video-prev",
+                                    nextEl: ".video-wrapper .video-next",
+                                }}
+                                breakpoints={{
+                                    480: {slidesPerView: 1},
+                                    768: {slidesPerView: 2},
+                                    1020: {slidesPerView: 3},
+                                }}
+                                className="video-swiper">
                                 {contentDetail?.videos?.map(videos => (
                                     <SwiperSlide className="swiper-slide" key={videos.id}>
                                         <a className="slide-image" href={videos.url} target="_blank" rel="noopener noreferrer">
@@ -275,8 +316,10 @@ const DetailPage = () => {
                                         </a>
                                     </SwiperSlide>
                                 ))}
-                            </div>
-                        </Swiper>
+                            </Swiper>
+                            <div className="video-prev"><img src="/arrow-left.svg" alt=""/></div>
+                            <div className="video-next"><img src="/arrow-right.svg" alt=""/></div>
+                        </div>
                     </div>
                 </section>
             )}

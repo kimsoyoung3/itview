@@ -463,29 +463,6 @@ body {
   font-size: 0.8rem;
 }
 
-/*.swiper-button-next, .swiper-button-prev {
-  position: absolute;
-  top: 50% !important;
-  right: 0 !important;
-  width: 30px !important;
-  height: 30px !important;
-  background-color: #888888;
-  border-radius: 50%;
-  color: #fff !important;
-}
-
-.swiper-button-prev {
-  left: 0 !important;
-}
-
-.swiper-button-prev:after, .swiper-button-next:after {
-  font-size: 1.3rem !important;
-  text-transform: none !important;
-  letter-spacing: 2px;
-  position: absolute !important;
-  align-content: center !important;
-  text-align: center !important;
-}*/
 
 .swiper-button-next,
 .swiper-button-prev {
@@ -885,10 +862,42 @@ body {
 }
 
 /*컨텐츠 크레딧 스타일*/
+
+.credit-swiper {
+  position: relative; /* 버튼 기준점 */
+}
+
+.credit-prev,
+.credit-next {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 10;
+  background: rgba(0,0,0,0.3);
+  color: #fff;
+  padding: 8px 12px;
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+.credit-prev:hover,
+.credit-next:hover {
+  background: rgba(0,0,0,0.6);
+}
+
+.credit-prev {
+  left: -50px;   /* 👉 스와이퍼 밖으로 */
+}
+
+.credit-next {
+  right: -50px;  /* 👉 스와이퍼 밖으로 */
+}
+
 .credit-list {
   display: flex;
   flex-wrap: wrap;
   gap: 20px; /* 카드 사이 간격 */
+  position: relative;
   justify-content: flex-start;
 }
 
@@ -906,6 +915,53 @@ body {
 .detail-category {
   font-size: 1.5rem;
   font-weight: bold;
+}
+
+.gallary-wrapper, .video-wrapper {
+  position: relative ;
+
+}
+
+.gallary-prev,
+.gallary-next{
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 10;
+  background: rgba(0,0,0,0.3);
+  color: #fff;
+  padding: 8px 12px;
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+
+.video-prev,
+.video-next{
+  position: absolute !important;
+  top: 50%;
+  transform: translateY(-80%);
+  z-index: 10;
+  background: rgba(0,0,0,0.3);
+  color: #fff;
+  padding: 8px 12px;
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+.gallary-prev:hover,
+.gallary-next:hover,
+.video-prev:hover,
+.video-next:hover{
+  background: rgba(0,0,0,0.6);
+}
+
+.gallary-prev, .video-prev {
+  left: -50px;   /* 👉 스와이퍼 밖으로 */
+}
+
+.gallary-next, .video-next {
+  right: -50px;  /* 👉 스와이퍼 밖으로 */
 }
 
 .gallary-modal-overlay {
