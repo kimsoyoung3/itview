@@ -288,12 +288,23 @@ public class ContentService {
             ratingEntity.setUser(userRepository.findById(userId).get());
             ratingEntity.setContent(contentRepository.findById(contentId).get());
             ratingEntity.setScore(score);
+            ratingRepository.save(ratingEntity);
         }
         else {
             // 기존 별점이 있는 경우 업데이트
             RatingEntity ratingEntity = existingRating.get();
             ratingEntity.setScore(score);
+            ratingRepository.save(ratingEntity);
         }        
+    }
+
+    // 별점 삭제
+    public Boolean deleteRating(Integer userId, Integer contentId) {
+        ratingRepository.deleteByUserIdAndContentId(userId, contentId);
+
+        // 삭제 후 해당 별점이 존재하는지 확인
+        Optional<RatingEntity> deletedRating = ratingRepository.findByUserIdAndContentId(userId, contentId);
+        return deletedRating.isEmpty();
     }
 }
 

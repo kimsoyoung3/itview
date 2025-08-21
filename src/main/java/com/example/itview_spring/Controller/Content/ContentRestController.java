@@ -7,9 +7,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -20,7 +22,6 @@ import com.example.itview_spring.DTO.RatingRequestDTO;
 import com.example.itview_spring.Service.ContentService;
 import com.example.itview_spring.Service.CreditService;
 
-import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import lombok.RequiredArgsConstructor;
 
 @RestController
@@ -47,8 +48,18 @@ public class ContentRestController {
     public ResponseEntity<Void> postContentRating(@PathVariable("id") Integer id,
                                                   @AuthenticationPrincipal CustomUserDetails userDetails,
                                                   @RequestBody RatingRequestDTO ratingRequest) {
-        System.out.println(ratingRequest.getScore());
-        // contentService.rateContent(userDetails.getId(), id, ratingRequest.getScore());
+        contentService.rateContent(userDetails.getId(), id, ratingRequest.getScore());
+        // System.out.println(ratingRequest);
+        // System.out.println(userDetails);
         return ResponseEntity.ok().build();
+    }
+
+    @DeleteMapping("/{id}/rating")
+    public ResponseEntity<Void> deleteContentRating(@PathVariable("id") Integer id,
+                                                    @AuthenticationPrincipal CustomUserDetails userDetails) {
+        if (contentService.deleteRating(userDetails.getId(), id)) {
+            return ResponseEntity.ok().build();
+        }
+        return ResponseEntity.notFound().build();
     }
 }
