@@ -321,7 +321,6 @@ body {
 }
 
 /*코멘트 라지 스타일*/
-
 .comment-card {
   width: 900px;
   margin: 20px auto;
@@ -464,12 +463,13 @@ body {
   font-size: 0.8rem;
 }
 
-.swiper-button-next, .swiper-button-prev {
+/*.swiper-button-next, .swiper-button-prev {
   position: absolute;
   top: 50% !important;
   right: 0 !important;
   width: 30px !important;
   height: 30px !important;
+  background-color: #888888;
   border-radius: 50%;
   color: #fff !important;
 }
@@ -479,11 +479,45 @@ body {
 }
 
 .swiper-button-prev:after, .swiper-button-next:after {
-  font-size: 1.5rem !important;
+  font-size: 1.3rem !important;
   text-transform: none !important;
-  letter-spacing: 0;
+  letter-spacing: 2px;
   position: absolute !important;
+  align-content: center !important;
   text-align: center !important;
+}*/
+
+.swiper-button-next,
+.swiper-button-prev {
+  width: 40px !important;
+  height: 40px !important;
+  background-color: rgba(136, 136, 136, 0.6)  !important; /* 원하는 색상으로 변경 가능 */
+  border-radius: 50%  !important;
+  display: flex  !important;
+  right: 0 !important;
+  justify-content: center !important;
+  align-items: center !important;
+  color: #fff !important; /* 화살표 색 */
+  transition: background-color 0.3s ease !important;
+}
+
+.swiper-button-prev {
+  left: 0 !important;
+}
+
+.swiper-button-next:hover,
+.swiper-button-prev:hover {
+  background-color: rgba(0, 0, 0, 0.8)  !important;; /* 호버 시 색상 변경 */
+}
+
+.swiper-button-next::after,
+.swiper-button-prev::after {
+  font-size: 1rem  !important;; /* 아이콘 크기 조절 */
+}
+.swiper-button-disabled {
+  opacity: 0;
+  pointer-events: none;
+  visibility: hidden;
 }
 
 /*컬렉션 스와이퍼 스타일*/
@@ -523,6 +557,64 @@ body {
   font-size: 0.9rem;
 }
 
+/*크레딧카드 스타일*/
+.credit {
+  flex: 0 0 calc(25% - 20px); /* 한 줄에 4개 (100% / 4 - gap) */
+  box-sizing: border-box;
+  height: 100%;
+}
+
+.credit-image {
+  width: 60px;
+}
+
+.credit-image img {
+  width: 100%;
+  max-width: 150px;
+  border-radius: 4px;
+  object-fit: cover;
+  display: block;
+}
+
+.credit-inner {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.credit-info {
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  position: relative;
+}
+
+.credit-info::after {
+  content: "";
+  position: absolute;
+  bottom: 0; /* credit-inner 전체 밑 */
+  left: 0;
+  width: 100%;
+  height: 1px;
+  background-color: #eee;
+  /* 이미지 높이만큼 아래로 내리기 */
+  transform: translateY(5px);
+  pointer-events: none;
+}
+
+.credit-info>li>span {
+  font-size: 0.8rem;
+  font-weight: 400;
+  color: #888888;
+}
+
+.credit-info>li:nth-of-type(2) {
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: #888888;
+}
+
 /*컨텐츠 개별 스타일*/
 .content-each{
   display: flex;
@@ -560,7 +652,6 @@ body {
 }
 
 /*홈페이지 스타일*/
-
 .home {
   margin-top: 94px;
 }
@@ -666,7 +757,7 @@ body {
 .detail-banner {
   width: 100%;
   position: relative;
-  height: 550px;
+  height: 500px;
 }
 
 .banner-post {
@@ -690,6 +781,7 @@ body {
   padding: 0;
   margin: 0;
   top: 70%;
+  font-size: 0.9rem;
 }
 
 .post-dec>ul>li {
@@ -701,32 +793,12 @@ body {
   font-weight: bold;
 }
 
-.external {
-  width: 100%;
-}
-
-.external-services {
-  position: absolute;
-  top: 80%;
-  right: 16%;
-}
-
-.external-services>a {
-  width: 60px;
-  border-radius: 50%;
-  display: inline-block;
-  margin-right: 5px;
-}
-
-.external-services>a>img {
-  width: 100%;
-  display: block;
-  border-radius: 50%;
-}
-
 /*컨텐츠 상세페이지 컨텐츠정보 스타일*/
-
 .detail-content {
+  margin-top: 70px;
+}
+
+.detail-content-bg {
   background-color: #f6f6f6;
 }
 
@@ -789,14 +861,41 @@ body {
   padding-bottom: 15px;
 }
 
+.my-coment {
+  font-size: 0.7rem;
+  color: #888;
+}
+
 .info-bottom {
   padding: 20px 0;
 }
 
-/*컨텐츠 갤러리/비디오 스타일*/
+/*외부 서비스 링크 스타일*/
+.external-services>a {
+  display: inline-block;
+  width: 60px;
+  margin-right: 15px;
+  border: 0.5px solid #eee;
+  border-radius: 50%;
+}
 
-.detail-gallary, .detail-video {
-  margin-top: 70px;
+.external-services>a>img {
+  width: 100%;
+  border-radius: 50%;
+}
+
+/*컨텐츠 크레딧 스타일*/
+.credit-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px; /* 카드 사이 간격 */
+  justify-content: flex-start;
+}
+
+
+
+/*컨텐츠 갤러리/비디오 스타일*/
+.detail-gallary {
   position: relative;
 }
 
@@ -804,8 +903,8 @@ body {
   width: 100%;
 }
 
-.detail-gallary-inner>p, .detail-video-inner>p {
-  font-size: 1.7rem;
+.detail-category {
+  font-size: 1.5rem;
   font-weight: bold;
 }
 
@@ -1037,3 +1136,7 @@ body {
   }
 
 }
+
+
+/*헤더 스크롤시 백그라운드 #fff*/
+/*상세페이지 배너 그라데이션*/
