@@ -29,11 +29,9 @@ const DetailPage = () => {
     const handleScoreDelete = () => {
         // 별점 삭제 로직 구현
         const id = window.location.pathname.split('/').pop();
-        const data = { score: Number(score) };
-        deleteRating(id, data).then(response => {
+        deleteRating(id).then(response => {
             console.log('Rating deleted:', response.status);
         });
-        setScore(0); // 입력 필드 초기화
     };
 
     const serviceLogos = {
