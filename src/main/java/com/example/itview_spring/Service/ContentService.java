@@ -11,7 +11,6 @@ import com.example.itview_spring.DTO.VideoDTO;
 import com.example.itview_spring.Constant.Genre;
 import com.example.itview_spring.DTO.ContentCreateDTO;
 import com.example.itview_spring.Entity.ContentEntity;
-import com.example.itview_spring.Entity.GalleryEntity;
 import com.example.itview_spring.Repository.ContentGenreRepository;
 import com.example.itview_spring.Entity.ContentGenreEntity;
 import com.example.itview_spring.Repository.ContentGenreRepository;
