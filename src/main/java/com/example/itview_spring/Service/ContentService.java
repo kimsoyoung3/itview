@@ -1,17 +1,25 @@
 package com.example.itview_spring.Service;
 
-import com.example.itview_spring.DTO.AdminContentDTO;
+import com.example.itview_spring.DTO.ContentCreateDTO;
 import com.example.itview_spring.DTO.ContentDetailDTO;
 import com.example.itview_spring.DTO.ContentResponseDTO;
 import com.example.itview_spring.DTO.ExternalServiceDTO;
 import com.example.itview_spring.DTO.GenreDTO;
 import com.example.itview_spring.DTO.ImageDTO;
 import com.example.itview_spring.DTO.VideoDTO;
+
+import com.example.itview_spring.Constant.Genre;
+import com.example.itview_spring.DTO.ContentCreateDTO;
 import com.example.itview_spring.Entity.ContentEntity;
+import com.example.itview_spring.Repository.ContentGenreRepository;
+import com.example.itview_spring.Entity.ContentGenreEntity;
+import com.example.itview_spring.Entity.RatingEntity;
 import com.example.itview_spring.Repository.ContentGenreRepository;
 import com.example.itview_spring.Repository.ContentRepository;
 import com.example.itview_spring.Repository.ExternalServiceRepository;
 import com.example.itview_spring.Repository.GalleryRepository;
+import com.example.itview_spring.Repository.RatingRepository;
+import com.example.itview_spring.Repository.UserRepository;
 import com.example.itview_spring.Repository.VideoRepository;
 
 import lombok.RequiredArgsConstructor;
@@ -26,17 +34,20 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
+import java.util.stream.Collectors;
+
 
 @Service
 @RequiredArgsConstructor
 @Transactional
 public class ContentService {
-    //반드시 사용할 Repository (방금 작업한 파일)와 MOdelMapper추가
     private final ContentRepository contentRepository;
     private final ContentGenreRepository contentGenreRepository;
     private final GalleryRepository galleryRepository;
     private final VideoRepository videoRepository;
     private final ExternalServiceRepository externalServiceRepository;
+    private final RatingRepository ratingRepository;
+    private final UserRepository userRepository;
     private final ModelMapper modelMapper;
 
     //전체조회
@@ -56,21 +67,21 @@ public class ContentService {
      * @return 결과
      */
 
-    public Page<AdminContentDTO> getAllContents(Pageable page) {
+    public Page<ContentCreateDTO> getAllContents(Pageable page) {
         int currentPage = page.getPageNumber()-1;
         int pageLimits = 10 ;
 
         Pageable pageable = PageRequest.of(currentPage,pageLimits, Sort.by(Sort.Direction.DESC, "id"));
         Page<ContentEntity> contentEntities = contentRepository.findAll(pageable) ;
-        Page<AdminContentDTO> contentDTOS = contentEntities.map(data->modelMapper.map(
-                data, AdminContentDTO.class));
+        Page<ContentCreateDTO> contentDTOS = contentEntities.map(data->modelMapper.map(
+                data, ContentCreateDTO.class));
         return contentDTOS;
     }
-//    public List<AdminContentDTO> List() {
+//    public List<ContentCreateDTO> List() {
 //        //읽기,수정/저장/삭제 ==>Repository
 //        List<ContentEntity> contentEntities = contentRepository.findAll();
 //        //Entity =있으면 밑에 DTO변환
-//        List<AdminContentDTO> contentDTOs = Arrays.asList(modelMapper.map(contentEntities, AdminContentDTO[].class));
+//        List<ContentCreateDTO> contentDTOs = Arrays.asList(modelMapper.map(contentEntities, ContentCreateDTO[].class));
 //        //DTO가 보이면 return DTO를지정
 //        return contentDTOs;
 //    }
@@ -81,7 +92,7 @@ public class ContentService {
     //주문번호를 받아서 해당하는 DTO에 전달
     //public ProductDTO 역시 안알려줌(Integer id) {
     //public ProductDTO read(Integer id) {    ex)
-    public AdminContentDTO read(Integer id) {
+    public ContentCreateDTO read(Integer id) {
         //해당내용을 조회
         if (id == null) {
             throw new IllegalArgumentException("id는 null일 수 없습니다.");
@@ -90,7 +101,7 @@ public class ContentService {
         if (contentEntity.isEmpty()) {
             throw new NoSuchElementException("해당 ID에 대한 콘텐츠를 찾을 수 없습니다: " + id);
         }
-        AdminContentDTO adminContentDTO = modelMapper.map(contentEntity.get(), AdminContentDTO.class);
+        ContentCreateDTO adminContentDTO = modelMapper.map(contentEntity.get(), ContentCreateDTO.class);
         return adminContentDTO;
     }
 
@@ -98,20 +109,22 @@ public class ContentService {
     //DTO를 받아서 저장
     //public void 내맘대로 (ProductDTO productDTO) {
     //public void create (ProductDTO productDTO) {  ex)
-    public AdminContentDTO create(AdminContentDTO dto) {
+    public ContentCreateDTO create(ContentCreateDTO dto) {
         //DTO가 이있으면 반드시 Entity 변환
-     //   System.out.println("dto:"+dto);
+
         ContentEntity contentEntity = modelMapper.map(dto, ContentEntity.class);
-     //   System.out.println("entity:"+ContentEntity);
+        System.out.println("service add dto:"+dto);
+        System.out.println("service add entity:"+contentEntity);
+
         contentRepository.save(contentEntity);
-        return modelMapper.map(contentEntity, AdminContentDTO.class);
+        return modelMapper.map(contentEntity, ContentCreateDTO.class);
     }
 
     //수정
     //주문번호와 DTO를 받아서, 주문번호로 조회해서 DTO의 내용을 저장
     // public void 수정할까(Integer orderId, ProductDTO productDTO) {
     // public void update(Integer orderId, ProductDTO productDTO) {   ex)
-    public AdminContentDTO update(Integer id, AdminContentDTO dto) {
+    public ContentCreateDTO update(Integer id, ContentCreateDTO dto) {
         //해당내용찾기
 //        System.out.println("dto:"+dto);
         ContentEntity contentEntity = modelMapper.map(dto, ContentEntity.class);
@@ -133,21 +146,40 @@ public class ContentService {
         contentEntity.setChannelName(dto.getChannelName());
 
         contentRepository.save(contentEntity);
-        return modelMapper.map(contentEntity, AdminContentDTO .class);
+        return modelMapper.map(contentEntity, ContentCreateDTO .class);
     }
 
     //삭제
     //주문번호를 받아서 삭제
     //  public void 삭제가될까(Integer id) {
     //  public void delete(Integer id) {
-    public boolean delete(Integer id) {
-        if(contentRepository.existsById(id)) { //데이터가 존재하면
-            contentRepository.deleteById(id); //삭제
-            return true;
-        }
-        return false;
+//    public boolean delete(Integer id) {
+//        // First delete related entries in content_genre_entity
+//        if(contentRepository.existsById(id)) { //데이터가 존재하면
+//            contentGenreRepository.deleteByContentId(id); // Assuming you have a method in repository for this
+//
+//            // Then delete the content entity
+//            contentRepository.deleteById(id); //삭제
+//            return true;
+//        }
+//        return false;
+//    }
+
+
+    @Transactional
+    public void delete(Integer id) {
+        ContentEntity content = contentRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("콘텐츠 ID가 유효하지 않습니다. id: " + id));
+
+        // Delete the related genres first
+        contentGenreRepository.deleteByContent(content);
+
+        // Now delete the content entity
+        contentRepository.delete(content);
     }
 
+
+    // 컨텐츠 상세 정보 조회
     public ContentDetailDTO getContentDetail(Integer contentId) {
         ContentDetailDTO contentDetail = new ContentDetailDTO();
 
@@ -174,4 +206,109 @@ public class ContentService {
 
         return contentDetail;
     }
+    //////////////////////////////////////////////////////////////////////////////////////////
+    /**
+     * 콘텐츠에 장르 추가
+     *///
+    //장르조회
+    @Transactional
+    public List<Genre> getGenresByContentId(Integer contentId) {
+        ContentEntity content = contentRepository.findById(contentId)
+                .orElseThrow(() -> new NoSuchElementException("콘텐츠 ID가 유효하지 않습니다. id: " + contentId));
+
+        List<ContentGenreEntity> genreEntities = contentGenreRepository.findByContent(content);
+
+        return genreEntities.stream()
+                .map(ContentGenreEntity::getGenre)
+                .collect(Collectors.toList());
+    }
+
+    @Transactional
+    public void addGenres(Integer contentId, List<Genre> genres) {
+        ContentEntity content = contentRepository.findById(contentId)
+                .orElseThrow(() -> new IllegalArgumentException("콘텐츠 ID가 유효하지 않습니다. id: " + contentId));
+        List<Genre> existingGenres = getGenresByContentId(contentId);
+
+        for (Genre genre : genres) {
+            if (existingGenres.contains(genre)) {
+                continue; // 이미 있는 장르는 건너뜀
+            }
+            System.out.println(" add contentId :"+contentId);
+            System.out.println(" add content :"+content);
+            System.out.println(" add genre :"+genre);
+            System.out.println(" -----------------");
+
+            ContentGenreEntity contentGenre = new ContentGenreEntity();
+            contentGenre.setContent(content);// ✅ null 아님
+            contentGenre.setGenre(genre);  // ✅ 여기서 content가 null이면 에러 발생
+
+            contentGenreRepository.save(contentGenre);
+        }
+
+    }
+
+    /**
+     * 콘텐츠 장르 수정 (기존 장르 모두 삭제 후, 새로 추가)
+     */
+    @Transactional
+    public void updateGenres(Integer contentId, List<Genre> newGenres) {
+        ContentEntity content = contentRepository.findById(contentId)
+                .orElseThrow(() -> new IllegalArgumentException("콘텐츠 ID가 유효하지 않습니다. id: " + contentId));
+
+        // 기존 장르 삭제
+        List<Genre> oldGenres = getGenresByContentId(contentId);  // 기존 장르 가져오기
+        contentGenreRepository.deleteByContent(content);  // 기존 장르 삭제
+
+        // 새로운 장르 추가
+        for (Genre genre : newGenres) {
+//            System.out.println(" update contentId :"+contentId);
+//            System.out.println(" update content :"+content);
+//            System.out.println(" update genre :"+genre);
+//            System.out.println(" -----------------");
+
+            ContentGenreEntity contentGenre = new ContentGenreEntity();
+            contentGenre.setContent(content); // 반드시 content 세팅
+            contentGenre.setGenre(genre);
+            contentGenreRepository.save(contentGenre); // 새로운 장르 저장
+            // 로그로 이전 장르와 수정된 장르 비교 (선택사항)
+            System.out.println("Old Genres: " + oldGenres);
+            System.out.println("New Genres: " + newGenres);
+
+        }
+    }
+
+    // 별점 등록
+    public void rateContent(Integer userId, Integer contentId, Integer score) {
+
+        // 기존 별점 조회
+        Optional<RatingEntity> existingRating = ratingRepository.findByUserIdAndContentId(userId, contentId);
+
+        if (existingRating.isEmpty()) {
+            RatingEntity ratingEntity = new RatingEntity();
+            ratingEntity.setUser(userRepository.findById(userId).get());
+            ratingEntity.setContent(contentRepository.findById(contentId).get());
+            ratingEntity.setScore(score);
+            ratingRepository.save(ratingEntity);
+        }
+        else {
+            // 기존 별점이 있는 경우 업데이트
+            RatingEntity ratingEntity = existingRating.get();
+            ratingEntity.setScore(score);
+            ratingRepository.save(ratingEntity);
+        }        
+    }
+
+    // 별점 삭제
+    public Boolean deleteRating(Integer userId, Integer contentId) {
+        ratingRepository.deleteByUserIdAndContentId(userId, contentId);
+
+        // 삭제 후 해당 별점이 존재하는지 확인
+        Optional<RatingEntity> deletedRating = ratingRepository.findByUserIdAndContentId(userId, contentId);
+        return deletedRating.isEmpty();
+    }
 }
+
+
+
+
+

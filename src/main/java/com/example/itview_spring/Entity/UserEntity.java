@@ -55,27 +55,35 @@ public class UserEntity {
     @Column(length = 1024)
     private String introduction;
 
+    // 유저의 컬렉션 목록
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<CollectionEntity> collections;
 
+    // 유저의 코멘트 목록
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<CommentEntity> comments;
 
+    // 유저의 평점 목록
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<RatingEntity> ratings;
 
+    // 유저의 위시리스트 목록
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<WishlistEntity> wishlists;
 
+    // 유저의 댓글 목록
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ReplyEntity> replies;
 
+    // 유저의 좋아요 목록
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<LikeEntity> likes;
 
+    // 유저의 이메일 인증 목록
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<EmailVerificationEntity> emailVerifications;
 
+    // 유저의 소셜 계정 목록
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<SocialEntity> socials;
 }

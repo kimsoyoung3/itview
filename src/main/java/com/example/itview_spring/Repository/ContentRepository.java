@@ -5,7 +5,9 @@ import com.example.itview_spring.Entity.ContentEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
+import org.springframework.stereotype.Repository;
 
+@Repository
 public interface ContentRepository extends JpaRepository<ContentEntity, Integer> {
 @Query("""
         SELECT new com.example.itview_spring.DTO.ContentResponseDTO(
