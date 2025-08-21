@@ -142,7 +142,7 @@ const DetailPage = () => {
 
                         {contentDetail?.gallery?.map((gallary, idx) => (
                             <SwiperSlide className="swiper-slide" key={gallary.id}>
-                                <div className="slide-image" onClick={() => openModal(idx)} style={{ cursor: 'pointer' }}>
+                                <div className="slide-image" onClick={() => openModal(idx)} style={{cursor: 'pointer'}}>
                                     <img src={gallary.imageUrl} alt=""/>
                                 </div>
                             </SwiperSlide>

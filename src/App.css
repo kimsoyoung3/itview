@@ -471,8 +471,7 @@ body {
   width: 30px !important;
   height: 30px !important;
   border-radius: 50%;
-  color: #000 !important;
-  background-color: #f6f6f6;
+  color: #fff !important;
 }
 
 .swiper-button-prev {
@@ -480,7 +479,7 @@ body {
 }
 
 .swiper-button-prev:after, .swiper-button-next:after {
-  font-size: 18px !important;
+  font-size: 1.5rem !important;
   text-transform: none !important;
   letter-spacing: 0;
   position: absolute !important;
@@ -850,6 +849,7 @@ body {
   cursor: pointer;
   z-index: 10;
 }
+
 
 
 
