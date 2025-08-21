@@ -1,16 +1,11 @@
 package com.example.itview_spring.DTO;
 
+import com.example.itview_spring.Constant.ContentType;
+import lombok.*;
+
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
-
-import com.example.itview_spring.Constant.ContentType;
-
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
 
 @Getter
 @Setter
