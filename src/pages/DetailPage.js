@@ -4,7 +4,7 @@ import "../App.css";
 import 'swiper/css/navigation';
 import 'swiper/css/pagination';
 import 'swiper/css';
-import { getContentDetail } from "../API/ContentApi";
+import { deleteRating, getContentDetail, postContentRating } from "../API/ContentApi";
 import {Autoplay, Navigation, Pagination} from "swiper/modules";
 import {Swiper, SwiperSlide} from "swiper/react";
 import CreditOrPersonCard from "../components/CreditOrPersonCard";
@@ -16,6 +16,25 @@ const DetailPage = () => {
     const [modalStartIndex, setModalStartIndex] = useState(0); // 모달 슬라이드 시작 인덱스
     const [contentCredit, setContentCredit] = useState(null);
 
+    const [score, setScore] = useState(0);
+    const handleScoreSubmit = () => {
+        // 별점 제출 로직 구현
+        const id = window.location.pathname.split('/').pop();
+        const data = { score: Number(score) };
+        console.log(data);
+        postContentRating(id, data).then(response => {
+            console.log('Rating submitted:', response.status);
+        });
+    };
+    const handleScoreDelete = () => {
+        // 별점 삭제 로직 구현
+        const id = window.location.pathname.split('/').pop();
+        const data = { score: Number(score) };
+        deleteRating(id, data).then(response => {
+            console.log('Rating deleted:', response.status);
+        });
+        setScore(0); // 입력 필드 초기화
+    };
 
     const serviceLogos = {
         NETFLIX: '/externalLogo/netflix.png',
@@ -120,8 +139,9 @@ const DetailPage = () => {
                         <div className="info-top">
                             {/*별점체크*/}
                             <div className="info-top-left">
-                                <input type="number"/>
-                                <button>등록</button>
+                                <input type="number" onChange={(e) => setScore(e.target.value)}/>
+                                <button onClick={handleScoreSubmit}>등록</button>
+                                <button onClick={handleScoreDelete}>삭제</button>
                             </div>
                             {/*평균 별점 표시*/}
                             <div className="info-top-center"></div>
