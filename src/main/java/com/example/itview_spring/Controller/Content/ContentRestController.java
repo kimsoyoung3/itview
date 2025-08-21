@@ -48,7 +48,7 @@ public class ContentRestController {
     public ResponseEntity<Void> postContentRating(@PathVariable("id") Integer id,
                                                   @AuthenticationPrincipal CustomUserDetails userDetails,
                                                   @RequestBody RatingRequestDTO ratingRequest) {
-        contentService.rateContent(userDetails.getId(), id, ratingRequest.getRating());
+        contentService.rateContent(userDetails.getId(), id, ratingRequest.getScore());
         return ResponseEntity.ok().build();
     }
 }

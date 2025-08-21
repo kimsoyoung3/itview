@@ -36,7 +36,6 @@ import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import static org.springframework.data.jpa.domain.AbstractPersistable_.id;
 
 @Service
 @RequiredArgsConstructor
@@ -276,6 +275,25 @@ public class ContentService {
             System.out.println("New Genres: " + newGenres);
 
         }
+    }
+
+    // 별점 등록
+    public void rateContent(Integer userId, Integer contentId, Integer score) {
+
+        // 기존 별점 조회
+        Optional<RatingEntity> existingRating = ratingRepository.findByUserIdAndContentId(userId, contentId);
+
+        if (existingRating.isEmpty()) {
+            RatingEntity ratingEntity = new RatingEntity();
+            ratingEntity.setUser(userRepository.findById(userId).get());
+            ratingEntity.setContent(contentRepository.findById(contentId).get());
+            ratingEntity.setScore(score);
+        }
+        else {
+            // 기존 별점이 있는 경우 업데이트
+            RatingEntity ratingEntity = existingRating.get();
+            ratingEntity.setScore(score);
+        }        
     }
 }
 
