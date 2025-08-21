@@ -22,7 +22,7 @@
                     <!--controller에 model의 이름과 DTO변수명-->
                     <!--model.addAttribute("contentDTO",-->
                     <p>콘텐츠 ID : <span th:text="${contentDTO.id}"></span></p>
-                    <p>콘텐츠 제목 : <span th:text="${contentDTO.title}"></span></p>
+<!--                    <p>콘텐츠 제목 : <span th:text="${contentDTO.title}"></span></p>-->
                   <!---->
                     <p th:if="${contentDTO != null}">콘텐츠 제목: <span th:text="${contentDTO.title}">제목 없음</span></p>
                     <p th:unless="${contentDTO != null}">데이터가 없습니다.</p>
@@ -43,7 +43,10 @@
 
                 </div>
                 <div class="card-footer">
-                    <a th:href="@{/content/list}" class="btn btn-primary">목록으로 이동</a>
+<!--                    <a th:href="@{/content/list}" class="btn btn-primary">목록으로 이동</a>-->
+<!--                    <a th:href="@{/content/{id}(id=${contentDTO.id})}" class="btn btn-primary">목록으로 이동</a>-->
+                    <a th:href="@{/content/{id}/detail(id=${contentDTO.id})}" class="btn btn-primary">목록으로 이동</a>
+
                 </div>
             </div>
         </div>

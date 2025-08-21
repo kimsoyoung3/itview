@@ -45,7 +45,7 @@
             <!-- data. .뒤에는 DTO에 변수명으로 -->
             <tr th:each="data:${contentDTOS}"><!--th개수=td개수 똑같이, 아래쪽 tr은 삭제-->
                 <td th:text="${data.id}">001</td>
-                <td><!--타이틀을 클릭하면 상세보기를 이동한다.-->
+                    <td><!--타이틀을 클릭하면 상세보기를 이동한다.-->
                     <a th:href="@{/content/detail(id=${data.id})}" th:text="${data.title}">영화</a>
                 </td>
                 <td th:text="${data.contentType.getDescription()}">타입</td>

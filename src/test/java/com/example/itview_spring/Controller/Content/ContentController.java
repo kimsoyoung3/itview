@@ -2,7 +2,6 @@ package com.example.itview_spring.Controller.Content;
 
 import com.example.itview_spring.Constant.Genre;
 import com.example.itview_spring.DTO.ContentCreateDTO;
-import com.example.itview_spring.DTO.ContentDetailDTO;
 import com.example.itview_spring.DTO.PageInfoDTO;
 import com.example.itview_spring.Service.ContentService;
 import com.example.itview_spring.Util.PageInfo;
@@ -81,28 +80,15 @@ public class ContentController {
     }
 
     // 상세 보기
-   // @GetMapping("/content/{id:\\d+}")
-//    @GetMapping("/content/detail")
-    @GetMapping("/content/{id}/detail")
+    @GetMapping("/content/{id}")
     public String detailContent(@PathVariable("id") Integer id, Model model) {
         // URL 경로 변수인 {id}를 받으려면 @PathVariable을 써야 합니다.
         ContentCreateDTO contentDTO = contentService.read(id);
         model.addAttribute("contentDTO", contentDTO);
-             System.out.println("deteil id         ===>"+id);
-             System.out.println("deteil contentDTO ===>"+contentDTO);
+        //     System.out.println("contentDTO.getContentId==",contentDTO.getContentId());
+        //     System.out.println("contentDTO.            ==",contentDTO);
         return "content/detail";
     }
-
-//
-//    @GetMapping("/content/{id:\\d+}")
-//    public String detail(@RequestParam("id") Integer id, Model model) {
-//        ContentDetailDTO detailDTO = contentService.getContentDetail(id);
-//        model.addAttribute("contentDTO", detailDTO.getContentInfo()); // ContentResponseDTO
-//        model.addAttribute("gallery", detailDTO.getGallery());
-//        model.addAttribute("videos", detailDTO.getVideos());
-//        model.addAttribute("externalServices", detailDTO.getExternalServices());
-//        return "content/detail";
-//    }
 
     // 수정 폼
     @GetMapping("/content/{id}/update")
