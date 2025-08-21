@@ -1,6 +1,11 @@
-package com.example.itview_spring.DTO;
+package com.example.itview_spring.Controller.User;
 
 import com.example.itview_spring.Config.CustomUserDetails;
+import com.example.itview_spring.DTO.EmailDTO;
+import com.example.itview_spring.DTO.EmailVerificationDTO;
+import com.example.itview_spring.DTO.LoginDTO;
+import com.example.itview_spring.DTO.NewPasswordDTO;
+import com.example.itview_spring.DTO.RegisterDTO;
 import com.example.itview_spring.Service.UserService;
 
 import jakarta.servlet.http.Cookie;

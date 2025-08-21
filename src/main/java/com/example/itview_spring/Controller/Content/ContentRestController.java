@@ -21,7 +21,6 @@ import com.example.itview_spring.Service.ContentService;
 import com.example.itview_spring.Service.CreditService;
 
 import io.swagger.v3.oas.annotations.parameters.RequestBody;
-import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 
 @RestController
@@ -48,7 +47,8 @@ public class ContentRestController {
     public ResponseEntity<Void> postContentRating(@PathVariable("id") Integer id,
                                                   @AuthenticationPrincipal CustomUserDetails userDetails,
                                                   @RequestBody RatingRequestDTO ratingRequest) {
-        contentService.rateContent(userDetails.getId(), id, ratingRequest.getScore());
+        System.out.println(ratingRequest.getScore());
+        // contentService.rateContent(userDetails.getId(), id, ratingRequest.getScore());
         return ResponseEntity.ok().build();
     }
 }
