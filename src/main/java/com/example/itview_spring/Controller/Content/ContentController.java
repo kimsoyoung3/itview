@@ -15,9 +15,11 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import static org.springframework.data.jpa.domain.AbstractPersistable_.id;
 
@@ -251,22 +253,27 @@ public class ContentController {
         if (contentId == null) {
             contentService.addGenres(contentId, genres != null ? genres :
                     List.of());
-
+            genres = new ArrayList<>();
             System.out.println(" post null contentId  ==" + contentId);
             System.out.println(" post null genress    ==" + genres);
             System.out.println(" ---------------------");
-        } else {
-
-            System.out.println(" post44 contentId  ==" + contentId);
-            System.out.println(" post44 genress    ==" + genres);
-            System.out.println(" ---------------------");
-            contentService.updateGenres(contentId, genres != null ? genres :
-                    List.of());
         }
-        // 모델에 필요한 데이터 다시 담기 (✅ 중요)
+
+        System.out.println(" post44 contentId  ==" + contentId);
+        System.out.println(" post44 genress    ==" + genres);
+        System.out.println(" ---------------------");
+//        contentService.updateGenres(contentId, genres != null ? genres :
+//                List.of());
+
+        // 장르 업데이트
+        contentService.updateGenres(contentId, genres);
+
+        // 업데이트된 내용 화면에 전달
         ContentCreateDTO contentDTO = contentService.read(contentId);
         List<Genre> selectedGenres = contentService.getGenresByContentId(contentId);
-        List<String> selectedGenreNames = selectedGenres.stream().map(Enum::name).toList();
+        List<String> selectedGenreNames = selectedGenres.stream().map(Enum::name).collect(Collectors.toList());
+        // 모델에 필요한 데이터 다시 담기 (✅ 중요)
+
 
         Genre[] allGenres = Genre.values();
         Map<String, String> genreTranslations = Map.of(
@@ -288,17 +295,8 @@ public class ContentController {
         model.addAttribute("selectedGenres", selectedGenreNames);
         model.addAttribute("genreTranslations", genreTranslations);
 
-
-//        model.addAttribute("selectedGenres", genres);
-//        model.addAttribute("allGenres", Arrays.asList(Genre.values()));
-
         return "redirect:/content/" + contentId + "/genre";
 
     }
-    //////////////////////////////////////////////////////////////////////////////////////////
+
 }
-
-
-//데이터 저장처리 (Service -> Controller
-//ContentCreateDTO savedContent = contentService.create(contentDTO);
-//        return "redirect:/content/" + savedContent.getId() + "/genre";

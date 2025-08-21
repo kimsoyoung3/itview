@@ -251,20 +251,26 @@ public class ContentService {
     public void updateGenres(Integer contentId, List<Genre> newGenres) {
         ContentEntity content = contentRepository.findById(contentId)
                 .orElseThrow(() -> new IllegalArgumentException("콘텐츠 ID가 유효하지 않습니다. id: " + contentId));
+
         // 기존 장르 삭제
-        contentGenreRepository.deleteByContent(content); // 기존 장르 삭제
+        List<Genre> oldGenres = getGenresByContentId(contentId);  // 기존 장르 가져오기
+        contentGenreRepository.deleteByContent(content);  // 기존 장르 삭제
 
         // 새로운 장르 추가
         for (Genre genre : newGenres) {
-            System.out.println(" update contentId :"+contentId);
-            System.out.println(" update content :"+content);
-            System.out.println(" update genre :"+genre);
-            System.out.println(" -----------------");
+//            System.out.println(" update contentId :"+contentId);
+//            System.out.println(" update content :"+content);
+//            System.out.println(" update genre :"+genre);
+//            System.out.println(" -----------------");
 
             ContentGenreEntity contentGenre = new ContentGenreEntity();
-            contentGenre.setContent(content); // ✅ 꼭 세팅
+            contentGenre.setContent(content); // 반드시 content 세팅
             contentGenre.setGenre(genre);
-            contentGenreRepository.save(contentGenre); // ✅ 여기서 오류 해결
+            contentGenreRepository.save(contentGenre); // 새로운 장르 저장
+            // 로그로 이전 장르와 수정된 장르 비교 (선택사항)
+            System.out.println("Old Genres: " + oldGenres);
+            System.out.println("New Genres: " + newGenres);
+
         }
     }
 }
