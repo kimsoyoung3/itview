@@ -75,7 +75,7 @@ const DetailPage = () => {
                     <ul key={contentDetail?.contentInfo.id}>
                         <li>{contentDetail?.contentInfo.title}</li>
                         <li>{contentDetail?.contentInfo.description}</li>
-                        <li><span>{contentDetail?.contentInfo.releaseDate}</span> &middot; <span>{contentDetail?.contentInfo.genres?.map(genre => genre).join('/')}</span> &middot; <span>국가</span></li>
+                        <li><span>{contentDetail?.contentInfo.releaseDate}</span> &middot; <span>{contentDetail?.contentInfo.genres?.map(genre => genre).join('/')}</span> &middot; <span>{contentDetail?.contentInfo.nation}</span></li>
                         <li><span>{contentDetail?.contentInfo.duration}</span >&middot; <span>{contentDetail?.contentInfo.age}</span></li>
                     </ul>
                 </div>
