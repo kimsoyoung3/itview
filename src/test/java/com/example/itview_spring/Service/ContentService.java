@@ -1,27 +1,10 @@
 package com.example.itview_spring.Service;
 
-import com.example.itview_spring.DTO.ContentCreateDTO;
-import com.example.itview_spring.DTO.ContentDetailDTO;
-import com.example.itview_spring.DTO.ContentResponseDTO;
-import com.example.itview_spring.DTO.ExternalServiceDTO;
-import com.example.itview_spring.DTO.GenreDTO;
-import com.example.itview_spring.DTO.ImageDTO;
-import com.example.itview_spring.DTO.VideoDTO;
-
 import com.example.itview_spring.Constant.Genre;
-import com.example.itview_spring.DTO.ContentCreateDTO;
+import com.example.itview_spring.DTO.*;
 import com.example.itview_spring.Entity.ContentEntity;
-import com.example.itview_spring.Repository.ContentGenreRepository;
 import com.example.itview_spring.Entity.ContentGenreEntity;
-import com.example.itview_spring.Entity.RatingEntity;
-import com.example.itview_spring.Repository.ContentGenreRepository;
-import com.example.itview_spring.Repository.ContentRepository;
-import com.example.itview_spring.Repository.ExternalServiceRepository;
-import com.example.itview_spring.Repository.GalleryRepository;
-import com.example.itview_spring.Repository.RatingRepository;
-import com.example.itview_spring.Repository.UserRepository;
-import com.example.itview_spring.Repository.VideoRepository;
-
+import com.example.itview_spring.Repository.*;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
@@ -36,19 +19,16 @@ import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import static org.springframework.data.jpa.domain.AbstractPersistable_.id;
-
 @Service
 @RequiredArgsConstructor
 @Transactional
 public class ContentService {
+    //반드시 사용할 Repository (방금 작업한 파일)와 MOdelMapper추가
     private final ContentRepository contentRepository;
     private final ContentGenreRepository contentGenreRepository;
     private final GalleryRepository galleryRepository;
     private final VideoRepository videoRepository;
     private final ExternalServiceRepository externalServiceRepository;
-    private final RatingRepository ratingRepository;
-    private final UserRepository userRepository;
     private final ModelMapper modelMapper;
 
     //전체조회
@@ -180,7 +160,6 @@ public class ContentService {
     }
 
 
-    // 컨텐츠 상세 정보 조회
     public ContentDetailDTO getContentDetail(Integer contentId) {
         ContentDetailDTO contentDetail = new ContentDetailDTO();
 
@@ -280,6 +259,50 @@ public class ContentService {
 }
 
 
+
+
+
+    /// ///////////////////////////////////////////////////////////////////
+//    public void addGenres(Integer id, List<Genre> genres) {
+//        // 콘텐츠 조회
+//        Content content =contentGenreRepository.findById(id)
+//                .orElseThrow(() -> new IllegalArgumentException("콘텐츠 id가 유효하지 않습니다. id: " + id));
+//
+//  //   장르 추가
+//        for (Genre genre : genres) {
+//            ContentGenreEntity contentGenre = new ContentGenreEntity();
+//            contentGenre.setContent(id);
+//            contentGenre.setGenre(genre);
+//            contentGenreRepository.save(contentGenre);
+//        }
+//    }
+//
+//    public void addGenres(Integer id, List<Genre> genres) {
+//        ContentEntity content = contentGenreRepository.findById(id)
+//                .orElseThrow(() -> new IllegalArgumentException("콘텐츠 id 가 유효하지 않습니다 id : " + id));
+//
+//        for (Genre genre : genres) {
+//            ContentGenreEntity contentGenre = new ContentGenreEntity();
+//            contentGenre.setContent(content);
+//            contentGenre.setGenre(genre);
+//            contentGenreRepository.save(contentGenre);
+//        }
+//    }
+//
+//    /**
+//     * 기존 장르 전체 삭제 후 새로 저장 (수정용)
+//     */
+//    @Transactional
+//    public void updateGenres(Integer id, List<Genre> genres) {
+//        ContentEntity content = contentGenreRepository.findById(id)
+//                .orElseThrow(() -> new IllegalArgumentException("Invalid content ID: " + id));
+//
+//        // 기존 삭제
+//        contentGenreRepository.deleteByContent(content);
+//
+//        // 새로 저장
+//        addGenres(id, genres);
+//    }
 
 
 
