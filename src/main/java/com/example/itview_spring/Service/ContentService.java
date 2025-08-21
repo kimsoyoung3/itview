@@ -8,10 +8,13 @@ import com.example.itview_spring.DTO.GenreDTO;
 import com.example.itview_spring.DTO.ImageDTO;
 import com.example.itview_spring.DTO.VideoDTO;
 import com.example.itview_spring.Entity.ContentEntity;
+import com.example.itview_spring.Entity.RatingEntity;
 import com.example.itview_spring.Repository.ContentGenreRepository;
 import com.example.itview_spring.Repository.ContentRepository;
 import com.example.itview_spring.Repository.ExternalServiceRepository;
 import com.example.itview_spring.Repository.GalleryRepository;
+import com.example.itview_spring.Repository.RatingRepository;
+import com.example.itview_spring.Repository.UserRepository;
 import com.example.itview_spring.Repository.VideoRepository;
 
 import lombok.RequiredArgsConstructor;
@@ -31,12 +34,13 @@ import java.util.Optional;
 @RequiredArgsConstructor
 @Transactional
 public class ContentService {
-    //반드시 사용할 Repository (방금 작업한 파일)와 MOdelMapper추가
     private final ContentRepository contentRepository;
     private final ContentGenreRepository contentGenreRepository;
     private final GalleryRepository galleryRepository;
     private final VideoRepository videoRepository;
     private final ExternalServiceRepository externalServiceRepository;
+    private final RatingRepository ratingRepository;
+    private final UserRepository userRepository;
     private final ModelMapper modelMapper;
 
     //전체조회
@@ -148,6 +152,7 @@ public class ContentService {
         return false;
     }
 
+    // 컨텐츠 상세 정보 조회
     public ContentDetailDTO getContentDetail(Integer contentId) {
         ContentDetailDTO contentDetail = new ContentDetailDTO();
 
@@ -173,5 +178,24 @@ public class ContentService {
         contentDetail.setExternalServices(externalServices);
 
         return contentDetail;
+    }
+
+    // 별점 등록
+    public void rateContent(Integer userId, Integer contentId, Integer score) {
+
+        // 기존 별점 조회
+        Optional<RatingEntity> existingRating = ratingRepository.findByUserIdAndContentId(userId, contentId);
+
+        if (existingRating.isEmpty()) {
+            RatingEntity ratingEntity = new RatingEntity();
+            ratingEntity.setUser(userRepository.findById(userId).get());
+            ratingEntity.setContent(contentRepository.findById(contentId).get());
+            ratingEntity.setScore(score);
+        }
+        else {
+            // 기존 별점이 있는 경우 업데이트
+            RatingEntity ratingEntity = existingRating.get();
+            ratingEntity.setScore(score);
+        }        
     }
 }

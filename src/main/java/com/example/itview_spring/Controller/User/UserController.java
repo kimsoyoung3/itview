@@ -144,6 +144,7 @@ public class UserController {
         return ResponseEntity.ok().build();
     }
 
+    // 소셜 계정 연결
     @PostMapping("/google")
     public void linkGoogle(HttpServletRequest request, HttpServletResponse response) {
         var auth = SecurityContextHolder.getContext().getAuthentication();
