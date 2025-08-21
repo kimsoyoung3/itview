@@ -21,7 +21,6 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
-import org.springframework.security.web.authentication.SavedRequestAwareAuthenticationSuccessHandler;
 import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
 import org.springframework.security.web.context.SecurityContextRepository;
 
@@ -120,14 +119,19 @@ public class SecurityConfig {
                     String provider = oauth.getAuthorizedClientRegistrationId();
                     String sub = principal.getAttribute("sub");
     
+                    // 소셜 계정이 등록되어 있는지 확인
                     Optional<SocialEntity> linked = socialRepository.findByProviderAndProviderId(provider, sub);
     
+                    // 소셜 계정이 등록되어 있는 경우
                     if (linked.isPresent()) {
+                        // 사용자 정보 가져오기
                         UserEntity user = linked.get().getUser();
 
+                        // 사용자 권한 설정
                         List<SimpleGrantedAuthority> authorities = new ArrayList<>();
                         authorities.add(new SimpleGrantedAuthority(user.getRole().name()));
     
+                        // CustomUserDetails 생성
                         var customUserDetails = new CustomUserDetails(
                             user.getId(),
                             user.getNickname(),
@@ -135,8 +139,10 @@ public class SecurityConfig {
                             authorities
                         );
     
+                        // 새로운 인증 객체 생성
                         Authentication userAuth = new UsernamePasswordAuthenticationToken(customUserDetails, null, authorities);
     
+                        // 보안 컨텍스트에 인증 객체 설정
                         request.getSession(true);
                         SecurityContextHolder.getContext().setAuthentication(userAuth);
                         response.sendRedirect("http://localhost:3000/");
@@ -155,6 +161,7 @@ public class SecurityConfig {
         };
     }
 
+    // 리다이렉트와 함께 플래시 메시지를 설정하는 메소드
     private void sendRedirectWithFlashMessage(HttpServletResponse response, String errorMessage) throws IOException {
         String encoded = URLEncoder.encode(errorMessage, StandardCharsets.UTF_8).replace("+", "%20");
         Cookie flash = new Cookie("FLASH_ERROR", encoded);
