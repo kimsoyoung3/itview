@@ -10,14 +10,14 @@ const CreditOrPersonCard = ({data, type}) => {
         <div className="credit">
             <div className="credit-inner">
                 <div className="credit-image">
-                    <img src={person.profile} alt={person.name} />
+                    <img src={person.profile ? person.profile : "/user.png"} alt={person.name} />
                 </div>
 
                 {isCredit ? (
                     <>
                         <ul className="credit-info">
                             <li>{person.name}</li>
-                            <li><span>{data.role} &#124;</span><span> {data.characterName}</span></li>
+                            <li><span>{data.role} </span>{data.characterName && (<span> &#124; {data.characterName}</span>)}</li>
                         </ul>
                     </>
                 ) : (
