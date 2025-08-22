@@ -21,4 +21,10 @@ public class ContentDetailDTO {
     List<VideoDTO> videos;
     // 외부 서비스 정보
     List<ExternalServiceDTO> externalServices;
+    // 사용자의 별점
+    Integer myRating;
+    // 별점 개수
+    Long ratingCount;
+    // 별점 분포
+    List<RatingCountDTO> ratingDistribution;
 }

@@ -13,6 +13,8 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 
+import java.io.IOException;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -26,6 +28,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -146,10 +149,19 @@ public class UserController {
 
     // 소셜 계정 연결
     @PostMapping("/google")
-    public void linkGoogle(HttpServletRequest request, HttpServletResponse response) {
+    public void linkGoogle(HttpServletRequest request,
+                           HttpServletResponse response,
+                           @AuthenticationPrincipal CustomUserDetails user,
+                           @RequestParam("redirectURL") String redirectURL) throws IOException {
         var auth = SecurityContextHolder.getContext().getAuthentication();
-        request.getSession().setAttribute("ORIGINAL_AUTH", auth);
-        request.getSession().setAttribute("LINK_FLOW", Boolean.TRUE);
-        request.getSession().setAttribute("USER_ID", ((CustomUserDetails) auth.getPrincipal()).getId());
+        if (user != null) { // 이미 로그인된 사용자라면 소셜 계정 연동을 위한 정보를 세션에 저장
+            request.getSession().setAttribute("ORIGINAL_AUTH", auth);
+            request.getSession().setAttribute("LINK_FLOW", Boolean.TRUE);
+            request.getSession().setAttribute("USER_ID", user.getId());
+        }
+        Cookie redirectCookie = new Cookie("REDIRECT_URL", redirectURL);
+        redirectCookie.setPath("/");
+        redirectCookie.setHttpOnly(false);
+        response.addCookie(redirectCookie);
     }
 }
