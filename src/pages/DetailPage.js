@@ -1,4 +1,4 @@
-import React, { use, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import "../App.css";
 import 'swiper/css/navigation';
@@ -17,15 +17,8 @@ const DetailPage = () => {
     const [contentCredit, setContentCredit] = useState(null);
 
     const [score, setScore] = useState(0);
-    const handleScoreSubmit = () => {
-        // 별점 제출 로직 구현
-        const id = window.location.pathname.split('/').pop();
-        const data = { score: Number(score) };
-        console.log(data);
-        postContentRating(id, data).then(response => {
-            console.log('Rating submitted:', response.status);
-        });
-    };
+    const [hoverScore, setHoverScore] = useState(0); // 마우스 올릴 때 임시 점수
+
     const handleScoreDelete = () => {
         // 별점 삭제 로직 구현
         const id = window.location.pathname.split('/').pop();
@@ -33,6 +26,7 @@ const DetailPage = () => {
             console.log('Rating deleted:', response.status);
         });
     };
+
 
     const serviceLogos = {
         NETFLIX: '/externalLogo/netflix.png',
@@ -141,19 +135,90 @@ const DetailPage = () => {
                 <div className="detail-content-inner container">
                     {/*컨텐츠 포스터*/}
                     <div className="detail-content-inner-poster">
-                        <img src={contentDetail?.contentInfo.poster} alt=""/>
+                        <div className="poster-top">
+                            <img src={contentDetail?.contentInfo.poster} alt=""/>
+                        </div>
+                        <ul className="poster-bottom">
+                            <li>별점 그래프</li>
+                            <li>평균 <i className="bi bi-star-fill"></i> {contentDetail?.contentInfo?.ratingAvg.toFixed(1)}
+                                <span className="poster-bottom-num">&#40;{contentDetail?.ratingCount}명&#41;</span>
+                            </li>
+                            <li className="rating-graph">
+                                {(() => {
+                                    // 총 개수
+                                    const total = contentDetail.ratingDistribution.reduce(
+                                        (sum, d) => sum + d.scoreCount,
+                                        0
+                                    );
+                                    // 최댓값 찾기
+                                    const maxCount = Math.max(
+                                        ...contentDetail.ratingDistribution.map((d) => d.scoreCount)
+                                    );
+
+                                    return Array.from({ length: 10 }, (_, i) => i + 1).map((num) => {
+                                        const found = contentDetail.ratingDistribution.find(
+                                            (d) => d.score === num
+                                        );
+                                        const count = found ? found.scoreCount : 0;
+                                        const percentage = total ? (count / total) * 100 : 0;
+
+                                        return (
+                                            <div key={num} className="bar-wrapper">
+                                                <div
+                                                    className={`bar ${count === maxCount ? "bar-max" : ""}`}
+                                                    style={{ height: `${percentage}%` }}
+                                                ></div>
+                                                <span className="bar-label">{num}</span>
+                                            </div>
+                                        );
+                                    });
+                                })()}
+                            </li>
+
+
+
+                        </ul>
                     </div>
                     {/*컨텐츠 정보*/}
                     <div className="detail-content-inner-info">
                         <div className="info-top">
-                            {/*별점체크*/}
+                            {/* 별점체크 */}
                             <div className="info-top-left">
-                                <input type="number" onChange={(e) => setScore(e.target.value)}/>
-                                <button onClick={handleScoreSubmit}>등록</button>
-                                <button onClick={handleScoreDelete}>삭제</button>
+                                {[...Array(5)].map((_, i) => (
+                                    <span
+                                        key={i}
+                                        className="star"
+                                        onMouseMove={(e) => {
+                                            const rect = e.currentTarget.getBoundingClientRect();
+                                            const isHalf = e.clientX - rect.left < rect.width / 2;
+                                            setHoverScore(isHalf ? (i * 2 + 1) : (i + 1) * 2);
+                                        }}
+                                        onMouseLeave={() => setHoverScore(0)}
+                                        onClick={async () => {
+                                            const newScore = hoverScore === score ? 0 : hoverScore;
+                                            setScore(newScore);
+                                            if (newScore === 0) {
+                                                await handleScoreDelete();
+                                            } else {
+                                                const id = window.location.pathname.split('/').pop();
+                                                const data = { score: Number(newScore) };
+                                                await postContentRating(id, data);
+                                            }}}>
+                                        {/*기본 별*/}
+                                        <i className="bi bi-star-fill star-base"></i>
+                                        {/*반 별*/}
+                                        <i className="bi bi-star-fill star-fill" style={{width: (i + 1) * 2 <= (hoverScore || score) ? "100%" : i * 2 + 1 === (hoverScore || score) ? "50%" : "0%",}}></i>
+                                    </span>
+                                ))}
+                                <p className="star-text">평가하기</p>
                             </div>
+
                             {/*평균 별점 표시*/}
-                            <div className="info-top-center"></div>
+                            <div className="info-top-center">
+                                <p className="average-rating">{contentDetail?.contentInfo?.ratingAvg.toFixed(1)}</p>
+                                <p className="average-rating-text">평균 별점 <span className="average-rating-num">&#40;{contentDetail?.ratingCount}명&#41;</span></p>
+                            </div>
+
                             {/*위시,컬렉션 추가 및 코멘트 달기*/}
                             <ul className="info-top-right">
                                 <li>

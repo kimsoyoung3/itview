@@ -1,10 +1,30 @@
 import React, {useEffect, useState} from 'react';
-import {Link, NavLink} from 'react-router-dom';
+import {Link, NavLink, useLocation} from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import '../App.css'; // 스타일 불러오기
 import { checkEmail, checkVerification, createVerification, getMyInfo, google, loginUser, logoutUser, registerUser, setPassword } from '../API/UserApi';
 
 const Header = () => {
+    /*스크롤 시*/
+    const location = useLocation();
+    const [scrolled, setScrolled] = useState(false);
+
+    // 상세페이지 여부 체크
+    const isDetailPage = location.pathname.includes('/content');
+
+    useEffect(() => {
+        const handleScroll = () => {
+            setScrolled(window.scrollY > 50);
+        };
+
+        if (isDetailPage) {
+            window.addEventListener('scroll', handleScroll);
+            return () => window.removeEventListener('scroll', handleScroll);
+        } else {
+            setScrolled(true); // 상세페이지가 아니면 항상 scrolled 상태
+        }
+    }, [isDetailPage]);
+
     // 로그인 상태 관리
     // isLoggedIn: 로그인 여부, userInfo: 사용자 이메일
     const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -161,7 +181,8 @@ const Header = () => {
 
     return (
         <>
-            <header className="header">
+            <header
+                className={`header ${scrolled ? 'header-scrolled' : 'header-transparent'}`}>
 
                 {/*헤더 넓이 지정 부분*/}
                 <div className="header_width container">
