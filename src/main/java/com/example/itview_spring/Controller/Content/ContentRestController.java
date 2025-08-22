@@ -35,7 +35,12 @@ public class ContentRestController {
 
     @GetMapping("/{id}")
     public ResponseEntity<ContentDetailDTO> getContentDetail(@PathVariable("id") Integer id) {
-        ContentDetailDTO contentDetail = contentService.getContentDetail(id);
+        var auth = SecurityContextHolder.getContext().getAuthentication();
+        Integer userId = 0;
+        if (auth.getPrincipal() != "anonymousUser") {
+            userId = ((CustomUserDetails) auth.getPrincipal()).getId();
+        }
+        ContentDetailDTO contentDetail = contentService.getContentDetail(id, userId);
         return ResponseEntity.ok(contentDetail);
     }
 
@@ -49,8 +54,6 @@ public class ContentRestController {
                                                   @AuthenticationPrincipal CustomUserDetails userDetails,
                                                   @RequestBody RatingRequestDTO ratingRequest) {
         contentService.rateContent(userDetails.getId(), id, ratingRequest.getScore());
-        // System.out.println(ratingRequest);
-        // System.out.println(userDetails);
         return ResponseEntity.ok().build();
     }
 

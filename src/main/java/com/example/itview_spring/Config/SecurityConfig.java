@@ -21,6 +21,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
+import org.springframework.security.web.authentication.SavedRequestAwareAuthenticationSuccessHandler;
 import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
 import org.springframework.security.web.context.SecurityContextRepository;
 
@@ -66,7 +67,14 @@ public class SecurityConfig {
     AuthenticationSuccessHandler linkingSuccessHandler() {
         return (request, response, authentication) -> {
             var session = request.getSession(false);
-            var isLinkFlow = (session != null) && Boolean.TRUE.equals(session.getAttribute("LINK_FLOW"));
+            var isLinkFlow = session != null && Boolean.TRUE.equals(session.getAttribute("LINK_FLOW"));
+            String redirectURL = "http://localhost:3000/"; // 기본 리다이렉트 URL
+            for (Cookie cookie : request.getCookies()) {
+                if ("REDIRECT_URL".equals(cookie.getName())) {
+                    redirectURL = cookie.getValue(); // 세션에 저장된 리다이렉트 URL 사용
+                    break;
+                }
+            }
             // "연동"인 경우에만 이 블록 수행
             if (isLinkFlow && authentication instanceof OAuth2AuthenticationToken oauth) {
                 var principal = oauth.getPrincipal();
@@ -78,12 +86,12 @@ public class SecurityConfig {
                 // 이미 등록된 소셜 계정인지 확인
                 Optional<SocialEntity> existing = socialRepository.findByProviderAndProviderId(provider, sub);
                 if (existing.isEmpty()) { // 등록되지 않은 경우
-                    // 사용자 ID 확인
+                    // 사용자 확인
                     Integer userId = (Integer) session.getAttribute("USER_ID");
                     UserEntity user = userRepository.findById(userId)
                             .orElseThrow(() -> new IllegalStateException("사용자를 찾을 수 없습니다."));
     
-                    // 연동 로직 처리
+                    // 소셜 계정 정보 저장
                     SocialEntity socialEntity = new SocialEntity();
                     socialEntity.setProvider(provider);
                     socialEntity.setProviderId(sub);
@@ -99,22 +107,24 @@ public class SecurityConfig {
                     SecurityContextHolder.getContext().setAuthentication(original);
                 }
 
-                // 세션 정리 및 리다이렉트
+                // 세션 정리
                 session.removeAttribute("ORIGINAL_AUTH");
                 session.removeAttribute("LINK_FLOW");
                 session.removeAttribute("USER_ID");
                 
-                if (existing.isPresent()) { // 이미 등록된 소셜 계정인 경우
-                    sendRedirectWithFlashMessage(response, "이미 등록된 소셜 계정입니다.");
-                } else { // 새로 연동된 경우
-                    sendRedirectWithFlashMessage(response, "소셜 계정이 성공적으로 연동되었습니다.");
-                }
+                // 플래시 메시지 설정 및 리다이렉트
+                sendFlashMessageAndRedirect(response,
+                                            existing.isPresent() ? "이미 등록된 소셜 계정입니다." : "소셜 계정이 성공적으로 연동되었습니다.",
+                                            redirectURL
+                                );
+                
                 return;
             }
 
             // 연동이 아닌 일반 로그인 처리
             if (authentication instanceof OAuth2AuthenticationToken oauth) {
                 try {
+                    // OAuth2 인증 정보에서 사용자 정보 가져오기
                     var principal = oauth.getPrincipal();
                     String provider = oauth.getAuthorizedClientRegistrationId();
                     String sub = principal.getAttribute("sub");
@@ -145,16 +155,19 @@ public class SecurityConfig {
                         // 보안 컨텍스트에 인증 객체 설정
                         request.getSession(true);
                         SecurityContextHolder.getContext().setAuthentication(userAuth);
-                        response.sendRedirect("http://localhost:3000/");
+
+                        // 플래시 메시지 설정 및 리다이렉트
+                        sendFlashMessageAndRedirect(response, "소셜 로그인에 성공했습니다.", redirectURL);
+
                         return;
                     } else {
                         // 소셜 계정이 등록되지 않은 경우
-                        sendRedirectWithFlashMessage(response, "등록되지 않은 소셜 계정입니다.");
+                        sendFlashMessageAndRedirect(response, "등록되지 않은 소셜 계정입니다.", redirectURL);
                         return;
                     }
-
                 } catch (Exception e) {
-                    sendRedirectWithFlashMessage(response, "소셜 로그인 처리 중 오류가 발생했습니다");
+                    // 예외 발생 시 플래시 메시지 설정
+                    sendFlashMessageAndRedirect(response, "소셜 로그인 처리 중 오류가 발생했습니다.", redirectURL);
                     return;
                 }
             }
@@ -162,14 +175,14 @@ public class SecurityConfig {
     }
 
     // 리다이렉트와 함께 플래시 메시지를 설정하는 메소드
-    private void sendRedirectWithFlashMessage(HttpServletResponse response, String errorMessage) throws IOException {
+    private void sendFlashMessageAndRedirect(HttpServletResponse response, String errorMessage, String redirectURL) throws IOException {
         String encoded = URLEncoder.encode(errorMessage, StandardCharsets.UTF_8).replace("+", "%20");
         Cookie flash = new Cookie("FLASH_ERROR", encoded);
         flash.setHttpOnly(false);
         flash.setPath("/");
         flash.setMaxAge(10); // 10초 유지
         response.addCookie(flash);
-        response.sendRedirect("http://localhost:3000/");
+        response.sendRedirect(redirectURL);
     }
 
     @Bean
