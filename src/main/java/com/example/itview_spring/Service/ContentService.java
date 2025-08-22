@@ -6,6 +6,7 @@ import com.example.itview_spring.DTO.ContentResponseDTO;
 import com.example.itview_spring.DTO.ExternalServiceDTO;
 import com.example.itview_spring.DTO.GenreDTO;
 import com.example.itview_spring.DTO.ImageDTO;
+import com.example.itview_spring.DTO.RatingCountDTO;
 import com.example.itview_spring.DTO.VideoDTO;
 
 import com.example.itview_spring.Constant.Genre;
@@ -180,31 +181,48 @@ public class ContentService {
 
 
     // 컨텐츠 상세 정보 조회
-    public ContentDetailDTO getContentDetail(Integer contentId) {
-        ContentDetailDTO contentDetail = new ContentDetailDTO();
+    public ContentDetailDTO getContentDetail(Integer contentId, Integer userId) {
+        try {
+            ContentDetailDTO contentDetail = new ContentDetailDTO();
 
-        // 컨텐츠 정보 조회
-        ContentResponseDTO contentResponseDTO = contentRepository.findContentWithAvgRating(contentId);
-        // 컨텐츠 장르 조회
-        List<GenreDTO> genres = contentGenreRepository.findByContentId(contentId);
-        genres.forEach(genre -> {
-            contentResponseDTO.getGenres().add(genre.getGenre().getGenreName());
-        });
-        contentDetail.setContentInfo(contentResponseDTO);
+            // 사용자 별점 조회
+            Integer myRating = ratingRepository.findSomeoneScore(userId, contentId);
+            contentDetail.setMyRating(myRating != null ? myRating : 0);
 
-        // 갤러리 이미지 조회
-        List<ImageDTO> images = galleryRepository.findByContentId(contentId);
-        contentDetail.setGallery(images);
+            // 별점 개수 조회
+            Long ratingCount = ratingRepository.countByContentId(contentId);
+            contentDetail.setRatingCount(ratingCount != null ? ratingCount : 0L);
 
-        // 동영상 조회
-        List<VideoDTO> videos = videoRepository.findByContentId(contentId);
-        contentDetail.setVideos(videos);
+            // 별점 분포 조회
+            List<RatingCountDTO> ratingDistribution = ratingRepository.findRatingDistributionByContentId(contentId);
+            contentDetail.setRatingDistribution(ratingDistribution != null ? ratingDistribution : List.of());
 
-        // 외부 서비스 조회
-        List<ExternalServiceDTO> externalServices = externalServiceRepository.findByContentId(contentId);
-        contentDetail.setExternalServices(externalServices);
-
-        return contentDetail;
+            // 컨텐츠 정보 조회
+            ContentResponseDTO contentResponseDTO = contentRepository.findContentWithAvgRating(contentId);
+            // 컨텐츠 장르 조회
+            List<GenreDTO> genres = contentGenreRepository.findByContentId(contentId);
+            genres.forEach(genre -> {
+                contentResponseDTO.getGenres().add(genre.getGenre().getGenreName());
+            });
+            contentDetail.setContentInfo(contentResponseDTO);
+    
+            // 갤러리 이미지 조회
+            List<ImageDTO> images = galleryRepository.findByContentId(contentId);
+            contentDetail.setGallery(images);
+    
+            // 동영상 조회
+            List<VideoDTO> videos = videoRepository.findByContentId(contentId);
+            contentDetail.setVideos(videos);
+    
+            // 외부 서비스 조회
+            List<ExternalServiceDTO> externalServices = externalServiceRepository.findByContentId(contentId);
+            contentDetail.setExternalServices(externalServices);
+    
+            return contentDetail;
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            return null;
+        }
     }
     //////////////////////////////////////////////////////////////////////////////////////////
     /**
