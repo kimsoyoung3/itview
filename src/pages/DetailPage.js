@@ -255,7 +255,12 @@ const DetailPage = ({userInfo, openLogin}) => {
                                     </button>
                                 </li>
                                 <li>
-                                    <button onClick={openComment}>
+                                    <button onClick={
+                                        userInfo ? 
+                                            openComment
+                                            :
+                                            () => openLogin()
+                                    }>
                                         <i className="bi bi-pencil-fill"></i>
                                         <p>코멘트</p>
                                     </button>
