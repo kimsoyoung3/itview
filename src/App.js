@@ -60,10 +60,16 @@ function App() {
         }
     };
 
+    // 로그인 창 관리
+    const [isLoginOpen, setLoginOpen] = useState(false);
+    
+    const openLogin = () => setLoginOpen(true);
+    const closeLogin = () => setLoginOpen(false);
+
     return (
         <BrowserRouter>
-            <Header userInfo={userInfo} handleLogin={handleLogin} handleLogout={handleLogout}/>
-            <AppRoutes userInfo={userInfo} />
+            <Header userInfo={userInfo} handleLogin={handleLogin} handleLogout={handleLogout} isLoginOpen={isLoginOpen} openLogin={openLogin} closeLogin={closeLogin}/>
+            <AppRoutes userInfo={userInfo} openLogin={openLogin}/>
         </BrowserRouter>
     );
 }

@@ -10,7 +10,7 @@ import {Swiper, SwiperSlide} from "swiper/react";
 import CreditOrPersonCard from "../components/CreditOrPersonCard";
 import {getContentCredit} from "../API/ContentApi";
 
-const DetailPage = ({userInfo}) => {
+const DetailPage = ({userInfo, openLogin}) => {
     const [contentDetail, setContentDetail] = useState(null);
     const [modalOpen, setModalOpen] = useState(false); // 모달 상태
     const [modalStartIndex, setModalStartIndex] = useState(0); // 모달 슬라이드 시작 인덱스
@@ -202,16 +202,21 @@ const DetailPage = ({userInfo}) => {
                                             setHoverScore(isHalf ? (i * 2 + 1) : (i + 1) * 2);
                                         }}
                                         onMouseLeave={() => setHoverScore(0)}
-                                        onClick={async () => {
-                                            const newScore = hoverScore === score ? 0 : hoverScore;
-                                            setScore(newScore);
-                                            if (newScore === 0) {
-                                                await handleScoreDelete();
-                                            } else {
-                                                const id = window.location.pathname.split('/').pop();
-                                                const data = { score: Number(newScore) };
-                                                await postContentRating(id, data);
-                                            }}}>
+                                        onClick={userInfo ?
+                                            async () => {
+                                                const newScore = hoverScore === score ? 0 : hoverScore;
+                                                setScore(newScore);
+                                                if (newScore === 0) {
+                                                    await handleScoreDelete();
+                                                } else {
+                                                    const id = window.location.pathname.split('/').pop();
+                                                    const data = { score: Number(newScore) };
+                                                    await postContentRating(id, data);
+                                                }
+                                            }
+                                            :
+                                            () => openLogin()
+                                        }>
                                         {/*기본 별*/}
                                         <i className="bi bi-star-fill star-base"></i>
                                         {/*반 별*/}
