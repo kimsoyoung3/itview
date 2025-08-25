@@ -2,10 +2,10 @@ import React from 'react'
 import { Route, Routes } from 'react-router-dom';
 import DetailPage from '../pages/DetailPage';
 
-function ContentRoutes() {
+function ContentRoutes({ userInfo }) {
   return (
     <Routes>
-        <Route path=":id" element={<DetailPage />} />
+        <Route path=":id" element={<DetailPage userInfo={userInfo} />} />
     </Routes>
   )
 }

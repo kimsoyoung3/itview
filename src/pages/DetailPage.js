@@ -10,7 +10,7 @@ import {Swiper, SwiperSlide} from "swiper/react";
 import CreditOrPersonCard from "../components/CreditOrPersonCard";
 import {getContentCredit} from "../API/ContentApi";
 
-const DetailPage = () => {
+const DetailPage = ({userInfo}) => {
     const [contentDetail, setContentDetail] = useState(null);
     const [modalOpen, setModalOpen] = useState(false); // 모달 상태
     const [modalStartIndex, setModalStartIndex] = useState(0); // 모달 슬라이드 시작 인덱스

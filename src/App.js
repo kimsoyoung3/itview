@@ -63,7 +63,7 @@ function App() {
     return (
         <BrowserRouter>
             <Header userInfo={userInfo} handleLogin={handleLogin} handleLogout={handleLogout}/>
-            <AppRoutes/>
+            <AppRoutes userInfo={userInfo} />
         </BrowserRouter>
     );
 }
