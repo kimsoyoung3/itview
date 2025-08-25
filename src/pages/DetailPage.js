@@ -106,20 +106,20 @@ const DetailPage = () => {
     useEffect(() => {
         console.log(contentDetail);
         if (contentDetail && contentDetail.ratingDistribution.some(rating => rating.height === undefined)) {
-            // 최대 값과 해당 인덱스 찾기
+            // 최대 값 찾기
             const max = Math.max(...contentDetail.ratingDistribution.map(rating => rating.scoreCount));
-            const maxIndex = contentDetail.ratingDistribution.findIndex(rating => rating.scoreCount === max);
+
+            // 최고 점수에 isMax 플래그 추가
+            contentDetail.ratingDistribution = contentDetail.ratingDistribution.map(rating => ({
+                ...rating,
+                isMax: rating.scoreCount === max
+            }));
 
             // 각 점수에 대한 높이 계산을 하여 contentDetail에 추가
             const updatedDistribution = contentDetail.ratingDistribution.map(rating => ({
                 ...rating,
                 height: (rating.scoreCount / max) * 100 // 예: 최대 높이를 100으로 설정
             }));
-
-            // 최대 값을 표시
-            if (updatedDistribution[maxIndex]) {
-                updatedDistribution[maxIndex].isMax = true;
-            }
 
             setContentDetail(prev => ({
                 ...prev,
