@@ -820,6 +820,7 @@ body {
   margin: 0;
   padding: 0;
   color: #666;
+  width: 100%;
 }
 
 .poster-bottom>li:nth-of-type(1) {
@@ -829,6 +830,7 @@ body {
 
 .poster-bottom>li:nth-of-type(2) {
   font-weight: bold;
+  margin-bottom: 5px;
 }
 
 .poster-bottom>li>span {
@@ -837,47 +839,30 @@ body {
 
 .rating-graph {
   display: flex;
-  justify-content: center;
-  align-items: flex-end;
-  height: 120px;
-  gap: 8px;
-}
-
-.rating-bars {
-  display: flex;
-  align-items: flex-end;
+  width: 100%;
+  align-items: flex-end; /* 막대 밑에서부터 쌓이도록 */
   gap: 4px;
 }
 
-.rating-bar-wrapper {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  width: 16px;
-}
-
-.rating-bar {
+.rating-graph-wrap {
   width: 100%;
-  background-color: #ccc;
-  transition: background 0.3s;
+  font-size: 0.7rem;
+  text-align: center;
+}
+
+.rating-graph-wrap>p {
+  margin-bottom: 0;
+}
+
+.rating-graph-each {
   min-height: 2px;
+  border-radius: 4px;
+  background-color: rgba(34,197,94, 0.3);
 }
 
-.rating-bar.highlight {
-  background-color: #ff4500;
+.rating-graph-each-max {
+  background-color: #22C55E;
 }
-
-.rating-bar-value {
-  font-size: 12px;
-  margin-bottom: 4px;
-  color: #333;
-}
-
-.rating-label {
-  font-size: 12px;
-  margin-top: 4px;
-}
-
 
 .detail-content-inner-info {
   width: 100%;

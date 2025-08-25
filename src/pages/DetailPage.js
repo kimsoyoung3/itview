@@ -19,6 +19,7 @@ const DetailPage = () => {
     const [score, setScore] = useState(0);
     const [hoverScore, setHoverScore] = useState(0); // 마우스 올릴 때 임시 점수
 
+
     const handleScoreDelete = () => {
         // 별점 삭제 로직 구현
         const id = window.location.pathname.split('/').pop();
@@ -101,8 +102,30 @@ const DetailPage = () => {
         fetchContentCredit();
     }, []);
 
+    // 별점 그래프 높이 계산
     useEffect(() => {
-        console.log(contentDetail)
+        console.log(contentDetail);
+        if (contentDetail && contentDetail.ratingDistribution.some(rating => rating.height === undefined)) {
+            // 최대 값과 해당 인덱스 찾기
+            const max = Math.max(...contentDetail.ratingDistribution.map(rating => rating.scoreCount));
+            const maxIndex = contentDetail.ratingDistribution.findIndex(rating => rating.scoreCount === max);
+
+            // 각 점수에 대한 높이 계산을 하여 contentDetail에 추가
+            const updatedDistribution = contentDetail.ratingDistribution.map(rating => ({
+                ...rating,
+                height: (rating.scoreCount / max) * 100 // 예: 최대 높이를 100으로 설정
+            }));
+
+            // 최대 값을 표시
+            if (updatedDistribution[maxIndex]) {
+                updatedDistribution[maxIndex].isMax = true;
+            }
+
+            setContentDetail(prev => ({
+                ...prev,
+                ratingDistribution: updatedDistribution
+            }));
+        }
     }, [contentDetail]);
 
     useEffect(() => {
@@ -141,41 +164,22 @@ const DetailPage = () => {
                         <ul className="poster-bottom">
                             <li>별점 그래프</li>
                             <li>평균 <i className="bi bi-star-fill"></i> {contentDetail?.contentInfo?.ratingAvg.toFixed(1)}
-                                <span className="poster-bottom-num">&#40;{contentDetail?.ratingCount}명&#41;</span>
+                                <span className="poster-bottom-num"> &#40;{contentDetail?.ratingCount}명&#41;</span>
                             </li>
+                            {/*별점 그래프 들어갈 자리*/}
+                            {/* 별점 그래프 */}
                             <li className="rating-graph">
-                                {(() => {
-                                    // 총 개수
-                                    const total = contentDetail.ratingDistribution.reduce(
-                                        (sum, d) => sum + d.scoreCount,
-                                        0
-                                    );
-                                    // 최댓값 찾기
-                                    const maxCount = Math.max(
-                                        ...contentDetail.ratingDistribution.map((d) => d.scoreCount)
-                                    );
-
-                                    return Array.from({ length: 10 }, (_, i) => i + 1).map((num) => {
-                                        const found = contentDetail.ratingDistribution.find(
-                                            (d) => d.score === num
-                                        );
-                                        const count = found ? found.scoreCount : 0;
-                                        const percentage = total ? (count / total) * 100 : 0;
-
-                                        return (
-                                            <div key={num} className="bar-wrapper">
-                                                <div
-                                                    className={`bar ${count === maxCount ? "bar-max" : ""}`}
-                                                    style={{ height: `${percentage}%` }}
-                                                ></div>
-                                                <span className="bar-label">{num}</span>
+                                {
+                                    contentDetail?.ratingDistribution?.map(
+                                        (rating, index) => (
+                                            <div key={index} className="rating-graph-wrap">
+                                                <p className={rating.isMax ? "rating-graph-each rating-graph-each-max" : "rating-graph-each"} style={{height:`${rating.height*0.8}px`}}></p>
+                                                <p className="rating-graph-text">{rating.score/2}</p>
                                             </div>
-                                        );
-                                    });
-                                })()}
+                                        )
+                                    )
+                                }
                             </li>
-
-
 
                         </ul>
                     </div>
