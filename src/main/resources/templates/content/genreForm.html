@@ -75,12 +75,21 @@
 
             <button type="submit" class="btn btn-primary">저장</button>
             <a th:href="@{/content/list}" class="btn btn-secondary">취소</a>
+
+<!--------------0825 추가---->
+            <form action="/video/register" method="get">
+                <input type="hidden" name="contentId" value="${contentId}"/>
+                <button type="submit">📹 영상 등록</button>
+            </form>
+
         </form>
         <!-- 수정된 후 데이터 보기 -->
         <h3>선택한 장르 </h3>
         <ul>
             <th:block th:each="genre : ${selectedGenres}">
-                <li th:text="${genreTranslations[genre.name()]}"></li>
+<!--               selectedGenres가 List<String>이면 genre.name() 호출 불가 → 오류 발생-->
+<!--                <li th:text="${genreTranslations[genre.name()]}"></li>-->
+                <li th:text="${genreTranslations[genre]}"></li>
             </th:block>
         </ul>
 
