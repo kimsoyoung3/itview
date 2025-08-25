@@ -257,6 +257,13 @@ const DetailPage = ({userInfo, openLogin}) => {
                                 <li>
                                     <button onClick={openComment}>
                                         <img src="/pencil.svg" alt=""/>
+                                    <button onClick={
+                                        userInfo ?
+                                            openComment
+                                            :
+                                            () => openLogin()
+                                    }>
+                                        <i className="bi bi-pencil-fill"></i>
                                         <p>코멘트</p>
                                     </button>
                                 </li>
