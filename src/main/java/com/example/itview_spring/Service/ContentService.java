@@ -1,5 +1,6 @@
 package com.example.itview_spring.Service;
 
+import com.example.itview_spring.DTO.CommentDTO;
 import com.example.itview_spring.DTO.ContentCreateDTO;
 import com.example.itview_spring.DTO.ContentDetailDTO;
 import com.example.itview_spring.DTO.ContentResponseDTO;
@@ -7,11 +8,13 @@ import com.example.itview_spring.DTO.ExternalServiceDTO;
 import com.example.itview_spring.DTO.GenreDTO;
 import com.example.itview_spring.DTO.ImageDTO;
 import com.example.itview_spring.DTO.RatingCountDTO;
+import com.example.itview_spring.DTO.UserProfileDTO;
 import com.example.itview_spring.DTO.VideoDTO;
 
 import com.example.itview_spring.Constant.Genre;
 import com.example.itview_spring.DTO.ContentCreateDTO;
 import com.example.itview_spring.Entity.ContentEntity;
+import com.example.itview_spring.Repository.CommentRepository;
 import com.example.itview_spring.Repository.ContentGenreRepository;
 import com.example.itview_spring.Entity.ContentGenreEntity;
 import com.example.itview_spring.Entity.RatingEntity;
@@ -50,6 +53,7 @@ public class ContentService {
     private final VideoRepository videoRepository;
     private final ExternalServiceRepository externalServiceRepository;
     private final RatingRepository ratingRepository;
+    private final CommentRepository commentRepository;
     private final UserRepository userRepository;
     private final ModelMapper modelMapper;
 
@@ -187,25 +191,6 @@ public class ContentService {
         try {
             ContentDetailDTO contentDetail = new ContentDetailDTO();
 
-            // 사용자 별점 조회
-            Integer myRating = ratingRepository.findSomeoneScore(userId, contentId);
-            contentDetail.setMyRating(myRating != null ? myRating : 0);
-
-            // 별점 개수 조회
-            Long ratingCount = ratingRepository.countByContentId(contentId);
-            contentDetail.setRatingCount(ratingCount != null ? ratingCount : 0L);
-
-            // 별점 분포 조회
-            List<RatingCountDTO> ratingDistribution = ratingRepository.findRatingDistributionByContentId(contentId);
-            List<RatingCountDTO> fullRating = new ArrayList<>();
-            Map<Integer, Long> ratingMap = ratingDistribution.stream()
-                    .collect(Collectors.toMap(RatingCountDTO::getScore, RatingCountDTO::getScoreCount));
-            for (int i = 1; i <= 10; i++) {
-                Long count = ratingMap.getOrDefault(i, 0L);
-                fullRating.add(new RatingCountDTO(i, count));
-            }
-            contentDetail.setRatingDistribution(fullRating);
-
             // 컨텐츠 정보 조회
             ContentResponseDTO contentResponseDTO = contentRepository.findContentWithAvgRating(contentId);
             // 컨텐츠 장르 조회
@@ -226,7 +211,33 @@ public class ContentService {
             // 외부 서비스 조회
             List<ExternalServiceDTO> externalServices = externalServiceRepository.findByContentId(contentId);
             contentDetail.setExternalServices(externalServices);
-    
+            
+            // 사용자 별점 조회
+            Integer myRating = ratingRepository.findSomeoneScore(userId, contentId);
+            contentDetail.setMyRating(myRating != null ? myRating : 0);
+
+            // 별점 개수 조회
+            Long ratingCount = ratingRepository.countByContentId(contentId);
+            contentDetail.setRatingCount(ratingCount != null ? ratingCount : 0L);
+
+            // 별점 분포 조회
+            List<RatingCountDTO> ratingDistribution = ratingRepository.findRatingDistributionByContentId(contentId);
+            List<RatingCountDTO> fullRating = new ArrayList<>();
+            Map<Integer, Long> ratingMap = ratingDistribution.stream()
+                    .collect(Collectors.toMap(RatingCountDTO::getScore, RatingCountDTO::getScoreCount));
+            for (int i = 1; i <= 10; i++) {
+                Long count = ratingMap.getOrDefault(i, 0L);
+                fullRating.add(new RatingCountDTO(i, count));
+            }
+            contentDetail.setRatingDistribution(fullRating);
+
+            // 사용자 코멘트 조회
+            CommentDTO myComment = commentRepository.findCommentDTOByUserIdAndContentId(userId, contentId).orElse(null);
+            myComment.setRating(ratingRepository.findSomeoneScore(userId, contentId));
+            myComment.setUser(userRepository.findUserProfileById(userId).orElse(null));
+            contentDetail.setMyComment(myComment);
+
+
             return contentDetail;
         } catch (Exception e) {
             System.out.println(e.getMessage());
