@@ -233,10 +233,12 @@ public class ContentService {
 
             // 사용자 코멘트 조회
             CommentDTO myComment = commentRepository.findCommentDTOByUserIdAndContentId(userId, contentId).orElse(null);
-            myComment.setRating(ratingRepository.findSomeoneScore(userId, contentId));
-            myComment.setUser(userRepository.findUserProfileById(userId).orElse(null));
-            contentDetail.setMyComment(myComment);
-
+            if (myComment != null)
+            {
+                myComment.setRating(ratingRepository.findSomeoneScore(userId, contentId));
+                myComment.setUser(userRepository.findUserProfileById(userId).orElse(null));
+                contentDetail.setMyComment(myComment);
+            }
 
             return contentDetail;
         } catch (Exception e) {
