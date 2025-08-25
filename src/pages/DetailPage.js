@@ -271,7 +271,11 @@ const DetailPage = ({userInfo, openLogin}) => {
                         {/*내가 쓴 코멘트*/}
                         <div className="info-middle">
                             <p className="my-coment">내가 쓴 코멘트</p>
-                            {/*코멘트가 있으면 나오게 하기*/}
+                            <div>
+                                <img src={contentDetail?.myComment.user.profile} alt=""/>
+                                <p>{contentDetail?.myComment.text}</p>
+                                <div className="my-coment-btn"></div>
+                            </div>
                         </div>
                         {/*컨텐츠 정보 설명*/}
                         <div className="info-bottom">
