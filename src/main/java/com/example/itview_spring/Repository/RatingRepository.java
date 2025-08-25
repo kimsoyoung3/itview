@@ -6,10 +6,12 @@ import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
+import org.springframework.stereotype.Repository;
 
 import com.example.itview_spring.DTO.RatingCountDTO;
 import com.example.itview_spring.Entity.RatingEntity;
 
+@Repository
 public interface RatingRepository extends JpaRepository<RatingEntity, Integer> {
 
     // 특정 컨텐츠에 대한 사용자 평점 조회 (행 전체)
