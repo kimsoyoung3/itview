@@ -4,7 +4,7 @@ import "../App.css";
 import 'swiper/css/navigation';
 import 'swiper/css/pagination';
 import 'swiper/css';
-import { deleteRating, getContentDetail, postContentRating } from "../API/ContentApi";
+import { deleteRating, getContentDetail, postContentComment, postContentRating } from "../API/ContentApi";
 import {Autoplay, Navigation, Pagination} from "swiper/modules";
 import {Swiper, SwiperSlide} from "swiper/react";
 import CreditOrPersonCard from "../components/CreditOrPersonCard";
@@ -19,11 +19,17 @@ const DetailPage = ({userInfo, openLogin}) => {
     const [score, setScore] = useState(0);
     const [hoverScore, setHoverScore] = useState(0); // 마우스 올릴 때 임시 점수
 
+    const textRef = React.useRef(null); // 코멘트 텍스트 영역 참조
     const [myCommentModal, setMyCommentModal] = useState();
 
     /*코멘트 모달*/
     const openComment = () => setMyCommentModal(true);
-    const closeCommemt = () => setMyCommentModal(false);
+    const closeComment = () => setMyCommentModal(false);
+
+    const handleCommentPost = async () => {
+        var res = await postContentComment(window.location.pathname.split('/').pop(), { text: textRef.current.value })
+        console.log(res);
+    };
 
     /*모달 바깥 클릭 시 이벤트 전파 차단용*/
     const stopPropagation = (e) => e.stopPropagation();
@@ -276,15 +282,15 @@ const DetailPage = ({userInfo, openLogin}) => {
 
                 {/*마이코멘트 모달창*/}
                 {myCommentModal && (
-                    <div className="comment-modal-overlay" onClick={closeCommemt}>
+                    <div className="comment-modal-overlay" onClick={closeComment}>
                         <div className="comment-modal-content" onClick={(e) => e.stopPropagation()}>
                             <div className="comment-content-top">
                                 <p className="comment-modal-title">{contentDetail?.contentInfo?.title}</p>
-                                <button className="comment-close-button" onClick={closeCommemt}><i className="bi bi-x-lg"></i></button>
+                                <button className="comment-close-button" onClick={closeComment}><i className="bi bi-x-lg"></i></button>
                             </div>
-                            <textarea rows="15" placeholder="작품에 대한 코멘트를 남겨주세요." maxLength={1024}></textarea>
+                            <textarea rows="15" placeholder="작품에 대한 코멘트를 남겨주세요." maxLength={1000} ref={textRef}></textarea>
                             <div className="comment-content-bottom">
-                                <button className="comment-content-btn">저장</button>
+                                <button className="comment-content-btn" onClick={handleCommentPost}>저장</button>
                             </div>
                         </div>
                     </div>
