@@ -102,9 +102,13 @@ const DetailPage = () => {
         fetchContentCredit();
     }, []);
 
-    // 별점 그래프 높이 계산
+    // 컨텐츠 정보를 가져온 후
     useEffect(() => {
         console.log(contentDetail);
+        // 내가 준 별점 설정
+        setScore(contentDetail?.myRating || 0);
+
+        // 별점 그래프 높이 계산
         if (contentDetail && contentDetail.ratingDistribution.some(rating => rating.height === undefined)) {
             // 최대 값 찾기
             const max = Math.max(...contentDetail.ratingDistribution.map(rating => rating.scoreCount));
