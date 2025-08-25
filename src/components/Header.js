@@ -4,7 +4,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import '../App.css'; // 스타일 불러오기
 import { checkEmail, checkVerification, createVerification, google, registerUser, setPassword } from '../API/UserApi';
 
-const Header = ({userInfo, handleLogin, handleLogout}) => {
+const Header = ({userInfo, handleLogin, handleLogout, isLoginOpen, openLogin, closeLogin}) => {
     /*스크롤 시*/
     const location = useLocation();
     const [scrolled, setScrolled] = useState(false);
@@ -26,7 +26,6 @@ const Header = ({userInfo, handleLogin, handleLogout}) => {
     }, [isDetailPage]);
 
     /*로그인 모달*/
-    const [isLoginOpen, setLoginOpen] = useState(false);
     const [loginEmail, setLoginEmail] = useState('');
     const [loginPassword, setLoginPassword] = useState('');
     const [loginError, setLoginError] = useState(null); // 에러 메시지 저장용
@@ -93,9 +92,7 @@ const Header = ({userInfo, handleLogin, handleLogout}) => {
         }
     };
 
-    /*로그인 모달*/
-    const openLogin = () => setLoginOpen(true);
-    const closeLogin = () => setLoginOpen(false);
+
 
     /*회원가입 모달*/
     const openSignup = () => setSignupOpen(true);
@@ -200,9 +197,9 @@ const Header = ({userInfo, handleLogin, handleLogout}) => {
                     <div className="login-modal" onClick={(e) => e.stopPropagation()}>
                         <h1><img src="/logo.svg" alt=""/></h1>
                         <h2>로그인</h2>
-                        <form onSubmit={(e) => {
+                        <form onSubmit={async (e) => {
                             e.preventDefault();
-                            var res = handleLogin(loginEmail, loginPassword);
+                            var res = await handleLogin(loginEmail, loginPassword);
                             if (res) {
                                 closeLogin();
                                 window.location.reload();

@@ -10,7 +10,7 @@ import {Swiper, SwiperSlide} from "swiper/react";
 import CreditOrPersonCard from "../components/CreditOrPersonCard";
 import {getContentCredit} from "../API/ContentApi";
 
-const DetailPage = ({userInfo}) => {
+const DetailPage = ({userInfo, openLogin}) => {
     const [contentDetail, setContentDetail] = useState(null);
     const [modalOpen, setModalOpen] = useState(false); // 모달 상태
     const [modalStartIndex, setModalStartIndex] = useState(0); // 모달 슬라이드 시작 인덱스
@@ -223,8 +223,7 @@ const DetailPage = ({userInfo}) => {
                                                 }
                                             }
                                             :
-                                            () => alert('로그인 후 이용 가능합니다.')
-
+                                            () => openLogin()
                                         }>
                                         {/*기본 별*/}
                                         <i className="bi bi-star-fill star-base"></i>
@@ -359,8 +358,6 @@ const DetailPage = ({userInfo}) => {
                  </div>
 
              </section>
-
-
 
             {/*갤러리*/}
             {contentDetail?.gallery?.length > 0 && (
