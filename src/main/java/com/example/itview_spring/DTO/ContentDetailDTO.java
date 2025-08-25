@@ -14,17 +14,19 @@ import lombok.Setter;
 public class ContentDetailDTO {
     
     // 컨텐츠 정보
-    ContentResponseDTO contentInfo;
+    private ContentResponseDTO contentInfo;
     // 사진 정보
-    List<ImageDTO> gallery;
+    private List<ImageDTO> gallery;
     // 동영상 정보
-    List<VideoDTO> videos;
+    private List<VideoDTO> videos;
     // 외부 서비스 정보
-    List<ExternalServiceDTO> externalServices;
+    private List<ExternalServiceDTO> externalServices;
     // 사용자의 별점
-    Integer myRating;
+    private Integer myRating;
     // 별점 개수
-    Long ratingCount;
+    private Long ratingCount;
     // 별점 분포
-    List<RatingCountDTO> ratingDistribution;
+    private List<RatingCountDTO> ratingDistribution;
+    // 사용자의 코멘트
+    private CommentDTO myComment;
 }

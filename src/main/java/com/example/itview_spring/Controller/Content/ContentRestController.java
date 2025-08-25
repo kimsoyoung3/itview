@@ -82,6 +82,7 @@ public class ContentRestController {
                                                    @AuthenticationPrincipal CustomUserDetails userDetails,
                                                    @RequestBody TextDTO textDTO) {
         commentService.addComment(userDetails.getId(), id, textDTO.getText());
+
         return ResponseEntity.ok().build();
     }
 
