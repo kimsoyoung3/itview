@@ -55,21 +55,24 @@ public class UserController {
     // 로그인
     @PostMapping("/login")
     public ResponseEntity<Void> loginPost(@RequestBody LoginDTO loginDTO, HttpServletRequest request, HttpServletResponse response) {
-        // loginDTO로 인증 토큰 생성
-        UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
-                loginDTO.getEmail(), loginDTO.getPassword());
+        try {
+            // loginDTO로 인증 토큰 생성
+            UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
+                    loginDTO.getEmail(), loginDTO.getPassword());
 
-        // 인증 매니저를 사용하여 인증 시도
-        Authentication authentication = authenticationManager.authenticate(authToken); 
-        
-        // 인증이 성공하면 SecurityContextHolder에 인증 정보 저장
-        SecurityContext context = SecurityContextHolder.createEmptyContext();
-        context.setAuthentication(authentication);
-        SecurityContextHolder.setContext(context);
+            // 인증 매니저를 사용하여 인증 시도
+            Authentication authentication = authenticationManager.authenticate(authToken); 
+            
+            // 인증이 성공하면 SecurityContextHolder에 인증 정보 저장
+            SecurityContext context = SecurityContextHolder.createEmptyContext();
+            context.setAuthentication(authentication);
+            SecurityContextHolder.setContext(context);
 
-        // 세션 생성
-        securityContextRepository.saveContext(context, request, response);
-
+            // 세션 생성
+            securityContextRepository.saveContext(context, request, response);
+        } catch (Exception e) {
+            return ResponseEntity.status(401).build(); // 인증 실패
+        }
         return ResponseEntity.ok().build();
     }
 
