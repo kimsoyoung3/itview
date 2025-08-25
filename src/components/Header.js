@@ -2,9 +2,9 @@ import React, {useEffect, useState} from 'react';
 import {Link, NavLink, useLocation} from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import '../App.css'; // 스타일 불러오기
-import { checkEmail, checkVerification, createVerification, getMyInfo, google, loginUser, logoutUser, registerUser, setPassword } from '../API/UserApi';
+import { checkEmail, checkVerification, createVerification, google, registerUser, setPassword } from '../API/UserApi';
 
-const Header = () => {
+const Header = ({userInfo, handleLogin, handleLogout}) => {
     /*스크롤 시*/
     const location = useLocation();
     const [scrolled, setScrolled] = useState(false);
@@ -25,37 +25,6 @@ const Header = () => {
         }
     }, [isDetailPage]);
 
-    // 로그인 상태 관리
-    // isLoggedIn: 로그인 여부, userInfo: 사용자 이메일
-    const [userInfo, setUserInfo] = useState(null);
-    const checkLoginStatus = async () => {
-        try {
-            const response = await getMyInfo();
-            setUserInfo(response.data);
-        } catch (error) {
-            setUserInfo(null);
-        }
-    };
-
-    useEffect(() => {
-        console.log(userInfo);
-    }, [userInfo]);
-
-    const isLoggedIn = !!userInfo;
-    // 컴포넌트가 마운트될 때 로그인 상태 확인
-    useEffect(() => {
-        checkLoginStatus();
-        const match = document.cookie.match(/(?:^|;\s*)FLASH_ERROR=([^;]+)/);
-        if (!match) return;
-        const msg = decodeURIComponent(match[1]);
-        if (msg) {
-            alert(msg); // 쿠키에 저장된 메시지를 alert로 표시
-        }
-
-        // 쿠키는 일회성으로 쓰고 바로 지우기
-        document.cookie = "FLASH_ERROR=; Max-Age=0; Path=/";
-    }, []);
-
     /*로그인 모달*/
     const [isLoginOpen, setLoginOpen] = useState(false);
     const [loginEmail, setLoginEmail] = useState('');
@@ -64,32 +33,6 @@ const Header = () => {
     const [isErrorModalOpen, setErrorModalOpen] = useState(false);
 
     const closeErrorModal = () => setErrorModalOpen(false);
-
-    const handleLogin = async () => {
-        // 로그인 로직 처리
-        try {
-            await loginUser({
-                email: loginEmail,
-                password: loginPassword
-            });
-            closeLogin();
-            window.location.reload();
-        } catch (error) {
-            setLoginError('로그인에 실패했습니다. 다시 시도해주세요.');
-            setErrorModalOpen(true);
-        }
-    };
-
-    const handleLogout = async () => {
-        // 로그아웃 로직 처리
-        try {
-            await logoutUser();
-            setUserInfo(null);
-            window.location.reload();
-        } catch (error) {
-            alert('로그아웃에 실패했습니다. 다시 시도해주세요.');
-        }
-    };
 
     const [verifyingEmail, setVerifyingEmail] = useState('');
     const handleCreateVerification = async (email) => {
@@ -228,7 +171,7 @@ const Header = () => {
                         </div>
 
                         {/*로그인&회원가입&마이페이지*/}
-                        {isLoggedIn ? (
+                        {userInfo ? (
                             <div className="user-menu">
                                 <Link to="/MyPage" className="login-button">마이페이지</Link>
                                 <button onClick={handleLogout} className="login-button">로그아웃</button>
@@ -259,8 +202,15 @@ const Header = () => {
                         <h2>로그인</h2>
                         <form onSubmit={(e) => {
                             e.preventDefault();
-                            handleLogin();
-                        }}>
+                            var res = handleLogin(loginEmail, loginPassword);
+                            if (res) {
+                                closeLogin();
+                                window.location.reload();
+                            } else {
+                                setLoginError('로그인에 실패했습니다. 다시 시도해주세요.');
+                                setErrorModalOpen(true);
+                            }
+                        }}> 
                             <input
                                 type="email"
                                 placeholder="이메일"
