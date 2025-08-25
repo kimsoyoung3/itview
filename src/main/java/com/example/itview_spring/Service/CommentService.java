@@ -1,6 +1,7 @@
 package com.example.itview_spring.Service;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.example.itview_spring.Entity.CommentEntity;
 import com.example.itview_spring.Repository.CommentRepository;
@@ -11,6 +12,7 @@ import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class CommentService {
     
     private final CommentRepository commentRepository;

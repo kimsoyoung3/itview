@@ -3,6 +3,7 @@ package com.example.itview_spring.Service;
 import java.util.Optional;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.example.itview_spring.Entity.RatingEntity;
 import com.example.itview_spring.Repository.ContentRepository;
@@ -13,6 +14,7 @@ import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class RatingService {
 
     private final RatingRepository ratingRepository;
@@ -43,7 +45,6 @@ public class RatingService {
     // 별점 삭제
     public Boolean deleteRating(Integer userId, Integer contentId) {
         ratingRepository.deleteByUserIdAndContentId(userId, contentId);
-
         // 삭제 후 해당 별점이 존재하는지 확인
         Optional<RatingEntity> deletedRating = ratingRepository.findByUserIdAndContentId(userId, contentId);
         return deletedRating.isEmpty();
