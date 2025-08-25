@@ -210,16 +210,22 @@ const DetailPage = ({userInfo}) => {
                                             setHoverScore(isHalf ? (i * 2 + 1) : (i + 1) * 2);
                                         }}
                                         onMouseLeave={() => setHoverScore(0)}
-                                        onClick={async () => {
-                                            const newScore = hoverScore === score ? 0 : hoverScore;
-                                            setScore(newScore);
-                                            if (newScore === 0) {
-                                                await handleScoreDelete();
-                                            } else {
-                                                const id = window.location.pathname.split('/').pop();
-                                                const data = { score: Number(newScore) };
-                                                await postContentRating(id, data);
-                                            }}}>
+                                        onClick={userInfo ?
+                                            async () => {
+                                                const newScore = hoverScore === score ? 0 : hoverScore;
+                                                setScore(newScore);
+                                                if (newScore === 0) {
+                                                    await handleScoreDelete();
+                                                } else {
+                                                    const id = window.location.pathname.split('/').pop();
+                                                    const data = { score: Number(newScore) };
+                                                    await postContentRating(id, data);
+                                                }
+                                            }
+                                            :
+                                            () => alert('로그인 후 이용 가능합니다.')
+
+                                        }>
                                         {/*기본 별*/}
                                         <i className="bi bi-star-fill star-base"></i>
                                         {/*반 별*/}
@@ -272,8 +278,14 @@ const DetailPage = ({userInfo}) => {
                 {myCommetModal && (
                     <div className="comment-modal-overlay" onClick={closeCommemt}>
                         <div className="comment-modal-content" onClick={(e) => e.stopPropagation()}>
-                            <p className="comment-modal-title">{contentDetail?.contentInfo?.title}</p>
-                            <textarea rows="15"></textarea>
+                            <div className="comment-content-top">
+                                <p className="comment-modal-title">{contentDetail?.contentInfo?.title}</p>
+                                <button className="comment-close-button" onClick={closeCommemt}><i className="bi bi-x-lg"></i></button>
+                            </div>
+                            <textarea rows="15" placeholder="작품에 대한 코멘트를 남겨주세요." maxLength={1024}></textarea>
+                            <div className="comment-content-bottom">
+                                <button className="comment-content-btn">저장</button>
+                            </div>
                         </div>
                     </div>
                 )}

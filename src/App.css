@@ -983,7 +983,27 @@ body {
   overflow: hidden;
 }
 
+.comment-content-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
 .comment-modal-title {
+  font-weight: bold;
+  font-size: 1.1rem;
+  margin: 0;
+}
+
+.comment-close-button {
+  width: 25px;
+  border: none;
+  background-color: #eeeeee;
+  padding: 3px;
+  border-radius: 50%;
+}
+
+.comment-close-button>i {
   font-weight: bold;
 }
 
@@ -991,6 +1011,26 @@ body {
   width: 100%;
   border: none;
   outline: none;
+}
+
+.comment-modal-content>textarea::placeholder {
+  font-size: 0.9rem;
+  color: #888888;
+}
+
+.comment-content-bottom {
+  display: flex;
+  justify-content: end;
+}
+
+.comment-content-btn {
+  text-align: end;
+  border: none;
+  background-color: #22C55E;
+  color: #ffffff;
+  padding: 8px 24px;
+  border-radius: 8px;
+  font-size: 0.9rem;
 }
 
 
