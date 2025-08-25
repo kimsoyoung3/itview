@@ -19,6 +19,14 @@ const DetailPage = () => {
     const [score, setScore] = useState(0);
     const [hoverScore, setHoverScore] = useState(0); // 마우스 올릴 때 임시 점수
 
+    const [myCommetModal, setMyCommentModal] = useState();
+
+    /*코멘트 모달*/
+    const openComment = () => setMyCommentModal(true);
+    const closeCommemt = () => setMyCommentModal(false);
+
+    /*모달 바깥 클릭 시 이벤트 전파 차단용*/
+    const stopPropagation = (e) => e.stopPropagation();
 
     const handleScoreDelete = () => {
         // 별점 삭제 로직 구현
@@ -230,16 +238,22 @@ const DetailPage = () => {
                             {/*위시,컬렉션 추가 및 코멘트 달기*/}
                             <ul className="info-top-right">
                                 <li>
-                                    <i className="bi bi-plus-lg"></i>
-                                    <p>보고싶어요</p>
+                                    <button>
+                                        <i className="bi bi-plus-lg"></i>
+                                        <p>보고싶어요</p>
+                                    </button>
                                 </li>
                                 <li>
-                                    <i className="bi bi-pencil-fill"></i>
-                                    <p>코멘트</p>
+                                    <button onClick={openComment}>
+                                        <i className="bi bi-pencil-fill"></i>
+                                        <p>코멘트</p>
+                                    </button>
                                 </li>
                                 <li>
-                                    <i className="bi bi-plus-square-fill"></i>
-                                    <p>컬렉션</p>
+                                    <button>
+                                        <i className="bi bi-plus-square-fill"></i>
+                                        <p>컬렉션</p>
+                                    </button>
                                 </li>
                             </ul>
                         </div>
@@ -254,6 +268,15 @@ const DetailPage = () => {
                         </div>
                     </div>
                 </div>
+
+                {myCommetModal && (
+                    <div className="comment-modal-overlay" onClick={closeCommemt}>
+                        <div className="comment-modal-content" onClick={(e) => e.stopPropagation()}>
+                            <p className="comment-modal-title">{contentDetail?.contentInfo?.title}</p>
+                            <textarea rows="15"></textarea>
+                        </div>
+                    </div>
+                )}
             </section>
 
             {/*외부 서비스 링크*/}
@@ -269,6 +292,15 @@ const DetailPage = () => {
                     </div>
                 </section>
             )}
+
+            {/*코멘트*/}
+            <section className="detail-content container">
+                <div className="comment-wrap">
+                    <p className="detail-category">코멘트</p>
+
+                </div>
+            </section>
+
 
             {/*크레딧*/}
              <section className="detail-content container">
@@ -315,6 +347,8 @@ const DetailPage = () => {
                  </div>
 
              </section>
+
+
 
             {/*갤러리*/}
             {contentDetail?.gallery?.length > 0 && (
