@@ -12,6 +12,8 @@ import com.example.itview_spring.Entity.ExternalServiceEntity;
 
 @Repository
 public interface ExternalServiceRepository extends JpaRepository<ExternalServiceEntity, Integer> {
+
+    // 컨텐츠 ID로 외부 서비스 정보 조회
     @Query("""
             SELECT new com.example.itview_spring.DTO.ExternalServiceDTO(
                 e.id,

@@ -13,6 +13,7 @@ import com.example.itview_spring.Entity.GalleryEntity;
 @Repository
 public interface GalleryRepository extends JpaRepository<GalleryEntity, Integer> {
 
+    // 컨텐츠 ID로 이미지 리스트 조회
     @Query(value = """
                 SELECT new com.example.itview_spring.DTO.ImageDTO(g.id, g.photo)
                 FROM GalleryEntity g
