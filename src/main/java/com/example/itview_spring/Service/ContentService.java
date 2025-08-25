@@ -32,7 +32,9 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -195,7 +197,14 @@ public class ContentService {
 
             // 별점 분포 조회
             List<RatingCountDTO> ratingDistribution = ratingRepository.findRatingDistributionByContentId(contentId);
-            contentDetail.setRatingDistribution(ratingDistribution != null ? ratingDistribution : List.of());
+            List<RatingCountDTO> fullRating = new ArrayList<>();
+            Map<Integer, Long> ratingMap = ratingDistribution.stream()
+                    .collect(Collectors.toMap(RatingCountDTO::getScore, RatingCountDTO::getScoreCount));
+            for (int i = 1; i <= 10; i++) {
+                Long count = ratingMap.getOrDefault(i, 0L);
+                fullRating.add(new RatingCountDTO(i, count));
+            }
+            contentDetail.setRatingDistribution(fullRating);
 
             // 컨텐츠 정보 조회
             ContentResponseDTO contentResponseDTO = contentRepository.findContentWithAvgRating(contentId);
@@ -293,36 +302,6 @@ public class ContentService {
             System.out.println("New Genres: " + newGenres);
 
         }
-    }
-
-    // 별점 등록
-    public void rateContent(Integer userId, Integer contentId, Integer score) {
-
-        // 기존 별점 조회
-        Optional<RatingEntity> existingRating = ratingRepository.findByUserIdAndContentId(userId, contentId);
-
-        if (existingRating.isEmpty()) {
-            RatingEntity ratingEntity = new RatingEntity();
-            ratingEntity.setUser(userRepository.findById(userId).get());
-            ratingEntity.setContent(contentRepository.findById(contentId).get());
-            ratingEntity.setScore(score);
-            ratingRepository.save(ratingEntity);
-        }
-        else {
-            // 기존 별점이 있는 경우 업데이트
-            RatingEntity ratingEntity = existingRating.get();
-            ratingEntity.setScore(score);
-            ratingRepository.save(ratingEntity);
-        }        
-    }
-
-    // 별점 삭제
-    public Boolean deleteRating(Integer userId, Integer contentId) {
-        ratingRepository.deleteByUserIdAndContentId(userId, contentId);
-
-        // 삭제 후 해당 별점이 존재하는지 확인
-        Optional<RatingEntity> deletedRating = ratingRepository.findByUserIdAndContentId(userId, contentId);
-        return deletedRating.isEmpty();
     }
 }
 

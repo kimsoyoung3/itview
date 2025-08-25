@@ -1,6 +1,5 @@
 package com.example.itview_spring.Repository;
 
-import com.example.itview_spring.DTO.ContentDetailDTO;
 import com.example.itview_spring.DTO.ContentResponseDTO;
 import com.example.itview_spring.Entity.ContentEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -10,6 +9,8 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface ContentRepository extends JpaRepository<ContentEntity, Integer> {
+
+    // 컨텐츠 ID로 컨텐츠 정보 조회
     @Query("""
         SELECT new com.example.itview_spring.DTO.ContentResponseDTO(
             c.id,

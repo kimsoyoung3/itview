@@ -8,7 +8,6 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import com.example.itview_spring.DTO.GenreDTO;
-import com.example.itview_spring.Entity.ContentGenreEntity;
 import java.util.List;
 
 @Repository
@@ -21,6 +20,7 @@ public interface ContentGenreRepository extends JpaRepository<ContentGenreEntity
     void deleteByContent (ContentEntity content);
     void deleteByContentId(Integer contentId);
 
+    // 특정 컨텐츠 ID로 장르 DTO 리스트 조회
     @Query(value = """
                 SELECT new com.example.itview_spring.DTO.GenreDTO(cg.genre)
                 FROM ContentGenreEntity cg
