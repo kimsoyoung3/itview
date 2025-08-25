@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {Link, NavLink, useLocation, redirect} from 'react-router-dom';
+import {Link, NavLink, useLocation} from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import '../App.css'; // 스타일 불러오기
 import { checkEmail, checkVerification, createVerification, getMyInfo, google, loginUser, logoutUser, registerUser, setPassword } from '../API/UserApi';
