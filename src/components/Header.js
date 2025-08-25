@@ -27,23 +27,21 @@ const Header = () => {
 
     // 로그인 상태 관리
     // isLoggedIn: 로그인 여부, userInfo: 사용자 이메일
-    const [isLoggedIn, setIsLoggedIn] = useState(false);
     const [userInfo, setUserInfo] = useState(null);
     const checkLoginStatus = async () => {
         try {
             const response = await getMyInfo();
-            setIsLoggedIn(true);
             setUserInfo(response.data);
         } catch (error) {
-            setIsLoggedIn(false);
             setUserInfo(null);
         }
     };
 
     useEffect(() => {
-        console.log(isLoggedIn, userInfo);
-    }, [isLoggedIn, userInfo]);
+        console.log(userInfo);
+    }, [userInfo]);
 
+    const isLoggedIn = !!userInfo;
     // 컴포넌트가 마운트될 때 로그인 상태 확인
     useEffect(() => {
         checkLoginStatus();
@@ -86,7 +84,6 @@ const Header = () => {
         // 로그아웃 로직 처리
         try {
             await logoutUser();
-            setIsLoggedIn(false);
             setUserInfo(null);
             window.location.reload();
         } catch (error) {
