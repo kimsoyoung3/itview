@@ -952,6 +952,19 @@ body {
   background: none;
 }
 
+.info-top-right>li>button>img {
+  width: 30px;
+  transition: all 0.3s ease;
+  margin-bottom: 5px;
+  transform: translateZ(0);  /* GPU 가속 */
+  backface-visibility: hidden;
+  will-change: transform;
+}
+
+.info-top-right>li>button:hover img {
+  transform: scale(1.25);
+}
+
 .info-top-right>li>button>p {
   font-size: 0.7rem;
   font-weight: 500;

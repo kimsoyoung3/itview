@@ -19,7 +19,7 @@ const DetailPage = ({userInfo, openLogin}) => {
     const [score, setScore] = useState(0);
     const [hoverScore, setHoverScore] = useState(0); // 마우스 올릴 때 임시 점수
 
-    const [myCommetModal, setMyCommentModal] = useState();
+    const [myCommentModal, setMyCommentModal] = useState();
 
     /*코멘트 모달*/
     const openComment = () => setMyCommentModal(true);
@@ -244,19 +244,19 @@ const DetailPage = ({userInfo, openLogin}) => {
                             <ul className="info-top-right">
                                 <li>
                                     <button>
-                                        <i className="bi bi-plus-lg"></i>
+                                        <img src="/plus.svg" alt=""/>
                                         <p>보고싶어요</p>
                                     </button>
                                 </li>
                                 <li>
                                     <button onClick={openComment}>
-                                        <i className="bi bi-pencil-fill"></i>
+                                        <img src="/pencil.svg" alt=""/>
                                         <p>코멘트</p>
                                     </button>
                                 </li>
                                 <li>
                                     <button>
-                                        <i className="bi bi-plus-square-fill"></i>
+                                        <img src="/plus-square.svg" alt=""/>
                                         <p>컬렉션</p>
                                     </button>
                                 </li>
@@ -274,7 +274,8 @@ const DetailPage = ({userInfo, openLogin}) => {
                     </div>
                 </div>
 
-                {myCommetModal && (
+                {/*마이코멘트 모달창*/}
+                {myCommentModal && (
                     <div className="comment-modal-overlay" onClick={closeCommemt}>
                         <div className="comment-modal-content" onClick={(e) => e.stopPropagation()}>
                             <div className="comment-content-top">
