@@ -7,6 +7,7 @@ import com.example.itview_spring.Constant.Replyable;
 import com.example.itview_spring.DTO.CommentAndContentDTO;
 import com.example.itview_spring.DTO.CommentDTO;
 import com.example.itview_spring.Entity.CommentEntity;
+import com.example.itview_spring.Entity.LikeEntity;
 import com.example.itview_spring.Repository.CommentRepository;
 import com.example.itview_spring.Repository.ContentRepository;
 import com.example.itview_spring.Repository.LikeRepository;
@@ -65,5 +66,19 @@ public class CommentService {
             return true;
         }
         return false;
+    }
+
+    // 코멘트에 좋아요 등록
+    public void likeComment(Integer userId, Integer commentId) {
+        LikeEntity like = new LikeEntity();
+        like.setUser(userRepository.findById(userId).orElseThrow(() -> new RuntimeException("User not found")));
+        like.setTargetId(commentId);
+        like.setTargetType(Replyable.COMMENT);
+        likeRepository.save(like);
+    }
+
+    // 코멘트에 좋아요 취소
+    public void unlikeComment(Integer commentId) {
+        likeRepository.deleteByTargetIdAndTargetType(commentId, Replyable.COMMENT);
     }
 }
