@@ -255,15 +255,13 @@ const DetailPage = ({userInfo, openLogin}) => {
                                     </button>
                                 </li>
                                 <li>
-                                    <button onClick={openComment}>
-                                        <img src="/pencil.svg" alt=""/>
                                     <button onClick={
                                         userInfo ?
                                             openComment
                                             :
                                             () => openLogin()
                                     }>
-                                        <i className="bi bi-pencil-fill"></i>
+                                        <img src="/pencil.svg" alt=""/>
                                         <p>코멘트</p>
                                     </button>
                                 </li>
@@ -276,14 +274,26 @@ const DetailPage = ({userInfo, openLogin}) => {
                             </ul>
                         </div>
                         {/*내가 쓴 코멘트*/}
-                        <div className="info-middle">
-                            <p className="my-coment">내가 쓴 코멘트</p>
-                            <div>
-                                <img src={contentDetail?.myComment.user.profile} alt=""/>
-                                <p>{contentDetail?.myComment.text}</p>
-                                <div className="my-coment-btn"></div>
+                        {contentDetail?.myComment && (
+                            <div className="info-middle">
+                                <p className="my-comment-title">내가 쓴 코멘트</p>
+                                <div className="my-comment-content">
+                                    <div className="my-comment-content-image"><img src={contentDetail?.myComment.user.profile} alt=""/></div>
+                                    <p>{contentDetail?.myComment.text}</p>
+                                    <div className="my-comment-btn">
+                                        <button>
+                                            <i className="bi bi-trash"></i>
+                                            <p>삭제</p>
+                                        </button>
+                                        <button>
+                                            <i className="bi bi-pencil"></i>
+                                            <p>수정</p>
+                                        </button>
+
+                                    </div>
+                                </div>
                             </div>
-                        </div>
+                        )}
                         {/*컨텐츠 정보 설명*/}
                         <div className="info-bottom">
                             <p>{contentDetail?.contentInfo.description}</p>

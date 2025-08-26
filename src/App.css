@@ -1053,10 +1053,69 @@ body {
   padding-bottom: 15px;
 }
 
-
-.my-coment {
+.my-comment-title {
   font-size: 0.7rem;
   color: #888;
+}
+
+.my-comment-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #ffffff;
+  padding: 15px 20px;
+  border-radius: 8px;
+  border: 2px solid #eeeeee;
+}
+
+.my-comment-content-image {
+  width: 50px;
+  border-radius: 50%;
+}
+
+.my-comment-content-image>img {
+  display: block;
+  border-radius: 50%;
+  width: 100%;
+}
+
+.my-comment-content>p {
+  width: 80%;
+  margin: 0;
+}
+
+.my-comment-btn {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 20px;
+  position: relative;
+}
+
+.my-comment-btn>button {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border: none;
+  background: none;
+  gap: 5px;
+  font-size: 0.8rem;
+  color: #888888;
+}
+
+.my-comment-btn>button>p {
+  margin-bottom: 0;
+}
+
+.my-comment-btn>button:nth-of-type(1)::before {
+  content: "";
+  width: 0.5px;
+  height: 10px;
+  background-color: #888888;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
 }
 
 .info-bottom {
