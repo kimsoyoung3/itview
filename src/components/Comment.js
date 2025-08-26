@@ -3,7 +3,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import "../App.css"; // CSS 따로 관리
 import { likeComment, unlikeComment } from "../API/CommentApi";
 
-const CommentLarge = ({comment, content}) => {
+const CommentLarge = ({comment, content, userInfo, openLogin}) => {
     const [commentData, setCommentData] = useState(comment);
 
     if (!comment) return null;
@@ -72,7 +72,7 @@ const CommentLarge = ({comment, content}) => {
                     <p>댓글<span>{commentData.replyCount}</span></p>
                 </div>
                 <div className="comment-footer-bottom">
-                    <button onClick={() => handleLikeComment(commentData.id)}>
+                    <button onClick={userInfo ? () => handleLikeComment(commentData.id) : openLogin}>
                         <i className={commentData.liked ? "bi bi-hand-thumbs-up-fill" : "bi bi-hand-thumbs-up"}/>
                     </button>
                     <button><i className="bi bi-chat-square"/></button>

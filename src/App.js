@@ -69,7 +69,7 @@ function App() {
     return (
         <BrowserRouter>
             <Header userInfo={userInfo} handleLogin={handleLogin} handleLogout={handleLogout} isLoginOpen={isLoginOpen} openLogin={openLogin} closeLogin={closeLogin}/>
-            <AppRoutes userInfo={userInfo} openLogin={openLogin}/>
+            <AppRoutes userInfo={userInfo} openLogin={openLogin} />
         </BrowserRouter>
     );
 }
