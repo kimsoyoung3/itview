@@ -32,11 +32,6 @@ public class CommentService {
 
     public CommentDTO getCommentDTO(Integer userId, Integer contentId) {
         CommentDTO myComment = commentRepository.findCommentDTOByUserIdAndContentId(userId, contentId).orElse(null);
-        if (myComment != null)
-        {
-            myComment.setRating(ratingRepository.findSomeoneScore(userId, contentId));
-            myComment.setUser(userRepository.findUserProfileById(userId).orElse(null));
-        }
         return myComment;
     }
 

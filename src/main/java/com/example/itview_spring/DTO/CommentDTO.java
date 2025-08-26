@@ -30,10 +30,4 @@ public class CommentDTO {
     private UserProfileDTO user;
     // 코멘트를 작성한 유저의 별점 정보
     private Integer rating;
-
-    public CommentDTO(Integer id, LocalDateTime createdAt, String text) {
-        this.id = id;
-        this.createdAt = createdAt;
-        this.text = text;
-    }
 }

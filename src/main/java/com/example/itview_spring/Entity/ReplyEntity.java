@@ -13,6 +13,8 @@ import com.example.itview_spring.Constant.Replyable;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EntityListeners;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -50,6 +52,7 @@ public class ReplyEntity {
 
     // 댓글이 달린 컨텐츠
     @Column(nullable = false, length = 255)
+    @Enumerated(EnumType.STRING)
     private Replyable targetType;
 
     // 댓글이 달린 대상 ID
