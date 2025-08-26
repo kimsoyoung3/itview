@@ -4,11 +4,11 @@ import "../App.css";
 import 'swiper/css/navigation';
 import 'swiper/css/pagination';
 import 'swiper/css';
-import { deleteContentComment, deleteRating, getContentComment, getContentDetail, postContentComment, postContentRating, putContentComment } from "../API/ContentApi";
+import { deleteContentComment,getContentCredit, deleteRating, getContentComment, getContentDetail, postContentComment, postContentRating, putContentComment } from "../API/ContentApi";
 import {Autoplay, Navigation, Pagination} from "swiper/modules";
 import {Swiper, SwiperSlide} from "swiper/react";
 import CreditOrPersonCard from "../components/CreditOrPersonCard";
-import {getContentCredit} from "../API/ContentApi";
+import Comment from "../components/Comment";
 
 const DetailPage = ({userInfo, openLogin}) => {
     const [contentDetail, setContentDetail] = useState(null);
@@ -224,7 +224,7 @@ const DetailPage = ({userInfo, openLogin}) => {
             <section className="detail-banner">
                 {/*상세페이지 포스터*/}
                 <div className="banner-post">
-                    <img src={contentDetail?.contentInfo.poster} alt=""/>
+                    <img src={contentDetail?.gallery && contentDetail?.gallery.length > 0 ? contentDetail?.gallery[0].imageUrl : '/basic-bg.jpg' } alt=""/>
                 </div>
 
                 {/*포스터 설명*/}
@@ -247,7 +247,7 @@ const DetailPage = ({userInfo, openLogin}) => {
                         </div>
                         <ul className="poster-bottom">
                             <li>별점 그래프</li>
-                            <li>평균 <i className="bi bi-star-fill"></i> {contentDetail?.contentInfo?.ratingAvg.toFixed(1)}
+                            <li>평균 <i className="bi bi-star-fill"></i> {contentDetail?.contentInfo?.ratingAvg?.toFixed(1)}
                                 <span className="poster-bottom-num"> &#40;{contentDetail?.ratingCount}명&#41;</span>
                             </li>
                             {/*별점 그래프 들어갈 자리*/}
@@ -308,7 +308,7 @@ const DetailPage = ({userInfo, openLogin}) => {
 
                             {/*평균 별점 표시*/}
                             <div className="info-top-center">
-                                <p className="average-rating">{contentDetail?.contentInfo?.ratingAvg.toFixed(1)}</p>
+                                <p className="average-rating">{contentDetail?.contentInfo?.ratingAvg?.toFixed(1)}</p>
                                 <p className="average-rating-text">평균 별점 <span className="average-rating-num">&#40;{contentDetail?.ratingCount}명&#41;</span></p>
                             </div>
 
@@ -341,7 +341,7 @@ const DetailPage = ({userInfo, openLogin}) => {
                             <div className="info-middle">
                                 <p className="my-comment-title">내가 쓴 코멘트</p>
                                 <div className="my-comment-content">
-                                    <div className="my-comment-content-image"><img src={contentDetail?.myComment.user.profile} alt=""/></div>
+                                    <div className="my-comment-content-image"><img src={contentDetail?.myComment.user.profile || "user.png"} alt=""/></div>
                                     <p>{contentDetail?.myComment.text}</p>
                                     <div className="my-comment-btn">
                                         <button onClick={handleDeleteClick}>
@@ -370,7 +370,7 @@ const DetailPage = ({userInfo, openLogin}) => {
                         <div className="comment-modal-content" onClick={(e) => e.stopPropagation()}>
                             <div className="comment-content-top">
                                 <p className="comment-modal-title">{contentDetail?.contentInfo?.title}</p>
-                                <button className="comment-close-button" onClick={closeComment}><i className="bi bi-x-lg"></i></button>
+                                <button className="comment-close-button" onClick={closeComment}><img src="/x-lg.svg" alt=""/></button>
                             </div>
                             <textarea rows="15" placeholder="작품에 대한 코멘트를 남겨주세요." maxLength={1000} ref={textRef}></textarea>
                             <div className="comment-content-bottom">
@@ -427,15 +427,21 @@ const DetailPage = ({userInfo, openLogin}) => {
 
             {/*코멘트*/}
             <section className="detail-content container">
-                <div className="comment-wrap">
-                    <p className="detail-category">코멘트</p>
+                <p className="detail-category">코멘트</p>
+                {contentDetail && contentDetail.comments && contentDetail.comments.length > 0 ? (
+                    <div className="comment-inner">
+                        {contentDetail.comments.map(c => <Comment key={c.id} comment={c}/>)}
+                    </div>
 
-                </div>
+                ) : (
+                    <p>댓글이 없습니다.</p>
+                )}
             </section>
 
 
             {/*크레딧*/}
              <section className="detail-content container">
+                 {/*컨텐츠 타입*/}
                  <p className="detail-category">
                      {contentDetail?.contentInfo?.contentType === 'MOVIE' && '출연/제작'}
                      {contentDetail?.contentInfo?.contentType === 'SERIES' && '출연/제작'}
@@ -444,8 +450,8 @@ const DetailPage = ({userInfo, openLogin}) => {
                      {contentDetail?.contentInfo?.contentType === 'RECORD' && '참여'}
                  </p>
 
+                 {/*크레딧 정보 리스트*/}
                  <div className="credit-list">
-
                      {contentCredit?.pages?.length > 0 ? (
                          <Swiper
                              modules={[Navigation]}
@@ -455,8 +461,7 @@ const DetailPage = ({userInfo, openLogin}) => {
                              }}
                              spaceBetween={20}
                              slidesPerView={1}
-                             className="credit-swiper"
-                         >
+                             className="credit-swiper">
                              {contentCredit.pages
                                  .filter(pageData => pageData.content && pageData.content.length > 0) // ✅ 빈 페이지 제외
                                  .map((pageData, pageIndex) => (
@@ -482,49 +487,58 @@ const DetailPage = ({userInfo, openLogin}) => {
 
             {/*갤러리*/}
             {contentDetail?.gallery?.length > 0 && (
-                <section className="detail-content detail-gallary container">
-                    <div className="detail-gallary-inner">
+                <section className="detail-content detail-gallery container">
+                    <div className="detail-gallery-inner">
                         <p className="detail-category">갤러리</p>
-                        <div className="gallary-wrapper">
+                        <div className="gallery-wrapper">
                             <Swiper
                                 modules={[Navigation, Autoplay]}
                                 spaceBetween={16}
                                 slidesPerView={3}
                                 navigation={{
-                                    prevEl: ".gallary-wrapper .gallary-prev",
-                                    nextEl: ".gallary-wrapper .gallary-next",
+                                    prevEl: ".gallery-wrapper .gallery-prev",
+                                    nextEl: ".gallery-wrapper .gallery-next",
                                 }}
                                 breakpoints={{
                                     480: {slidesPerView: 1},
                                     768: {slidesPerView: 2},
                                     1020: {slidesPerView: 3},
                                 }}
-                                className="gallary-swiper">
+                                className="gallery
+-swiper">
 
-                                {contentDetail?.gallery?.map((gallary, idx) => (
-                                    <SwiperSlide className="swiper-slide" key={gallary.id}>
+                                {contentDetail?.gallery?.map((gallery
+, idx) => (
+                                    <SwiperSlide className="swiper-slide" key={gallery
+.id}>
                                         <div className="slide-image" onClick={() => openModal(idx)} style={{cursor: 'pointer'}}>
-                                            <img src={gallary.imageUrl} alt=""/>
+                                            <img src={gallery
+.imageUrl} alt=""/>
                                         </div>
                                     </SwiperSlide>
                                 ))}
                             </Swiper>
-                            <div className="gallary-prev"><img src="/arrow-left.svg" alt=""/></div>
-                            <div className="gallary-next"><img src="/arrow-right.svg" alt=""/></div>
+                            <div className="gallery
+-prev"><img src="/arrow-left.svg" alt=""/></div>
+                            <div className="gallery
+-next"><img src="/arrow-right.svg" alt=""/></div>
                         </div>
                     </div>
 
                     {/* 모달 */}
                     {modalOpen && (
-                        <div className="gallary-modal-overlay" onClick={closeModal}>
-                            <div className="gallary-modal-content" onClick={(e) => e.stopPropagation()}>
+                        <div className="gallery
+-modal-overlay" onClick={closeModal}>
+                            <div className="gallery
+-modal-content" onClick={(e) => e.stopPropagation()}>
                                 <Swiper
                                     modules={[Navigation, Pagination]}
                                     initialSlide={modalStartIndex}
                                     navigation
                                     spaceBetween={10}
                                     slidesPerView={1}
-                                    className="gallary-modal-swiper">
+                                    className="gallery
+-modal-swiper">
 
                                     {contentDetail?.gallery?.map((gallery) => (
                                         <SwiperSlide key={gallery.id}>
