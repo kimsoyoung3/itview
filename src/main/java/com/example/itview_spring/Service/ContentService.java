@@ -249,6 +249,10 @@ public class ContentService {
             List<CommentDTO> comments = commentRepository.findTop8CommentsByContentId(userId, contentId);
             contentDetail.setComments(comments);
 
+            // 코멘트 개수 조회
+            Long commentCount = commentRepository.countByContentId(contentId);
+            contentDetail.setCommentCount(commentCount);
+
             return contentDetail;
         } catch (Exception e) {
             System.out.println(e.getMessage());

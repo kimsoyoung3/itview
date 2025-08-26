@@ -31,4 +31,6 @@ public class ContentDetailDTO {
     private CommentDTO myComment;
     // 컨텐츠 좋아요 상위 8개 코멘트
     private List<CommentDTO> comments;
+    // 코멘트 개수
+    private Long commentCount;
 }

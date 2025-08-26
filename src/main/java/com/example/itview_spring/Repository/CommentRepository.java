@@ -68,6 +68,10 @@ public interface CommentRepository extends JpaRepository<CommentEntity, Integer>
             """)
     List<CommentDTO> findTop8CommentsByContentId(@Param("userId") Integer userId, @Param("contentId") Integer contentId);
 
+    // 코멘트 개수 조회
+    @Query("SELECT COUNT(c) FROM CommentEntity c WHERE c.content.id = :contentId")
+    Long countByContentId(@Param("contentId") Integer contentId);
+
     // 코멘트 + 컨텐츠 정보
     @Query("""
             SELECT new com.example.itview_spring.DTO.CommentAndContentDTO(
@@ -107,4 +111,6 @@ public interface CommentRepository extends JpaRepository<CommentEntity, Integer>
             WHERE c.id = :commentId
             """)
     Optional<CommentAndContentDTO> findCommentAndContentByCommentId(@Param("commentId") Integer commentId, @Param("userId") Integer userId);
+
+
 }
