@@ -263,21 +263,21 @@ public class ContentController {
 
     //********************************************************************************//
     // 장르 저장
-    @PostMapping("/content/{contentId}/genre")
-    public String saveContentGenres(
-            @PathVariable Long contentId,
-            @RequestParam(value = "genres", required = false) List<String> genreNames,
-            RedirectAttributes redirectAttributes) {
-
-        try {
-            contentService.saveContentGenres(contentId, genreNames);
-            redirectAttributes.addFlashAttribute("message", "장르가 성공적으로 저장되었습니다.");
-        } catch (Exception e) {
-            redirectAttributes.addFlashAttribute("errorMessage", "장르 저장 실패: " + e.getMessage());
-        }
-
-        return "redirect:/content/" + contentId + "/genre";
-    }
+//    @PostMapping("/content/{contentId}/genre")
+//    public String saveContentGenres(
+//            @PathVariable Integer contentId,
+//            @RequestParam(value = "genres", required = false) List<String> genreNames,
+//            RedirectAttributes redirectAttributes) {
+//
+//        try {
+//            contentService.saveContentGenres(contentId, genreNames);
+//            redirectAttributes.addFlashAttribute("message", "장르가 성공적으로 저장되었습니다.");
+//        } catch (Exception e) {
+//            redirectAttributes.addFlashAttribute("errorMessage", "장르 저장 실패: " + e.getMessage());
+//        }
+//
+//        return "redirect:/content/" + contentId + "/genre";
+//    }
 
 
     // 장르 저장
@@ -314,9 +314,9 @@ public class ContentController {
         Map<String, String> genreTranslations = Arrays.stream(Genre.values())
                 .collect(Collectors.toMap(Enum::name, Genre::getGenreName));
 
-        model.addAttribute("selectedGenres", selectedGenreNames);
-        model.addAttribute("allGenres", Genre.values());
-        model.addAttribute("genreTranslations", genreTranslations);// Map<String, String>
+//        model.addAttribute("selectedGenres", selectedGenreNames);
+//        model.addAttribute("allGenres", Genre.values());
+//        model.addAttribute("genreTranslations", genreTranslations);// Map<String, String>
         // 모델에 필요한 데이터 다시 담기 (✅ 중요)
         // ✅ redirect 이후 model 사용하지 않으므로, addAttribute 생략
 
