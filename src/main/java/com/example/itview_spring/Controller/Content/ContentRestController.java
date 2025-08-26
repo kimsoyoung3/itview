@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.itview_spring.Config.CustomUserDetails;
+import com.example.itview_spring.DTO.CommentDTO;
 import com.example.itview_spring.DTO.ContentDetailDTO;
 import com.example.itview_spring.DTO.CreditDTO;
 import com.example.itview_spring.DTO.RatingRequestDTO;
@@ -84,6 +85,14 @@ public class ContentRestController {
         commentService.addComment(userDetails.getId(), id, textDTO.getText());
 
         return ResponseEntity.ok().build();
+    }
+
+    // 컨텐츠 코멘트 조회
+    @GetMapping("/{id}/comment")
+    public ResponseEntity<CommentDTO> getContentComment(@PathVariable("id") Integer id,
+                                                        @AuthenticationPrincipal CustomUserDetails userDetails) {
+        CommentDTO commentDTO = commentService.getCommentDTO(userDetails.getId(), id);
+        return ResponseEntity.ok(commentDTO);
     }
 
     // 컨텐츠 코멘트 수정
