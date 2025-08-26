@@ -8,7 +8,7 @@ import com.example.itview_spring.Entity.CommentEntity;
 import com.example.itview_spring.Repository.CommentRepository;
 import com.example.itview_spring.Repository.ContentRepository;
 import com.example.itview_spring.Repository.LikeRepository;
-import com.example.itview_spring.Repository.RatingRepository;
+import com.example.itview_spring.Repository.ReplyRepository;
 import com.example.itview_spring.Repository.UserRepository;
 
 import lombok.RequiredArgsConstructor;
@@ -21,6 +21,7 @@ public class CommentService {
     private final CommentRepository commentRepository;
     private final UserRepository userRepository;
     private final ContentRepository contentRepository;
+    private final ReplyRepository replyRepository;
     private final LikeRepository likeRepository;
 
     public void addComment(Integer userId, Integer contentId, String text) {
@@ -48,6 +49,7 @@ public class CommentService {
         if (commentOpt.isPresent()) {
             commentRepository.delete(commentOpt.get());
             likeRepository.deleteByTargetIdAndTargetType(commentId, "COMMENT");
+            replyRepository.deleteByTargetIdAndTargetType(commentId, "COMMENT");
             return true;
         }
         return false;
