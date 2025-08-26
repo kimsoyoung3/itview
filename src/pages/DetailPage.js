@@ -1,11 +1,11 @@
-import React, { use, useEffect, useState } from "react";
+import React, {useEffect, useState } from "react";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import "../App.css";
 import 'swiper/css/navigation';
 import 'swiper/css/pagination';
 import 'swiper/css';
 import { deleteContentComment,getContentCredit, deleteRating, getContentComment, getContentDetail, postContentComment, postContentRating, putContentComment } from "../API/ContentApi";
-import {Autoplay, Navigation, Pagination} from "swiper/modules";
+import {Navigation, Pagination} from "swiper/modules";
 import {Swiper, SwiperSlide} from "swiper/react";
 import CreditOrPersonCard from "../components/CreditOrPersonCard";
 import Comment from "../components/Comment";
@@ -95,17 +95,15 @@ const DetailPage = ({userInfo, openLogin}) => {
         }
     };
 
-    /*모달 바깥 클릭 시 이벤트 전파 차단용*/
-    const stopPropagation = (e) => e.stopPropagation();
-
+    /*별점 삭제 로직 구현*/
     const handleScoreDelete = () => {
-        // 별점 삭제 로직 구현
         const id = window.location.pathname.split('/').pop();
         deleteRating(id).then(response => {
             console.log('Rating deleted:', response.status);
         });
     };
 
+    /*외부서비스 로고*/
     const serviceLogos = {
         NETFLIX: '/externalLogo/netflix.png',
         DISNEY_PLUS: '/externalLogo/disney.png',
@@ -428,8 +426,10 @@ const DetailPage = ({userInfo, openLogin}) => {
 
             {/*코멘트 섹션*/}
             <section className="detail-content container">
-                <p className="detail-category">코멘트</p>
-                <NavLink to="/ComentPage">더보기</NavLink>
+                <div className="comment-text">
+                    <p className="detail-category">코멘트 <span className="comment-count">{contentDetail?.commentCount}</span> </p>
+                    <NavLink to="/ComentPage">더보기</NavLink>
+                </div>
                 {contentDetail && contentDetail.comments && contentDetail.comments.length > 0 ? (
                     <div className="comment-inner">
                         {contentDetail.comments.map(c => <Comment key={c.id} comment={c}/>)}
@@ -439,7 +439,6 @@ const DetailPage = ({userInfo, openLogin}) => {
                     <p>코멘트가 없습니다.</p>
                 )}
             </section>
-
 
             {/*크레딧 섹션*/}
              <section className="detail-content container">
@@ -453,8 +452,8 @@ const DetailPage = ({userInfo, openLogin}) => {
                  </p>
 
                  {/*크레딧 정보 리스트*/}
-                 <div className="credit-list">
-                     {contentCredit?.pages?.length > 0 ? (
+                 {contentCredit?.pages[0].content.length > 0 ? (
+                     <div className="credit-list">
                          <Swiper
                              modules={[Navigation]}
                              navigation={{
@@ -476,14 +475,13 @@ const DetailPage = ({userInfo, openLogin}) => {
                                      </SwiperSlide>
                                  ))}
                          </Swiper>
+                         <div className="credit-prev"><img src="/arrow-left.svg" alt=""/></div>
+                         <div className="credit-next"><img src="/arrow-right.svg" alt=""/></div>
+                     </div>
 
                      ) : (
                          <p>크레딧 정보가 없습니다.</p>
                      )}
-                     <div className="credit-prev"><img src="/arrow-left.svg" alt=""/></div>
-                     <div className="credit-next"><img src="/arrow-right.svg" alt=""/></div>
-
-                 </div>
 
              </section>
 
@@ -494,7 +492,7 @@ const DetailPage = ({userInfo, openLogin}) => {
                         <p className="detail-category">갤러리</p>
                         <div className="gallery-wrapper">
                             <Swiper
-                                modules={[Navigation, Autoplay]}
+                                modules={[Navigation]}
                                 spaceBetween={16}
                                 slidesPerView={3}
                                 navigation={{
@@ -557,7 +555,7 @@ const DetailPage = ({userInfo, openLogin}) => {
                         <p className="detail-category">동영상</p>
                         <div className="video-wrapper">
                             <Swiper
-                                modules={[Navigation, Autoplay]}
+                                modules={[Navigation]}
                                 spaceBetween={16}
                                 slidesPerView={3}
                                 navigation={{

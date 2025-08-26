@@ -92,14 +92,9 @@ const Header = ({userInfo, handleLogin, handleLogout, isLoginOpen, openLogin, cl
         }
     };
 
-
-
     /*회원가입 모달*/
     const openSignup = () => setSignupOpen(true);
     const closeSignup = () => setSignupOpen(false);
-
-    /*모달 바깥 클릭 시 이벤트 전파 차단용*/
-    const stopPropagation = (e) => e.stopPropagation();
 
     /*비빌번호 찾기 모달*/
     const [isResetOpen, setResetOpen] = useState(false);
