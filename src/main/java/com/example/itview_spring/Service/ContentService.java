@@ -241,6 +241,10 @@ public class ContentService {
                 contentDetail.setMyComment(myComment);
             }
 
+            // 컨텐츠 좋아요 상위 8개 코멘트 조회
+            List<CommentDTO> comments = commentRepository.findTop8CommentsByContentId(userId, contentId);
+            contentDetail.setComments(comments);
+
             return contentDetail;
         } catch (Exception e) {
             System.out.println(e.getMessage());

@@ -39,4 +39,31 @@ public interface CommentRepository extends JpaRepository<CommentEntity, Integer>
             WHERE c.user.id = :userId AND c.content.id = :contentId
             """)
     Optional<CommentDTO> findCommentDTOByUserIdAndContentId(@Param("userId") Integer userId, @Param("contentId") Integer contentId);
+
+    // 특정 컨텐츠의 좋아요 상위 8개 코멘트 조회
+    @Query("""
+            SELECT new com.example.itview_spring.DTO.CommentDTO(
+                c.id,
+                c.createdAt,
+                case when (exists (
+                    select 1 from LikeEntity l2
+                    where l2.targetId = c.id and l2.targetType = 'COMMENT' and l2.user.id = :userId
+                )) then true else false end,
+                (select count(l) from LikeEntity l where l.targetId = c.id and l.targetType = 'COMMENT'),
+                (select count(r) from ReplyEntity r where r.targetId = c.id and r.targetType = 'COMMENT'),
+                c.text,
+                new com.example.itview_spring.DTO.UserProfileDTO(
+                    c.user.id,
+                    c.user.nickname,
+                    c.user.introduction,
+                    c.user.profile
+                ),
+                (select r.score from RatingEntity r where r.user.id = :userId and r.content.id = :contentId)
+            )
+            FROM CommentEntity c
+            WHERE c.content.id = :contentId
+            ORDER BY (select count(l) from LikeEntity l where l.targetId = c.id and l.targetType = 'COMMENT') DESC
+            LIMIT 8
+            """)
+    List<CommentDTO> findTop8CommentsByContentId(@Param("userId") Integer userId, @Param("contentId") Integer contentId);
 }
