@@ -3,6 +3,7 @@ package com.example.itview_spring.Service;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.example.itview_spring.Constant.Replyable;
 import com.example.itview_spring.DTO.CommentDTO;
 import com.example.itview_spring.Entity.CommentEntity;
 import com.example.itview_spring.Repository.CommentRepository;
@@ -48,8 +49,8 @@ public class CommentService {
         var commentOpt = commentRepository.findById(commentId);
         if (commentOpt.isPresent()) {
             commentRepository.delete(commentOpt.get());
-            likeRepository.deleteByTargetIdAndTargetType(commentId, "COMMENT");
-            replyRepository.deleteByTargetIdAndTargetType(commentId, "COMMENT");
+            likeRepository.deleteByTargetIdAndTargetType(commentId, Replyable.COMMENT);
+            replyRepository.deleteByTargetIdAndTargetType(commentId, Replyable.COMMENT);
             return true;
         }
         return false;
