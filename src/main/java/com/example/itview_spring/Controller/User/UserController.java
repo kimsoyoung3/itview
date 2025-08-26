@@ -61,8 +61,8 @@ public class UserController {
                     loginDTO.getEmail(), loginDTO.getPassword());
 
             // 인증 매니저를 사용하여 인증 시도
-            Authentication authentication = authenticationManager.authenticate(authToken); 
-            
+            Authentication authentication = authenticationManager.authenticate(authToken);
+
             // 인증이 성공하면 SecurityContextHolder에 인증 정보 저장
             SecurityContext context = SecurityContextHolder.createEmptyContext();
             context.setAuthentication(authentication);

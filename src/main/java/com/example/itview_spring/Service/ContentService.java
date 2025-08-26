@@ -14,6 +14,7 @@ import com.example.itview_spring.DTO.VideoDTO;
 import com.example.itview_spring.Constant.Genre;
 import com.example.itview_spring.DTO.ContentCreateDTO;
 import com.example.itview_spring.Entity.ContentEntity;
+import com.example.itview_spring.Entity.VideoEntity;
 import com.example.itview_spring.Repository.CommentRepository;
 import com.example.itview_spring.Repository.ContentGenreRepository;
 import com.example.itview_spring.Entity.ContentGenreEntity;
@@ -26,6 +27,7 @@ import com.example.itview_spring.Repository.RatingRepository;
 import com.example.itview_spring.Repository.UserRepository;
 import com.example.itview_spring.Repository.VideoRepository;
 
+import io.swagger.v3.oas.annotations.media.Content;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
@@ -71,6 +73,7 @@ public class ContentService {
     //}
     // public List<ProductDTO> 안알려줌() {
     // public List<ProductDTO> List() {      ex)
+
     /**
      * 전체 목록조회
      *
@@ -79,12 +82,12 @@ public class ContentService {
      */
 
     public Page<ContentCreateDTO> getAllContents(Pageable page) {
-        int currentPage = page.getPageNumber()-1;
-        int pageLimits = 10 ;
+        int currentPage = page.getPageNumber() - 1;
+        int pageLimits = 10;
 
-        Pageable pageable = PageRequest.of(currentPage,pageLimits, Sort.by(Sort.Direction.DESC, "id"));
-        Page<ContentEntity> contentEntities = contentRepository.findAll(pageable) ;
-        Page<ContentCreateDTO> contentDTOS = contentEntities.map(data->modelMapper.map(
+        Pageable pageable = PageRequest.of(currentPage, pageLimits, Sort.by(Sort.Direction.DESC, "id"));
+        Page<ContentEntity> contentEntities = contentRepository.findAll(pageable);
+        Page<ContentCreateDTO> contentDTOS = contentEntities.map(data -> modelMapper.map(
                 data, ContentCreateDTO.class));
         return contentDTOS;
     }
@@ -124,8 +127,8 @@ public class ContentService {
         //DTO가 이있으면 반드시 Entity 변환
 
         ContentEntity contentEntity = modelMapper.map(dto, ContentEntity.class);
-        System.out.println("service add dto:"+dto);
-        System.out.println("service add entity:"+contentEntity);
+        System.out.println("service add dto:" + dto);
+        System.out.println("service add entity:" + contentEntity);
 
         contentRepository.save(contentEntity);
         return modelMapper.map(contentEntity, ContentCreateDTO.class);
@@ -138,13 +141,14 @@ public class ContentService {
     public ContentCreateDTO update(Integer id, ContentCreateDTO dto) {
         //해당내용찾기
 //        System.out.println("dto:"+dto);
-        ContentEntity contentEntity = modelMapper.map(dto, ContentEntity.class);
+        ContentEntity contentEntity = contentRepository.findById(id)
+                .orElseThrow(() -> new NoSuchElementException("콘텐츠 ID가 유효하지 않습니다: " + id));
 
         if (contentEntity == null) {
             return null;
         }
 //        System.out.println("entity:"+contentEntity);
-        //내용을 저장(@Id가 있는 변수는 저장 불가)
+//내용을 저장(@Id가 있는 변수는 저장 불가)
         contentEntity.setTitle(dto.getTitle());
         contentEntity.setContentType(dto.getContentType());
         contentEntity.setReleaseDate(dto.getReleaseDate());
@@ -157,7 +161,7 @@ public class ContentService {
         contentEntity.setChannelName(dto.getChannelName());
 
         contentRepository.save(contentEntity);
-        return modelMapper.map(contentEntity, ContentCreateDTO .class);
+        return modelMapper.map(contentEntity, ContentCreateDTO.class);
     }
 
     //삭제
@@ -203,19 +207,19 @@ public class ContentService {
                 contentResponseDTO.getGenres().add(genre.getGenre().getGenreName());
             });
             contentDetail.setContentInfo(contentResponseDTO);
-    
+
             // 갤러리 이미지 조회
             List<ImageDTO> images = galleryRepository.findByContentId(contentId);
             contentDetail.setGallery(images);
-    
+
             // 동영상 조회
             List<VideoDTO> videos = videoRepository.findByContentId(contentId);
             contentDetail.setVideos(videos);
-    
+
             // 외부 서비스 조회
             List<ExternalServiceDTO> externalServices = externalServiceRepository.findByContentId(contentId);
             contentDetail.setExternalServices(externalServices);
-            
+
             // 사용자 별점 조회
             Integer myRating = ratingRepository.findSomeoneScore(userId, contentId);
             contentDetail.setMyRating(myRating != null ? myRating : 0);
@@ -268,34 +272,58 @@ public class ContentService {
                 .collect(Collectors.toList());
     }
 
-    @Transactional
+    // @Transactional
     public void addGenres(Integer contentId, List<Genre> genres) {
         ContentEntity content = contentRepository.findById(contentId)
                 .orElseThrow(() -> new IllegalArgumentException("콘텐츠 ID가 유효하지 않습니다. id: " + contentId));
         List<Genre> existingGenres = getGenresByContentId(contentId);
-
+// 0825 주석함
+//        for (Genre genre : genres) {
+//            if (existingGenres.contains(genre)) {
+//                continue; // 이미 있는 장르는 건너뜀
+//            }
+//            System.out.println(" add contentId :"+contentId);
+//            System.out.println(" add content :"+content);
+//            System.out.println(" add genre :"+genre);
+//            System.out.println(" -----------------");
+//
+//            ContentGenreEntity contentGenre = new ContentGenreEntity();
+//            contentGenre.setContent(content);// ✅ null 아님
+//            contentGenre.setGenre(genre);  // ✅ 여기서 content가 null이면 에러 발생
+//
+//            contentGenreRepository.save(contentGenre);
+     //   Set<Genre> existingGenreSet = new HashSet<>(existingGenres);
         for (Genre genre : genres) {
-            if (existingGenres.contains(genre)) {
-                continue; // 이미 있는 장르는 건너뜀
+            if (!existingGenres.contains(genre)) {  // Avoid adding existing genre
+                ContentGenreEntity contentGenre = new ContentGenreEntity();
+                contentGenre.setContent(content);
+                contentGenre.setGenre(genre);
+                contentGenreRepository.save(contentGenre);
             }
-            System.out.println(" add contentId :"+contentId);
-            System.out.println(" add content :"+content);
-            System.out.println(" add genre :"+genre);
-            System.out.println(" -----------------");
-
-            ContentGenreEntity contentGenre = new ContentGenreEntity();
-            contentGenre.setContent(content);// ✅ null 아님
-            contentGenre.setGenre(genre);  // ✅ 여기서 content가 null이면 에러 발생
-
-            contentGenreRepository.save(contentGenre);
         }
-
     }
-
+//    @Transactional
+//    public void saveContentGenres(Integer contentId, List<String> genreNames) {
+//        Content content = contentRepository.findById(contentId)
+//                .orElseThrow(() -> new IllegalArgumentException("콘텐츠를 찾을 수 없습니다."));
+//
+//        // 기존 장르 제거 (전체 삭제 후 재등록 방식)
+//        contentGenreRepository.deleteByContent(content);
+//
+//        // 새 장르 등록
+//        if (genreNames != null) {
+//            for (String genreName : genreNames) {
+//                Genre genre = Genre.valueOf(genreName); // 🔥 여기에 잘못된 값 들어오면 예외 발생!
+//                ContentGenreEntity genreEntity = new ContentGenreEntity();
+//                genreEntity.setContent(content);
+//                genreEntity.setGenre(genre);
+//                contentGenreRepository.save(genreEntity);
+//            }
+//        }
+//    }
     /**
      * 콘텐츠 장르 수정 (기존 장르 모두 삭제 후, 새로 추가)
      */
-    @Transactional
     public void updateGenres(Integer contentId, List<Genre> newGenres) {
         ContentEntity content = contentRepository.findById(contentId)
                 .orElseThrow(() -> new IllegalArgumentException("콘텐츠 ID가 유효하지 않습니다. id: " + contentId));
@@ -321,9 +349,105 @@ public class ContentService {
 
         }
     }
+
+    /// ///////////////////////////////////////////////////////////////////////////////////////////
+    /// 0825 video service 작성함
+    /// ///////////////////////////////////////////////////////////////////////////////////////////
+    // 1. 전체 조회 (Get all videos)
+    public List<VideoDTO> getAllVideos() {
+        // 모든 비디오 엔티티를 가져온 후, DTO로 변환하여 반환
+        List<VideoEntity> videoEntities = videoRepository.findAll();
+        return videoEntities.stream()
+                .map(videoEntity -> modelMapper.map(videoEntity, VideoDTO.class))  // VideoEntity를 VideoDTO로 변환
+                .collect(Collectors.toList());  // 결과를 리스트로 반환
+    }
+
+//    .map(videoEntity -> new VideoDTO(
+//            videoEntity.getId(),
+//    videoEntity.getTitle(),
+//            videoEntity.getImage(),
+//            videoEntity.getUrl(),
+//            videoEntity.getContent().getId()
+//))
+
+    // ✔️ 목록용: 여러 영상 조회 (DTO 리스트)
+    public List<VideoDTO> getVideoListByContentId(Integer contentId) {
+        return videoRepository.findByContentId(contentId);
+    }
+
+
+    // 2. 개별 조회 (Get video by ID)
+//    public VideoDTO getVideoById(Integer id) {
+//        // 주어진 ID로 비디오 엔티티를 조회
+//        Optional<VideoEntity> videoEntityOpt = videoRepository.findById(id);
+//        if (videoEntityOpt.isEmpty()) {  // 비디오가 존재하지 않으면 예외 처리
+//            throw new IllegalArgumentException("비디오 ID가 유효하지 않습니다. id: " + id);
+//        }
+//        return modelMapper.map(videoEntityOpt.get(), VideoDTO.class);  // DTO로 변환하여 반환
+//    }
+    // ✔️ 단일용: 콘텐츠에 연결된 첫 번째 영상 조회
+    public VideoDTO getVideoByContentId(Integer contentId) {
+        return videoRepository.findFirstByContentId(contentId)
+                .map(video -> modelMapper.map(video, VideoDTO.class))
+                .orElseThrow(() -> new NoSuchElementException("해당 콘텐츠의 영상이 존재하지 않습니다. contentId: " + contentId));
+    }
+
+    // 3. 입력 (Create new video)
+    public VideoDTO createVideo(Integer contentId, VideoDTO dto) {
+        VideoEntity entity = modelMapper.map(dto, VideoEntity.class);
+
+        // ContentEntity 객체 생성 (contentId만 갖는 단순한 엔티티)
+        ContentEntity contentEntity = contentRepository.findById(contentId)
+                .orElseThrow(() -> new IllegalArgumentException("해당 콘텐츠가 존재하지 않습니다. ID: " + contentId));
+        entity.setContent(contentEntity); // 반드시 연결
+        System.out.println(" createVideo contentId :"+contentId);
+
+        return modelMapper.map(videoRepository.save(entity), VideoDTO.class);
+    }
+
+    // 4. 수정 (Update existing video)
+    public VideoDTO updateVideo(Integer id, VideoDTO dto) {
+        Optional<VideoEntity> existingOpt = videoRepository.findById(id);
+
+        if (existingOpt.isEmpty()) {
+            throw new NoSuchElementException("해당 비디오가 존재하지 않습니다. ID: " + id);
+        }
+
+        VideoEntity existing = existingOpt.get();
+
+        existing.setTitle(dto.getTitle());
+        existing.setUrl(dto.getUrl());
+        existing.setImage(dto.getImage());
+
+        return modelMapper.map(videoRepository.save(existing), VideoDTO.class);
+    }
+    // 5. 삭제 (Delete video)
+    public void deleteVideo(Integer videoId) {
+        // 주어진 videoId로 비디오 엔티티 조회
+        VideoEntity videoEntity = videoRepository.findById(videoId)
+                .orElseThrow(() -> new NoSuchElementException("삭제할 비디오를 찾을 수 없습니다. ID: " + videoId));
+
+        // 비디오 엔티티 삭제
+        videoRepository.delete(videoEntity);
+    }
+
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////
+    // 별점 등록
+    public void rateContent(Integer userId, Integer contentId, Integer score) {
+
+        // 기존 별점 조회
+        Optional<RatingEntity> existingRating = ratingRepository.findByUserIdAndContentId(userId, contentId);
+
+        if (existingRating.isEmpty()) {
+            RatingEntity ratingEntity = new RatingEntity();
+            ratingEntity.setUser(userRepository.findById(userId).get());
+            ratingEntity.setContent(contentRepository.findById(contentId).get());
+            ratingEntity.setScore(score);
+        } else {
+            // 기존 별점이 있는 경우 업데이트
+            RatingEntity ratingEntity = existingRating.get();
+            ratingEntity.setScore(score);
+        }
+    }
 }
-
-
-
-
-
