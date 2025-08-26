@@ -1046,11 +1046,70 @@ body {
   font-size: 0.9rem;
 }
 
+/*코멘트 작성 확인 모달창*/
+.confirm-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  background: rgba(0,0,0,0.3);
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+}
+
+.confirm-modal-content {
+  position: relative;
+  padding: 1rem;
+  border-radius: 8px;
+  width: 230px;
+  border: 1px solid #888888;
+  background-color: white;
+  box-sizing: border-box;
+  overflow: hidden;
+  text-align: center;
+}
+
+.confirm-modal-content>p:nth-of-type(1) {
+  margin-bottom: 5px;
+  font-weight: bold;
+}
+
+.confirm-modal-content>p:nth-of-type(2) {
+  border-bottom: 1px solid #888888;
+  padding-bottom: 10px;
+  margin-bottom: 10px;
+}
+
+.confirm-btn-group {
+  display: flex;
+  justify-content: center;
+  gap: 50px;
+  position: relative;
+}
+
+.confirm-btn-group>button {
+  border: none;
+  background: none;
+  color: #22C55E;
+}
+
+.confirm-btn-group>button:nth-of-type(1)::before {
+  content: "";
+  width: 0.5px;
+  height: 20px;
+  background-color: #888888;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
 
 .info-middle {
   border-bottom: 1px solid #888888;
   padding: 20px 0;
-  padding-bottom: 15px;
 }
 
 .my-comment-title {
