@@ -1,10 +1,10 @@
-import React, { useEffect, useState } from "react";
+import React, { use, useEffect, useState } from "react";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import "../App.css";
 import 'swiper/css/navigation';
 import 'swiper/css/pagination';
 import 'swiper/css';
-import { deleteRating, getContentDetail, postContentComment, postContentRating } from "../API/ContentApi";
+import { deleteContentComment, deleteRating, getContentDetail, postContentComment, postContentRating, putContentComment } from "../API/ContentApi";
 import {Autoplay, Navigation, Pagination} from "swiper/modules";
 import {Swiper, SwiperSlide} from "swiper/react";
 import CreditOrPersonCard from "../components/CreditOrPersonCard";
@@ -31,6 +31,11 @@ const DetailPage = ({userInfo, openLogin}) => {
         console.log(res);
     };
 
+    const handleCommentUpdate = async () => {
+        var res = await putContentComment(contentDetail?.myComment.id, { text: textRef.current.value })
+        console.log(res);
+    };
+
     /*모달 바깥 클릭 시 이벤트 전파 차단용*/
     const stopPropagation = (e) => e.stopPropagation();
 
@@ -41,7 +46,6 @@ const DetailPage = ({userInfo, openLogin}) => {
             console.log('Rating deleted:', response.status);
         });
     };
-
 
     const serviceLogos = {
         NETFLIX: '/externalLogo/netflix.png',
@@ -145,6 +149,12 @@ const DetailPage = ({userInfo, openLogin}) => {
             }));
         }
     }, [contentDetail]);
+
+    useEffect(() => {
+        if (contentDetail?.myComment && textRef.current) {
+            textRef.current.value = contentDetail.myComment.text;
+        }
+    }, [contentDetail, myCommentModal]);
 
     useEffect(() => {
         console.log(contentCredit)
@@ -255,12 +265,9 @@ const DetailPage = ({userInfo, openLogin}) => {
                                     </button>
                                 </li>
                                 <li>
-                                    <button onClick={
-                                        userInfo ?
-                                            openComment
-                                            :
-                                            () => openLogin()
-                                    }>
+                                    <button onClick={async () => {
+                                        userInfo ? openComment() : openLogin();
+                                    }}>
                                         <img src="/pencil.svg" alt=""/>
                                         <p>코멘트</p>
                                     </button>
@@ -281,7 +288,7 @@ const DetailPage = ({userInfo, openLogin}) => {
                                     <div className="my-comment-content-image"><img src={contentDetail?.myComment.user.profile} alt=""/></div>
                                     <p>{contentDetail?.myComment.text}</p>
                                     <div className="my-comment-btn">
-                                        <button>
+                                        <button onClick={() => deleteContentComment(contentDetail?.myComment.id)}>
                                             <i className="bi bi-trash"></i>
                                             <p>삭제</p>
                                         </button>
@@ -311,7 +318,9 @@ const DetailPage = ({userInfo, openLogin}) => {
                             </div>
                             <textarea rows="15" placeholder="작품에 대한 코멘트를 남겨주세요." maxLength={1000} ref={textRef}></textarea>
                             <div className="comment-content-bottom">
-                                <button className="comment-content-btn" onClick={handleCommentPost}>저장</button>
+                                <button className="comment-content-btn"
+                                        onClick={contentDetail?.myComment ? handleCommentUpdate : handleCommentPost}
+                                        >{contentDetail?.myComment ? "수정" : "저장"}</button>
                             </div>
                         </div>
                     </div>
