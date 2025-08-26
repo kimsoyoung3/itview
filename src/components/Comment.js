@@ -11,7 +11,7 @@ const CommentLarge = ({comment, content}) => {
             {/* 헤더 */}
             <div className="comment-header">
                 <div className="comment-header-left">
-                    <img src={comment.user?.profile || '/user.png'} className="comment-profile"/>
+                    <img src={comment.user?.profile || '/user.png'} className="comment-profile" alt=""/>
                     <span className="comment-nickname">{comment.user.nickname}</span>
                     <span className="comment-date">{new Date(comment.createdAt).toLocaleDateString().slice(0, -1)}</span>
                 </div>

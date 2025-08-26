@@ -504,41 +504,32 @@ const DetailPage = ({userInfo, openLogin}) => {
                                     768: {slidesPerView: 2},
                                     1020: {slidesPerView: 3},
                                 }}
-                                className="gallery
--swiper">
+                                className="gallery-swiper">
 
-                                {contentDetail?.gallery?.map((gallery
-, idx) => (
-                                    <SwiperSlide className="swiper-slide" key={gallery
-.id}>
+                                {contentDetail?.gallery?.map((gallery, idx) => (
+                                    <SwiperSlide className="swiper-slide" key={gallery.id}>
                                         <div className="slide-image" onClick={() => openModal(idx)} style={{cursor: 'pointer'}}>
-                                            <img src={gallery
-.imageUrl} alt=""/>
+                                            <img src={gallery.imageUrl} alt=""/>
                                         </div>
                                     </SwiperSlide>
                                 ))}
                             </Swiper>
-                            <div className="gallery
--prev"><img src="/arrow-left.svg" alt=""/></div>
-                            <div className="gallery
--next"><img src="/arrow-right.svg" alt=""/></div>
+                            <div className="gallery-prev"><img src="/arrow-left.svg" alt=""/></div>
+                            <div className="gallery-next"><img src="/arrow-right.svg" alt=""/></div>
                         </div>
                     </div>
 
                     {/* 모달 */}
                     {modalOpen && (
-                        <div className="gallery
--modal-overlay" onClick={closeModal}>
-                            <div className="gallery
--modal-content" onClick={(e) => e.stopPropagation()}>
+                        <div className="gallery-modal-overlay" onClick={closeModal}>
+                            <div className="gallery-modal-content" onClick={(e) => e.stopPropagation()}>
                                 <Swiper
                                     modules={[Navigation, Pagination]}
                                     initialSlide={modalStartIndex}
                                     navigation
                                     spaceBetween={10}
                                     slidesPerView={1}
-                                    className="gallery
--modal-swiper">
+                                    className="gallery-modal-swiper">
 
                                     {contentDetail?.gallery?.map((gallery) => (
                                         <SwiperSlide key={gallery.id}>
