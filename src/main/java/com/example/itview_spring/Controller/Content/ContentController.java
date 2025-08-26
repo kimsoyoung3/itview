@@ -16,6 +16,7 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -256,19 +257,50 @@ public class ContentController {
         System.out.println(" ---------------------");
         // 7. 최종 뷰 페이지로 이동
         return "content/genreForm"; // 장르 선택 HTML
+
     }
     //********************************************************************************//
 
     //********************************************************************************//
     // 장르 저장
     @PostMapping("/content/{contentId}/genre")
+    public String saveContentGenres(
+            @PathVariable Long contentId,
+            @RequestParam(value = "genres", required = false) List<String> genreNames,
+            RedirectAttributes redirectAttributes) {
+
+        try {
+            contentService.saveContentGenres(contentId, genreNames);
+            redirectAttributes.addFlashAttribute("message", "장르가 성공적으로 저장되었습니다.");
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("errorMessage", "장르 저장 실패: " + e.getMessage());
+        }
+
+        return "redirect:/content/" + contentId + "/genre";
+    }
+
+
+    // 장르 저장
+    @PostMapping("/content/{contentId}/genre")
     public String submitGenres(@PathVariable("contentId") Integer contentId,
-                               @RequestParam(value = "genres", required = false) List<Genre> genres,
-                               Model model) {
+                               @RequestParam(value = "genres", required = false) List<String> genreNames){
+
 
         System.out.println("✅ [장르 저장] contentId  == " + contentId);
-        System.out.println("✅ [장르 저장] genres     == " + genres);
+        System.out.println("✅ [장르 저장] genreNames == " + genreNames);
         System.out.println(" ---------------------");
+
+        // ✅ 문자열 → Genre 변환 시 오류 방지
+        List<Genre> genres = new ArrayList<>();
+        if (genreNames != null) {
+            for (String name : genreNames) {
+                try {
+                    genres.add(Genre.valueOf(name));
+                } catch (IllegalArgumentException e) {
+                    System.err.println("⛔️ Unknown Genre: " + name); // 또는 로깅
+                }
+            }
+        }
 
         // 장르 업데이트
         contentService.updateGenres(contentId, genres != null ? genres : List.of());
@@ -277,7 +309,14 @@ public class ContentController {
         ContentCreateDTO contentDTO = contentService.read(contentId);
         List<Genre> selectedGenres = contentService.getGenresByContentId(contentId);
         List<String> selectedGenreNames = selectedGenres.stream()
-                .map(Enum::name).collect(Collectors.toList());
+                .map(Enum::name)
+                .collect(Collectors.toList());
+        Map<String, String> genreTranslations = Arrays.stream(Genre.values())
+                .collect(Collectors.toMap(Enum::name, Genre::getGenreName));
+
+        model.addAttribute("selectedGenres", selectedGenreNames);
+        model.addAttribute("allGenres", Genre.values());
+        model.addAttribute("genreTranslations", genreTranslations);// Map<String, String>
         // 모델에 필요한 데이터 다시 담기 (✅ 중요)
         // ✅ redirect 이후 model 사용하지 않으므로, addAttribute 생략
 
@@ -341,8 +380,8 @@ public class ContentController {
 //                Map.entry("TROT", "트로트")
 //        );
         //0825 영상등록 버튼 없을때 자료
-     //   return "redirect:/content/" + contentId + "/genre";
-          return "redirect:/content/" + contentId + "/video";
+          return "redirect:/content/" + contentId + "/genre";
+        //  return "redirect:/content/" + contentId + "/video";
 
 
         // ✅ 장르 저장 후 video 등록 화면으로 이동 (GET 방식)

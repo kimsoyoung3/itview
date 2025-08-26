@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="kr"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/mainlayout}">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+<main layout:fragment="content">
+    <!--    <h1>Welcome to the Dashboard</h1>-->
+    <!--    <p>This is your main content area.</p>-->
+
+    <div class="container mt-5">
+        <h2>동영상(Video) 등록/수정</h2>
+
+        <!--        <form th:action="@{|/content/${contentId}/genre|}" method="post">-->
+<!--        <form th:action="@{/content/{contentId}/video(contentId=${contentDTO.id})}" method="post">-->
+        <form th:action="@{'/content/' + ${contentId} + '/video'}"
+              th:object="${videoDTO}"
+              method="post">
+            <input id="id" th:value="${contentDTO.id}" value="post" hidden>
+            <!--            <input type="hidden" name="_method" value="post" />-->
+
+
+            <label>제목:</label>
+                <input type="text" th:field="*{title}" />
+                <br/>
+                <label>URL:</label>
+                <input type="text" th:field="*{url}" />
+                <br/>
+                <label>영상:</label>
+                <input type="text" th:field="*{image}" />
+                <br/>
+                <button type="submit">Save</button>
+        </form>
+
+        <form th:action="@{'/content/' + ${contentId} + '/video/delete'}" method="post" th:if="${videoDTO.id != null}">
+            <button type="submit">Delete Video</button>
+        </form>
+
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</main>
+</body>
+</html>
