@@ -141,7 +141,7 @@ const Header = ({userInfo, handleLogin, handleLogout, isLoginOpen, openLogin, cl
                         </ul>
 
                         <div className="nav-item dropdown">
-                            <NavLink className="nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown"
+                            <NavLink to="/" className="nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown"
                                aria-expanded="false">
                                 홈
                             </NavLink>

@@ -9,6 +9,7 @@ import {Autoplay, Navigation, Pagination} from "swiper/modules";
 import {Swiper, SwiperSlide} from "swiper/react";
 import CreditOrPersonCard from "../components/CreditOrPersonCard";
 import Comment from "../components/Comment";
+import {NavLink} from "react-router-dom";
 
 const DetailPage = ({userInfo, openLogin}) => {
     const [contentDetail, setContentDetail] = useState(null);
@@ -220,7 +221,7 @@ const DetailPage = ({userInfo, openLogin}) => {
 
     return (
         <div className="detail">
-            {/*상세페이지 배너*/}
+            {/*상세페이지 배너 섹션*/}
             <section className="detail-banner">
                 {/*상세페이지 포스터*/}
                 <div className="banner-post">
@@ -237,7 +238,7 @@ const DetailPage = ({userInfo, openLogin}) => {
                 </div>
             </section>
 
-            {/*컨텐츠 정보 및 평가*/}
+            {/*컨텐츠 정보 및 평가 섹션*/}
             <section className="detail-content detail-content-bg">
                 <div className="detail-content-inner container">
                     {/*컨텐츠 포스터*/}
@@ -411,7 +412,7 @@ const DetailPage = ({userInfo, openLogin}) => {
                 )}
             </section>
 
-            {/*외부 서비스 링크*/}
+            {/*외부서비스링크 섹션*/}
             {contentDetail?.externalServices?.length > 0 &&(
                 <section className="detail-content container">
                     <div className="external-services">
@@ -425,21 +426,22 @@ const DetailPage = ({userInfo, openLogin}) => {
                 </section>
             )}
 
-            {/*코멘트*/}
+            {/*코멘트 섹션*/}
             <section className="detail-content container">
                 <p className="detail-category">코멘트</p>
+                <NavLink to="/ComentPage">더보기</NavLink>
                 {contentDetail && contentDetail.comments && contentDetail.comments.length > 0 ? (
                     <div className="comment-inner">
                         {contentDetail.comments.map(c => <Comment key={c.id} comment={c}/>)}
                     </div>
 
                 ) : (
-                    <p>댓글이 없습니다.</p>
+                    <p>코멘트가 없습니다.</p>
                 )}
             </section>
 
 
-            {/*크레딧*/}
+            {/*크레딧 섹션*/}
              <section className="detail-content container">
                  {/*컨텐츠 타입*/}
                  <p className="detail-category">
@@ -485,7 +487,7 @@ const DetailPage = ({userInfo, openLogin}) => {
 
              </section>
 
-            {/*갤러리*/}
+            {/*갤러리 섹션*/}
             {contentDetail?.gallery?.length > 0 && (
                 <section className="detail-content detail-gallery container">
                     <div className="detail-gallery-inner">
@@ -548,7 +550,7 @@ const DetailPage = ({userInfo, openLogin}) => {
                 </section>
             )}
 
-            {/*동영상*/}
+            {/*동영상 섹션*/}
             {contentDetail?.videos?.length > 0 && (
                 <section className="detail-content detail-video container">
                     <div className="detail-video-inner">
