@@ -83,6 +83,12 @@ const DetailPage = ({userInfo, openLogin}) => {
         try {
             await deleteContentComment(contentDetail?.myComment.id);
             setDeleteConfirmModal(false); // ✅ 모달 닫기만
+            getContentComment(window.location.pathname.split('/').pop()).then(response => {
+                setContentDetail(prev => ({
+                    ...prev,
+                    myComment: response.data
+                }));
+            });
         } catch (error) {
             console.error("삭제 중 오류:", error);
         }
