@@ -207,6 +207,7 @@ public class ContentController {
                 Map.entry("KIDS", "키즈"),
                 Map.entry("VARIETY", "예능"),
                 Map.entry("SITCOM", "시트콤"),
+                Map.entry("TV_DRAMA", "TV드라마"),
                 Map.entry("PERIOD", "시대극"),
                 Map.entry("ROMANTIC_COMEDY", "로맨틱 코미디"),
                 Map.entry("BL", "BL"),
@@ -321,64 +322,7 @@ public class ContentController {
         // ✅ redirect 이후 model 사용하지 않으므로, addAttribute 생략
 
         Genre[] allGenres = Genre.values();
-        // 장르 번역 맵 (10개 초과이므로 Map.ofEntries 사용)
-        // redirect: 후 model.addAttribute()는 무의미함
-//        Map<String, String> genreTranslations = Map.ofEntries(
-//                Map.entry("ACTION", "액션"),
-//                Map.entry("DRAMA", "드라마"),
-//                Map.entry("ROMANCE", "로맨스"),
-//                Map.entry("HORROR", "호러"),
-//                Map.entry("THRILLER", "스릴러"),
-//                Map.entry("COMEDY", "코미디"),
-//                Map.entry("FANTASY", "판타지"),
-//                Map.entry("ADVENTURE", "어드벤처"),
-//                Map.entry("NATURAL_SCIENCE", "자연과학"),
-//                Map.entry("KPOP", "K-POP"),
-//                Map.entry("ANIMATION", "애니메이션"),
-//                Map.entry("SPORTS", "스포츠"),
-//                Map.entry("MYSTERY", "미스터리"),
-//                Map.entry("DOCUMENTARY", "다큐멘터리"),
-//                Map.entry("SF", "SF"),
-//                Map.entry("MUSIC", "음악"),
-//                Map.entry("FAMILY", "가족"),
-//                Map.entry("CONCERT", "공연실황"),
-//                Map.entry("MUSICAL", "뮤지컬"),
-//                Map.entry("BIOPIC", "전기"),
-//                Map.entry("HISTORY", "역사"),
-//                Map.entry("CRIME", "범죄"),
-//                Map.entry("KIDS", "키즈"),
-//                Map.entry("VARIETY", "예능"),
-//                Map.entry("SITCOM", "시트콤"),
-//                Map.entry("PERIOD", "시대극"),
-//                Map.entry("ROMANTIC_COMEDY", "로맨틱 코미디"),
-//                Map.entry("BL", "BL"),
-//                Map.entry("TEENAGER", "틴에이저"),
-//                Map.entry("DISASTER", "재난"),
-//                Map.entry("COMICS", "만화"),
-//                Map.entry("HUMANITIES", "인문학"),
-//                Map.entry("ECONOMICS", "경제서"),
-//                Map.entry("INVESTMENT", "투자서"),
-//                Map.entry("NOVEL", "소설"),
-//                Map.entry("ESSAY", "에세이"),
-//                Map.entry("SELF_HELP", "자기계발"),
-//                Map.entry("WAR", "전쟁"),
-//                Map.entry("PLAY", "희곡"),
-//                Map.entry("POETRY", "시"),
-//                Map.entry("SLICE_OF_LIFE", "일상"),
-//                Map.entry("HIP_HOP", "힙합"),
-//                Map.entry("POP", "팝"),
-//                Map.entry("MOVIE_SOUNDTRACK", "영화음악"),
-//                Map.entry("TV_SOUNDTRACK", "드라마음악"),
-//                Map.entry("BALLAD", "발라드"),
-//                Map.entry("DANCE", "댄스"),
-//                Map.entry("ROCK", "록"),
-//                Map.entry("CLASSICAL", "클래식"),
-//                Map.entry("INDIE", "인디"),
-//                Map.entry("ELECTRONICA", "일렉트로니카"),
-//                Map.entry("JPOP", "JPOP"),
-//                Map.entry("RNB", "알앤비"),
-//                Map.entry("TROT", "트로트")
-//        );
+
         //0825 영상등록 버튼 없을때 자료
           return "redirect:/content/" + contentId + "/genre";
         //  return "redirect:/content/" + contentId + "/video";
@@ -423,13 +367,13 @@ public class ContentController {
         System.out.println("✅ [Video 저장] videoDTO == " + videoDTO);
 
         // contentId 연결
-        videoDTO.setContentId(contentId);
+      //  videoDTO.setContent(contentId);
 
         // 등록 또는 수정
         if (videoDTO != null && videoDTO.getId() == null) {
             contentService.createVideo(contentId,videoDTO); // 신규 등록
-        } else if (videoDTO != null) {
-            contentService.updateVideo(contentId,videoDTO);// 기존 수정
+        } else if  (videoDTO != null && videoDTO.getId() != null) {
+            contentService.updateVideo(videoDTO.getId(), videoDTO); // 수정 시 videoId로 호출 ⭕
         }
 
         // ✅ 저장 후 콘텐츠 상세페이지 혹은 다음 등록 화면으로 이동
@@ -440,13 +384,14 @@ public class ContentController {
      * 영상 삭제 처리
      */
     @PostMapping("/content/{contentId}/video/delete")
-    public String deleteVideo(@PathVariable Integer contentId) {
-        System.out.println("🗑️ [Video 삭제] contentId == " + contentId);
+    public String deleteVideo(@PathVariable Integer contentId,
+                          @RequestParam("videoId") Integer videoId) {
+    System.out.println("🗑️ [Video 삭제] contentId == " + contentId);
+    System.out.println("<UNK> [Video <UNK>] videoId == " + videoId);
 
-        contentService.deleteVideo(contentId);
-
-        // 삭제 후 영상 등록 페이지로 리다이렉트
-        return "redirect:/content/" + contentId + "/video";
+    contentService.deleteVideo(videoId); // ✅ 실제 videoId 기반 삭제
+    // 삭제 후 영상 등록 페이지로 리다이렉트
+    return "redirect:/content/" + contentId + "/video";
     }
 
 /////////0825 vidio 추가///////////////////////////////////////////////////////////////////////////////////////////

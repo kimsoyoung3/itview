@@ -19,7 +19,4 @@ public class VideoDTO {
     private String image;
     // 영상 URL
     private String url;
-
-    public void setContentId(Integer contentId) {
-    }
 }
