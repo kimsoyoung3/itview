@@ -29,4 +29,6 @@ public class ContentDetailDTO {
     private List<RatingCountDTO> ratingDistribution;
     // 사용자의 코멘트
     private CommentDTO myComment;
+    // 컨텐츠 좋아요 상위 8개 코멘트
+    private List<CommentDTO> comments;
 }
