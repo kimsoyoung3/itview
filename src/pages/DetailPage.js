@@ -430,7 +430,7 @@ const DetailPage = ({userInfo, openLogin}) => {
                 <p className="detail-category">코멘트</p>
                 {contentDetail && contentDetail.comments && contentDetail.comments.length > 0 ? (
                     <div className="comment-inner">
-                        {contentDetail.comments.map(c => <Comment key={c.id} comment={c}/>)}
+                        {contentDetail.comments.map(c => <Comment key={c.id} comment={c} userInfo={userInfo} openLogin={openLogin} />)}
                     </div>
 
                 ) : (
