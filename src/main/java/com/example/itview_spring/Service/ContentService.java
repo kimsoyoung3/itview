@@ -47,6 +47,9 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 @Transactional
 public class ContentService {
+
+    private final CommentService commentService;
+
     private final ContentRepository contentRepository;
     private final ContentGenreRepository contentGenreRepository;
     private final GalleryRepository galleryRepository;
@@ -55,6 +58,7 @@ public class ContentService {
     private final RatingRepository ratingRepository;
     private final CommentRepository commentRepository;
     private final UserRepository userRepository;
+
     private final ModelMapper modelMapper;
 
     //전체조회
@@ -232,16 +236,10 @@ public class ContentService {
             contentDetail.setRatingDistribution(fullRating);
 
             // 사용자 코멘트 조회
-            CommentDTO myComment = commentRepository.findCommentDTOByUserIdAndContentId(userId, contentId).orElse(null);
-            if (myComment != null)
-            {
-                myComment.setRating(ratingRepository.findSomeoneScore(userId, contentId));
-                myComment.setUser(userRepository.findUserProfileById(userId).orElse(null));
+            CommentDTO myComment = commentService.getCommentDTO(userId, contentId);
+            if (myComment != null) {
                 contentDetail.setMyComment(myComment);
             }
-
-            // 해당 컨텐츠의 다른 사용자 코멘트 조회 (좋아요 순 상위 8개)
-            
 
             return contentDetail;
         } catch (Exception e) {

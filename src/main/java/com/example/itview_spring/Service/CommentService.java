@@ -3,9 +3,11 @@ package com.example.itview_spring.Service;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.example.itview_spring.DTO.CommentDTO;
 import com.example.itview_spring.Entity.CommentEntity;
 import com.example.itview_spring.Repository.CommentRepository;
 import com.example.itview_spring.Repository.ContentRepository;
+import com.example.itview_spring.Repository.RatingRepository;
 import com.example.itview_spring.Repository.UserRepository;
 
 import lombok.RequiredArgsConstructor;
@@ -18,6 +20,7 @@ public class CommentService {
     private final CommentRepository commentRepository;
     private final UserRepository userRepository;
     private final ContentRepository contentRepository;
+    private final RatingRepository ratingRepository;
 
     public void addComment(Integer userId, Integer contentId, String text) {
         CommentEntity comment = new CommentEntity();
@@ -25,6 +28,16 @@ public class CommentService {
         comment.setContent(contentRepository.findById(contentId).orElseThrow(() -> new RuntimeException("Content not found")));
         comment.setText(text);
         commentRepository.save(comment);
+    }
+
+    public CommentDTO getCommentDTO(Integer userId, Integer contentId) {
+        CommentDTO myComment = commentRepository.findCommentDTOByUserIdAndContentId(userId, contentId).orElse(null);
+        if (myComment != null)
+        {
+            myComment.setRating(ratingRepository.findSomeoneScore(userId, contentId));
+            myComment.setUser(userRepository.findUserProfileById(userId).orElse(null));
+        }
+        return myComment;
     }
 
     public void updateComment(Integer commentId, String newText) {
