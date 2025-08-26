@@ -27,10 +27,19 @@ public class CommentService {
         commentRepository.save(comment);
     }
 
-    public void updateComment(Integer userId, Integer contentId, String newText) {
-        CommentEntity comment = commentRepository.findByUserIdAndContentId(userId, contentId)
+    public void updateComment(Integer commentId, String newText) {
+        CommentEntity comment = commentRepository.findById(commentId)
                 .orElseThrow(() -> new RuntimeException("Comment not found"));
         comment.setText(newText);
         commentRepository.save(comment);
+    }
+
+    public boolean deleteComment(Integer commentId) {
+        var commentOpt = commentRepository.findById(commentId);
+        if (commentOpt.isPresent()) {
+            commentRepository.delete(commentOpt.get());
+            return true;
+        }
+        return false;
     }
 }
