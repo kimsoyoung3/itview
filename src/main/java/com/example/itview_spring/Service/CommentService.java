@@ -7,6 +7,7 @@ import com.example.itview_spring.DTO.CommentDTO;
 import com.example.itview_spring.Entity.CommentEntity;
 import com.example.itview_spring.Repository.CommentRepository;
 import com.example.itview_spring.Repository.ContentRepository;
+import com.example.itview_spring.Repository.LikeRepository;
 import com.example.itview_spring.Repository.RatingRepository;
 import com.example.itview_spring.Repository.UserRepository;
 
@@ -20,7 +21,7 @@ public class CommentService {
     private final CommentRepository commentRepository;
     private final UserRepository userRepository;
     private final ContentRepository contentRepository;
-    private final RatingRepository ratingRepository;
+    private final LikeRepository likeRepository;
 
     public void addComment(Integer userId, Integer contentId, String text) {
         CommentEntity comment = new CommentEntity();
@@ -46,6 +47,7 @@ public class CommentService {
         var commentOpt = commentRepository.findById(commentId);
         if (commentOpt.isPresent()) {
             commentRepository.delete(commentOpt.get());
+            likeRepository.deleteByTargetIdAndTargetType(commentId, "COMMENT");
             return true;
         }
         return false;
