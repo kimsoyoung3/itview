@@ -7,6 +7,8 @@ import com.example.itview_spring.Constant.Replyable;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -34,6 +36,7 @@ public class LikeEntity {
 
     // 좋아요 대상 타입 (컨텐츠, 댓글 등)
     @Column(nullable = false, length = 255)
+    @Enumerated(EnumType.STRING)
     private Replyable targetType;
 
     // 좋아요 대상 ID

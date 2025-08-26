@@ -240,6 +240,9 @@ public class ContentService {
                 contentDetail.setMyComment(myComment);
             }
 
+            // 해당 컨텐츠의 다른 사용자 코멘트 조회 (좋아요 순 상위 8개)
+            
+
             return contentDetail;
         } catch (Exception e) {
             System.out.println(e.getMessage());

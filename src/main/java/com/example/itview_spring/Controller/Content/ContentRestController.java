@@ -87,11 +87,21 @@ public class ContentRestController {
     }
 
     // 컨텐츠 코멘트 수정
-    @PutMapping("/{id}/comment")
-    public ResponseEntity<Void> putContentComment(@PathVariable("id") Integer id,
+    @PutMapping("/{commentId}/comment")
+    public ResponseEntity<Void> putContentComment(@PathVariable("commentId") Integer commentId,
                                                   @AuthenticationPrincipal CustomUserDetails userDetails,
                                                   @RequestBody TextDTO textDTO) {
-        commentService.updateComment(userDetails.getId(), id, textDTO.getText());
+        commentService.updateComment(commentId, textDTO.getText());
         return ResponseEntity.ok().build();
+    }
+
+    // 컨텐츠 코멘트 삭제
+    @DeleteMapping("/{commentId}/comment")
+    public ResponseEntity<Void> deleteContentComment(@PathVariable("commentId") Integer commentId,
+                                                     @AuthenticationPrincipal CustomUserDetails userDetails) {
+        if (commentService.deleteComment(commentId)) {
+            return ResponseEntity.ok().build();
+        }
+        return ResponseEntity.notFound().build();
     }
 }
