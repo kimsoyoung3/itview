@@ -4,7 +4,7 @@ import "../App.css";
 import 'swiper/css/navigation';
 import 'swiper/css/pagination';
 import 'swiper/css';
-import { deleteContentComment, deleteRating, getContentDetail, postContentComment, postContentRating, putContentComment } from "../API/ContentApi";
+import { deleteContentComment, deleteRating, getContentComment, getContentDetail, postContentComment, postContentRating, putContentComment } from "../API/ContentApi";
 import {Autoplay, Navigation, Pagination} from "swiper/modules";
 import {Swiper, SwiperSlide} from "swiper/react";
 import CreditOrPersonCard from "../components/CreditOrPersonCard";
@@ -26,13 +26,32 @@ const DetailPage = ({userInfo, openLogin}) => {
     const openComment = () => setMyCommentModal(true);
     const closeComment = () => setMyCommentModal(false);
 
+    // 코멘트 작성
     const handleCommentPost = async () => {
         var res = await postContentComment(window.location.pathname.split('/').pop(), { text: textRef.current.value })
-        console.log(res);
+        if (res.status === 200) {
+            closeComment();
+            getContentComment(window.location.pathname.split('/').pop()).then(response => {
+                setContentDetail(prev => ({
+                    ...prev,
+                    myComment: response.data
+                }));
+            });
+        }
     };
 
+    // 코멘트 수정
     const handleCommentUpdate = async () => {
         var res = await putContentComment(contentDetail?.myComment.id, { text: textRef.current.value })
+        if (res.status === 200) {
+            closeComment();
+            getContentComment(window.location.pathname.split('/').pop()).then(response => {
+                setContentDetail(prev => ({
+                    ...prev,
+                    myComment: response.data
+                }));
+            });
+        }
         console.log(res);
     };
 
@@ -159,8 +178,6 @@ const DetailPage = ({userInfo, openLogin}) => {
     useEffect(() => {
         console.log(contentCredit)
     }, [contentCredit]);
-
-
 
     return (
         <div className="detail">
@@ -292,7 +309,7 @@ const DetailPage = ({userInfo, openLogin}) => {
                                             <i className="bi bi-trash"></i>
                                             <p>삭제</p>
                                         </button>
-                                        <button>
+                                        <button onClick={openComment}>
                                             <i className="bi bi-pencil"></i>
                                             <p>수정</p>
                                         </button>
