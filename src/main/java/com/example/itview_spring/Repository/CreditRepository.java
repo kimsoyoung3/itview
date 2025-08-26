@@ -11,6 +11,7 @@ import com.example.itview_spring.Entity.CreditEntity;
 
 public interface CreditRepository extends JpaRepository<CreditEntity, Integer> {
     
+    // 컨텐츠 ID로 크레딧 정보 조회
     @Query("""
             SELECT new com.example.itview_spring.DTO.CreditDTO(
                 c.id,

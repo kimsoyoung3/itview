@@ -9,7 +9,9 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface ContentRepository extends JpaRepository<ContentEntity, Integer> {
-@Query("""
+
+    // 컨텐츠 ID로 컨텐츠 정보 조회
+    @Query("""
         SELECT new com.example.itview_spring.DTO.ContentResponseDTO(
             c.id,
             c.title,

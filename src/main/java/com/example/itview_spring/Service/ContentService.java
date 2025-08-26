@@ -1,18 +1,21 @@
 package com.example.itview_spring.Service;
 
-
+import com.example.itview_spring.DTO.CommentDTO;
 import com.example.itview_spring.DTO.ContentCreateDTO;
 import com.example.itview_spring.DTO.ContentDetailDTO;
 import com.example.itview_spring.DTO.ContentResponseDTO;
 import com.example.itview_spring.DTO.ExternalServiceDTO;
 import com.example.itview_spring.DTO.GenreDTO;
 import com.example.itview_spring.DTO.ImageDTO;
+import com.example.itview_spring.DTO.RatingCountDTO;
+import com.example.itview_spring.DTO.UserProfileDTO;
 import com.example.itview_spring.DTO.VideoDTO;
 
 import com.example.itview_spring.Constant.Genre;
 import com.example.itview_spring.DTO.ContentCreateDTO;
 import com.example.itview_spring.Entity.ContentEntity;
 import com.example.itview_spring.Entity.VideoEntity;
+import com.example.itview_spring.Repository.CommentRepository;
 import com.example.itview_spring.Repository.ContentGenreRepository;
 import com.example.itview_spring.Entity.ContentGenreEntity;
 import com.example.itview_spring.Entity.RatingEntity;
@@ -34,7 +37,9 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -44,13 +49,18 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 @Transactional
 public class ContentService {
+
+    private final CommentService commentService;
+
     private final ContentRepository contentRepository;
     private final ContentGenreRepository contentGenreRepository;
     private final GalleryRepository galleryRepository;
     private final VideoRepository videoRepository;
     private final ExternalServiceRepository externalServiceRepository;
     private final RatingRepository ratingRepository;
+    private final CommentRepository commentRepository;
     private final UserRepository userRepository;
+
     private final ModelMapper modelMapper;
 
     //전체조회
@@ -89,6 +99,7 @@ public class ContentService {
 //        //DTO가 보이면 return DTO를지정
 //        return contentDTOs;
 //    }
+
 
 
     //상세보기,수정(개별조회)
@@ -184,31 +195,65 @@ public class ContentService {
 
 
     // 컨텐츠 상세 정보 조회
-    public ContentDetailDTO getContentDetail(Integer contentId) {
-        ContentDetailDTO contentDetail = new ContentDetailDTO();
+    public ContentDetailDTO getContentDetail(Integer contentId, Integer userId) {
+        try {
+            ContentDetailDTO contentDetail = new ContentDetailDTO();
 
-        // 컨텐츠 정보 조회
-        ContentResponseDTO contentResponseDTO = contentRepository.findContentWithAvgRating(contentId);
-        // 컨텐츠 장르 조회
-        List<GenreDTO> genres = contentGenreRepository.findByContentId(contentId);
-        genres.forEach(genre -> {
-            contentResponseDTO.getGenres().add(genre.getGenre().getGenreName());
-        });
-        contentDetail.setContentInfo(contentResponseDTO);
+            // 컨텐츠 정보 조회
+            ContentResponseDTO contentResponseDTO = contentRepository.findContentWithAvgRating(contentId);
+            // 컨텐츠 장르 조회
+            List<GenreDTO> genres = contentGenreRepository.findByContentId(contentId);
+            genres.forEach(genre -> {
+                contentResponseDTO.getGenres().add(genre.getGenre().getGenreName());
+            });
+            contentDetail.setContentInfo(contentResponseDTO);
 
-        // 갤러리 이미지 조회
-        List<ImageDTO> images = galleryRepository.findByContentId(contentId);
-        contentDetail.setGallery(images);
+            // 갤러리 이미지 조회
+            List<ImageDTO> images = galleryRepository.findByContentId(contentId);
+            contentDetail.setGallery(images);
 
-        // 동영상 조회
-        List<VideoDTO> videos = videoRepository.findByContentId(contentId);
-        contentDetail.setVideos(videos);
+            // 동영상 조회
+            List<VideoDTO> videos = videoRepository.findByContentId(contentId);
+            contentDetail.setVideos(videos);
 
-        // 외부 서비스 조회
-        List<ExternalServiceDTO> externalServices = externalServiceRepository.findByContentId(contentId);
-        contentDetail.setExternalServices(externalServices);
+            // 외부 서비스 조회
+            List<ExternalServiceDTO> externalServices = externalServiceRepository.findByContentId(contentId);
+            contentDetail.setExternalServices(externalServices);
 
-        return contentDetail;
+            // 사용자 별점 조회
+            Integer myRating = ratingRepository.findSomeoneScore(userId, contentId);
+            contentDetail.setMyRating(myRating != null ? myRating : 0);
+
+            // 별점 개수 조회
+            Long ratingCount = ratingRepository.countByContentId(contentId);
+            contentDetail.setRatingCount(ratingCount != null ? ratingCount : 0L);
+
+            // 별점 분포 조회
+            List<RatingCountDTO> ratingDistribution = ratingRepository.findRatingDistributionByContentId(contentId);
+            List<RatingCountDTO> fullRating = new ArrayList<>();
+            Map<Integer, Long> ratingMap = ratingDistribution.stream()
+                    .collect(Collectors.toMap(RatingCountDTO::getScore, RatingCountDTO::getScoreCount));
+            for (int i = 1; i <= 10; i++) {
+                Long count = ratingMap.getOrDefault(i, 0L);
+                fullRating.add(new RatingCountDTO(i, count));
+            }
+            contentDetail.setRatingDistribution(fullRating);
+
+            // 사용자 코멘트 조회
+            CommentDTO myComment = commentService.getCommentDTO(userId, contentId);
+            if (myComment != null) {
+                contentDetail.setMyComment(myComment);
+            }
+
+            // 컨텐츠 좋아요 상위 8개 코멘트 조회
+            List<CommentDTO> comments = commentRepository.findTop8CommentsByContentId(userId, contentId);
+            contentDetail.setComments(comments);
+
+            return contentDetail;
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            return null;
+        }
     }
     //////////////////////////////////////////////////////////////////////////////////////////
     /**
