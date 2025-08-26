@@ -72,6 +72,22 @@ const DetailPage = ({userInfo, openLogin}) => {
         closeComment(); // 확인 후 모달 닫기
     };
 
+    /*코멘트 삭제 확인 모달창*/
+    const [deleteConfirmModal, setDeleteConfirmModal] = useState(false);
+
+    const handleDeleteClick = () => {
+        setDeleteConfirmModal(true);
+    };
+
+    const handleDeleteConfirm = async () => {
+        try {
+            await deleteContentComment(contentDetail?.myComment.id);
+            setDeleteConfirmModal(false); // ✅ 모달 닫기만
+        } catch (error) {
+            console.error("삭제 중 오류:", error);
+        }
+    };
+
     /*모달 바깥 클릭 시 이벤트 전파 차단용*/
     const stopPropagation = (e) => e.stopPropagation();
 
@@ -322,7 +338,7 @@ const DetailPage = ({userInfo, openLogin}) => {
                                     <div className="my-comment-content-image"><img src={contentDetail?.myComment.user.profile} alt=""/></div>
                                     <p>{contentDetail?.myComment.text}</p>
                                     <div className="my-comment-btn">
-                                        <button onClick={() => deleteContentComment(contentDetail?.myComment.id)}>
+                                        <button onClick={handleDeleteClick}>
                                             <i className="bi bi-trash"></i>
                                             <p>삭제</p>
                                         </button>
@@ -360,6 +376,7 @@ const DetailPage = ({userInfo, openLogin}) => {
                     </div>
                 )}
 
+                {/*마이코멘트 작성 확인 모달창*/}
                 {confirmModal && (
                     <div className="confirm-modal-overlay" onClick={() => setConfirmModal(false)}>
                         <div className="confirm-modal-content" onClick={(e) => e.stopPropagation()}>
@@ -368,6 +385,20 @@ const DetailPage = ({userInfo, openLogin}) => {
                             <div className="confirm-btn-group">
                                 <button onClick={handleConfirm}>확인</button>
                                 <button onClick={() => setConfirmModal(false)}>취소</button>
+                            </div>
+                        </div>
+                    </div>
+                )}
+
+                {/*마이코멘트 삭제 확인 모달창*/}
+                {deleteConfirmModal && (
+                    <div className="confirm-modal-overlay" onClick={() => setDeleteConfirmModal(false)}>
+                        <div className="confirm-modal-content" onClick={(e) => e.stopPropagation()}>
+                            <p>알림</p>
+                            <p>삭제하시겠습니까?</p>
+                            <div className="confirm-btn-group">
+                                <button  onClick={handleDeleteConfirm}>확인</button>
+                                <button onClick={() => setDeleteConfirmModal(false)}>취소</button>
                             </div>
                         </div>
                     </div>
