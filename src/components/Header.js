@@ -10,7 +10,7 @@ const Header = ({userInfo, handleLogin, handleLogout, isLoginOpen, openLogin, cl
     const [scrolled, setScrolled] = useState(false);
 
     // 상세페이지 여부 체크
-    const isDetailPage = location.pathname.includes('/content');
+    const isDetailPage = location.pathname.match(/^\/content\/\d+/)
 
     useEffect(() => {
         const handleScroll = () => {
@@ -19,11 +19,17 @@ const Header = ({userInfo, handleLogin, handleLogout, isLoginOpen, openLogin, cl
 
         if (isDetailPage) {
             window.addEventListener('scroll', handleScroll);
+
+            // 서브페이지면 스크롤 여부와 상관없이 그림자 적용
+            if (location.pathname.includes('/comment')) {
+                setScrolled(true);
+            }
+
             return () => window.removeEventListener('scroll', handleScroll);
         } else {
             setScrolled(true); // 상세페이지가 아니면 항상 scrolled 상태
         }
-    }, [isDetailPage]);
+    }, [isDetailPage, location.pathname]);
 
     /*로그인 모달*/
     const [loginEmail, setLoginEmail] = useState('');

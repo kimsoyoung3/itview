@@ -8,7 +8,7 @@ import { deleteContentComment,getContentCredit, deleteRating, getContentComment,
 import {Navigation, Pagination} from "swiper/modules";
 import {Swiper, SwiperSlide} from "swiper/react";
 import CreditOrPersonCard from "../components/CreditOrPersonCard";
-import Comment from "../components/Comment";
+import CommentCard from "../components/CommentCard";
 import {NavLink} from "react-router-dom";
 
 const DetailPage = ({userInfo, openLogin}) => {
@@ -452,11 +452,11 @@ const DetailPage = ({userInfo, openLogin}) => {
             <section className="detail-content container">
                 <div className="comment-text">
                     <p className="detail-category">코멘트 <span className="comment-count">{contentDetail?.commentCount}</span> </p>
-                    <NavLink to="/ComentPage">더보기</NavLink>
+                    <NavLink to={`/content/${contentDetail?.contentInfo.id}/comment`}>더보기</NavLink>
                 </div>
                 {contentDetail && contentDetail.comments && contentDetail.comments.length > 0 ? (
                     <div className="comment-inner">
-                        {contentDetail.comments.map(c => <Comment key={c.id} comment={c} userInfo={userInfo} openLogin={openLogin} />)}
+                        {contentDetail.comments.map(c => <CommentCard key={c.id} clamp={true} comment={c} userInfo={userInfo} openLogin={openLogin} />)}
                     </div>
 
                 ) : (
