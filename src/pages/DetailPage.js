@@ -149,9 +149,18 @@ const DetailPage = ({userInfo, openLogin}) => {
         const fetchContentCredit = async () => {
             try {
                 const id = window.location.pathname.split('/').pop();
-                const response = await getContentCredit(id, 1);
-                const data = response.data;
-                setContentCredit([data]);
+                var page = 1;
+
+                // var creditList = [];
+                // while (true) {
+                //     const response = await getContentCredit(id, page);
+                //     if (response.data.content.length === 0) break; // 더 이상 데이터가 없으면 종료
+                //     creditList.push(response.data);
+                //     page++;
+                // }
+
+                const response = await getContentCredit(id, page);
+                setContentCredit([response.data]);
             } catch (error) {
                 console.error('Error fetching content credit:', error);
             }
@@ -162,9 +171,16 @@ const DetailPage = ({userInfo, openLogin}) => {
 
     const swiperRef = React.useRef(null);
 
+    const handlePrev = () => {
+        swiperRef.current.swiper.slidePrev();
+        console.log(swiperRef.current.swiper.activeIndex);
+    }
+
     const handleNext = () => {
         swiperRef.current.swiper.slideNext();
-        console.log("next clicked");
+        console.log(swiperRef.current.swiper.activeIndex);
+        console.log(swiperRef.current.swiper.isEnd);
+        console.log(contentCredit[0].page.totalPages);
     }
 
     // 컨텐츠 정보를 가져온 후
@@ -447,23 +463,27 @@ const DetailPage = ({userInfo, openLogin}) => {
                         <Swiper
                             ref={swiperRef}
                             modules={[Navigation]}
-                            navigation={{
-                                prevEl: ".credit-prev",
-                                nextEl: ".credit-next",
-                            }}
+                            // navigation={{
+                            //     prevEl: ".credit-prev",
+                            //     nextEl: ".credit-next",
+                            // }}
                             spaceBetween={20}
                             slidesPerView={1}
                             className="credit-swiper"
                             onNavigationNext={() => console.log('next')}>
-                            <SwiperSlide>
-                                <div className="credit-list">
-                                    {contentCredit[0].content.map((credit) => (
-                                        <CreditOrPersonCard key={credit.id} type="credit" data={credit} />
-                                    ))}
-                                </div>
-                            </SwiperSlide>
+                            {contentCredit.map((creditPage, pageIndex) => (
+                                <SwiperSlide className="swiper-slide" key={pageIndex}>
+                                    <div className="credit-list">
+                                        {creditPage.content.map(credit => (
+                                            <CreditOrPersonCard key={credit.id} type="credit" data={credit} />
+                                        ))}
+                                    </div>
+                                </SwiperSlide>
+                            ))}
                         </Swiper>
-                        <div className="credit-prev"><img src="/arrow-left.svg" alt=""/></div>
+                        {/* <div className="credit-prev"><img src="/arrow-left.svg" alt=""/></div> */}
+                        {/* <div className="credit-next"><img src="/arrow-right.svg" alt=""/></div> */}
+                        <div className="credit-prev" onClick={handlePrev}><img src="/arrow-left.svg" alt=""/></div>
                         <div className="credit-next" onClick={handleNext}><img src="/arrow-right.svg" alt=""/></div>
                     </div>
 
