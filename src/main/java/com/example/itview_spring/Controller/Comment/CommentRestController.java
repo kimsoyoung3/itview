@@ -3,8 +3,10 @@ package com.example.itview_spring.Controller.Comment;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -12,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.itview_spring.Config.CustomUserDetails;
+import com.example.itview_spring.DTO.CommentAndContentDTO;
 import com.example.itview_spring.DTO.TextDTO;
 import com.example.itview_spring.Service.CommentService;
 
@@ -24,6 +27,23 @@ import lombok.RequiredArgsConstructor;
 public class CommentRestController {
     
     private final CommentService commentService;
+
+    // 코멘트 + 컨텐츠 조회
+    @GetMapping("/{id}")
+    public ResponseEntity<CommentAndContentDTO> getCommentAndContent(@PathVariable("id") Integer commentId) {
+        try {
+            var auth = SecurityContextHolder.getContext().getAuthentication();
+            Integer userId = 0;
+            if (auth.getPrincipal() != "anonymousUser") {
+                userId = ((CustomUserDetails) auth.getPrincipal()).getId();
+            }
+            CommentAndContentDTO commentAndContent = commentService.getCommentAndContentDTO(commentId, userId);
+            return ResponseEntity.ok(commentAndContent);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+    }
 
     // 좋아요 등록
     @PostMapping("/{id}/like")

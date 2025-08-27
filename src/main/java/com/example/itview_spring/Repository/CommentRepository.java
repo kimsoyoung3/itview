@@ -124,7 +124,7 @@ public interface CommentRepository extends JpaRepository<CommentEntity, Integer>
                         c.user.introduction,
                         c.user.profile
                     ),
-                    (select r.score from RatingEntity r where r.user.id = :userId and r.content.id = c.content.id)
+                    (select r.score from RatingEntity r where r.user.id = c.user.id and r.content.id = c.content.id)
                 ),
                 new com.example.itview_spring.DTO.ContentResponseDTO(
                     c.content.id,
