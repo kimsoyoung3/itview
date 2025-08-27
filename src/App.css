@@ -1401,7 +1401,44 @@ body {
   z-index: 10;
 }
 
+/*컨텐츠 디테일 코멘트 페이지 스타일*/
+.comment-page {
+  margin-top: 114px;
+  max-width: 800px;
+}
 
+.comment-page-title {
+  font-size: 1.5rem;
+  font-weight: bold;
+  margin-bottom: 20px;
+}
+
+.comment-page-select-wrap {
+  display: flex;
+  justify-content: end;
+}
+
+.comment-page-select {
+  width: 300px;
+  border-radius: 0;
+  padding: 10px 20px;
+  border-color: #eeeeee;
+  margin: 20px 0;
+
+}
+
+.form-select:focus,
+.form-select:active,
+.form-select:focus-visible {
+  background-color: transparent !important; /* 배경 제거 */
+  box-shadow: none !important; /* 기본 focus 그림자 제거 */
+  outline: none !important; /* outline 제거 */
+  border-color: #eeeeee;
+}
+
+.comment-page-content>* {
+  margin: 20px 0;
+}
 
 
 
