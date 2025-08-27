@@ -1,19 +1,21 @@
-import React, {useEffect, useState} from "react";
+import React, {use, useEffect, useState} from "react";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import "../App.css";
 import {useParams} from "react-router-dom";
 import CommentCard from "../components/CommentCard";
-import {getContentDetail} from "../API/ContentApi";
+import {getContentCommentsPaged} from "../API/ContentApi";
 
 const CommentPage = (userInfo,openLogin) => {
     const { id } = useParams(); // URL에서 :id 가져오기
     const [comments, setComments] = useState([]);
+    const [page, setPage] = useState({});
 
     useEffect(() => {
         const fetchComments = async () => {
             try {
-                const response = await getContentDetail(id); // 혹은 별도 코멘트 API
-                setComments(response.data.comments);
+                const response = await getContentCommentsPaged(id, 1);
+                setComments(response.data.content);
+                setPage(response.data.page);
             } catch (error) {
                 console.error(error);
             }
@@ -21,7 +23,6 @@ const CommentPage = (userInfo,openLogin) => {
 
         fetchComments();
     }, [id]);
-
 
     return(
         <div className="comment-page container">
