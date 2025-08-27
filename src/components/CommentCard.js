@@ -3,7 +3,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import "../App.css"; // CSS 따로 관리
 import { likeComment, unlikeComment } from "../API/CommentApi";
 
-const CommentCard = ({comment, content, userInfo, openLogin}) => {
+const CommentCard = ({comment, content, userInfo, openLogin, clamp = false}) => {
     const [commentData, setCommentData] = useState(comment);
 
     if (!comment) return null;
@@ -62,7 +62,7 @@ const CommentCard = ({comment, content, userInfo, openLogin}) => {
                         </ul>
                     </div>
                 )}
-                <p>{commentData.text}</p>
+                <p className={clamp ? "clamp-4" : ""}>{commentData.text}</p>
             </div>
 
             {/* 푸터 */}

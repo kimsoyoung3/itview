@@ -387,8 +387,7 @@ body {
   min-height: 120px;
 }
 
-.comment-card-content>p {
-  width: 250px;
+.clamp-4 {
   display: -webkit-box;
   -webkit-box-orient: vertical;
   -webkit-line-clamp: 4;
