@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from "react";
+import React, {useEffect, useRef, useState} from "react";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import "../App.css";
 import {useParams} from "react-router-dom";
@@ -11,6 +11,7 @@ const CommentPage = ({userInfo, openLogin}) => {
     const [page, setPage] = useState({});
     const [order, setOrder] = useState("new");
 
+    // 페이지 로드 시 코멘트 불러오기
     useEffect(() => {
         const fetchComments = async () => {
             try {
@@ -25,10 +26,12 @@ const CommentPage = ({userInfo, openLogin}) => {
         fetchComments();
     }, [id]);
 
+    // comments 변경 시 콘솔에 출력
     useEffect(() => {
         console.log(comments)
     }, [comments]);
 
+    // 다음 페이지 불러오기
     const handleNextPage = async () => {
         if (page.number < page.totalPages - 1) {
             const response = await getContentCommentsPaged(id, order, page.number+2);
@@ -39,14 +42,17 @@ const CommentPage = ({userInfo, openLogin}) => {
         }
     }
 
+    // 페이지 변경 시 콘솔에 출력
     useEffect(() => {
         console.log(page)
     }, [page]);
 
+    // 정렬 방식 변경
     const handleOrderChange = (e) => {
         setOrder(e.target.value); // new, old, rating, like, reply
     };
 
+    // 정렬 방식 변경 시 코멘트 다시 불러오기
     useEffect(() => {
         const fetchComments = async () => {
             const response = await getContentCommentsPaged(id, order, 1);
@@ -56,6 +62,28 @@ const CommentPage = ({userInfo, openLogin}) => {
 
         fetchComments();
     }, [order]);
+
+    // 코멘트 더보기 감지
+    const loadMoreCommentsRef = useRef(null);
+
+    // 감지 후 다음 페이지 로드
+    useEffect(() => {
+        const observer = new IntersectionObserver((entries) => {
+            if (entries[0].isIntersecting) {
+                handleNextPage();
+            }
+        }, {
+            threshold: 1.0
+        });
+        if (loadMoreCommentsRef.current) {
+            observer.observe(loadMoreCommentsRef.current);
+        }
+        return () => {
+            if (loadMoreCommentsRef.current) {
+                observer.unobserve(loadMoreCommentsRef.current);
+            }
+        };
+    }, [loadMoreCommentsRef, page]);
 
     return(
         <div className="comment-page container">
@@ -77,8 +105,10 @@ const CommentPage = ({userInfo, openLogin}) => {
             ) : (
                 <p>코멘트가 없습니다.</p>
             )}
+            <div ref={loadMoreCommentsRef} style={{ height: '20px' }}></div>
 
             <button onClick={handleNextPage}>다음</button>
+
         </div>
     )
 };

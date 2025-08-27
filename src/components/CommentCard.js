@@ -43,9 +43,11 @@ const CommentCard = ({comment, content, userInfo, openLogin, clamp = false}) => 
                     <span className="comment-card-nickname">{commentData.user.nickname}</span>
                     <span className="comment-card-date">{new Date(commentData.createdAt).toLocaleDateString().slice(0, -1)}</span>
                 </div>
-                <div className="comment-card-header-right">
-                    <i className="bi bi-star-fill"/><span>{commentData.rating/2}</span>
-                </div>
+                {commentData.rating &&
+                    <div className="comment-card-header-right">
+                        <i className="bi bi-star-fill"/><span>{commentData.rating/2}</span>
+                    </div>
+                }
             </div>
 
             {/* 내용 */}
