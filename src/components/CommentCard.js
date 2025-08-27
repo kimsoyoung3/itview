@@ -2,6 +2,7 @@ import React, {useState} from "react";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import "../css/CommentCard.css"; // CSS 따로 관리
 import { likeComment, postReply, unlikeComment } from "../API/CommentApi";
+import {NavLink} from "react-router-dom";
 
 const CommentCard = ({comment, content, userInfo, openLogin, clamp = false}) => {
     const [commentData, setCommentData] = useState(comment);
@@ -84,7 +85,7 @@ const CommentCard = ({comment, content, userInfo, openLogin, clamp = false}) => 
                         </ul>
                     </div>
                 )}
-                <p className={clamp ? "clamp-4" : ""}>{commentData.text}</p>
+                <NavLink to={`/comment/${commentData.id}`}><p className={clamp ? "clamp-4" : ""}>{commentData.text}</p></NavLink>
             </div>
 
             {/* 푸터 */}

@@ -1,10 +1,11 @@
 import React from 'react'
 import { Route, Routes } from 'react-router-dom';
+import CommentDetailPage from "../pages/CommentDetailPage";
 
 function CommentRoutes({ userInfo, openLogin }) {
   return (
     <Routes>
-        <Route />
+        <Route path=":id" element={<CommentDetailPage userInfo={userInfo} openLogin={openLogin} />} />
     </Routes>
   )
 }
