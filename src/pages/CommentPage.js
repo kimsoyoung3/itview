@@ -3,7 +3,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import "../App.css";
 import {useParams} from "react-router-dom";
 import CommentCard from "../components/CommentCard";
-import {getContentDetail} from "../API/ContentApi";
+import {getContentDetail, getContentCommentsPaged, likeComment, unlikeComment} from "../API/ContentApi";
 
 const CommentPage = (userInfo,openLogin) => {
     const { id } = useParams(); // URL에서 :id 가져오기
@@ -28,9 +28,9 @@ const CommentPage = (userInfo,openLogin) => {
             <h1 className="comment-page-title">코멘트</h1>
             <div className="comment-page-select-wrap">
                 <select className="form-select comment-page-select" aria-label="Default select example">
-                    <option selected>좋아요 순</option>
-                    <option value="1">최신 순</option>
-                    <option value="2">오래된 순</option>
+                    <option selected>최신 순</option>
+                    <option value="1">오래된 순</option>
+                    <option value="2">좋아요 순</option>
                     <option value="3">별점 순</option>
                     <option value="4">댓글 많은 순</option>
                 </select>
