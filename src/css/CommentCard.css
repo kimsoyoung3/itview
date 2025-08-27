@@ -1,0 +1,154 @@
+/*코멘트 컴포넌트 스타일*/
+.comment-card {
+    max-width: 900px;
+    background: #f6f6f6;
+    border-radius: 8px;
+    padding: 30px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+
+.comment-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+    color: #5e5e64;
+    font-weight: 500;
+}
+
+.comment-card-header-left {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.comment-card-date {
+    font-size: 0.7rem;
+    font-weight: 400;
+}
+
+.comment-card-header-right {
+    display: flex;
+    gap: 5px;
+}
+
+.comment-card-profile {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+}
+
+.comment-card-content {
+    border-top: 1px solid #d9d9d9 ;
+    border-bottom: 1px solid #d9d9d9 ;
+    margin: 15px 0;
+    padding: 15px 0;
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: #5e5e64;
+    min-height: 120px;
+}
+
+.clamp-4 {
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 4;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    margin-bottom: 0;
+}
+
+.comment-card-content-wrap {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 15px;
+    font-size: 0.7rem;
+    font-weight: 400;
+}
+
+.comment-card-content-left {
+    width: 50px;
+}
+
+.comment-card-content-left>img{
+    width: 100%;
+}
+
+.comment-card-footer {
+    display: flex;
+    flex-direction: column;
+    font-size: 0.8rem;
+    color: #666;
+}
+
+.comment-card-footer-top {
+    display: flex;
+    gap: 5px;
+}
+
+.comment-card-footer-top>p {
+    margin-bottom: 15px;
+}
+
+.comment-card-footer-top>p>span{
+    padding-left: 5px;
+}
+
+.comment-card-footer-bottom {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 1rem;
+}
+
+.comment-card-footer-bottom>button {
+    border: none;
+    background: none;
+    color: #888888;
+}
+
+/* 📱 반응형 스타일 */
+
+/*노트북 사이즈*/
+@media (max-width: 1024px) {
+}
+
+/*태블릿 사이즈*/
+@media (max-width: 768px) {
+}
+
+/*모바일 사이즈*/
+@media (max-width: 480px) {
+    .comment-card {
+        width: 400px;
+        margin: 15px auto;
+        padding: 20px;
+    }
+
+    .comment-card-header {
+        font-size: 0.8rem;
+    }
+
+    .comment-card-date {
+        font-size: 0.6rem;
+    }
+
+    .comment-card-profile {
+        width: 25px;
+        height: 25px;
+    }
+
+    .comment-card-content {
+        font-size: 0.7rem;
+    }
+
+    .comment-card-footer {
+        font-size: 0.6rem;
+    }
+
+    .comment-card-footer-bottom {
+        font-size: 0.8rem;
+    }
+
+}

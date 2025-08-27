@@ -1,6 +1,7 @@
 import React from "react";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import "../../App.css";
+import "../../css/HomePage.css";
 import AdCard from "../../components/AdCard"; // CSS 따로 관리
 
 const Home = () => {

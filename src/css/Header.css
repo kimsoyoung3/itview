@@ -1,0 +1,462 @@
+/* 헤더 스타일 */
+.header {
+    width: 100%;
+    box-shadow: 1px 2px 2px rgba(0,0,0,0.1);
+    padding: 15px 0 ;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 9999;
+}
+
+.header_width {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: 0 auto;
+}
+
+.header-transparent {
+    background-color: rgba(0,0,0,0);
+    box-shadow: none;
+    color: #cccccc;
+}
+
+.header-transparent .nav a:hover {
+    color: white;
+}
+
+.header-scrolled {
+    background-color: #ffffff;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    transition: background-color 0.3s ease, box-shadow 0.3s ease;
+    color: #888888;
+}
+
+.header_inner {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 30px;
+}
+
+
+.logo {
+    max-width: 150px;
+}
+
+.logo img {
+    width: 100%;
+}
+
+.nav {
+    display: flex;
+    gap: 40px;
+    font-size: 1rem;
+    font-weight: 600;
+}
+
+.nav a {
+}
+
+.nav a:hover {
+    color: #000;
+}
+
+.nav a.active {
+    color: #000;
+}
+
+.dropdown {
+    display: none;
+}
+
+.search-bar {
+    display: flex;
+    align-items: center;
+    background-color: #eee;
+    width: 250px;
+    gap: 10px;
+    padding: 10px ;
+}
+
+.search-input {
+    border: none;
+    background: transparent;
+    outline: none;
+    flex: 1;
+    font-size: 0.9rem;
+}
+
+.search-input::placeholder {
+    color: rgba(136,136,136,0.5);
+}
+
+.search-button {
+    border: none;
+    background: none;
+    font-size: 1rem;
+    cursor: pointer;
+    color: #888;
+}
+
+.user-menu {
+    display: flex;
+    gap: 15px;
+    color: #cccccc;
+    font-size: 0.8rem;
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+.user-menu button {
+    color:#cccccc;
+    border: none;
+    background: transparent;
+}
+
+.user-menu button:hover {
+    color: #888;
+}
+
+.user-menu a {
+    color: #cccccc;
+    font-size: 0.8rem;
+    font-weight: 600;
+}
+
+.user-menu a:hover {
+    color: #888;
+}
+
+/*로그인 모달창 스타일*/
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.4);
+    display: flex;
+    align-items: center;      /* 수직 중앙 */
+    justify-content: center;  /* 수평 중앙 */
+    z-index: 1000;
+}
+
+.login-modal {
+    background: white;
+    padding: 40px 20px;
+    width: 360px;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+    position: relative;
+    text-align: center;
+}
+
+.login-modal h1 {
+    margin-bottom: 20px;
+}
+
+.login-modal h2 {
+    font-size: 1.5rem;
+    font-weight: bold;
+    margin-bottom: 30px;
+}
+
+.login-modal input {
+    display: block;
+    width: 100%;
+    padding: 8px;
+    margin-top: 10px;
+    border:none;
+    border-radius: 4px;
+    background-color: #eee;
+}
+
+.login-modal input:focus {
+    outline: none;
+    box-shadow: none;
+    border: none; /* ← 이건 선택사항 (기본 border도 없애려면) */
+}
+
+.login-modal input::placeholder {
+    color: rgba(136,136,136,0.8);
+    font-size: 1rem;
+    font-weight: 500;
+}
+
+.login-submit {
+    width: 100%;
+    margin: 30px 0;
+    padding: 8px;
+    background: #22C55E;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.login-text-top {
+    color: #22C55E;
+    font-size: 0.8rem;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.login-text-bottom {
+    color: #9d9d9d;
+    font-size: 0.9rem;
+    font-weight: bold;
+}
+
+.login-text-bottom span {
+    color: #22C55E;
+    margin-left: 15px;
+    cursor: pointer;
+}
+
+/*로그인실패 모달창 스타일*/
+.modal-content {
+    background: white;
+    padding: 30px 20px 20px 20px;
+    width: 300px;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+    position: relative;
+    text-align: center;
+    border-radius: 4px;
+}
+
+.modal-content p {
+    font-size: 0.9rem;
+    margin-bottom:30px;
+}
+
+.modal-content button {
+    border-radius: 4px;
+    margin: 0 auto;
+    font-size: 0.8rem;
+    border: none;
+    padding: 5px 20px;
+    background-color: #888;
+    color: #fff;
+}
+
+/*비밀번호 찾기 모달창 스타일*/
+.reset-modal {
+    background: white;
+    padding: 50px 20px 30px 20px;
+    width: 360px;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+    position: relative;
+    z-index: 2001;
+}
+
+.reset-modal h2 {
+    font-size: 1.3rem;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+.reset-modal div {
+    width: 100%;
+    height: 1px;
+    background-color: #d9d9d9;
+    margin-bottom: 30px;
+}
+
+.reset-modal p:nth-of-type(1) {
+    font-size: 1rem;
+    font-weight: bold;
+    color: #000;
+}
+
+.reset-modal form input {
+    display: block;
+    width: 100%;
+    padding: 8px;
+    margin-top: 30px;
+    border:none;
+    border-radius: 4px;
+    background-color: #eee;
+}
+
+.reset-modal p {
+    font-size: 0.9rem;
+    margin-bottom: 10px;
+    color: #888;
+}
+
+.reset-modal form input:focus {
+    outline: none;
+    box-shadow: none;
+    border: none; /* ← 이건 선택사항 (기본 border도 없애려면) */
+}
+
+.reset-modal form input::placeholder {
+    color: rgba(136,136,136,0.8);
+    font-size: 1rem;
+    font-weight: 500;
+}
+
+.reset-submit {
+    width: 100%;
+    margin-top: 20px;
+    padding: 8px;
+    background: #888;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.close-button {
+    background-color: transparent;
+    border: none;
+    color: #22C55E;
+    position: absolute;
+    top: 18px;
+}
+
+/* 📱 반응형 스타일 */
+
+/*노트북 사이즈*/
+@media (max-width: 1024px) {
+    /*헤더 스타일*/
+    .header {
+        width: 100%;
+    }
+
+    .header_width {
+        width: 100%;
+    }
+
+    .header_inner {
+        width: 100%;
+    }
+
+    .nav {
+        gap: 20px;
+        font-size: 0.95rem;
+    }
+
+    .search-bar {
+        width: 200px;
+    }
+
+}
+
+/*태블릿 사이즈*/
+@media (max-width: 768px) {
+    /*헤더 스타일*/
+    .header_width {
+        width: 100%;
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .header_inner {
+        width: 100%;
+        justify-content: end;
+        gap: 30px;
+    }
+
+    .header_left {
+        justify-content: start;
+    }
+
+    .nav {
+        display: none;
+    }
+
+    .dropdown {
+        display: block;
+        font-size: 1.2rem;
+        font-weight: 600;
+    }
+
+    .dropdown-menu {
+        width: max-content;
+        border: 1px solid #eee;
+        box-shadow: 1px 2px 2px rgba(0,0,0,0.1);
+        background: #fff;
+        color: rgba(136,136,136,0.5);
+        padding: 5px 10px;
+    }
+
+    .dropdown-menu li {
+        padding: 5px 0;
+        color: #000;
+    }
+
+    .search-bar {
+        width: 180px;
+    }
+
+    .search-input {
+        width: 100%;
+        font-size: 0.8rem;
+    }
+
+    .search-button {
+        font-size: 1rem;
+    }
+
+    .user-menu {
+        font-size: 0.8rem;
+    }
+
+}
+
+/*모바일 사이즈*/
+@media (max-width: 480px) {
+    /*헤더 스타일*/
+    .header_width {
+        width: 100%;
+    }
+
+    .logo img {
+        max-width: 80px;
+    }
+
+    .dropdown {
+        font-size: 0.8rem;
+        font-weight: 600;
+    }
+
+    .dropdown-menu {
+        min-width: auto !important;
+        width: 100px !important;
+
+    }
+
+    .dropdown-menu li {
+        padding: 5px 0;
+        font-size: 0.8rem;
+        color: #000;
+    }
+
+    .search-bar {
+        width: 120px;
+        padding: 5px;
+    }
+
+    .search-input {
+        font-size: 0.5rem;
+    }
+
+    .search-button {
+        border: none;
+        background: none;
+        font-size: 1rem;
+        cursor: pointer;
+        color: #888;
+    }
+
+    .user-menu {
+        font-size: 0.5rem;
+    }
+
+    .user-menu a {
+        font-size: 0.5rem;
+    }
+}

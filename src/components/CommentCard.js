@@ -1,6 +1,6 @@
 import React, {useState} from "react";
 import 'bootstrap/dist/css/bootstrap.min.css';
-import "../App.css"; // CSS 따로 관리
+import "../css/CommentCard.css"; // CSS 따로 관리
 import { likeComment, unlikeComment } from "../API/CommentApi";
 
 const CommentCard = ({comment, content, userInfo, openLogin, clamp = false}) => {

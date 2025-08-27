@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from "react";
 import 'bootstrap/dist/css/bootstrap.min.css';
-import "../App.css";
+import "../css/CommentPage.css";
 import {useParams} from "react-router-dom";
 import CommentCard from "../components/CommentCard";
 import {getContentCommentsPaged} from "../API/ContentApi";

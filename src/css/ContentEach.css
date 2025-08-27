@@ -1,0 +1,35 @@
+/*컨텐츠 개별 스타일*/
+.content-each{
+    display: flex;
+    flex-direction: column;
+    justify-content: start;
+}
+
+.content-post {
+    width: 100%;
+    height: 100%;
+}
+
+.content-post>img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.content {
+    width: 170px;
+}
+
+.info p {
+    margin-bottom: 0;
+}
+
+.title {
+    font-size: 1rem;
+    font-weight: 600;
+}
+
+.rating {
+    font-size: 0.8rem;
+    font-weight: 400;
+}

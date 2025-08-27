@@ -1,6 +1,7 @@
 import React, {useEffect, useState } from "react";
 import 'bootstrap/dist/css/bootstrap.min.css';
-import "../App.css";
+import "../css/DetailPage.css";
+import "../css/ContentSwiper.css";
 import 'swiper/css/navigation';
 import 'swiper/css/pagination';
 import 'swiper/css';

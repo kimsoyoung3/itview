@@ -1,0 +1,25 @@
+/*배너*/
+.banner {
+    width: 100%;
+    height: 80px;
+    border-radius: 8px;
+    background: #EAEFE9;
+    margin-top: 94px;
+}
+
+.banner img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}
+
+/*컨텐츠*/
+.home-content {
+    width: 100%;
+    margin-top: 30px;
+}
+
+.home-content-title {
+    font-size: 1.3rem;
+    font-weight: bold;
+}
