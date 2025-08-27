@@ -36,9 +36,9 @@ const CommentPage = ({userInfo, openLogin}) => {
         if (page.number < page.totalPages - 1) {
             const response = await getContentCommentsPaged(id, order, page.number+2);
             setComments((prev) => ([...prev, ...response.data.content]))
-            setPage(response.data.page)
+            setPage(response.data.page);
         } else {
-            console.log("마지막 페이지")
+            console.log("마지막 페이지");
         }
     }
 

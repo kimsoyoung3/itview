@@ -97,7 +97,7 @@ const CommentCard = ({comment, content, userInfo, openLogin, clamp = false}) => 
                     <button onClick={userInfo ? () => handleLikeComment(commentData.id) : openLogin}>
                         <i className={commentData.liked ? "bi bi-hand-thumbs-up-fill" : "bi bi-hand-thumbs-up"}/>
                     </button>
-                    <button onClick={openReply}><i className="bi bi-chat-square"/></button>
+                    <button onClick={userInfo ? openReply : openLogin}><i className="bi bi-chat-square"/></button>
                     <button><i className="bi bi-share"/></button>
                 </div>
             </div>
