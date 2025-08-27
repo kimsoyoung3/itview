@@ -1242,6 +1242,11 @@ body {
   cursor: pointer;
 }
 
+.credit-prev.disabled,
+.credit-next.disabled {
+  display: none;
+}
+
 .credit-prev:hover,
 .credit-next:hover {
   background: rgba(0,0,0,0.6);

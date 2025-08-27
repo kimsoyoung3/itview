@@ -165,18 +165,21 @@ const DetailPage = ({userInfo, openLogin}) => {
         fetchContentCredit();
     }, []); 
 
+    // 스와이퍼 레퍼런스
     const swiperRef = React.useRef(null);
 
+    const [swiperPage, setSwiperPage] = useState(1);
+
+    // 이전 버튼 핸들러
     const handlePrev = () => {
         swiperRef.current.swiper.slidePrev();
-        console.log(swiperRef.current.swiper.activeIndex);
+        setSwiperPage(prev => prev - 1);
     }
 
+    // 다음 버튼 핸들러
     const handleNext = () => {
         swiperRef.current.swiper.slideNext();
-        console.log(swiperRef.current.swiper.activeIndex);
-        console.log(swiperRef.current.swiper.isEnd);
-        console.log(contentCredit[0].page.totalPages);
+        setSwiperPage(prev => prev + 1);
         if (swiperRef.current.swiper.isEnd && swiperRef.current.swiper.activeIndex < contentCredit[0].page.totalPages - 1) {
             const fetchNextPage = async () => {
                 console.log('마지막 슬라이드 도달, 다음 페이지 로드 시도');
@@ -498,13 +501,13 @@ const DetailPage = ({userInfo, openLogin}) => {
                         </Swiper>
                         {/* <div className="credit-prev"><img src="/arrow-left.svg" alt=""/></div> */}
                         {/* <div className="credit-next"><img src="/arrow-right.svg" alt=""/></div> */}
-                        <div className="credit-prev" onClick={handlePrev}><img src="/arrow-left.svg" alt=""/></div>
-                        <div className="credit-next" onClick={handleNext}><img src="/arrow-right.svg" alt=""/></div>
+                        <div className={`credit-prev ${swiperPage === 1 ? 'disabled' : ''}`} onClick={handlePrev}><img src="/arrow-left.svg" alt=""/></div>
+                        <div className={`credit-next ${swiperPage === contentCredit[0].page.totalPages ? 'disabled' : ''}`} onClick={handleNext}><img src="/arrow-right.svg" alt=""/></div>
                     </div>
 
-                     ) : (
-                         <p>크레딧 정보가 없습니다.</p>
-                     )}
+                    ) : (
+                        <p>크레딧 정보가 없습니다.</p>
+                    )}
 
              </section>
 
