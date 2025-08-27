@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from "react";
+import React, {useState} from "react";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import "../App.css"; // CSS 따로 관리
 import { likeComment, unlikeComment } from "../API/CommentApi";
