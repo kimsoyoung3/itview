@@ -345,7 +345,7 @@ body {
   box-shadow: 0 1px 3px rgba(0,0,0,0.1);
 }
 
-.comment-header {
+.comment-card-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -354,29 +354,29 @@ body {
   font-weight: 500;
 }
 
-.comment-header-left {
+.comment-card-header-left {
   display: flex;
   align-items: center;
   gap: 10px;
 }
 
-.comment-date {
+.comment-card-date {
   font-size: 0.7rem;
   font-weight: 400;
 }
 
-.comment-header-right {
+.comment-card-header-right {
   display: flex;
   gap: 5px;
 }
 
-.comment-profile {
+.comment-card-profile {
   width: 40px;
   height: 40px;
   border-radius: 50%;
 }
 
-.comment-content {
+.comment-card-content {
   border-top: 1px solid #d9d9d9 ;
   border-bottom: 1px solid #d9d9d9 ;
   margin: 15px 0;
@@ -387,7 +387,7 @@ body {
   min-height: 120px;
 }
 
-.comment-content>p {
+.comment-card-content>p {
   width: 250px;
   display: -webkit-box;
   -webkit-box-orient: vertical;
@@ -397,7 +397,7 @@ body {
   margin-bottom: 0;
 }
 
-.comment-content-wrap {
+.comment-card-content-wrap {
   display: flex;
   align-items: center;
   gap: 10px;
@@ -406,42 +406,42 @@ body {
   font-weight: 400;
 }
 
-.comment-content-left {
+.comment-card-content-left {
   width: 50px;
 }
 
-.comment-content-left>img{
+.comment-card-content-left>img{
   width: 100%;
 }
 
-.comment-footer {
+.comment-card-footer {
   display: flex;
   flex-direction: column;
   font-size: 0.8rem;
   color: #666;
 }
 
-.comment-footer-top {
+.comment-card-footer-top {
   display: flex;
   gap: 5px;
 }
 
-.comment-footer-top>p {
+.comment-card-footer-top>p {
   margin-bottom: 15px;
 }
 
-.comment-footer-top>p>span{
+.comment-card-footer-top>p>span{
   padding-left: 5px;
 }
 
-.comment-footer-bottom {
+.comment-card-footer-bottom {
   display: flex;
   align-items: center;
   gap: 6px;
   font-size: 1rem;
 }
 
-.comment-footer-bottom>button {
+.comment-card-footer-bottom>button {
   border: none;
   background: none;
   color: #888888;
@@ -562,17 +562,17 @@ body {
 }
 
 /*크레딧카드 스타일*/
-.credit {
+.credit-card {
   flex: 0 0 calc(25% - 20px); /* 한 줄에 4개 (100% / 4 - gap) */
   box-sizing: border-box;
   height: 100%;
 }
 
-.credit-image {
+.credit-card-image {
   width: 60px;
 }
 
-.credit-image img {
+.credit-card-image img {
   width: 100%;
   max-width: 150px;
   border-radius: 4px;
@@ -580,13 +580,13 @@ body {
   display: block;
 }
 
-.credit-inner {
+.credit-card-inner {
   display: flex;
   align-items: center;
   gap: 5px;
 }
 
-.credit-info {
+.credit-card-info {
   width: 100%;
   height: 100%;
   margin: 0;
@@ -594,7 +594,7 @@ body {
   position: relative;
 }
 
-.credit-info::after {
+.credit-card-info::after {
   content: "";
   position: absolute;
   bottom: 0; /* credit-inner 전체 밑 */
@@ -607,13 +607,13 @@ body {
   pointer-events: none;
 }
 
-.credit-info>li>span {
+.credit-card-info>li>span {
   font-size: 0.8rem;
   font-weight: 400;
   color: #888888;
 }
 
-.credit-info>li:nth-of-type(2) {
+.credit-card-info>li:nth-of-type(2) {
   font-size: 0.9rem;
   font-weight: 500;
   color: #888888;
@@ -1209,7 +1209,7 @@ body {
   padding: 20px 0;
 }
 
-/*외부 서비스 링크 스타일*/
+/*외부서비스링크 섹션 스타일*/
 .external-services>a {
   display: inline-block;
   width: 60px;
@@ -1223,7 +1223,7 @@ body {
   border-radius: 50%;
 }
 
-/*컨텐츠 크레딧 스타일*/
+/*크레딧 섹션 스타일*/
 
 .credit-swiper {
   position: relative; /* 버튼 기준점 */
@@ -1263,7 +1263,7 @@ body {
   justify-content: flex-start;
 }
 
-/*컨텐츠 코멘트 스타일*/
+/*코멘트 섹션 스타일*/
 .comment-text {
   display: flex;
   justify-content: space-between;
@@ -1297,7 +1297,7 @@ body {
   box-sizing: border-box;
 }
 
-/*컨텐츠 갤러리/비디오 스타일*/
+/*갤러리/비디오 섹션 스타일*/
 .detail-gallery
  {
   position: relative;
@@ -1400,6 +1400,17 @@ body {
   cursor: pointer;
   z-index: 10;
 }
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -1551,40 +1562,35 @@ body {
   }
   /*코멘트 라지 스타일*/
 
-  .comment-card {
+  .comment-card-card {
     width: 400px;
     margin: 15px auto;
     padding: 20px;
   }
 
-  .comment-header {
+  .comment-card-header {
     font-size: 0.8rem;
   }
 
-  .comment-date {
+  .comment-card-date {
     font-size: 0.6rem;
   }
 
-  .comment-profile {
+  .comment-card-profile {
     width: 25px;
     height: 25px;
   }
 
-  .comment-content {
+  .comment-card-content {
     font-size: 0.7rem;
   }
 
-  .comment-footer {
+  .comment-card-footer {
     font-size: 0.6rem;
   }
 
-  .comment-footer-bottom {
+  .comment-card-footer-bottom {
     font-size: 0.8rem;
-  }
-
-  /*코멘트 스몰 스타일*/
-  .comment-small {
-    width: 210px;
   }
 
 }

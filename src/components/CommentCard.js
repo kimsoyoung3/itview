@@ -3,7 +3,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import "../App.css"; // CSS 따로 관리
 import { likeComment, unlikeComment } from "../API/CommentApi";
 
-const CommentLarge = ({comment, content, userInfo, openLogin}) => {
+const CommentCard = ({comment, content, userInfo, openLogin}) => {
     const [commentData, setCommentData] = useState(comment);
 
     if (!comment) return null;
@@ -37,25 +37,25 @@ const CommentLarge = ({comment, content, userInfo, openLogin}) => {
     return (
         <div className="comment-card">
             {/* 헤더 */}
-            <div className="comment-header">
-                <div className="comment-header-left">
-                    <img src={commentData.user?.profile || '/user.png'} className="comment-profile" alt=""/>
-                    <span className="comment-nickname">{commentData.user.nickname}</span>
-                    <span className="comment-date">{new Date(commentData.createdAt).toLocaleDateString().slice(0, -1)}</span>
+            <div className="comment-card-header">
+                <div className="comment-card-header-left">
+                    <img src={commentData.user?.profile || '/user.png'} className="comment-card-profile" alt=""/>
+                    <span className="comment-card-nickname">{commentData.user.nickname}</span>
+                    <span className="comment-card-date">{new Date(commentData.createdAt).toLocaleDateString().slice(0, -1)}</span>
                 </div>
-                <div className="comment-header-right">
+                <div className="comment-card-header-right">
                     <i className="bi bi-star-fill"/><span>{commentData.rating/2}</span>
                 </div>
             </div>
 
             {/* 내용 */}
-            <div className="comment-content">
+            <div className="comment-card-content">
                 {content && (
-                    <div className="comment-content-wrap">
-                        <div className="comment-content-left">
+                    <div className="comment-card-content-wrap">
+                        <div className="comment-card-content-left">
                             <img src={content.poster} alt=""/>
                         </div>
-                        <ul className="comment-content-right m-0 p-0">
+                        <ul className="comment-card-content-right m-0 p-0">
                             <li>{content.title}</li>
                             <li>{content.contentType} &middot; <span>{content.releaseDate}</span></li>
                             <li>{content.ratingAvg}</li>
@@ -66,12 +66,12 @@ const CommentLarge = ({comment, content, userInfo, openLogin}) => {
             </div>
 
             {/* 푸터 */}
-            <div className="comment-footer">
-                <div className="comment-footer-top">
+            <div className="comment-card-footer">
+                <div className="comment-card-footer-top">
                     <p>좋아요<span>{commentData.likeCount}</span></p>
                     <p>댓글<span>{commentData.replyCount}</span></p>
                 </div>
-                <div className="comment-footer-bottom">
+                <div className="comment-card-footer-bottom">
                     <button onClick={userInfo ? () => handleLikeComment(commentData.id) : openLogin}>
                         <i className={commentData.liked ? "bi bi-hand-thumbs-up-fill" : "bi bi-hand-thumbs-up"}/>
                     </button>
@@ -83,4 +83,4 @@ const CommentLarge = ({comment, content, userInfo, openLogin}) => {
     );
 };
 
-export default CommentLarge;
+export default CommentCard;
