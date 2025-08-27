@@ -6,6 +6,13 @@ import { likeComment, unlikeComment } from "../API/CommentApi";
 const CommentCard = ({comment, content, userInfo, openLogin, clamp = false}) => {
     const [commentData, setCommentData] = useState(comment);
 
+    const [replyModal, setReplyModal] = useState();
+    const textRef = React.useRef(null); //댓글 텍스트 영역 참조
+
+    /*댓글 모달*/
+    const openReply = () => setReplyModal(true);
+    const closeReply = () => setReplyModal(false);
+
     if (!comment) return null;
 
     const handleLikeComment = async (commentId) => {
@@ -77,10 +84,27 @@ const CommentCard = ({comment, content, userInfo, openLogin, clamp = false}) => 
                     <button onClick={userInfo ? () => handleLikeComment(commentData.id) : openLogin}>
                         <i className={commentData.liked ? "bi bi-hand-thumbs-up-fill" : "bi bi-hand-thumbs-up"}/>
                     </button>
-                    <button><i className="bi bi-chat-square"/></button>
+                    <button onClick={openReply}><i className="bi bi-chat-square"/></button>
                     <button><i className="bi bi-share"/></button>
                 </div>
             </div>
+
+            {/*댓글 모달창*/}
+            {replyModal && (
+                <div className="comment-modal-overlay" onClick={closeReply}>
+                    <div className="comment-modal-content" onClick={(e) => e.stopPropagation()}>
+                        <div className="comment-content-top">
+                            <p className="comment-modal-title">댓글</p>
+                            <button className="comment-close-button" onClick={closeReply}><img src="/x-lg.svg" alt=""/></button>
+                        </div>
+                        <textarea rows="15" placeholder="코멘트에 대한 댓글을 남겨주세요." maxLength={1000} ref={textRef}></textarea>
+                        <div className="comment-content-bottom">
+                            <button className="comment-content-btn">저장</button>
+                        </div>
+                    </div>
+                </div>
+            )}
+
         </div>
     );
 };
