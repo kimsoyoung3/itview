@@ -481,10 +481,6 @@ const DetailPage = ({userInfo, openLogin}) => {
                         <Swiper
                             ref={swiperRef}
                             modules={[Navigation]}
-                            // navigation={{
-                            //     prevEl: ".credit-prev",
-                            //     nextEl: ".credit-next",
-                            // }}
                             spaceBetween={20}
                             slidesPerView={1}
                             className="credit-swiper"
@@ -499,8 +495,6 @@ const DetailPage = ({userInfo, openLogin}) => {
                                 </SwiperSlide>
                             ))}
                         </Swiper>
-                        {/* <div className="credit-prev"><img src="/arrow-left.svg" alt=""/></div> */}
-                        {/* <div className="credit-next"><img src="/arrow-right.svg" alt=""/></div> */}
                         <div className={`credit-prev ${swiperPage === 1 ? 'disabled' : ''}`} onClick={handlePrev}><img src="/arrow-left.svg" alt=""/></div>
                         <div className={`credit-next ${swiperPage === contentCredit[0].page.totalPages ? 'disabled' : ''}`} onClick={handleNext}><img src="/arrow-right.svg" alt=""/></div>
                     </div>
