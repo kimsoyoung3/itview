@@ -98,7 +98,7 @@ const CommentCard = ({comment, content, userInfo, openLogin, clamp = false}) => 
                         <i className={commentData.liked ? "bi bi-hand-thumbs-up-fill" : "bi bi-hand-thumbs-up"}/>
                     </button>
                     <button onClick={userInfo ? openReply : openLogin}><i className="bi bi-chat-square"/></button>
-                    <button><i className="bi bi-share"/></button>
+                    <button onClick={() => {navigator.clipboard.writeText("http://localhost:3000/comment/" + commentData.id)}}><i className="bi bi-share"/></button>
                 </div>
             </div>
 
