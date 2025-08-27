@@ -31,10 +31,6 @@ function App() {
         // 쿠키는 일회성으로 쓰고 바로 지우기
         document.cookie = "FLASH_ERROR=; Max-Age=0; Path=/";
     }, []);
-    
-    useEffect(() => {
-        console.log(userInfo);
-    }, [userInfo]);
 
     const handleLogin = async (loginEmail, loginPassword) => {
         // 로그인 로직 처리

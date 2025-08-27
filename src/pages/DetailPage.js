@@ -15,7 +15,7 @@ const DetailPage = ({userInfo, openLogin}) => {
     const [contentDetail, setContentDetail] = useState(null);
     const [modalOpen, setModalOpen] = useState(false); // 모달 상태
     const [modalStartIndex, setModalStartIndex] = useState(0); // 모달 슬라이드 시작 인덱스
-    const [contentCredit, setContentCredit] = useState(null);
+    const [contentCredit, setContentCredit] = useState([]);
 
     const [score, setScore] = useState(0);
     const [hoverScore, setHoverScore] = useState(0); // 마우스 올릴 때 임시 점수
@@ -121,10 +121,6 @@ const DetailPage = ({userInfo, openLogin}) => {
         KAKAO: '/externalLogo/kakaoWebtoon.png',
     };
 
-    useEffect(() => {
-        // fetchContentDetail ...
-    }, []);
-
     const openModal = (index) => {
         setModalStartIndex(index);
         setModalOpen(true);
@@ -153,29 +149,23 @@ const DetailPage = ({userInfo, openLogin}) => {
         const fetchContentCredit = async () => {
             try {
                 const id = window.location.pathname.split('/').pop();
-                let page = 1;
-                const allPages = [];
-
-                while (true) {
-                    const response = await getContentCredit(id, page);
-                    const data = response.data;
-
-                    allPages.push(data);
-
-                    // 마지막 페이지라면 종료
-                    if (data.last || data.content.length === 0) break;
-
-                    page++;
-                }
-
-                setContentCredit({ pages: allPages });
+                const response = await getContentCredit(id, 1);
+                const data = response.data;
+                setContentCredit([data]);
             } catch (error) {
                 console.error('Error fetching content credit:', error);
             }
         };
-
+        
         fetchContentCredit();
-    }, []);
+    }, []); 
+
+    const swiperRef = React.useRef(null);
+
+    const handleNext = () => {
+        swiperRef.current.swiper.slideNext();
+        console.log("next clicked");
+    }
 
     // 컨텐츠 정보를 가져온 후
     useEffect(() => {
@@ -452,32 +442,30 @@ const DetailPage = ({userInfo, openLogin}) => {
                  </p>
 
                  {/*크레딧 정보 리스트*/}
-                 {contentCredit?.pages[0].content.length > 0 ? (
-                     <div className="credit-list">
-                         <Swiper
-                             modules={[Navigation]}
-                             navigation={{
-                                 prevEl: ".credit-prev",
-                                 nextEl: ".credit-next",
-                             }}
-                             spaceBetween={20}
-                             slidesPerView={1}
-                             className="credit-swiper">
-                             {contentCredit.pages
-                                 .filter(pageData => pageData.content && pageData.content.length > 0) // ✅ 빈 페이지 제외
-                                 .map((pageData, pageIndex) => (
-                                     <SwiperSlide key={pageIndex}>
-                                         <div className="credit-list">
-                                             {pageData.content.map((credit) => (
-                                                 <CreditOrPersonCard key={credit.id} type="credit" data={credit} />
-                                             ))}
-                                         </div>
-                                     </SwiperSlide>
-                                 ))}
-                         </Swiper>
-                         <div className="credit-prev"><img src="/arrow-left.svg" alt=""/></div>
-                         <div className="credit-next"><img src="/arrow-right.svg" alt=""/></div>
-                     </div>
+                 {contentCredit[0]?.content.length > 0 ? (
+                    <div className="credit-list">
+                        <Swiper
+                            ref={swiperRef}
+                            modules={[Navigation]}
+                            navigation={{
+                                prevEl: ".credit-prev",
+                                nextEl: ".credit-next",
+                            }}
+                            spaceBetween={20}
+                            slidesPerView={1}
+                            className="credit-swiper"
+                            onNavigationNext={() => console.log('next')}>
+                            <SwiperSlide>
+                                <div className="credit-list">
+                                    {contentCredit[0].content.map((credit) => (
+                                        <CreditOrPersonCard key={credit.id} type="credit" data={credit} />
+                                    ))}
+                                </div>
+                            </SwiperSlide>
+                        </Swiper>
+                        <div className="credit-prev"><img src="/arrow-left.svg" alt=""/></div>
+                        <div className="credit-next" onClick={handleNext}><img src="/arrow-right.svg" alt=""/></div>
+                    </div>
 
                      ) : (
                          <p>크레딧 정보가 없습니다.</p>
