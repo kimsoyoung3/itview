@@ -149,18 +149,14 @@ const DetailPage = ({userInfo, openLogin}) => {
         const fetchContentCredit = async () => {
             try {
                 const id = window.location.pathname.split('/').pop();
-                var page = 1;
-
-                // var creditList = [];
-                // while (true) {
-                //     const response = await getContentCredit(id, page);
-                //     if (response.data.content.length === 0) break; // 더 이상 데이터가 없으면 종료
-                //     creditList.push(response.data);
-                //     page++;
-                // }
-
-                const response = await getContentCredit(id, page);
-                setContentCredit([response.data]);
+                const response = await getContentCredit(id, 1);
+                var creditInit = [];
+                creditInit.push(response.data);
+                if (response.data.page.totalPages > 1) {
+                    const response = await getContentCredit(id, 2);
+                    creditInit.push(response.data);
+                }
+                setContentCredit(creditInit);
             } catch (error) {
                 console.error('Error fetching content credit:', error);
             }
@@ -181,6 +177,25 @@ const DetailPage = ({userInfo, openLogin}) => {
         console.log(swiperRef.current.swiper.activeIndex);
         console.log(swiperRef.current.swiper.isEnd);
         console.log(contentCredit[0].page.totalPages);
+        if (swiperRef.current.swiper.isEnd && swiperRef.current.swiper.activeIndex < contentCredit[0].page.totalPages - 1) {
+            const fetchNextPage = async () => {
+                console.log('마지막 슬라이드 도달, 다음 페이지 로드 시도');
+                try {
+                    const id = window.location.pathname.split('/').pop();
+                    const nextPage = swiperRef.current.swiper.activeIndex + 2;
+                    const response = await getContentCredit(id, nextPage);
+                    console.log(response.data)
+                    if (response.data.content.length > 0) {
+                        setContentCredit(prev => [...prev, response.data]);
+                    } else {
+                        console.log('더 이상 크레딧이 없습니다.');
+                    }
+                } catch (error) {
+                    console.error('Error fetching next credit page:', error);
+                }
+            };
+            fetchNextPage();
+        }
     }
 
     // 컨텐츠 정보를 가져온 후
