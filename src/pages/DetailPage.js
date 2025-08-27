@@ -30,7 +30,7 @@ const DetailPage = ({userInfo, openLogin}) => {
 
     // 코멘트 작성
     const handleCommentPost = async () => {
-        var res = await postContentComment(window.location.pathname.split('/').pop(), { text: textRef.current.value })
+        const res = await postContentComment(window.location.pathname.split('/').pop(), { text: textRef.current.value })
         if (res.status === 200) {
             closeComment();
             getContentComment(window.location.pathname.split('/').pop()).then(response => {
@@ -44,7 +44,7 @@ const DetailPage = ({userInfo, openLogin}) => {
 
     // 코멘트 수정
     const handleCommentUpdate = async () => {
-        var res = await putContentComment(contentDetail?.myComment.id, { text: textRef.current.value })
+        const res = await putContentComment(contentDetail?.myComment.id, { text: textRef.current.value })
         if (res.status === 200) {
             closeComment();
             getContentComment(window.location.pathname.split('/').pop()).then(response => {

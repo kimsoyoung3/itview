@@ -1,7 +1,7 @@
 import React, {useState} from "react";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import "../css/CommentCard.css"; // CSS 따로 관리
-import { likeComment, unlikeComment } from "../API/CommentApi";
+import { likeComment, postReply, unlikeComment } from "../API/CommentApi";
 
 const CommentCard = ({comment, content, userInfo, openLogin, clamp = false}) => {
     const [commentData, setCommentData] = useState(comment);
@@ -39,6 +39,19 @@ const CommentCard = ({comment, content, userInfo, openLogin, clamp = false}) => 
                 console.error("Failed to like comment");
             }
         }
+    };
+
+    const handleReplySubmit = async () => {
+        const text = textRef.current.value;
+        if (text) {
+            const res = await postReply(commentData.id, { text });
+            if (res.status === 200) {
+                alert("댓글이 등록되었습니다.");
+            } else {
+                alert("댓글 등록에 실패했습니다. 다시 시도해주세요.");
+            }
+        }
+        closeReply();
     };
 
     return (
@@ -99,7 +112,8 @@ const CommentCard = ({comment, content, userInfo, openLogin, clamp = false}) => 
                         </div>
                         <textarea rows="15" placeholder="코멘트에 대한 댓글을 남겨주세요." maxLength={1000} ref={textRef}></textarea>
                         <div className="comment-content-bottom">
-                            <button className="comment-content-btn">저장</button>
+                            <button className="comment-content-btn"
+                                    onClick={handleReplySubmit}>저장</button>
                         </div>
                     </div>
                 </div>
