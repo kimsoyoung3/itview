@@ -3,6 +3,8 @@ package com.example.itview_spring.Repository;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -67,6 +69,37 @@ public interface CommentRepository extends JpaRepository<CommentEntity, Integer>
             LIMIT 8
             """)
     List<CommentDTO> findTop8CommentsByContentId(@Param("userId") Integer userId, @Param("contentId") Integer contentId);
+
+    // 특정 컨텐츠의 코멘트 페이징 조회
+    @Query("""
+            SELECT new com.example.itview_spring.DTO.CommentDTO(
+                c.id,
+                c.createdAt,
+                case when (exists (
+                    select 1 from LikeEntity l2
+                    where l2.targetId = c.id and l2.targetType = 'COMMENT' and l2.user.id = :userId
+                )) then true else false end,
+                (select count(l) from LikeEntity l where l.targetId = c.id and l.targetType = 'COMMENT'),
+                (select count(r) from ReplyEntity r where r.targetId = c.id and r.targetType = 'COMMENT'),
+                c.text,
+                new com.example.itview_spring.DTO.UserProfileDTO(
+                    c.user.id,
+                    c.user.nickname,
+                    c.user.introduction,
+                    c.user.profile
+                ),
+                (select r.score from RatingEntity r where r.user.id = c.user.id and r.content.id = :contentId)
+            )
+            FROM CommentEntity c
+            WHERE c.content.id = :contentId
+            ORDER BY 
+                CASE WHEN :order = 'new' THEN c.createdAt END DESC,
+                CASE WHEN :order = 'old' THEN c.createdAt END ASC,
+                CASE WHEN :order = 'like' THEN (select count(l) from LikeEntity l where l.targetId = c.id and l.targetType = 'COMMENT') END DESC,
+                CASE WHEN :order = 'reply' THEN (select count(r) from ReplyEntity r where r.targetId = c.id and r.targetType = 'COMMENT') END DESC,
+                CASE WHEN :order = 'rating' THEN (select r.score from RatingEntity r where r.user.id = c.user.id and r.content.id = :contentId) END DESC
+            """)
+    Page<CommentDTO> findByContentId(@Param("userId") Integer userId, @Param("contentId") Integer contentId, @Param("order") String order, Pageable pageable);
 
     // 코멘트 개수 조회
     @Query("SELECT COUNT(c) FROM CommentEntity c WHERE c.content.id = :contentId")

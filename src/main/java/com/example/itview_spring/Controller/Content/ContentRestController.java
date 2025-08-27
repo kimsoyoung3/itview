@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.itview_spring.Config.CustomUserDetails;
@@ -112,5 +113,19 @@ public class ContentRestController {
             return ResponseEntity.ok().build();
         }
         return ResponseEntity.notFound().build();
+    }
+
+    // 컨텐츠 코멘트 페이징 조회
+    @GetMapping("/{id}/comments")
+    public ResponseEntity<Page<CommentDTO>> getContentComments(@PathVariable("id") Integer id,
+                                                               @RequestParam(value = "order", defaultValue = "new") String order,
+                                                               @PageableDefault(page=1) Pageable pageable) {
+        var auth = SecurityContextHolder.getContext().getAuthentication();
+        Integer userId = 0;
+        if (auth.getPrincipal() != "anonymousUser") {
+            userId = ((CustomUserDetails) auth.getPrincipal()).getId();
+        }
+        Page<CommentDTO> comments = contentService.getCommentsByContentId(id, userId, order, pageable.getPageNumber());
+        return ResponseEntity.ok(comments);
     }
 }

@@ -259,6 +259,13 @@ public class ContentService {
             return null;
         }
     }
+
+    // 컨텐츠의 코멘트 페이징 조회
+    public Page<CommentDTO> getCommentsByContentId(Integer contentId, Integer userId, String order, int page) {
+        Pageable pageable = PageRequest.of(page - 1, 5);
+        return commentRepository.findByContentId(userId, contentId, order, pageable);
+    }
+
     //////////////////////////////////////////////////////////////////////////////////////////
     /**
      * 콘텐츠에 장르 추가
