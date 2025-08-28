@@ -1,0 +1,56 @@
+.reply-card {
+    padding: 10px;
+    border-bottom: 1px solid #eeeeee;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.reply-card-info {
+    width: 100%;
+    display: flex;
+    justify-content: start;
+    align-items: center;
+    gap: 5px;
+}
+
+.reply-card-info-profile {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+}
+
+.reply-card-info-profile>img {
+    width: 100%;
+    display: block;
+    border-radius: 50%;
+}
+
+.reply-card-info>span {
+    font-size: 0.7rem;
+}
+
+.reply-card-text {
+    margin-bottom: 0;
+    padding: 0 20px;
+}
+
+.reply-card-footer {
+    display: flex;
+    justify-content: start;
+    align-items: center;
+    gap: 5px;
+    font-size: 0.7rem;
+    font-weight: bold;
+    color: #888888;
+}
+
+.reply-card-footer>button {
+    border: none;
+    background: none;
+    font-size: 0.9rem;
+}
+
+.reply-card-footer>p {
+    margin-bottom: 0;
+}

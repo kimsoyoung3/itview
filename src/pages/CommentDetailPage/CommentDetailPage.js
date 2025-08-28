@@ -19,7 +19,7 @@ const CommentDetailPage = ({userInfo, openLogin}) => {
             setComments(res.data)
 
             const repliesRes = await getCommentRepliesPaged(id, 1);
-            setReplies(repliesRes.data);
+            setReplies(repliesRes.data.content);
         }
         fetchData();
     }, [id]);
@@ -36,7 +36,14 @@ const CommentDetailPage = ({userInfo, openLogin}) => {
         <div className="comment-detail-page container">
             <div className="comment-detail-page-content">
                 <CommentCard comment={comments?.comment} content={comments?.content} userInfo={userInfo} openLogin={openLogin}/>
-                <ReplyCard/>
+
+                {replies.length > 0 ? (
+                    <div>
+                        {replies.map(r => <ReplyCard reply={r} userInfo={userInfo} openLogin={openLogin}/>)}
+                    </div>
+                ) : (
+                    <p>등록된 댓글이 없습니다.</p>
+                )}
             </div>
         </div>
     )

@@ -1,6 +1,5 @@
 /*코멘트 컴포넌트 스타일*/
 .comment-card {
-    max-width: 900px;
     background: #f6f6f6;
     border-radius: 8px;
     padding: 30px;
@@ -22,6 +21,17 @@
     gap: 10px;
 }
 
+.comment-card-profile {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+}
+
+.comment-card-profile>img {
+    width: 100%;
+    border-radius: 50%;
+}
+
 .comment-card-date {
     font-size: 0.7rem;
     font-weight: 400;
@@ -30,12 +40,6 @@
 .comment-card-header-right {
     display: flex;
     gap: 5px;
-}
-
-.comment-card-profile {
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
 }
 
 .comment-card-content {

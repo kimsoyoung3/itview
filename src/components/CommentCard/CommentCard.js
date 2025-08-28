@@ -60,11 +60,11 @@ const CommentCard = ({comment, content, userInfo, openLogin, clamp = false}) => 
     };
 
     return (
-        <div className="comment-card">
+        <div className="comment-card container">
             {/* 헤더 */}
             <div className="comment-card-header">
                 <div className="comment-card-header-left">
-                    <img src={commentData?.user?.profile || '/user.png'} className="comment-card-profile" alt=""/>
+                    <div className="comment-card-profile" ><img src={commentData?.user?.profile || '/user.png'}alt=""/></div>
                     <span className="comment-card-nickname">{commentData?.user.nickname}</span>
                     <span className="comment-card-date">{new Date(commentData?.createdAt).toLocaleDateString().slice(0, -1)}</span>
                 </div>
