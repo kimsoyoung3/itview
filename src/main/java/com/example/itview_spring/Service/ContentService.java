@@ -13,6 +13,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -62,6 +63,22 @@ public class ContentService {
 
         Pageable pageable = PageRequest.of(currentPage, pageLimits, Sort.by(Sort.Direction.DESC, "id"));
         Page<ContentEntity> contentEntities = contentRepository.findAll(pageable);
+        System.out.println("총 페이지 수: " + contentEntities.getTotalPages());
+        System.out.println("총 컨텐츠 수: " + contentEntities.getTotalElements());
+        System.out.println("현재 페이지 번호: " + contentEntities.getNumber());
+
+        for (ContentEntity content : contentEntities.getContent()) {
+            System.out.println("--------------------------------");
+            System.out.println("ID: " + content.getId());
+            System.out.println("Title: " + content.getTitle());
+            System.out.println("Type: " + content.getContentType());
+            System.out.println("Release Date: " + content.getReleaseDate());
+            System.out.println("Poster: " + content.getPoster());
+            System.out.println("Nation: " + content.getNation());
+            System.out.println("Channel: " + content.getChannelName());
+            System.out.println("Genres: " + content.getGenres());
+            System.out.println("비디오: " + content.getVideos());
+        }
         Page<ContentCreateDTO> contentDTOS = contentEntities.map(data -> modelMapper.map(
                 data, ContentCreateDTO.class));
         return contentDTOS;
@@ -330,8 +347,8 @@ public class ContentService {
             contentGenre.setGenre(genre);
             contentGenreRepository.save(contentGenre); // 새로운 장르 저장
             // 로그로 이전 장르와 수정된 장르 비교 (선택사항)
-            System.out.println("Old Genres: " + oldGenres);
-            System.out.println("New Genres: " + newGenres);
+//            System.out.println("Old Genres: " + oldGenres);
+//            System.out.println("New Genres: " + newGenres);
 
         }
     }
@@ -339,74 +356,82 @@ public class ContentService {
     /// ///////////////////////////////////////////////////////////////////////////////////////////
     /// 0825 video service 작성함
     /// ///////////////////////////////////////////////////////////////////////////////////////////
-    // 1. 전체 조회 (Get all videos)
-    public List<VideoDTO> getAllVideos() {
-        // 모든 비디오 엔티티를 가져온 후, DTO로 변환하여 반환
-        List<VideoEntity> videoEntities = videoRepository.findAll();
-        return videoEntities.stream()
-                .map(videoEntity -> modelMapper.map(videoEntity, VideoDTO.class))  // VideoEntity를 VideoDTO로 변환
-                .collect(Collectors.toList());  // 결과를 리스트로 반환
-    }
-
-//    .map(videoEntity -> new VideoDTO(
-//            videoEntity.getId(),
-//    videoEntity.getTitle(),
-//            videoEntity.getImage(),
-//            videoEntity.getUrl(),
-//            videoEntity.getContent().getId()
-//))
-
+    // 1. 전체 조회 (Get all videos contentId 기준 모든영상)
     // ✔️ 목록용: 여러 영상 조회 (DTO 리스트)
-    public List<VideoDTO> getVideoListByContentId(Integer contentId) {
-        return videoRepository.findByContentId(contentId);
+    @Transactional(readOnly = true)
+    public List<VideoDTO> getVideosByContentId(Integer contentId) {
+//        // 1️⃣ VideoEntity 리스트 조회
+//        List<VideoEntity> videos = videoRepository.findByContent_Id(contentId);
+//
+//        // 2️⃣ VideoEntity -> VideoDTO 변환
+//        List<VideoDTO> videoDTOs = videos.stream()
+//                .map(v -> new VideoDTO(v.getId(), v.getTitle(), v.getImage(), v.getUrl()))
+//                .toList();
+////        List<VideoEntity> videos = videoRepository.findByContent_Id(contentId);
+//        List<VideoDTO> videoDTOS = Arrays.asList(modelMapper.map(videos, VideoDTO[].class));
+//        return videoDTOs;
+        return videoRepository.findByContentId(contentId); // Repository에서 DTO 바로 반환
+    }
+//    VideoRepository에 이미 JPQL로 List<VideoDTO> findByContentId(Integer contentId)를 정의해두셨으므로,
+//    return videoRepository.findByContentId(contentId); //처럼 한 줄로 바로 반환할 수도 있습니다.
+
+    // 2. 개별 조회 (Get videoId기준 )
+
+    // 단일 VideoDTO 조회
+    @Transactional(readOnly = true)
+    public VideoDTO getVideoById(Integer videoId) {
+        return videoRepository.findById(videoId)
+                .map(v -> new VideoDTO(v.getId(), v.getTitle(), v.getImage(), v.getUrl()))
+                .orElse(null);
     }
 
-
-    // 2. 개별 조회 (Get video by ID)
-//    public VideoDTO getVideoById(Integer id) {
-//        // 주어진 ID로 비디오 엔티티를 조회
-//        Optional<VideoEntity> videoEntityOpt = videoRepository.findById(id);
-//        if (videoEntityOpt.isEmpty()) {  // 비디오가 존재하지 않으면 예외 처리
-//            throw new IllegalArgumentException("비디오 ID가 유효하지 않습니다. id: " + id);
-//        }
-//        return modelMapper.map(videoEntityOpt.get(), VideoDTO.class);  // DTO로 변환하여 반환
-//    }
-    // ✔️ 단일용: 콘텐츠에 연결된 첫 번째 영상 조회
-    public VideoDTO getVideoByContentId(Integer contentId) {
-        return videoRepository.findFirstByContentId(contentId)
-                .map(video -> modelMapper.map(video, VideoDTO.class))
-                .orElseThrow(() -> new NoSuchElementException("해당 콘텐츠의 영상이 존재하지 않습니다. contentId: " + contentId));
+    // 첫 번째 영상 조회: contentId 기준
+    @Transactional(readOnly = true)
+    public VideoDTO getFirstVideoByContentId(Integer contentId) {
+        Optional<VideoEntity> videoOpt = videoRepository.findFirstByContentId(contentId);
+        if (videoOpt.isPresent()) {
+            VideoEntity v = videoOpt.get();
+            // 명시적 DTO 생성자 사용 → JPQL Projection 호환
+            return new VideoDTO(v.getId(), v.getTitle(), v.getImage(), v.getUrl());
+        }
+        return null;
     }
+
 
     // 3. 입력 (Create new video)
-    public VideoDTO createVideo(Integer contentId, VideoDTO dto) {
-        VideoEntity entity = modelMapper.map(dto, VideoEntity.class);
+    @Transactional
+    public VideoDTO createVideo(Integer contentId, VideoDTO videoDTO) {
 
-        // ContentEntity 객체 생성 (contentId만 갖는 단순한 엔티티)
+        VideoEntity entity = new VideoEntity();
+        entity.setTitle(videoDTO.getTitle());
+        entity.setImage(videoDTO.getImage());
+        entity.setUrl(videoDTO.getUrl());
+//        entity.setContentId(contentId); // VideoEntity에 contentId 연동
+
+
+        // ✅ URL에서 넘어온 contentId 활용
         ContentEntity contentEntity = contentRepository.findById(contentId)
                 .orElseThrow(() -> new IllegalArgumentException("해당 콘텐츠가 존재하지 않습니다. ID: " + contentId));
-        entity.setContent(contentEntity); // 반드시 연결
+        entity.setContent(contentEntity);
         System.out.println(" createVideo contentId :"+contentId);
 
-        return modelMapper.map(videoRepository.save(entity), VideoDTO.class);
+        videoRepository.save(entity);
+
+        return new VideoDTO(entity.getId(), entity.getTitle(), entity.getImage(), entity.getUrl());
     }
 
     // 4. 수정 (Update existing video)
     public VideoDTO updateVideo(Integer id, VideoDTO dto) {
-        Optional<VideoEntity> existingOpt = videoRepository.findById(id);
+        VideoEntity entity = videoRepository.findById(id)
+                .orElseThrow(() -> new NoSuchElementException("해당 비디오가 존재하지 않습니다. ID: " + id));
 
-        if (existingOpt.isEmpty()) {
-            throw new NoSuchElementException("해당 비디오가 존재하지 않습니다. ID: " + id);
-        }
-
-        VideoEntity existing = existingOpt.get();
-
-        existing.setTitle(dto.getTitle());
-        existing.setUrl(dto.getUrl());
-        existing.setImage(dto.getImage());
-
-        return modelMapper.map(videoRepository.save(existing), VideoDTO.class);
+        entity.setTitle(dto.getTitle());
+        entity.setImage(dto.getImage());
+        entity.setUrl(dto.getUrl());
+        videoRepository.save(entity);
+        return new VideoDTO(entity.getId(), entity.getTitle(), entity.getImage(), entity.getUrl());
     }
+
     // 5. 삭제 (Delete video)
     public void deleteVideo(Integer videoId) {
         // 주어진 videoId로 비디오 엔티티 조회
@@ -416,7 +441,6 @@ public class ContentService {
         // 비디오 엔티티 삭제
         videoRepository.delete(videoEntity);
     }
-
 
     /////////////////////////////////////////////////////////////////////////////////////////////////
     // 별점 등록

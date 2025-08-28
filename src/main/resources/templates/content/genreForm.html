@@ -44,18 +44,12 @@
         </form>
         <!--------------0825 추가---->
         <!-- 영상 등록 버튼은 a 태그로 분리 -->
-        <a th:href="@{/video/register(contentId=${contentDTO.id})}"
-           class="btn btn-success mt-3">📹 영상 등록</a>
+         <a th:href="@{/content/{contentId}/video(contentId=${contentDTO.id})}"
+           class="btn btn-success mt-3">📹 동영상 등록/수정</a>
 
         <!-- 수정된 후 데이터 보기 -->
         <!-- 선택된 장르를 단순 리스트로 표현 -->
-<!--        <h3>선택한 장르</h3>-->
-<!--        <ul>-->
-<!--            <li th:if="${selectedGenres != null and !selectedGenres.isEmpty()}"-->
-<!--                th:each="genre : ${selectedGenres}"-->
-<!--                th:text="${genreTranslations[genre] != null ? genreTranslations[genre] : genre}">장르명</li>-->
-<!--            <li th:if="${selectedGenres == null or selectedGenres.isEmpty()}">선택된 장르가 없습니다.</li>-->
-<!--        </ul>-->
+
         <h3>선택한 장르</h3>
         <ul>
             <li th:each="genre : ${selectedGenres}"
