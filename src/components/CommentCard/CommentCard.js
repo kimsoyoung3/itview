@@ -120,6 +120,7 @@ const CommentCard = ({comment, content, userInfo, openLogin, newReply, clamp = f
                         <button onClick={userInfo ? openReply : openLogin}><i className="bi bi-chat-square"/></button>
                         <button onClick={() => {navigator.clipboard.writeText("http://localhost:3000/comment/" + commentData?.id)}}><i className="bi bi-share"/></button>
                     </div>
+                    {userInfo === commentData?.user?.id && clamp === false && (
                     <div>
                         <button onClick={handleDeleteCommentClick}>
                             <i className="bi bi-trash"></i>
@@ -128,6 +129,7 @@ const CommentCard = ({comment, content, userInfo, openLogin, newReply, clamp = f
                             <i className="bi bi-pencil"></i>
                         </button>
                     </div>
+                    )}
                 </div>
             </div>
 
