@@ -163,9 +163,6 @@ const CommentCard = ({comment, content, userInfo, openLogin, newReply, clamp = f
                     </div>
                 </div>
             )}
-
-
-
         </div>
     );
 };
