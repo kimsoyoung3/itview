@@ -25,14 +25,14 @@ const DetailPage = ({userInfo, openLogin}) => {
     const [myCommentModal, setMyCommentModal] = useState();
 
     /*코멘트 모달*/
-    const openComment = () => setMyCommentModal(true);
-    const closeComment = () => setMyCommentModal(false);
+    const openMyComment = () => setMyCommentModal(true);
+    const closeMyComment = () => setMyCommentModal(false);
 
     // 코멘트 작성
     const handleCommentPost = async () => {
         const res = await postContentComment(window.location.pathname.split('/').pop(), { text: textRef.current.value })
         if (res.status === 200) {
-            closeComment();
+            closeMyComment();
             getContentComment(window.location.pathname.split('/').pop()).then(response => {
                 setContentDetail(prev => ({
                     ...prev,
@@ -46,7 +46,7 @@ const DetailPage = ({userInfo, openLogin}) => {
     const handleCommentUpdate = async () => {
         const res = await putContentComment(contentDetail?.myComment.id, { text: textRef.current.value })
         if (res.status === 200) {
-            closeComment();
+            closeMyComment();
             getContentComment(window.location.pathname.split('/').pop()).then(response => {
                 setContentDetail(prev => ({
                     ...prev,
@@ -71,7 +71,7 @@ const DetailPage = ({userInfo, openLogin}) => {
             handleCommentPost();
         }
         setConfirmModal(false);
-        closeComment(); // 확인 후 모달 닫기
+        closeMyComment(); // 확인 후 모달 닫기
     };
 
     /*마이코멘트 삭제 확인 모달창*/
@@ -346,7 +346,7 @@ const DetailPage = ({userInfo, openLogin}) => {
                                 </li>
                                 <li>
                                     <button onClick={async () => {
-                                        userInfo ? openComment() : openLogin();
+                                        userInfo ? openMyComment() : openLogin();
                                     }}>
                                         <img src="/pencil.svg" alt=""/>
                                         <p>코멘트</p>
@@ -372,7 +372,7 @@ const DetailPage = ({userInfo, openLogin}) => {
                                             <i className="bi bi-trash"></i>
                                             <p>삭제</p>
                                         </button>
-                                        <button onClick={openComment}>
+                                        <button onClick={openMyComment}>
                                             <i className="bi bi-pencil"></i>
                                             <p>수정</p>
                                         </button>
@@ -390,11 +390,11 @@ const DetailPage = ({userInfo, openLogin}) => {
 
                 {/*마이코멘트 모달창*/}
                 {myCommentModal && (
-                    <div className="comment-modal-overlay" onClick={closeComment}>
+                    <div className="comment-modal-overlay" onClick={closeMyComment}>
                         <div className="comment-modal-content">
                             <div className="comment-content-top">
                                 <p className="comment-modal-title">{contentDetail?.contentInfo?.title}</p>
-                                <button className="comment-close-button" onClick={closeComment}><img src="/x-lg.svg" alt=""/></button>
+                                <button className="comment-close-button" onClick={closeMyComment}><img src="/x-lg.svg" alt=""/></button>
                             </div>
                             <textarea rows="15" placeholder="작품에 대한 코멘트를 남겨주세요." maxLength={1000} ref={textRef}></textarea>
                             <div className="comment-content-bottom">
