@@ -1,33 +1,12 @@
 package com.example.itview_spring.Service;
 
-import com.example.itview_spring.DTO.CommentDTO;
-import com.example.itview_spring.DTO.ContentCreateDTO;
-import com.example.itview_spring.DTO.ContentDetailDTO;
-import com.example.itview_spring.DTO.ContentResponseDTO;
-import com.example.itview_spring.DTO.ExternalServiceDTO;
-import com.example.itview_spring.DTO.GenreDTO;
-import com.example.itview_spring.DTO.ImageDTO;
-import com.example.itview_spring.DTO.RatingCountDTO;
-import com.example.itview_spring.DTO.UserProfileDTO;
-import com.example.itview_spring.DTO.VideoDTO;
-
 import com.example.itview_spring.Constant.Genre;
-import com.example.itview_spring.DTO.ContentCreateDTO;
+import com.example.itview_spring.DTO.*;
 import com.example.itview_spring.Entity.ContentEntity;
-import com.example.itview_spring.Entity.VideoEntity;
-import com.example.itview_spring.Repository.CommentRepository;
-import com.example.itview_spring.Repository.ContentGenreRepository;
 import com.example.itview_spring.Entity.ContentGenreEntity;
 import com.example.itview_spring.Entity.RatingEntity;
-import com.example.itview_spring.Repository.ContentGenreRepository;
-import com.example.itview_spring.Repository.ContentRepository;
-import com.example.itview_spring.Repository.ExternalServiceRepository;
-import com.example.itview_spring.Repository.GalleryRepository;
-import com.example.itview_spring.Repository.RatingRepository;
-import com.example.itview_spring.Repository.UserRepository;
-import com.example.itview_spring.Repository.VideoRepository;
-
-import io.swagger.v3.oas.annotations.media.Content;
+import com.example.itview_spring.Entity.VideoEntity;
+import com.example.itview_spring.Repository.*;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
@@ -275,7 +254,7 @@ public class ContentService {
 
     // 컨텐츠의 코멘트 페이징 조회
     public Page<CommentDTO> getCommentsByContentId(Integer contentId, Integer userId, String order, int page) {
-        Pageable pageable = PageRequest.of(page - 1, 5);
+        Pageable pageable = PageRequest.of(page - 1, 1);
         return commentRepository.findByContentId(userId, contentId, order, pageable);
     }
 
