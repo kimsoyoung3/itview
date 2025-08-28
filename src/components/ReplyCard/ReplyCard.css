@@ -1,9 +1,29 @@
 .reply-card {
     padding: 10px;
     border-bottom: 1px solid #eeeeee;
+}
+
+.reply-card-wrap {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.reply-card-inner-left {
     display: flex;
     flex-direction: column;
     gap: 8px;
+}
+
+.reply-card-inner-right {
+    display: flex;
+    gap: 8px;
+}
+
+.reply-card-inner-right>button {
+    border: none;
+    background: none;
+    color: #888888;
 }
 
 .reply-card-info {

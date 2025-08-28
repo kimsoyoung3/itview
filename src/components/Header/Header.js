@@ -195,7 +195,7 @@ const Header = ({userInfo, handleLogin, handleLogout, isLoginOpen, openLogin, cl
             {/*로그인 모달창*/}
             {isLoginOpen && (
                 <div className="modal-overlay" onClick={closeLogin}>
-                    <div className="login-modal" onClick={(e) => e.stopPropagation()}>
+                    <div className="login-modal">
                         <h1><img src="/logo.svg" alt=""/></h1>
                         <h2>로그인</h2>
                         <form onSubmit={async (e) => {
@@ -236,7 +236,7 @@ const Header = ({userInfo, handleLogin, handleLogout, isLoginOpen, openLogin, cl
             {/*회원가입 모달창*/}
             {isSignupOpen && (
                 <div className="modal-overlay" onClick={closeSignup}>
-                    <div className="login-modal" onClick={(e) => e.stopPropagation()}>
+                    <div className="login-modal">
                         <h1><img src="/logo.svg" alt=""/></h1>
                         <h2>회원가입</h2>
                         <form onSubmit={(e) => {
@@ -274,7 +274,7 @@ const Header = ({userInfo, handleLogin, handleLogout, isLoginOpen, openLogin, cl
             {/*로그인 실패 모달창*/}
             {isErrorModalOpen && (
                 <div className="modal-overlay" onClick={closeErrorModal}>
-                    <div className="modal-content" onClick={e => e.stopPropagation()}>
+                    <div className="modal-content">
                         <p>{loginError}</p>
                         <button onClick={closeErrorModal}>닫기</button>
                     </div>
@@ -284,7 +284,7 @@ const Header = ({userInfo, handleLogin, handleLogout, isLoginOpen, openLogin, cl
             {/*비밀번호 찾기 모달창*/}
             {isResetOpen && (
                 <div className="modal-overlay" onClick={closeReset}>
-                    <div className="reset-modal" onClick={(e) => e.stopPropagation()}>
+                    <div className="reset-modal">
                         <button className="close-button" onClick={closeReset}><i className="bi bi-x-lg"></i></button>
                         <h2>비밀번호 재설정</h2>
                         <div></div>
@@ -309,7 +309,7 @@ const Header = ({userInfo, handleLogin, handleLogout, isLoginOpen, openLogin, cl
             {/*비밀번호 찾기 이메일인증 모달창*/}
             {isResetCheckOpen && (
                 <div className="modal-overlay" onClick={closeResetCheck}>
-                    <div className="reset-modal" onClick={(e) => e.stopPropagation()}>
+                    <div className="reset-modal">
                         <button className="close-button" onClick={closeResetCheck}><i className="bi bi-x-lg"></i></button>
                         <h2>비밀번호 재설정</h2>
                         <div></div>
@@ -332,7 +332,7 @@ const Header = ({userInfo, handleLogin, handleLogout, isLoginOpen, openLogin, cl
             {/*비밀번호 찾기 새 비밀번호 모달창*/}
             {isResetNewOpen && (
                 <div className="modal-overlay" onClick={closeResetNew}>
-                    <div className="reset-modal" onClick={(e) => e.stopPropagation()}>
+                    <div className="reset-modal">
                         <button className="close-button" onClick={closeResetNew}><i className="bi bi-x-lg"></i></button>
                         <h2>비밀번호 재설정</h2>
                         <div></div>

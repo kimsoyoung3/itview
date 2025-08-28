@@ -1,11 +1,27 @@
 import 'bootstrap/dist/css/bootstrap.min.css';
 import "./ReplyCard.css";
 import { likeReply, unlikeReply } from '../../API/CommentApi';
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
 const ReplyCard = ({reply, userInfo, openLogin}) => {
-
     const [replyData, setReplyData] = useState(reply);
+
+    const textRef = React.useRef(null); //댓글 텍스트 영역 참조
+
+    /*댓글 수정 모달창*/
+    const [replyUpdateModal, setReplyUpdateModal] = useState()
+
+    const openUpdateReply = ()=> setReplyUpdateModal(true)
+    const closeUpdateReply = ()=> setReplyUpdateModal(false)
+
+    /*댓글 삭제 확인 모달창*/
+    const [replyDeleteConfirmModal, setReplyDeleteConfirmModal] = useState();
+
+    const closeReplyDeleteConfirmModal = () => setReplyDeleteConfirmModal(false);
+
+    const handleReplyDeleteConfirm = () => {
+        setReplyDeleteConfirmModal(true)
+    };
 
     useEffect(() => {
         setReplyData(reply);
@@ -23,18 +39,61 @@ const ReplyCard = ({reply, userInfo, openLogin}) => {
 
     return(
         <div className="reply-card container">
-            <div className="reply-card-info">
-                <div className="reply-card-info-profile"><img src={replyData?.user.profile || "/user.png"} alt=""/></div>
-                <span>{replyData?.user.nickname}</span>
-                <span>{new Date(replyData?.createdAt).toLocaleDateString().slice(0, -1)}</span>
+            <div className="reply-card-wrap">
+                <div  className="reply-card-inner-left">
+                    <div className="reply-card-info">
+                        <div className="reply-card-info-profile"><img src={replyData?.user.profile || "/user.png"} alt=""/></div>
+                        <span>{replyData?.user.nickname}</span>
+                        <span>{new Date(replyData?.createdAt).toLocaleDateString().slice(0, -1)}</span>
+                    </div>
+                    <p className="reply-card-text">{replyData?.text}</p>
+                    <div className="reply-card-footer">
+                        <button onClick={userInfo ? handleLike : openLogin} className="like-button">
+                            <i className={replyData?.liked ? "bi bi-hand-thumbs-up-fill" : "bi bi-hand-thumbs-up"}/>
+                        </button>
+                        <p>좋아요 <span>{replyData?.likeCount}</span></p>
+                    </div>
+                </div>
+
+                <div  className="reply-card-inner-right">
+                    <button onClick={handleReplyDeleteConfirm}>
+                        <i className="bi bi-trash"></i>
+                    </button>
+                    <button onClick={openUpdateReply}>
+                        <i className="bi bi-pencil"></i>
+                    </button>
+                </div>
             </div>
-            <p className="reply-card-text">{replyData?.text}</p>
-            <div className="reply-card-footer">
-                <button onClick={userInfo ? handleLike : openLogin} className="like-button">
-                    <i className={replyData?.liked ? "bi bi-hand-thumbs-up-fill" : "bi bi-hand-thumbs-up"}/>
-                </button>
-                <p>좋아요 <span>{replyData?.likeCount}</span></p>
-            </div>
+
+            {/*댓글 수정 모달창*/}
+            {replyUpdateModal && (
+                <div className="comment-modal-overlay" onClick={closeUpdateReply}>
+                    <div className="comment-modal-content" onClick={(e) => e.stopPropagation()}>
+                        <div className="comment-content-top">
+                            <p className="comment-modal-title">댓글</p>
+                            <button className="comment-close-button" onClick={closeUpdateReply}><img src="/x-lg.svg" alt=""/></button>
+                        </div>
+                        <textarea rows="15" placeholder="코멘트에 대한 댓글을 남겨주세요." maxLength={1000} ref={textRef}></textarea>
+                        <div className="comment-content-bottom">
+                            <button className="comment-content-btn">수정</button>
+                        </div>
+                    </div>
+                </div>
+            )}
+
+            {/*코멘트 삭제 확인 모달창*/}
+            {replyDeleteConfirmModal && (
+                <div className="confirm-modal-overlay" onClick={closeReplyDeleteConfirmModal}>
+                    <div className="confirm-modal-content">
+                        <p>알림</p>
+                        <p>삭제하시겠습니까?</p>
+                        <div className="confirm-btn-group">
+                            <button>확인</button>
+                            <button onClick={closeReplyDeleteConfirmModal}>취소</button>
+                        </div>
+                    </div>
+                </div>
+            )}
         </div>
     );
 

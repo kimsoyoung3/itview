@@ -80,7 +80,12 @@
     width: 50px;
 }
 
-.comment-card-content-left>img{
+.comment-card-content-left>a {
+    display: block;
+    width: 100%;
+}
+
+.comment-card-content-left>a>img{
     width: 100%;
 }
 

@@ -74,7 +74,7 @@ const DetailPage = ({userInfo, openLogin}) => {
         closeComment(); // 확인 후 모달 닫기
     };
 
-    /*코멘트 삭제 확인 모달창*/
+    /*마이코멘트 삭제 확인 모달창*/
     const [deleteConfirmModal, setDeleteConfirmModal] = useState(false);
 
     const handleDeleteClick = () => {
@@ -391,7 +391,7 @@ const DetailPage = ({userInfo, openLogin}) => {
                 {/*마이코멘트 모달창*/}
                 {myCommentModal && (
                     <div className="comment-modal-overlay" onClick={closeComment}>
-                        <div className="comment-modal-content" onClick={(e) => e.stopPropagation()}>
+                        <div className="comment-modal-content">
                             <div className="comment-content-top">
                                 <p className="comment-modal-title">{contentDetail?.contentInfo?.title}</p>
                                 <button className="comment-close-button" onClick={closeComment}><img src="/x-lg.svg" alt=""/></button>
@@ -409,7 +409,7 @@ const DetailPage = ({userInfo, openLogin}) => {
                 {/*마이코멘트 작성 확인 모달창*/}
                 {confirmModal && (
                     <div className="confirm-modal-overlay" onClick={() => setConfirmModal(false)}>
-                        <div className="confirm-modal-content" onClick={(e) => e.stopPropagation()}>
+                        <div className="confirm-modal-content">
                             <p>알림</p>
                             <p>{contentDetail?.myComment ? "수정" : "저장"}하시겠습니까?</p>
                             <div className="confirm-btn-group">
@@ -423,7 +423,7 @@ const DetailPage = ({userInfo, openLogin}) => {
                 {/*마이코멘트 삭제 확인 모달창*/}
                 {deleteConfirmModal && (
                     <div className="confirm-modal-overlay" onClick={() => setDeleteConfirmModal(false)}>
-                        <div className="confirm-modal-content" onClick={(e) => e.stopPropagation()}>
+                        <div className="confirm-modal-content">
                             <p>알림</p>
                             <p>삭제하시겠습니까?</p>
                             <div className="confirm-btn-group">
@@ -543,7 +543,7 @@ const DetailPage = ({userInfo, openLogin}) => {
                     {/* 모달 */}
                     {modalOpen && (
                         <div className="gallery-modal-overlay" onClick={closeModal}>
-                            <div className="gallery-modal-content" onClick={(e) => e.stopPropagation()}>
+                            <div className="gallery-modal-content">
                                 <Swiper
                                     modules={[Navigation, Pagination]}
                                     initialSlide={modalStartIndex}

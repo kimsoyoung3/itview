@@ -18,6 +18,15 @@ const CommentCard = ({comment, content, userInfo, openLogin, newReply, clamp = f
     const openReply = () => setReplyModal(true);
     const closeReply = () => setReplyModal(false);
 
+    /*코멘트 삭제 확인 모달창*/
+    const [deleteCommentModal, setDeleteCommentModal] = useState(false);
+
+    const closeDeleteCommentModal = () => setDeleteCommentModal(false)
+
+    const handleDeleteCommentClick = () => {
+        setDeleteCommentModal(true);
+    };
+
     if (!comment) return null;
 
     const handleLikeComment = async (commentId) => {
@@ -84,7 +93,7 @@ const CommentCard = ({comment, content, userInfo, openLogin, newReply, clamp = f
                     {content && (
                         <div className="comment-card-content-wrap">
                             <div className="comment-card-content-left">
-                                <img src={content.poster} alt=""/>
+                                <NavLink to={`/content/${content.id}`}><img src={content.poster} alt=""/></NavLink>
                             </div>
                             <ul className="comment-card-content-right m-0 p-0">
                                 <li>{content.title}</li>
@@ -112,20 +121,34 @@ const CommentCard = ({comment, content, userInfo, openLogin, newReply, clamp = f
                         <button onClick={() => {navigator.clipboard.writeText("http://localhost:3000/comment/" + commentData?.id)}}><i className="bi bi-share"/></button>
                     </div>
                     <div>
-                        <button>
+                        <button onClick={handleDeleteCommentClick}>
                             <i className="bi bi-trash"></i>
                         </button>
-                        <button>
+                        <button onClick={openReply}>
                             <i className="bi bi-pencil"></i>
                         </button>
                     </div>
                 </div>
             </div>
 
+            {/*코멘트 삭제 확인 모달창*/}
+            {deleteCommentModal && (
+                <div className="confirm-modal-overlay" onClick={closeDeleteCommentModal}>
+                    <div className="confirm-modal-content">
+                        <p>알림</p>
+                        <p>삭제하시겠습니까?</p>
+                        <div className="confirm-btn-group">
+                            <button>확인</button>
+                            <button  onClick={closeDeleteCommentModal}>취소</button>
+                        </div>
+                    </div>
+                </div>
+            )}
+
             {/*댓글 모달창*/}
             {replyModal && (
                 <div className="comment-modal-overlay" onClick={closeReply}>
-                    <div className="comment-modal-content" onClick={(e) => e.stopPropagation()}>
+                    <div className="comment-modal-content">
                         <div className="comment-content-top">
                             <p className="comment-modal-title">댓글</p>
                             <button className="comment-close-button" onClick={closeReply}><img src="/x-lg.svg" alt=""/></button>
@@ -138,6 +161,8 @@ const CommentCard = ({comment, content, userInfo, openLogin, newReply, clamp = f
                     </div>
                 </div>
             )}
+
+
 
         </div>
     );
