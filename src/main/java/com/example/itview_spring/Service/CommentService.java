@@ -75,16 +75,12 @@ public class CommentService {
 
     // 코멘트에 좋아요 등록
     public void likeComment(Integer userId, Integer commentId) {
-        LikeEntity like = new LikeEntity();
-        like.setUser(userRepository.findById(userId).orElseThrow(() -> new RuntimeException("User not found")));
-        like.setTargetId(commentId);
-        like.setTargetType(Replyable.COMMENT);
-        likeRepository.save(like);
+        likeRepository.likeTarget(userId, commentId, Replyable.COMMENT);
     }
 
     // 코멘트에 좋아요 취소
-    public void unlikeComment(Integer commentId) {
-        likeRepository.deleteByTargetIdAndTargetType(commentId, Replyable.COMMENT);
+    public void unlikeComment(Integer userId, Integer commentId) {
+        likeRepository.unlikeTarget(userId, commentId, Replyable.COMMENT);
     }
 
     // 코멘트에 댓글 작성
