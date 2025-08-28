@@ -18,7 +18,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.example.itview_spring.Config.CustomUserDetails;
 import com.example.itview_spring.DTO.CommentAndContentDTO;
-import com.example.itview_spring.DTO.CommentDTO;
 import com.example.itview_spring.DTO.ReplyDTO;
 import com.example.itview_spring.DTO.TextDTO;
 import com.example.itview_spring.Service.CommentService;
@@ -66,7 +65,7 @@ public class CommentRestController {
     @DeleteMapping("/{id}/like")
     public ResponseEntity<Void> unlikeComment(@PathVariable("id") Integer commentId, @AuthenticationPrincipal CustomUserDetails userDetails) {
         try {
-            commentService.unlikeComment(commentId);
+            commentService.unlikeComment(userDetails.getId(), commentId);
             return ResponseEntity.ok().build();
         } catch (Exception e) {
             e.printStackTrace();
@@ -76,10 +75,10 @@ public class CommentRestController {
 
     // 댓글 등록
     @PostMapping("/{id}/reply")
-    public ResponseEntity<Void> addReply(@PathVariable("id") Integer commentId, @AuthenticationPrincipal CustomUserDetails userDetails, @RequestBody TextDTO textDTO) {
+    public ResponseEntity<ReplyDTO> addReply(@PathVariable("id") Integer commentId, @AuthenticationPrincipal CustomUserDetails userDetails, @RequestBody TextDTO textDTO) {
         try {
-            commentService.addReply(userDetails.getId(), commentId, textDTO.getText());
-            return ResponseEntity.ok().build();
+            ReplyDTO newReply = commentService.addReply(userDetails.getId(), commentId, textDTO.getText());
+            return ResponseEntity.ok(newReply);
         } catch (Exception e) {
             e.printStackTrace();
         }

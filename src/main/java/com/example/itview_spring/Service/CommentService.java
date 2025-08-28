@@ -75,26 +75,27 @@ public class CommentService {
 
     // 코멘트에 좋아요 등록
     public void likeComment(Integer userId, Integer commentId) {
-        LikeEntity like = new LikeEntity();
-        like.setUser(userRepository.findById(userId).orElseThrow(() -> new RuntimeException("User not found")));
-        like.setTargetId(commentId);
-        like.setTargetType(Replyable.COMMENT);
-        likeRepository.save(like);
+        likeRepository.likeTarget(userId, commentId, Replyable.COMMENT);
     }
 
     // 코멘트에 좋아요 취소
-    public void unlikeComment(Integer commentId) {
-        likeRepository.deleteByTargetIdAndTargetType(commentId, Replyable.COMMENT);
+    public void unlikeComment(Integer userId, Integer commentId) {
+        likeRepository.unlikeTarget(userId, commentId, Replyable.COMMENT);
     }
 
     // 코멘트에 댓글 작성
-    public void addReply(Integer userId, Integer commentId, String text) {
+    public ReplyDTO addReply(Integer userId, Integer commentId, String text) {
         ReplyEntity reply = new ReplyEntity();
         reply.setUser(userRepository.findById(userId).orElseThrow(() -> new RuntimeException("User not found")));
-        reply.setText(text);
-        reply.setTargetType(Replyable.COMMENT);
         reply.setTargetId(commentId);
-        replyRepository.save(reply);
+        reply.setTargetType(Replyable.COMMENT);
+        reply.setText(text);
+        ReplyEntity savedReply = replyRepository.save(reply);
+        ReplyDTO newReply = replyRepository.findReplyDTOById(userId, savedReply.getId());
+        if (newReply == null) {
+            throw new RuntimeException("Failed to create reply");
+        }
+        return newReply;
     }
 
     // 코멘트의 댓글 페이징 조회
