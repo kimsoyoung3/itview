@@ -34,6 +34,10 @@ const CommentDetailPage = ({userInfo, openLogin}) => {
         console.log(replies);
     }, [replies]);
 
+    const newReply = (data) => {
+        setReplies((prev) => ([data, ...prev]));
+    }
+
     const loadMoreRepliesRef = React.useRef();
 
     const handleNextPage = async () => {
@@ -65,11 +69,11 @@ const CommentDetailPage = ({userInfo, openLogin}) => {
     return(
         <div className="comment-detail-page container">
             <div className="comment-detail-page-content">
-                <CommentCard comment={comments?.comment} content={comments?.content} userInfo={userInfo} openLogin={openLogin}/>
+                <CommentCard comment={comments?.comment} content={comments?.content} userInfo={userInfo} openLogin={openLogin} newReply={newReply}/>
 
                 {replies.length > 0 ? (
                     <div>
-                        {replies.map(r => <ReplyCard reply={r} userInfo={userInfo} openLogin={openLogin}/>)}
+                        {replies.map(r => <ReplyCard key={r.id} reply={r} userInfo={userInfo} openLogin={openLogin}/>)}
                     </div>
                 ) : (
                     <p>등록된 댓글이 없습니다.</p>
@@ -78,7 +82,5 @@ const CommentDetailPage = ({userInfo, openLogin}) => {
             </div>
         </div>
     )
-
-
 }
 export default CommentDetailPage;
