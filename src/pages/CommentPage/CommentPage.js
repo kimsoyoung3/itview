@@ -106,9 +106,6 @@ const CommentPage = ({userInfo, openLogin}) => {
                 <p>코멘트가 없습니다.</p>
             )}
             <div ref={loadMoreCommentsRef} style={{ height: '20px' }}></div>
-
-            <button onClick={handleNextPage}>다음</button>
-
         </div>
     )
 };

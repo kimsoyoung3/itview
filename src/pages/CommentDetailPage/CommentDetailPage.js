@@ -10,6 +10,7 @@ import ReplyCard from "../../components/ReplyCard/ReplyCard";
 const CommentDetailPage = ({userInfo, openLogin}) => {
     const [comments, setComments] = useState({});
     const [replies, setReplies] = useState([]);
+    const [page, setPage] = useState({});
 
     const { id } = useParams(); // URL에서 :id 가져오기
 
@@ -20,6 +21,7 @@ const CommentDetailPage = ({userInfo, openLogin}) => {
 
             const repliesRes = await getCommentRepliesPaged(id, 1);
             setReplies(repliesRes.data.content);
+            setPage(repliesRes.data.page);
         }
         fetchData();
     }, [id]);
@@ -32,6 +34,36 @@ const CommentDetailPage = ({userInfo, openLogin}) => {
         console.log(replies);
     }, [replies]);
 
+    const loadMoreRepliesRef = React.useRef();
+
+    const handleNextPage = async () => {
+        if (page.number < page.totalPages - 1) {
+            const response = await getCommentRepliesPaged(id, page.number+2);
+            setReplies((prev) => ([...prev, ...response.data.content]))
+            setPage(response.data.page);
+        } else {
+            console.log("마지막 페이지");
+        }
+    }
+
+    useEffect(() => {
+        const observer = new IntersectionObserver((entries) => {
+            if (entries[0].isIntersecting) {
+                handleNextPage();
+            }
+        }, {
+            threshold: 1.0
+        });
+        if (loadMoreRepliesRef.current) {
+            observer.observe(loadMoreRepliesRef.current);
+        }
+        return () => {
+            if (loadMoreRepliesRef.current) {
+                observer.unobserve(loadMoreRepliesRef.current);
+            }
+        };
+    }, [loadMoreRepliesRef, page]);
+    
     return(
         <div className="comment-detail-page container">
             <div className="comment-detail-page-content">
@@ -44,6 +76,7 @@ const CommentDetailPage = ({userInfo, openLogin}) => {
                 ) : (
                     <p>등록된 댓글이 없습니다.</p>
                 )}
+                <div ref={loadMoreRepliesRef} style={{ height: '20px' }}></div>
             </div>
         </div>
     )
