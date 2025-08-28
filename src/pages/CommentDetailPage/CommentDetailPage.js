@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from "react";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import "./CommentDetailPage.css";
-import {getCommentAndContent} from "../../API/CommentApi";
+import {getCommentAndContent, getCommentRepliesPaged} from "../../API/CommentApi";
 import {useParams} from "react-router-dom";
 import CommentCard from "../../components/CommentCard/CommentCard";
 import ReplyCard from "../../components/ReplyCard/ReplyCard";
@@ -9,6 +9,7 @@ import ReplyCard from "../../components/ReplyCard/ReplyCard";
 
 const CommentDetailPage = ({userInfo, openLogin}) => {
     const [comments, setComments] = useState({});
+    const [replies, setReplies] = useState([]);
 
     const { id } = useParams(); // URL에서 :id 가져오기
 
@@ -16,6 +17,9 @@ const CommentDetailPage = ({userInfo, openLogin}) => {
         const fetchData = async () => {
             const res = await getCommentAndContent(id)
             setComments(res.data)
+
+            const repliesRes = await getCommentRepliesPaged(id, 1);
+            setReplies(repliesRes.data);
         }
         fetchData();
     }, [id]);
@@ -23,6 +27,10 @@ const CommentDetailPage = ({userInfo, openLogin}) => {
     useEffect(() => {
         console.log(comments.comment)
     }, [comments]);
+
+    useEffect(() => {
+        console.log(replies);
+    }, [replies]);
 
     return(
         <div className="comment-detail-page container">
