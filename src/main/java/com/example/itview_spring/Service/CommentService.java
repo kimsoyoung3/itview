@@ -1,11 +1,15 @@
 package com.example.itview_spring.Service;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.example.itview_spring.Constant.Replyable;
 import com.example.itview_spring.DTO.CommentAndContentDTO;
 import com.example.itview_spring.DTO.CommentDTO;
+import com.example.itview_spring.DTO.ReplyDTO;
 import com.example.itview_spring.Entity.CommentEntity;
 import com.example.itview_spring.Entity.LikeEntity;
 import com.example.itview_spring.Entity.ReplyEntity;
@@ -91,5 +95,12 @@ public class CommentService {
         reply.setTargetType(Replyable.COMMENT);
         reply.setTargetId(commentId);
         replyRepository.save(reply);
+    }
+
+    // 코멘트의 댓글 페이징 조회
+    public Page<ReplyDTO> getCommentReplies(Integer commentId, Integer userId, Integer page) {
+        Pageable pageable = PageRequest.of(page - 1, 10);
+        Page<ReplyDTO> replies = replyRepository.findRepliesByTargetId(userId, commentId, Replyable.COMMENT, pageable);
+        return replies;
     }
 }

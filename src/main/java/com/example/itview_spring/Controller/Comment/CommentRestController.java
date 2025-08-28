@@ -1,5 +1,8 @@
 package com.example.itview_spring.Controller.Comment;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -15,6 +18,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.example.itview_spring.Config.CustomUserDetails;
 import com.example.itview_spring.DTO.CommentAndContentDTO;
+import com.example.itview_spring.DTO.CommentDTO;
+import com.example.itview_spring.DTO.ReplyDTO;
 import com.example.itview_spring.DTO.TextDTO;
 import com.example.itview_spring.Service.CommentService;
 
@@ -75,6 +80,24 @@ public class CommentRestController {
         try {
             commentService.addReply(userDetails.getId(), commentId, textDTO.getText());
             return ResponseEntity.ok().build();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+    }
+
+    // 코멘트의 댓글 페이징 조회
+    @GetMapping("/{id}/reply")
+    public ResponseEntity<Page<ReplyDTO>> getCommentReplies(@PathVariable("id") Integer commentId, @PageableDefault(page = 1) Pageable pageable) {
+
+        try {
+            var auth = SecurityContextHolder.getContext().getAuthentication();
+            Integer userId = 0;
+            if (auth.getPrincipal() != "anonymousUser") {
+                userId = ((CustomUserDetails) auth.getPrincipal()).getId();
+            }
+            Page<ReplyDTO> replies = commentService.getCommentReplies(commentId, userId, pageable.getPageNumber());
+            return ResponseEntity.ok(replies);
         } catch (Exception e) {
             e.printStackTrace();
         }
