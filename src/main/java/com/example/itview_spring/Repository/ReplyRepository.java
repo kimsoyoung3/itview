@@ -19,6 +19,29 @@ public interface ReplyRepository extends JpaRepository<ReplyEntity, Integer> {
     @Query("DELETE FROM ReplyEntity r WHERE r.targetId = :targetId AND r.targetType = :targetType")
     void deleteByTargetIdAndTargetType(@Param("targetId") Integer targetId, @Param("targetType") Replyable targetType);
 
+    // 댓글 Id로 조회
+    @Query("""
+            SELECT new com.example.itview_spring.DTO.ReplyDTO(
+                r.id,
+                r.createdAt,
+                case when (exists (
+                    select 1 from LikeEntity l2
+                    where l2.targetId = r.id and l2.targetType = 'REPLY' and l2.user.id = :userId
+                )) then true else false end,
+                (select count(l) from LikeEntity l where l.targetId = r.id and l.targetType = 'REPLY'),
+                r.text,
+                new com.example.itview_spring.DTO.UserProfileDTO(
+                    r.user.id,
+                    r.user.nickname,
+                    r.user.introduction,
+                    r.user.profile
+                )
+            )
+            FROM ReplyEntity r
+            WHERE r.id = :replyId
+            """)
+    ReplyDTO findReplyDTOById(@Param("userId") Integer userId, @Param("replyId") Integer replyId);
+
     // 특정 대상의 댓글 페이징 조회
     @Query("""
             SELECT new com.example.itview_spring.DTO.ReplyDTO(

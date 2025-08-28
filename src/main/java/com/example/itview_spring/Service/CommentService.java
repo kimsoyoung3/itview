@@ -84,13 +84,19 @@ public class CommentService {
     }
 
     // 코멘트에 댓글 작성
-    public void addReply(Integer userId, Integer commentId, String text) {
+    public ReplyDTO addReply(Integer userId, Integer commentId, String text) {
         ReplyEntity reply = new ReplyEntity();
         reply.setUser(userRepository.findById(userId).orElseThrow(() -> new RuntimeException("User not found")));
-        reply.setText(text);
-        reply.setTargetType(Replyable.COMMENT);
         reply.setTargetId(commentId);
-        replyRepository.save(reply);
+        reply.setTargetType(Replyable.COMMENT);
+        reply.setText(text);
+        ReplyEntity savedReply = replyRepository.save(reply);
+        System.out.println(savedReply.getId());
+        ReplyDTO newReply = replyRepository.findReplyDTOById(userId, savedReply.getId());
+        if (newReply == null) {
+            throw new RuntimeException("Failed to create reply");
+        }
+        return newReply;
     }
 
     // 코멘트의 댓글 페이징 조회
