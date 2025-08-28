@@ -5,3 +5,5 @@ export const likeComment = (commentId) => axios.post(`http://localhost:8080/api/
 export const unlikeComment = (commentId) => axios.delete(`http://localhost:8080/api/comment/${commentId}/like`, {withCredentials: true});
 export const postReply = (commentId, data) => axios.post(`http://localhost:8080/api/comment/${commentId}/reply`, data, {withCredentials: true});
 export const getCommentRepliesPaged = (commentId, page) => axios.get(`http://localhost:8080/api/comment/${commentId}/reply?page=${page}`, {withCredentials: true});
+export const likeReply = (replyId) => axios.post(`http://localhost:8080/api/reply/${replyId}/like`, {}, {withCredentials: true});
+export const unlikeReply = (replyId) => axios.delete(`http://localhost:8080/api/reply/${replyId}/like`, {withCredentials: true});

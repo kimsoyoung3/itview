@@ -41,8 +41,6 @@ const CommentDetailPage = ({userInfo, openLogin}) => {
             const response = await getCommentRepliesPaged(id, page.number+2);
             setReplies((prev) => ([...prev, ...response.data.content]))
             setPage(response.data.page);
-        } else {
-            console.log("마지막 페이지");
         }
     }
 
@@ -52,7 +50,7 @@ const CommentDetailPage = ({userInfo, openLogin}) => {
                 handleNextPage();
             }
         }, {
-            threshold: 1.0
+            threshold: 0.1
         });
         if (loadMoreRepliesRef.current) {
             observer.observe(loadMoreRepliesRef.current);
@@ -63,7 +61,7 @@ const CommentDetailPage = ({userInfo, openLogin}) => {
             }
         };
     }, [loadMoreRepliesRef, page]);
-    
+
     return(
         <div className="comment-detail-page container">
             <div className="comment-detail-page-content">
