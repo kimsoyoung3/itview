@@ -334,51 +334,70 @@ public class ContentController {
     }
 
 /////////0825 vidio 추가///////////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     /**
-     * 영상 등록/수정 폼
+     * 영상 등록/수정 폼(get)
      */
     @GetMapping("/content/{contentId}/video")
-    public String showVideoForm(@PathVariable Integer contentId, Model model) {
+    public String VideoForm(@PathVariable("contentId") Integer contentId,
+                                @RequestParam(value = "id", required = false) Integer videoId,
+                                Model model) {
         // 콘텐츠 정보
-        ContentCreateDTO contentDTO = contentService.read(contentId);
-        model.addAttribute("contentDTO", contentDTO);
+//        ContentCreateDTO contentDTO = contentService.read(contentId);
+//        model.addAttribute("contentDTO", contentDTO);
+//        model.addAttribute("contentId", contentId);
+//
+//        // 기존 영상 데이터가 있다면 조회
+//        VideoDTO videoDTO = contentService.getVideoByContentId(contentId);// <- 존재 여부 체크
+//
+//        if (videoDTO == null) {
+//            videoDTO = new VideoDTO(); // 새로 생성
+//        }
+//        model.addAttribute("videoDTO", videoDTO); // 항상 전달
+//        VideoDTO videoDTO = (videoId != null)  //getVideoByContentId
+//                ? videoService.read(videoId)        // 수정 모드
+//                : new VideoDTO();                  // 등록 모드
+
+        // 1️⃣ 단일 VideoDTO 조회 (수정 모드)
+        VideoDTO videoDTO = (videoId != null)
+                ? contentService.getVideoById(videoId)  // contentService에서 단일 VideoId 조회 메서드 필요
+                : new VideoDTO();                        // 등록 모드
+        model.addAttribute("videoDTO", videoDTO);
+
+        // 2️⃣ 전체 VideoDTO 리스트 조회 (목록)
+        List<VideoDTO> videoList = contentService.getVideosByContentId(contentId);
+        model.addAttribute("videoList", videoList);
+
+        // 3️⃣ ContentId도 모델에 전달
         model.addAttribute("contentId", contentId);
-
-        // 기존 영상 데이터가 있다면 조회
-        VideoDTO videoDTO = contentService.getVideoByContentId(contentId);// <- 존재 여부 체크
-
-        if (videoDTO == null) {
-            videoDTO = new VideoDTO(); // 새로 생성
-        }
-        model.addAttribute("videoDTO", videoDTO); // 항상 전달
 
         return "content/videoForm"; // 템플릿 경로: templates/content/videoForm.html
     }
 
     /**
-     * 영상 등록 또는 수정 처리
+     * 영상 등록 또는 수정 처리 (post)
      */
     @PostMapping("/content/{contentId}/video")
-    public String submitVideo(@PathVariable Integer contentId,
-                              @ModelAttribute VideoDTO videoDTO) {
+    public String createVideo(
+            @PathVariable("contentId") Integer contentId,
+            @ModelAttribute VideoDTO videoDTO,
+            RedirectAttributes redirectAttributes) {
 
-        System.out.println("✅ [Video 저장] contentId == " + contentId);
-        System.out.println("✅ [Video 저장] videoDTO == " + videoDTO);
-
-        // contentId 연결
-      //  videoDTO.setContent(contentId);
-
-        // 등록 또는 수정
-        if (videoDTO != null && videoDTO.getId() == null) {
-            contentService.createVideo(contentId,videoDTO); // 신규 등록
-        } else if  (videoDTO != null && videoDTO.getId() != null) {
-            contentService.updateVideo(videoDTO.getId(), videoDTO); // 수정 시 videoId로 호출 ⭕
+        if (videoDTO.getId() == null) {
+            // 신규 등록
+            contentService.createVideo(contentId, videoDTO);
+            redirectAttributes.addFlashAttribute("message", "영상이 등록되었습니다.");
+        } else {
+            // 수정 처리
+            contentService.updateVideo(videoDTO.getId(), videoDTO);
+            redirectAttributes.addFlashAttribute("message", "영상이 수정되었습니다.");
         }
 
-        // ✅ 저장 후 콘텐츠 상세페이지 혹은 다음 등록 화면으로 이동
-        return "redirect:/content/" + contentId + "/video"; // 예: 요약 페이지
+        redirectAttributes.addAttribute("contentId", contentId);
+        return "redirect:/content/" + contentId + "/video";
     }
+
 
     /**
      * 영상 삭제 처리
@@ -389,9 +408,9 @@ public class ContentController {
     System.out.println("🗑️ [Video 삭제] contentId == " + contentId);
     System.out.println("<UNK> [Video <UNK>] videoId == " + videoId);
 
-    contentService.deleteVideo(videoId); // ✅ 실제 videoId 기반 삭제
-    // 삭제 후 영상 등록 페이지로 리다이렉트
-    return "redirect:/content/" + contentId + "/video";
+        contentService.deleteVideo(videoId); //실제 videoId 기반 삭제
+        // 삭제 후 영상 등록 페이지로 리다이렉트
+        return "redirect:/content/" + contentId + "/video";
     }
 
 /////////0825 vidio 추가///////////////////////////////////////////////////////////////////////////////////////////

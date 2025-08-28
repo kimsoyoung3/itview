@@ -1,4 +1,4 @@
-package com.example.itview_spring.Controller.Content;
+package com.example.itview_spring.Controller.User;
 
 import com.example.itview_spring.DTO.VideoDTO;
 import com.example.itview_spring.DTO.PageInfoDTO;

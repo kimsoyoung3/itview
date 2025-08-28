@@ -85,6 +85,12 @@ public class VideoService {
         return adminVideoDTO;
     }
 
+    // 단일 VideoDTO 조회
+    public VideoDTO getVideoById(Integer videoId) {
+        return videoRepository.findById(videoId)
+                .map(v -> new VideoDTO(v.getId(), v.getTitle(), v.getImage(), v.getUrl()))
+                .orElse(null);
+    }
     //등록(저장)
     //DTO를 받아서 저장
     //public void 내맘대로 (ProductDTO productDTO) {
