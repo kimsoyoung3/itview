@@ -1,7 +1,7 @@
 import React from 'react'
 import { Route, Routes } from 'react-router-dom';
-import DetailPage from '../pages/DetailPage';
-import CommentPage from "../pages/CommentPage";
+import DetailPage from '../pages/DetailPage/DetailPage';
+import CommentPage from "../pages/CommentPage/CommentPage";
 
 function ContentRoutes({ userInfo, openLogin }) {
   return (

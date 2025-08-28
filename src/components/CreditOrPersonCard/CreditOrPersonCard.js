@@ -1,5 +1,5 @@
 import React from "react";
-import "../css/CreditOrPersonCard.css"
+import "./CreditOrPersonCard.css"
 import PropTypes from "prop-types";
 
 const CreditOrPersonCard = ({data, type}) => {

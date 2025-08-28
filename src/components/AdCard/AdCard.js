@@ -1,5 +1,5 @@
 import React from 'react';
-import '../css/AdCard.css';
+import './AdCard.css';
 import {Link} from "react-router-dom";
 
 const AdCard = ({ image, tag, title, subtitle, badge, link }) => {

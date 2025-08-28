@@ -1,6 +1,6 @@
 import React from 'react'
 import { Route, Routes } from 'react-router-dom';
-import CommentDetailPage from "../pages/CommentDetailPage";
+import CommentDetailPage from "../pages/CommentDetailPage/CommentDetailPage";
 
 function CommentRoutes({ userInfo, openLogin }) {
   return (

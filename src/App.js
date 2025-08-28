@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { BrowserRouter } from 'react-router-dom';
-import Header from './components/Header';
+import Header from './components/Header/Header';
 import AppRoutes from './routes/AppRoutes';
 import { getMyInfo, loginUser, logoutUser } from './API/UserApi';
 

@@ -1,15 +1,15 @@
 import React, {useEffect, useState } from "react";
 import 'bootstrap/dist/css/bootstrap.min.css';
-import "../css/DetailPage.css";
-import "../css/ContentSwiper.css";
+import "./DetailPage.css";
+import "../../components/ContentSwiper/ContentSwiper.css";
 import 'swiper/css/navigation';
 import 'swiper/css/pagination';
 import 'swiper/css';
-import { deleteContentComment,getContentCredit, deleteRating, getContentComment, getContentDetail, postContentComment, postContentRating, putContentComment } from "../API/ContentApi";
+import { deleteContentComment,getContentCredit, deleteRating, getContentComment, getContentDetail, postContentComment, postContentRating, putContentComment } from "../../API/ContentApi";
 import {Navigation, Pagination} from "swiper/modules";
 import {Swiper, SwiperSlide} from "swiper/react";
-import CreditOrPersonCard from "../components/CreditOrPersonCard";
-import CommentCard from "../components/CommentCard";
+import CreditOrPersonCard from "../../components/CreditOrPersonCard/CreditOrPersonCard";
+import CommentCard from "../../components/CommentCard/CommentCard";
 import {NavLink} from "react-router-dom";
 
 const DetailPage = ({userInfo, openLogin}) => {

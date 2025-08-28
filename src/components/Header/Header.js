@@ -1,8 +1,8 @@
 import React, {useEffect, useState} from 'react';
 import {Link, NavLink, useLocation} from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import '../css/Header.css';
-import { checkEmail, checkVerification, createVerification, google, registerUser, setPassword } from '../API/UserApi';
+import './Header.css';
+import { checkEmail, checkVerification, createVerification, google, registerUser, setPassword } from '../../API/UserApi';
 
 const Header = ({userInfo, handleLogin, handleLogout, isLoginOpen, openLogin, closeLogin}) => {
     /*스크롤 시*/

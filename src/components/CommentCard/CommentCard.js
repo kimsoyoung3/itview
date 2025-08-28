@@ -1,11 +1,15 @@
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import 'bootstrap/dist/css/bootstrap.min.css';
-import "../css/CommentCard.css"; // CSS 따로 관리
-import { likeComment, postReply, unlikeComment } from "../API/CommentApi";
+import "./CommentCard.css"; // CSS 따로 관리
+import { likeComment, postReply, unlikeComment } from "../../API/CommentApi";
 import {NavLink} from "react-router-dom";
 
 const CommentCard = ({comment, content, userInfo, openLogin, clamp = false}) => {
-    const [commentData, setCommentData] = useState(comment);
+    const [commentData, setCommentData] = useState(null);
+
+    useEffect(() => {
+        setCommentData(comment)
+    }, [comment]);
 
     const [replyModal, setReplyModal] = useState();
     const textRef = React.useRef(null); //댓글 텍스트 영역 참조
@@ -60,46 +64,48 @@ const CommentCard = ({comment, content, userInfo, openLogin, clamp = false}) => 
             {/* 헤더 */}
             <div className="comment-card-header">
                 <div className="comment-card-header-left">
-                    <img src={commentData.user?.profile || '/user.png'} className="comment-card-profile" alt=""/>
-                    <span className="comment-card-nickname">{commentData.user.nickname}</span>
-                    <span className="comment-card-date">{new Date(commentData.createdAt).toLocaleDateString().slice(0, -1)}</span>
+                    <img src={commentData?.user?.profile || '/user.png'} className="comment-card-profile" alt=""/>
+                    <span className="comment-card-nickname">{commentData?.user.nickname}</span>
+                    <span className="comment-card-date">{new Date(commentData?.createdAt).toLocaleDateString().slice(0, -1)}</span>
                 </div>
-                {commentData.rating &&
+                {commentData?.rating &&
                     <div className="comment-card-header-right">
-                        <i className="bi bi-star-fill"/><span>{commentData.rating/2}</span>
+                        <i className="bi bi-star-fill"/><span>{commentData?.rating/2}</span>
                     </div>
                 }
             </div>
 
             {/* 내용 */}
             <div className="comment-card-content">
-                {content && (
-                    <div className="comment-card-content-wrap">
-                        <div className="comment-card-content-left">
-                            <img src={content.poster} alt=""/>
+                <NavLink to={`/comment/${commentData?.id}`}>
+                    {content && (
+                        <div className="comment-card-content-wrap">
+                            <div className="comment-card-content-left">
+                                <img src={content.poster} alt=""/>
+                            </div>
+                            <ul className="comment-card-content-right m-0 p-0">
+                                <li>{content.title}</li>
+                                <li>{content.contentType} &middot; <span>{content.releaseDate}</span></li>
+                                <li>평균 <i className="bi bi-star-fill"/>{content.ratingAvg.toFixed(1)}</li>
+                            </ul>
                         </div>
-                        <ul className="comment-card-content-right m-0 p-0">
-                            <li>{content.title}</li>
-                            <li>{content.contentType} &middot; <span>{content.releaseDate}</span></li>
-                            <li>{content.ratingAvg}</li>
-                        </ul>
-                    </div>
-                )}
-                <NavLink to={`/comment/${commentData.id}`}><p className={clamp ? "clamp-4" : ""}>{commentData.text}</p></NavLink>
+                    )}
+                    <p className={clamp ? "clamp-4" : ""}>{commentData?.text}</p>
+                </NavLink>
             </div>
 
             {/* 푸터 */}
             <div className="comment-card-footer">
                 <div className="comment-card-footer-top">
-                    <p>좋아요<span>{commentData.likeCount}</span></p>
-                    <p>댓글<span>{commentData.replyCount}</span></p>
+                    <p>좋아요<span>{commentData?.likeCount}</span></p>
+                    <p>댓글<span>{commentData?.replyCount}</span></p>
                 </div>
                 <div className="comment-card-footer-bottom">
-                    <button onClick={userInfo ? () => handleLikeComment(commentData.id) : openLogin}>
-                        <i className={commentData.liked ? "bi bi-hand-thumbs-up-fill" : "bi bi-hand-thumbs-up"}/>
+                    <button onClick={userInfo ? () => handleLikeComment(commentData?.id) : openLogin}>
+                        <i className={commentData?.liked ? "bi bi-hand-thumbs-up-fill" : "bi bi-hand-thumbs-up"}/>
                     </button>
                     <button onClick={userInfo ? openReply : openLogin}><i className="bi bi-chat-square"/></button>
-                    <button onClick={() => {navigator.clipboard.writeText("http://localhost:3000/comment/" + commentData.id)}}><i className="bi bi-share"/></button>
+                    <button onClick={() => {navigator.clipboard.writeText("http://localhost:3000/comment/" + commentData?.id)}}><i className="bi bi-share"/></button>
                 </div>
             </div>
 

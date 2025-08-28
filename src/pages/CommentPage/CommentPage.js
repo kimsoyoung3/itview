@@ -1,9 +1,9 @@
 import React, {useEffect, useRef, useState} from "react";
 import 'bootstrap/dist/css/bootstrap.min.css';
-import "../css/CommentPage.css";
+import "./CommentPage.css";
 import {useParams} from "react-router-dom";
-import CommentCard from "../components/CommentCard";
-import {getContentCommentsPaged} from "../API/ContentApi";
+import CommentCard from "../../components/CommentCard/CommentCard";
+import {getContentCommentsPaged} from "../../API/ContentApi";
 
 const CommentPage = ({userInfo, openLogin}) => {
     const { id } = useParams(); // URL에서 :id 가져오기

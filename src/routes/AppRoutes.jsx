@@ -1,6 +1,6 @@
 import React from 'react'
 import { Route, Routes } from 'react-router-dom';
-import Home from "../pages/main/Home";
+import Home from "../pages/Home/Home";
 import ContentRoutes from './ContentRoutes';
 import CommentRoutes from './CommentRoutes';
 
