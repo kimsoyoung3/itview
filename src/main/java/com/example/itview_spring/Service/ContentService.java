@@ -2,10 +2,7 @@ package com.example.itview_spring.Service;
 
 import com.example.itview_spring.Constant.Genre;
 import com.example.itview_spring.DTO.*;
-import com.example.itview_spring.Entity.ContentEntity;
-import com.example.itview_spring.Entity.ContentGenreEntity;
-import com.example.itview_spring.Entity.RatingEntity;
-import com.example.itview_spring.Entity.VideoEntity;
+import com.example.itview_spring.Entity.*;
 import com.example.itview_spring.Repository.*;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
@@ -56,7 +53,7 @@ public class ContentService {
      * @param page 조회할 페이지 번호
      * @return 결과
      */
-
+    @Transactional
     public Page<ContentCreateDTO> getAllContents(Pageable page) {
         int currentPage = page.getPageNumber() - 1;
         int pageLimits = 10;
@@ -77,7 +74,7 @@ public class ContentService {
             System.out.println("Nation: " + content.getNation());
             System.out.println("Channel: " + content.getChannelName());
             System.out.println("Genres: " + content.getGenres());
-            System.out.println("비디오: " + content.getVideos());
+            System.out.println("외부 서비스: " + content.getVideos());
         }
         Page<ContentCreateDTO> contentDTOS = contentEntities.map(data -> modelMapper.map(
                 data, ContentCreateDTO.class));
@@ -93,11 +90,11 @@ public class ContentService {
 //    }
 
 
-
     //상세보기,수정(개별조회)
     //주문번호를 받아서 해당하는 DTO에 전달
     //public ProductDTO 역시 안알려줌(Integer id) {
     //public ProductDTO read(Integer id) {    ex)
+    @Transactional
     public ContentCreateDTO read(Integer id) {
         //해당내용을 조회
         if (id == null) {
@@ -115,6 +112,7 @@ public class ContentService {
     //DTO를 받아서 저장
     //public void 내맘대로 (ProductDTO productDTO) {
     //public void create (ProductDTO productDTO) {  ex)
+    @Transactional
     public ContentCreateDTO create(ContentCreateDTO dto) {
         //DTO가 이있으면 반드시 Entity 변환
 
@@ -187,6 +185,7 @@ public class ContentService {
 
 
     // 컨텐츠 상세 정보 조회
+    @Transactional
     public ContentDetailDTO getContentDetail(Integer contentId, Integer userId) {
         try {
             ContentDetailDTO contentDetail = new ContentDetailDTO();
@@ -295,7 +294,7 @@ public class ContentService {
 //            contentGenre.setGenre(genre);  // ✅ 여기서 content가 null이면 에러 발생
 //
 //            contentGenreRepository.save(contentGenre);
-     //   Set<Genre> existingGenreSet = new HashSet<>(existingGenres);
+        //   Set<Genre> existingGenreSet = new HashSet<>(existingGenres);
         for (Genre genre : genres) {
             if (!existingGenres.contains(genre)) {  // Avoid adding existing genre
                 ContentGenreEntity contentGenre = new ContentGenreEntity();
@@ -324,9 +323,11 @@ public class ContentService {
 //            }
 //        }
 //    }
+
     /**
      * 콘텐츠 장르 수정 (기존 장르 모두 삭제 후, 새로 추가)
      */
+    @Transactional
     public void updateGenres(Integer contentId, List<Genre> newGenres) {
         ContentEntity content = contentRepository.findById(contentId)
                 .orElseThrow(() -> new IllegalArgumentException("콘텐츠 ID가 유효하지 않습니다. id: " + contentId));
@@ -413,7 +414,7 @@ public class ContentService {
         ContentEntity contentEntity = contentRepository.findById(contentId)
                 .orElseThrow(() -> new IllegalArgumentException("해당 콘텐츠가 존재하지 않습니다. ID: " + contentId));
         entity.setContent(contentEntity);
-        System.out.println(" createVideo contentId :"+contentId);
+        System.out.println(" createVideo contentId :" + contentId);
 
         videoRepository.save(entity);
 
@@ -421,9 +422,10 @@ public class ContentService {
     }
 
     // 4. 수정 (Update existing video)
+    @Transactional
     public VideoDTO updateVideo(Integer id, VideoDTO dto) {
         VideoEntity entity = videoRepository.findById(id)
-                .orElseThrow(() -> new NoSuchElementException("해당 비디오가 존재하지 않습니다. ID: " + id));
+                .orElseThrow(() -> new NoSuchElementException("해당 외부 서비스가 존재하지 않습니다. ID: " + id));
 
         entity.setTitle(dto.getTitle());
         entity.setImage(dto.getImage());
@@ -433,17 +435,91 @@ public class ContentService {
     }
 
     // 5. 삭제 (Delete video)
+    @Transactional
     public void deleteVideo(Integer videoId) {
-        // 주어진 videoId로 비디오 엔티티 조회
+        // 주어진 videoId로 외부 서비스 엔티티 조회
         VideoEntity videoEntity = videoRepository.findById(videoId)
-                .orElseThrow(() -> new NoSuchElementException("삭제할 비디오를 찾을 수 없습니다. ID: " + videoId));
+                .orElseThrow(() -> new NoSuchElementException("삭제할 외부 서비스를 찾을 수 없습니다. ID: " + videoId));
 
-        // 비디오 엔티티 삭제
+        // 외부 서비스 엔티티 삭제
         videoRepository.delete(videoEntity);
     }
 
-    /////////////////////////////////////////////////////////////////////////////////////////////////
+    /// ///////////////////////////////////////////////////////////////////////////////////////////
+    /// 0828 exteral service 작성함
+    /// ///////////////////////////////////////////////////////////////////////////////////////////
+// 1. 전체 조회 (Get all external_services contentId 기준 모든영상)
+// ✔️ 목록용: 여러 영상 조회 (DTO 리스트)
+    @Transactional(readOnly = true)
+    public List<ExternalServiceDTO> getExternalServicesByContentId(Integer contentId) {
+
+        return externalServiceRepository.findByContentId(contentId); // Repository에서 DTO 바로 반환
+    }
+// 2. 개별 조회 (Get external_serviceId기준 )
+
+    // 단일 ExternalServiceDTO 조회
+    @Transactional(readOnly = true)
+    public ExternalServiceDTO getExternalServiceById(Integer externalServiceId) {
+        return externalServiceRepository.findById(externalServiceId)
+                .map(v -> new ExternalServiceDTO(
+                                            v.getId(),
+                                            v.getType(),   // Channel 타입
+                                            v.getHref()    // 링크 URL
+                ))
+                .orElse(null);
+    }
+
+    // 3. 입력 (Create new externalService)
+    @Transactional
+    public ExternalServiceDTO createExternalService(Integer contentId, ExternalServiceDTO externalServiceDTO) {
+
+        ExternalServiceEntity entity = new ExternalServiceEntity();
+        // ✅ DTO 필드와 Entity 필드 매핑
+        entity.setType(externalServiceDTO.getType()); // Channel enum
+        entity.setHref(externalServiceDTO.getHref()); // URL
+
+        // ✅ URL에서 넘어온 contentId 활용
+        ContentEntity contentEntity = contentRepository.findById(contentId)
+                .orElseThrow(() -> new IllegalArgumentException("해당 외부 서비스가 존재하지 않습니다. ID: " + contentId));
+        entity.setContent(contentEntity);
+        System.out.println("createExternalService contentId: " + contentId);
+
+        externalServiceRepository.save(entity);
+        // ✅ DTO 반환 시 필드 맞춤
+        return new ExternalServiceDTO(entity.getId(), entity.getType(), entity.getHref());
+    }
+
+    // 4. 수정 (Update existing externalService)
+    @Transactional
+    public ExternalServiceDTO updateExternalService(Integer id, ExternalServiceDTO dto) {
+        ExternalServiceEntity entity = externalServiceRepository.findById(id)
+                .orElseThrow(() -> new NoSuchElementException("해당 외부 서비스가 존재하지 않습니다. ID: " + id));
+
+        // DTO → Entity 매핑
+        entity.setType(dto.getType());  // Channel enum
+        entity.setHref(dto.getHref());  // URL
+
+        externalServiceRepository.save(entity);
+        // Entity → DTO 반환
+        return new ExternalServiceDTO(entity.getId(), entity.getType(), entity.getHref());
+    }
+
+    // 5. 삭제 (Delete externalService)
+    @Transactional
+    public void deleteExternalService(Integer externalServiceId) {
+        if (!externalServiceRepository.existsById(externalServiceId)) {
+            throw new NoSuchElementException(
+                    "삭제할 외부 서비스를 찾을 수 없습니다. ID: " + externalServiceId
+            );
+        }
+
+        externalServiceRepository.deleteById(externalServiceId);
+    }
+
+
+    //////////////////////////////////////////////////////////////////////////////////////////////////
     // 별점 등록
+    @Transactional
     public void rateContent(Integer userId, Integer contentId, Integer score) {
 
         // 기존 별점 조회

@@ -14,15 +14,13 @@
     <!--    <p>This is your main content area.</p>-->
 
     <div class="container mt-5">
-        <h2>동영상(Video) 목록</h2>
+        <h2>동영상(Video) 등록/수정</h2>
 
         <!-- 등록 버튼은 목록 위쪽에 배치 -->
         <div class="mb-3">
             <form th:action="@{/content/{contentId}/video(contentId=${contentId})}" method="post">
 <!--                <input type="hidden" name="id" th:value="${videoDTO.id}"/>-->
                 <input type="hidden" name="id" th:value="${videoDTO != null ? videoDTO.id : ''}"/>
-                <input type="hidden" name="contentId" th:value="${contentId}"/>
-
                 <!-- ✅ contentId 도 hidden 으로 같이 전달 -->
                 <input type="hidden" name="contentId" th:value="${contentId}"/> <!-- contentId 전달 -->
 
@@ -52,7 +50,7 @@
 
 
 <!--            <a th:href="@{'/content/' + ${contentId} + '/video'}" class="btn btn-primary">➕ 영상 등록</a>-->
-            <a th:href="@{/content/list}" class="btn btn-secondary">📂 외부서비스등록/수정</a>
+            <a th:href="@{'/content/' + ${contentId} + '/external'}" class="btn btn-secondary">📂 외부서비스등록/수정</a>
         </div>
 
         <table class="table table-bordered mt-3">
@@ -82,7 +80,7 @@
 
                     <!-- 삭제 버튼 (폼 방식으로 videoId 전달) -->
                     <form th:action="@{'/content/' + ${contentId} + '/video/delete'}"
-                          method="post" th:object="${video}" style="display:inline;">
+                          method="post"  style="display:inline;">
                         <input type="hidden" name="videoId" th:value="${video.id}"/>
                         <button type="submit" class="btn btn-sm btn-danger">🗑 삭제</button>
                     </form>

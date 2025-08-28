@@ -36,4 +36,6 @@ public class ContentCreateDTO {
     // 비디오 리스트
     private List<VideoDTO> videos;
 
+    // 외부서비스 리스트
+    private List<ExternalServiceDTO> externalServices;
 }
