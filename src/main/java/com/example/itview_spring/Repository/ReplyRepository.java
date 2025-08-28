@@ -62,6 +62,7 @@ public interface ReplyRepository extends JpaRepository<ReplyEntity, Integer> {
             )
             FROM ReplyEntity r
             WHERE r.targetId = :targetId AND r.targetType = :targetType
+            ORDER BY r.createdAt DESC
             """)
     Page<ReplyDTO> findRepliesByTargetId(@Param("userId") Integer userId, @Param("targetId") Integer targetId, @Param("targetType") Replyable targetType, Pageable pageable);
 }

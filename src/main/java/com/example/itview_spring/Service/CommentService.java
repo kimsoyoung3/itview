@@ -91,7 +91,6 @@ public class CommentService {
         reply.setTargetType(Replyable.COMMENT);
         reply.setText(text);
         ReplyEntity savedReply = replyRepository.save(reply);
-        System.out.println(savedReply.getId());
         ReplyDTO newReply = replyRepository.findReplyDTOById(userId, savedReply.getId());
         if (newReply == null) {
             throw new RuntimeException("Failed to create reply");
