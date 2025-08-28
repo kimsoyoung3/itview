@@ -11,6 +11,12 @@ const CommentCard = ({comment, content, userInfo, openLogin, newReply, clamp = f
         setCommentData(comment)
     }, [comment]);
 
+    const [commentModal, setCommentModal] = useState();
+
+    /*코멘트 모달*/
+    const openComment = () => setCommentModal(true);
+    const closeComment = () => setCommentModal(false);
+
     const [replyModal, setReplyModal] = useState();
     const textRef = React.useRef(null); //댓글 텍스트 영역 참조
 
@@ -89,19 +95,19 @@ const CommentCard = ({comment, content, userInfo, openLogin, newReply, clamp = f
 
             {/* 내용 */}
             <div className="comment-card-content">
-                <NavLink to={`/comment/${commentData?.id}`}>
-                    {content && (
-                        <div className="comment-card-content-wrap">
-                            <div className="comment-card-content-left">
-                                <NavLink to={`/content/${content.id}`}><img src={content.poster} alt=""/></NavLink>
-                            </div>
-                            <ul className="comment-card-content-right m-0 p-0">
-                                <li>{content.title}</li>
-                                <li>{content.contentType} &middot; <span>{content.releaseDate}</span></li>
-                                <li>평균 <i className="bi bi-star-fill"/>{content.ratingAvg.toFixed(1)}</li>
-                            </ul>
+                {content && (
+                    <div className="comment-card-content-wrap">
+                        <div className="comment-card-content-left">
+                            <NavLink to={`/content/${content.id}`}><img src={content.poster} alt=""/></NavLink>
                         </div>
-                    )}
+                        <ul className="comment-card-content-right m-0 p-0">
+                            <li>{content.title}</li>
+                            <li>{content.contentType} &middot; <span>{content.releaseDate}</span></li>
+                            <li>평균 <i className="bi bi-star-fill"/>{content.ratingAvg.toFixed(1)}</li>
+                        </ul>
+                    </div>
+                )}
+                <NavLink to={`/comment/${commentData?.id}`}>
                     <p className={clamp ? "clamp-4" : ""}>{commentData?.text}</p>
                 </NavLink>
             </div>
@@ -125,13 +131,29 @@ const CommentCard = ({comment, content, userInfo, openLogin, newReply, clamp = f
                         <button onClick={handleDeleteCommentClick}>
                             <i className="bi bi-trash"></i>
                         </button>
-                        <button onClick={openReply}>
+                        <button onClick={openComment}>
                             <i className="bi bi-pencil"></i>
                         </button>
                     </div>
                     )}
                 </div>
             </div>
+
+            {/*마이코멘트 모달창*/}
+            {commentModal && (
+                <div className="comment-modal-overlay" onClick={closeComment}>
+                    <div className="comment-modal-content">
+                        <div className="comment-content-top">
+                            <p className="comment-modal-title">{content.title}</p>
+                            <button className="comment-close-button" onClick={closeComment}><img src="/x-lg.svg" alt=""/></button>
+                        </div>
+                        <textarea rows="15" placeholder="작품에 대한 코멘트를 남겨주세요." maxLength={1000} ref={textRef}></textarea>
+                        <div className="comment-content-bottom">
+                            <button className="comment-content-btn">수정</button>
+                        </div>
+                    </div>
+                </div>
+            )}
 
             {/*코멘트 삭제 확인 모달창*/}
             {deleteCommentModal && (
