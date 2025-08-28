@@ -37,8 +37,6 @@ const CommentPage = ({userInfo, openLogin}) => {
             const response = await getContentCommentsPaged(id, order, page.number+2);
             setComments((prev) => ([...prev, ...response.data.content]))
             setPage(response.data.page);
-        } else {
-            console.log("마지막 페이지");
         }
     }
 
@@ -73,7 +71,7 @@ const CommentPage = ({userInfo, openLogin}) => {
                 handleNextPage();
             }
         }, {
-            threshold: 1.0
+            threshold: 0.1
         });
         if (loadMoreCommentsRef.current) {
             observer.observe(loadMoreCommentsRef.current);
@@ -106,9 +104,6 @@ const CommentPage = ({userInfo, openLogin}) => {
                 <p>코멘트가 없습니다.</p>
             )}
             <div ref={loadMoreCommentsRef} style={{ height: '20px' }}></div>
-
-            <button onClick={handleNextPage}>다음</button>
-
         </div>
     )
 };
