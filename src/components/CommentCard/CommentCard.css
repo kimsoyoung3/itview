@@ -108,18 +108,24 @@
     padding-left: 5px;
 }
 
-.comment-card-footer-bottom {
+.comment-card-footer-btn {
     display: flex;
+    justify-content: space-between;
     align-items: center;
-    gap: 6px;
     font-size: 1rem;
 }
 
-.comment-card-footer-bottom>button {
+.comment-card-footer-btn>div {
+    display: flex;
+    gap: 8px;
+}
+
+.comment-card-footer-btn>div>button {
     border: none;
     background: none;
     color: #888888;
 }
+
 
 /* 📱 반응형 스타일 */
 
