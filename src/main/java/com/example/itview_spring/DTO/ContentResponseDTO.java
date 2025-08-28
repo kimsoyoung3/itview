@@ -19,7 +19,7 @@ public class ContentResponseDTO {
     // 컨텐츠 제목
     private String title;
     // 컨텐츠 타입
-    private ContentType contentType;
+    private String contentType;
     // 제작자 이름
     private String creatorName;
     // 국가
@@ -44,7 +44,7 @@ public class ContentResponseDTO {
                               Double ratingAvg) {
         this.id = id;
         this.title = title;
-        this.contentType = contentType;
+        this.contentType = contentType.getDescription();
         this.creatorName = creatorName;
         this.nation = nation;
         this.description = description;
