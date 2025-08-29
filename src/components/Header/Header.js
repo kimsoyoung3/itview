@@ -2,7 +2,8 @@ import React, {useEffect, useState} from 'react';
 import {Link, NavLink, useLocation} from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './Header.css';
-import { checkEmail, checkVerification, createVerification, google, registerUser, setPassword } from '../../API/UserApi';
+import { checkEmail, checkVerification, createVerification, link, registerUser, setPassword } from '../../API/UserApi';
+import axios from 'axios';
 
 const Header = ({userInfo, handleLogin, handleLogout, isLoginOpen, openLogin, closeLogin}) => {
     /*스크롤 시*/
@@ -99,6 +100,26 @@ const Header = ({userInfo, handleLogin, handleLogout, isLoginOpen, openLogin, cl
         }
     };
 
+    const client_id = "c47b58e8547a0e872ee48507be4708ab";
+    const client_secret = "oxxATnVsd4QfAzlowNBuBU8Q6DiajnU7";
+    const domain = "http://localhost:8080";
+    const redirect_uri = `http://localhost:8080/api/user/kakao`;
+    const token_uri = "https://kauth.kakao.com/oauth/token";
+    const api_host = "https://kapi.kakao.com";    
+
+    const kakaoLogin = async () => {
+        const res = await axios({
+            method: "GET",
+            url: "https://kauth.kakao.com/oauth/authorize",
+            params: {
+                client_id,
+                redirect_uri,
+                response_type: "code"
+            }
+        })
+    }
+
+
     /*회원가입 모달*/
     const openSignup = () => setSignupOpen(true);
     const closeSignup = () => setSignupOpen(false);
@@ -175,8 +196,12 @@ const Header = ({userInfo, handleLogin, handleLogout, isLoginOpen, openLogin, cl
                                 <Link to="/MyPage" className="login-button">마이페이지</Link>
                                 <button onClick={handleLogout} className="login-button">로그아웃</button>
                                 <a href="http://localhost:8080/oauth2/authorization/google"
-                                   onClick={() => google({redirectURL: window.location.href})}>
+                                   onClick={() => link({redirectURL: window.location.href})}>
                                     구글 로그인
+                                </a>
+                                <a href={"http://localhost:8080/oauth2/authorization/kakao"}
+                                    onClick={() => link({redirectURL: window.location.href})}>
+                                    카카오 로그인
                                 </a>
                             </div>
                         ) : (
@@ -184,8 +209,12 @@ const Header = ({userInfo, handleLogin, handleLogout, isLoginOpen, openLogin, cl
                                 <button onClick={openLogin} className="login-button">로그인</button>
                                 <button onClick={openSignup} className="signUp-button">회원가입</button>
                                 <a href="http://localhost:8080/oauth2/authorization/google"
-                                   onClick={() => google({redirectURL: window.location.href})}>
+                                   onClick={() => link({redirectURL: window.location.href})}>
                                     구글 로그인
+                                </a>
+                                <a href="http://localhost:8080/oauth2/authorization/kakao"
+                                   onClick={() => link({redirectURL: window.location.href})}>
+                                    카카오 로그인
                                 </a>
                             </div>
                         )}

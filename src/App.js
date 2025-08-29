@@ -21,7 +21,7 @@ function App() {
         }
     };
 
-    // 때 로그인 상태 확인
+    // 로그인 상태 확인 및 FLASH 쿠키 처리
     useEffect(() => {
         checkLoginStatus();
         const match = document.cookie.match(/(?:^|;\s*)FLASH_ERROR=([^;]+)/);
@@ -34,6 +34,10 @@ function App() {
         // 쿠키는 일회성으로 쓰고 바로 지우기
         document.cookie = "FLASH_ERROR=; Max-Age=0; Path=/";
     }, []);
+
+    useEffect(() => {
+        console.log("userId : ", userInfo);
+    }, [userInfo]);
 
     const handleLogin = async (loginEmail, loginPassword) => {
         // 로그인 로직 처리
