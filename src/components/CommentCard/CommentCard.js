@@ -3,6 +3,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import "./CommentCard.css"; // CSS 따로 관리
 import { likeComment, postReply, unlikeComment, updateComment } from "../../API/CommentApi";
 import {NavLink} from "react-router-dom";
+import {toast} from "react-toastify";
 
 const CommentCard = ({comment, content, userInfo, openLogin, newReply, clamp = false}) => {
     const [commentData, setCommentData] = useState(null);
@@ -95,12 +96,13 @@ const CommentCard = ({comment, content, userInfo, openLogin, newReply, clamp = f
         if (text) {
             const res = await postReply(commentData.id, { text });
             if (res.status === 200) {
-                alert("댓글이 등록되었습니다.");
+                toast("댓글이 등록되었습니다.");
+
                 if (newReply) {
                     newReply(res.data);
                 }
             } else {
-                alert("댓글 등록에 실패했습니다. 다시 시도해주세요.");
+                toast("댓글 등록에 실패했습니다. 다시 시도해주세요.");
             }
         }
         closeReply();

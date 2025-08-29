@@ -17,3 +17,30 @@ a {
 body {
   font-family: "Pretendard Variable", Pretendard, "Noto Sans KR", "Malgun Gothic", sans-serif;
 }
+
+.Toastify__toast {
+  padding: 8px 20px !important;
+  min-height: 0 !important;
+  background-color: #22C55E !important;
+  color: #ffffff !important;
+  margin-bottom: 0 !important;
+}
+
+.Toastify__close-button {
+  position: absolute;
+  top: 50% !important;
+  transform: translateY(-50%);
+  right: 20px !important;
+  color: white !important;
+}
+
+.Toastify__close-button > svg {
+  fill: currentColor;
+  height: 16px;
+  width: 14px;
+  display: block;
+}
+
+.Toastify__close-button--light {
+  opacity: 1 !important;
+}

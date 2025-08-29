@@ -2,6 +2,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import "./ReplyCard.css";
 import React, { useEffect, useState } from 'react';
 import { deleteReply, likeReply, unlikeReply, updateReply } from '../../API/ReplyApi';
+import {toast} from "react-toastify";
 
 const ReplyCard = ({reply, userInfo, openLogin}) => {
     const [replyData, setReplyData] = useState(reply);
@@ -39,7 +40,8 @@ const ReplyCard = ({reply, userInfo, openLogin}) => {
             try {
                 const response = await updateReply(replyData.id, { text });
                 if (response.status === 200) {
-                    alert("댓글이 수정되었습니다.");
+                    toast("댓글이 수정되었습니다.");
+
                     setReplyData((prev) => ({ ...prev, text }));
                     closeUpdateReply();
                 } else {
@@ -55,7 +57,10 @@ const ReplyCard = ({reply, userInfo, openLogin}) => {
         try {
             const response = await deleteReply(replyData.id);
             if (response.status === 200) {
-                alert("댓글이 삭제되었습니다.");
+                toast("댓글이 삭제되었습니다.",{
+
+                });
+
                 setReplyData(null);
             } else {
                 console.error("Failed to delete reply");

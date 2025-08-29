@@ -2,7 +2,11 @@ import React, { useEffect, useState } from 'react';
 import { BrowserRouter } from 'react-router-dom';
 import Header from './components/Header/Header';
 import AppRoutes from './routes/AppRoutes';
+import "./App.css"
 import { getMyInfo, loginUser, logoutUser } from './API/UserApi';
+import { ToastContainer, Slide } from "react-toastify";
+import 'react-toastify/dist/ReactToastify.css';
+import {toast} from "react-toastify";
 
 function App() {
 
@@ -25,7 +29,7 @@ function App() {
         if (!match) return;
         const msg = decodeURIComponent(match[1]);
         if (msg) {
-            alert(msg); // 쿠키에 저장된 메시지를 alert로 표시
+            toast(msg); // 쿠키에 저장된 메시지를 alert로 표시
         }
 
         // 쿠키는 일회성으로 쓰고 바로 지우기
@@ -56,7 +60,7 @@ function App() {
             setUserInfo(null);
             window.location.reload();
         } catch (error) {
-            alert('로그아웃에 실패했습니다. 다시 시도해주세요.');
+            toast('로그아웃에 실패했습니다. 다시 시도해주세요.');
         }
     };
 
@@ -70,6 +74,18 @@ function App() {
         <BrowserRouter>
             <Header userInfo={userInfo} handleLogin={handleLogin} handleLogout={handleLogout} isLoginOpen={isLoginOpen} openLogin={openLogin} closeLogin={closeLogin}/>
             <AppRoutes userInfo={userInfo} openLogin={openLogin} />
+
+            <ToastContainer
+                position="bottom-center"   // 위치 (top-right, top-center, bottom-left 등)
+                autoClose={1000}       // 자동 닫힘 시간 (ms)
+                hideProgressBar={true} // 프로그레스바 숨김 여부
+                newestOnTop={false}    // 최신 알림이 위에 올지
+                closeOnClick           // 클릭 시 닫기
+                transition={Slide}
+                pauseOnHover           // 마우스 올리면 멈춤
+                draggable              // 드래그로 닫기
+                icon={false}
+            />
         </BrowserRouter>
     );
 }

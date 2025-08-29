@@ -374,7 +374,7 @@ const DetailPage = ({userInfo, openLogin}) => {
                             <div className="info-middle">
                                 <p className="my-comment-title">내가 쓴 코멘트</p>
                                 <div className="my-comment-content">
-                                    <div className="my-comment-content-image"><img src={contentDetail?.myComment.user.profile || "user.png"} alt=""/></div>
+                                    <div className="my-comment-content-image"><img src={contentDetail?.myComment.user.profile || "/user.png"} alt=""/></div>
                                     <p>{contentDetail?.myComment.text}</p>
                                     <div className="my-comment-btn">
                                         <button onClick={handleDeleteClick}>
