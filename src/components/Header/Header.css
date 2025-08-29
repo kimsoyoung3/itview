@@ -152,14 +152,18 @@
     text-align: center;
 }
 
-.login-modal h1 {
+.login-modal>h1 {
     margin-bottom: 20px;
 }
 
-.login-modal h2 {
+.login-modal>h1>img {
+    display: inline-block;
+}
+
+.login-modal>h2 {
     font-size: 1.5rem;
     font-weight: bold;
-    margin-bottom: 30px;
+    margin-bottom: 20px;
 }
 
 .login-modal input {
@@ -206,12 +210,42 @@
     color: #9d9d9d;
     font-size: 0.9rem;
     font-weight: bold;
+    margin-bottom: 0;
 }
 
 .login-text-bottom span {
     color: #22C55E;
     margin-left: 15px;
     cursor: pointer;
+}
+
+.login-social-border {
+    display: flex;
+    align-items: center;
+    text-align: center;
+    color: #9d9d9d;
+    margin: 15px 0;
+}
+
+.login-social-border::before,
+.login-social-border::after {
+    content: "";
+    flex: 1;
+    border-bottom: 1px solid #9d9d9d;
+}
+
+.login-social-border:not(:empty)::before {
+    margin-right: 10px;
+}
+.login-social-border:not(:empty)::after {
+    margin-left: 10px;
+}
+
+.login-social-logo {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
 }
 
 /*로그인실패 모달창 스타일*/

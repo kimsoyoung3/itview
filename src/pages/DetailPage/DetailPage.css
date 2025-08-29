@@ -540,21 +540,13 @@
 
 .comment-inner {
     width: 100%;
-    display: flex;
-    flex-wrap: wrap;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr); /* 4등분 고정 */
     gap: 10px;
 }
 
-.comment-inner > * {
-    flex: 1 1 calc(25% - 10px);
-    box-sizing: border-box;
-}
-
-
-
 /*갤러리/비디오 섹션*/
-.detail-gallery
-{
+.detail-gallery {
     position: relative;
 }
 

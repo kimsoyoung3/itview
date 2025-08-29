@@ -113,13 +113,15 @@ const CommentCard = ({comment, content, userInfo, openLogin, newReply, clamp = f
             {/* 헤더 */}
             <div className="comment-card-header">
                 <div className="comment-card-header-left">
-                    <div className="comment-card-profile" ><img src={commentData?.user?.profile || '/user.png'} alt=""/></div>
+                    <div className="comment-card-profile"><img src={commentData?.user?.profile || '/user.png'} alt=""/>
+                    </div>
                     <span className="comment-card-nickname">{commentData?.user.nickname}</span>
-                    <span className="comment-card-date">{new Date(commentData?.createdAt).toLocaleDateString().slice(0, -1)}</span>
+                    <span
+                        className="comment-card-date">{new Date(commentData?.createdAt).toLocaleDateString().slice(0, -1)}</span>
                 </div>
                 {commentData?.rating &&
                     <div className="comment-card-header-right">
-                        <i className="bi bi-star-fill"/><span>{commentData?.rating/2}</span>
+                        <i className="bi bi-star-fill"/><span>{commentData?.rating / 2}</span>
                     </div>
                 }
             </div>
@@ -155,17 +157,23 @@ const CommentCard = ({comment, content, userInfo, openLogin, newReply, clamp = f
                             <i className={commentData?.liked ? "bi bi-hand-thumbs-up-fill" : "bi bi-hand-thumbs-up"}/>
                         </button>
                         <button onClick={userInfo ? openReply : openLogin}><i className="bi bi-chat-square"/></button>
-                        <button onClick={() => {navigator.clipboard.writeText("http://localhost:3000/comment/" + commentData?.id)}}><i className="bi bi-share"/></button>
+                        <button onClick={() => {
+                            const url = "http://localhost:3000/comment/" + commentData?.id;
+                            navigator.clipboard.writeText(url)
+                                .then(() => {
+                                    toast("링크가 복사되었습니다.")
+                                })
+                        }}><i className="bi bi-share"/></button>
                     </div>
                     {userInfo === commentData?.user?.id && clamp === false && (
-                    <div>
-                        <button onClick={handleDeleteCommentClick}>
-                            <i className="bi bi-trash"></i>
-                        </button>
-                        <button onClick={openComment}>
-                            <i className="bi bi-pencil"></i>
-                        </button>
-                    </div>
+                        <div>
+                            <button onClick={handleDeleteCommentClick}>
+                                <i className="bi bi-trash"></i>
+                            </button>
+                            <button onClick={openComment}>
+                                <i className="bi bi-pencil"></i>
+                            </button>
+                        </div>
                     )}
                 </div>
             </div>
@@ -176,9 +184,11 @@ const CommentCard = ({comment, content, userInfo, openLogin, newReply, clamp = f
                     <div className="comment-modal-content" onClick={(e) => e.stopPropagation()}>
                         <div className="comment-content-top">
                             <p className="comment-modal-title">{content.title}</p>
-                            <button className="comment-close-button" onClick={closeComment}><img src="/x-lg.svg" alt=""/></button>
+                            <button className="comment-close-button" onClick={closeComment}><img src="/icon/x-lg.svg"
+                                                                                                 alt=""/></button>
                         </div>
-                        <textarea rows="15" placeholder="작품에 대한 코멘트를 남겨주세요." maxLength={1000} ref={commentTextRef}></textarea>
+                        <textarea rows="15" placeholder="작품에 대한 코멘트를 남겨주세요." maxLength={1000}
+                                  ref={commentTextRef}></textarea>
                         <div className="comment-content-bottom">
                             <button className="comment-content-btn" onClick={handleCommentUpdate}>수정</button>
                         </div>
@@ -194,7 +204,7 @@ const CommentCard = ({comment, content, userInfo, openLogin, newReply, clamp = f
                         <p>삭제하시겠습니까?</p>
                         <div className="confirm-btn-group">
                             <button>확인</button>
-                            <button  onClick={closeDeleteCommentModal}>취소</button>
+                            <button onClick={closeDeleteCommentModal}>취소</button>
                         </div>
                     </div>
                 </div>
@@ -203,15 +213,18 @@ const CommentCard = ({comment, content, userInfo, openLogin, newReply, clamp = f
             {/*댓글 모달창*/}
             {replyModal && (
                 <div className="comment-modal-overlay" onClick={closeReply}>
-                    <div className="comment-modal-content"  onClick={(e) => e.stopPropagation()}>
+                    <div className="comment-modal-content" onClick={(e) => e.stopPropagation()}>
                         <div className="comment-content-top">
                             <p className="comment-modal-title">댓글</p>
-                            <button className="comment-close-button" onClick={closeReply}><img src="/x-lg.svg" alt=""/></button>
+                            <button className="comment-close-button" onClick={closeReply}><img src="/icon/x-lg.svg" alt=""/>
+                            </button>
                         </div>
-                        <textarea rows="15" placeholder="코멘트에 대한 댓글을 남겨주세요." maxLength={1000} ref={replyTextRef}></textarea>
+                        <textarea rows="15" placeholder="코멘트에 대한 댓글을 남겨주세요." maxLength={1000}
+                                  ref={replyTextRef}></textarea>
                         <div className="comment-content-bottom">
                             <button className="comment-content-btn"
-                                    onClick={handleReplySubmit}>저장</button>
+                                    onClick={handleReplySubmit}>저장
+                            </button>
                         </div>
                     </div>
                 </div>

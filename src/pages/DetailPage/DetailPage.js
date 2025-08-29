@@ -342,7 +342,7 @@ const DetailPage = ({userInfo, openLogin}) => {
                             <ul className="info-top-right">
                                 <li>
                                     <button>
-                                        <img src="/plus.svg" alt=""/>
+                                        <img src="/icon/plus.svg" alt=""/>
                                         <p>보고싶어요</p>
                                     </button>
                                 </li>
@@ -350,13 +350,13 @@ const DetailPage = ({userInfo, openLogin}) => {
                                     <button onClick={async () => {
                                         userInfo ? openMyComment() : openLogin();
                                     }}>
-                                        <img src="/pencil.svg" alt=""/>
+                                        <img src="/icon/pencil.svg" alt=""/>
                                         <p>코멘트</p>
                                     </button>
                                 </li>
                                 <li>
                                     <button>
-                                        <img src="/plus-square.svg" alt=""/>
+                                        <img src="/icon/plus-square.svg" alt=""/>
                                         <p>컬렉션</p>
                                     </button>
                                 </li>
@@ -396,7 +396,7 @@ const DetailPage = ({userInfo, openLogin}) => {
                         <div className="comment-modal-content" onClick={(e) => e.stopPropagation()}>
                             <div className="comment-content-top">
                                 <p className="comment-modal-title">{contentDetail?.contentInfo?.title}</p>
-                                <button className="comment-close-button" onClick={closeMyComment}><img src="/x-lg.svg" alt=""/></button>
+                                <button className="comment-close-button" onClick={closeMyComment}><img src="/icon/x-lg.svg" alt=""/></button>
                             </div>
                             <textarea rows="15" placeholder="작품에 대한 코멘트를 남겨주세요." maxLength={1000} ref={textRef}></textarea>
                             <div className="comment-content-bottom">
@@ -484,8 +484,8 @@ const DetailPage = ({userInfo, openLogin}) => {
                                 </SwiperSlide>
                             ))}
                         </Swiper>
-                        <div className={`credit-prev ${swiperPage === 1 ? 'disabled' : ''}`} onClick={handlePrev}><img src="/arrow-left.svg" alt=""/></div>
-                        <div className={`credit-next ${swiperPage === contentCredit[0].page.totalPages ? 'disabled' : ''}`} onClick={handleNext}><img src="/arrow-right.svg" alt=""/></div>
+                        <div className={`credit-prev ${swiperPage === 1 ? 'disabled' : ''}`} onClick={handlePrev}><img src="/icon/arrow-left.svg" alt=""/></div>
+                        <div className={`credit-next ${swiperPage === contentCredit[0].page.totalPages ? 'disabled' : ''}`} onClick={handleNext}><img src="/icon/arrow-right.svg" alt=""/></div>
                     </div>
 
                     ) : (
@@ -523,8 +523,8 @@ const DetailPage = ({userInfo, openLogin}) => {
                                     </SwiperSlide>
                                 ))}
                             </Swiper>
-                            <div className="gallery-prev"><img src="/arrow-left.svg" alt=""/></div>
-                            <div className="gallery-next"><img src="/arrow-right.svg" alt=""/></div>
+                            <div className="gallery-prev"><img src="/icon/arrow-left.svg" alt=""/></div>
+                            <div className="gallery-next"><img src="/icon/arrow-right.svg" alt=""/></div>
                         </div>
                     </div>
 
@@ -586,8 +586,8 @@ const DetailPage = ({userInfo, openLogin}) => {
                                     </SwiperSlide>
                                 ))}
                             </Swiper>
-                            <div className="video-prev"><img src="/arrow-left.svg" alt=""/></div>
-                            <div className="video-next"><img src="/arrow-right.svg" alt=""/></div>
+                            <div className="video-prev"><img src="/icon/arrow-left.svg" alt=""/></div>
+                            <div className="video-next"><img src="/icon/arrow-right.svg" alt=""/></div>
                         </div>
                     </div>
                 </section>

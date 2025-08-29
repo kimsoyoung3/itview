@@ -3,7 +3,7 @@ import {Link, NavLink, useLocation} from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './Header.css';
 import { checkEmail, checkVerification, createVerification, link, registerUser, setPassword } from '../../API/UserApi';
-import axios from 'axios';
+import {toast} from "react-toastify";
 
 const Header = ({userInfo, handleLogin, handleLogout, isLoginOpen, openLogin, closeLogin}) => {
     /*스크롤 시*/
@@ -47,12 +47,12 @@ const Header = ({userInfo, handleLogin, handleLogout, isLoginOpen, openLogin, cl
         try {
             await checkEmail({ email });
             setVerifyingEmail(email);
-            alert('인증 번호를 전송했습니다. 메일을 확인해주세요.');
+            toast('인증 번호를 전송했습니다. 메일을 확인해주세요.');
             createVerification({ email });
             closeReset();
             openResetCheck();
         } catch (error) {
-            alert('인증 이메일 전송에 실패했습니다. 다시 시도해주세요.');
+            toast('인증 이메일 전송에 실패했습니다. 다시 시도해주세요.');
         }
     };
 
@@ -60,11 +60,11 @@ const Header = ({userInfo, handleLogin, handleLogout, isLoginOpen, openLogin, cl
         /*인증 코드 확인 로직 처리*/
         try {
             await checkVerification({ email, code });
-            alert('인증이 완료되었습니다. 비밀번호를 재설정해주세요.');
+            toast('인증이 완료되었습니다. 비밀번호를 재설정해주세요.');
             closeResetCheck();
             openResetNew();
         } catch (error) {
-            alert('인증 코드가 잘못되었습니다. 다시 시도해주세요.');
+            toast('인증 코드가 잘못되었습니다. 다시 시도해주세요.');
         }
     };
 
@@ -72,11 +72,11 @@ const Header = ({userInfo, handleLogin, handleLogout, isLoginOpen, openLogin, cl
         /*새 비밀번호 설정 로직 처리*/
         try {
             await setPassword({ email: verifyingEmail, newPassword });
-            alert('비밀번호가 성공적으로 변경되었습니다.');
+            toast('비밀번호가 성공적으로 변경되었습니다.');
             closeResetNew();
             openLogin();
         } catch (error) {
-            alert('비밀번호 변경에 실패했습니다. 다시 시도해주세요.');
+            toast('비밀번호 변경에 실패했습니다. 다시 시도해주세요.');
         }
     };
 
@@ -93,10 +93,10 @@ const Header = ({userInfo, handleLogin, handleLogout, isLoginOpen, openLogin, cl
                 email: signupEmail,
                 password: signupPassword
             });
-            alert('회원가입이 완료되었습니다.');
+            toast('회원가입이 완료되었습니다.');
             closeSignup();
         } catch (error) {
-            alert('이미 존재하는 이메일입니다. 다시 시도해주세요.');
+            toast('이미 존재하는 이메일입니다. 다시 시도해주세요.');
         }
     };
 
@@ -131,7 +131,7 @@ const Header = ({userInfo, handleLogin, handleLogout, isLoginOpen, openLogin, cl
                     {/*메인 로고*/}
                     <div className="header_inner header_left">
                         <NavLink to="/" className="logo">
-                            <img src="/logo.svg" alt=""/>
+                            <img src="/itview-logo/mainLogo.svg" alt=""/>
                         </NavLink>
 
                         {/*목록 부분*/}
@@ -207,7 +207,7 @@ const Header = ({userInfo, handleLogin, handleLogout, isLoginOpen, openLogin, cl
             {isLoginOpen && (
                 <div className="modal-overlay" onClick={closeLogin}>
                     <div className="login-modal"  onClick={(e) => e.stopPropagation()}>
-                        <h1><img src="/logo.svg" alt=""/></h1>
+                        <h1><img src="/itview-logo/mainLogo.svg" alt=""/></h1>
                         <h2>로그인</h2>
                         <form onSubmit={async (e) => {
                             e.preventDefault();
@@ -228,6 +228,16 @@ const Header = ({userInfo, handleLogin, handleLogout, isLoginOpen, openLogin, cl
                             계정이 없으신가요?
                             <span onClick={() => {closeLogin(); openSignup();}}>회원가입</span>
                         </p>
+                        <div className="login-social">
+                            <div className="login-social-border">OR</div>
+                            <div className="login-social-logo">
+                                <a href="http://localhost:8080/oauth2/authorization/kakao"
+                                   onClick={() => link({redirectURL: window.location.href})}><img src="/LoginLogo/kakao-logo.svg" alt=""/></a>
+                                <a href=""><img src="/LoginLogo/naver-logo.svg" alt=""/></a>
+                                <a href="http://localhost:8080/oauth2/authorization/google"
+                                   onClick={() => link({redirectURL: window.location.href})}><img src="/LoginLogo/google-logo.svg" alt=""/></a>
+                            </div>
+                        </div>
                     </div>
                 </div>
             )}
@@ -236,9 +246,9 @@ const Header = ({userInfo, handleLogin, handleLogout, isLoginOpen, openLogin, cl
             {isSignupOpen && (
                 <div className="modal-overlay" onClick={closeSignup}>
                     <div className="login-modal" onClick={(e) => e.stopPropagation()}>
-                        <h1><img src="/logo.svg" alt=""/></h1>
+                        <h1><img src="/itview-logo/mainLogo.svg" alt=""/></h1>
                         <h2>회원가입</h2>
-                        <form onSubmit={(e) => {e.preventDefault();handleSignup();}}>
+                        <form onSubmit={(e) => {e.preventDefault(); handleSignup();}}>
                             <input type="text" placeholder="닉네임" onChange={(e) => setSignupNickname(e.target.value)}/>
                             <input type="email" placeholder="이메일" onChange={(e) => setSignupEmail(e.target.value)}/>
                             <input type="password" placeholder="비밀번호" onChange={(e) => setSignupPassword(e.target.value)}
@@ -249,6 +259,16 @@ const Header = ({userInfo, handleLogin, handleLogout, isLoginOpen, openLogin, cl
                             이미 가입하셨나요?
                             <span onClick={() => {closeSignup();openLogin();}}>로그인</span>
                         </p>
+                        <div className="login-social">
+                            <div className="login-social-border">OR</div>
+                            <div className="login-social-logo">
+                                <a href="http://localhost:8080/oauth2/authorization/kakao"
+                                   onClick={() => link({redirectURL: window.location.href})}><img src="/LoginLogo/kakao-logo.svg" alt=""/></a>
+                                <a href=""><img src="/LoginLogo/naver-logo.svg" alt=""/></a>
+                                <a href="http://localhost:8080/oauth2/authorization/google"
+                                   onClick={() => link({redirectURL: window.location.href})}><img src="/LoginLogo/google-logo.svg" alt=""/></a>
+                            </div>
+                        </div>
                     </div>
                 </div>
             )}
