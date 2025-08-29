@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from "react";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import "./CommentCard.css"; // CSS 따로 관리
-import { likeComment, postReply, unlikeComment, updateComment } from "../../API/CommentApi";
+import { deleteComment, likeComment, postReply, unlikeComment, updateComment } from "../../API/CommentApi";
 import {NavLink} from "react-router-dom";
 import {toast} from "react-toastify";
 
@@ -47,6 +47,21 @@ const CommentCard = ({comment, content, userInfo, openLogin, newReply, clamp = f
             }
         }
     };
+
+    // 코멘트 삭제
+    const handleDeleteComment = async () => {
+        try {
+            const contentId = content.id;
+            const response = await deleteComment(commentData.id);
+            if (response.status === 200) {
+                window.location.replace("/content/" + contentId);
+            } else {
+                console.error("Failed to delete comment");
+            }
+        } catch (error) {
+            console.error("Error deleting comment:", error);
+        }
+    }
 
     /*댓글 모달*/
     const openReply = () => setReplyModal(true);
@@ -193,8 +208,8 @@ const CommentCard = ({comment, content, userInfo, openLogin, newReply, clamp = f
                         <p>알림</p>
                         <p>삭제하시겠습니까?</p>
                         <div className="confirm-btn-group">
-                            <button>확인</button>
-                            <button  onClick={closeDeleteCommentModal}>취소</button>
+                            <button onClick={handleDeleteComment}>확인</button>
+                            <button onClick={closeDeleteCommentModal}>취소</button>
                         </div>
                     </div>
                 </div>

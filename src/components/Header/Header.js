@@ -184,6 +184,10 @@ const Header = ({userInfo, handleLogin, handleLogout, isLoginOpen, openLogin, cl
                                     onClick={() => link({redirectURL: window.location.href})}>
                                     카카오 로그인
                                 </a>
+                                <a href="http://localhost:8080/oauth2/authorization/naver"
+                                   onClick={() => link({redirectURL: window.location.href})}>
+                                    네이버 로그인
+                                </a>
                             </div>
                         ) : (
                             <div className="user-menu">
@@ -196,6 +200,10 @@ const Header = ({userInfo, handleLogin, handleLogout, isLoginOpen, openLogin, cl
                                 <a href="http://localhost:8080/oauth2/authorization/kakao"
                                    onClick={() => link({redirectURL: window.location.href})}>
                                     카카오 로그인
+                                </a>
+                                <a href="http://localhost:8080/oauth2/authorization/naver"
+                                   onClick={() => link({redirectURL: window.location.href})}>
+                                    네이버 로그인
                                 </a>
                             </div>
                         )}
