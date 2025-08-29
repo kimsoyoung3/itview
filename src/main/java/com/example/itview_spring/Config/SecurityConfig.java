@@ -5,6 +5,7 @@ import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import org.springframework.context.annotation.Bean;
@@ -32,6 +33,7 @@ import com.example.itview_spring.Repository.UserRepository;
 
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 
 @Configuration
@@ -88,6 +90,12 @@ public class SecurityConfig {
                 } else if (provider.equals("kakao")) {
                     // kakao는 id가 고유 식별자
                     sub = principal.getAttribute("id").toString();
+                } else if (provider.equals("naver")) {
+                    // naver는 response 안에 id가 고유 식별자
+                    Map<String, Object> responseMap = principal.getAttribute("response");
+                    sub = responseMap.get("id").toString();
+                } else {
+                    throw new IllegalStateException("지원하지 않는 소셜 로그인 제공자입니다.");
                 }
 
                 // 이미 등록된 소셜 계정인지 확인
@@ -140,6 +148,12 @@ public class SecurityConfig {
                     } else if (provider.equals("kakao")) {
                         // kakao는 id가 고유 식별자
                         sub = principal.getAttribute("id").toString();
+                    } else if (provider.equals("naver")) {
+                        // naver는 response 안에 id가 고유 식별자
+                        Map<String, Object> responseMap = principal.getAttribute("response");
+                        sub = responseMap.get("id").toString();
+                    } else {
+                        throw new IllegalStateException("지원하지 않는 소셜 로그인 제공자입니다.");
                     }
     
                     // 소셜 계정이 등록되어 있는지 확인
@@ -175,11 +189,22 @@ public class SecurityConfig {
                         return;
                     } else {
                         // 소셜 계정이 등록되지 않은 경우
+                        SecurityContextHolder.clearContext();
+                        HttpSession httpSession = request.getSession(false);
+                        if (httpSession != null) {
+                            httpSession.invalidate();
+                        }
                         sendFlashMessageAndRedirect(response, "등록되지 않은 소셜 계정입니다.", redirectURL);
                         return;
                     }
                 } catch (Exception e) {
                     // 예외 발생 시 플래시 메시지 설정
+                    e.printStackTrace();
+                    SecurityContextHolder.clearContext();
+                    HttpSession httpSession = request.getSession(false);
+                    if (httpSession != null) {
+                        httpSession.invalidate();
+                    }
                     sendFlashMessageAndRedirect(response, "소셜 로그인 처리 중 오류가 발생했습니다.", redirectURL);
                     return;
                 }
