@@ -241,7 +241,8 @@ const Header = ({userInfo, handleLogin, handleLogout, isLoginOpen, openLogin, cl
                             <div className="login-social-logo">
                                 <a href="http://localhost:8080/oauth2/authorization/kakao"
                                    onClick={() => link({redirectURL: window.location.href})}><img src="/LoginLogo/kakao-logo.svg" alt=""/></a>
-                                <a href=""><img src="/LoginLogo/naver-logo.svg" alt=""/></a>
+                                <a href="http://localhost:8080/oauth2/authorization/naver"
+                                   onClick={() => link({redirectURL: window.location.href})}><img src="/LoginLogo/naver-logo.svg" alt=""/></a>
                                 <a href="http://localhost:8080/oauth2/authorization/google"
                                    onClick={() => link({redirectURL: window.location.href})}><img src="/LoginLogo/google-logo.svg" alt=""/></a>
                             </div>
@@ -272,7 +273,8 @@ const Header = ({userInfo, handleLogin, handleLogout, isLoginOpen, openLogin, cl
                             <div className="login-social-logo">
                                 <a href="http://localhost:8080/oauth2/authorization/kakao"
                                    onClick={() => link({redirectURL: window.location.href})}><img src="/LoginLogo/kakao-logo.svg" alt=""/></a>
-                                <a href=""><img src="/LoginLogo/naver-logo.svg" alt=""/></a>
+                                <a href="http://localhost:8080/oauth2/authorization/naver"
+                                   onClick={() => link({redirectURL: window.location.href})}><img src="/LoginLogo/naver-logo.svg" alt=""/></a>
                                 <a href="http://localhost:8080/oauth2/authorization/google"
                                    onClick={() => link({redirectURL: window.location.href})}><img src="/LoginLogo/google-logo.svg" alt=""/></a>
                             </div>
