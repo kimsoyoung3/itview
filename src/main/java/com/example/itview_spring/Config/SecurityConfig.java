@@ -78,10 +78,17 @@ public class SecurityConfig {
             // "연동"인 경우에만 이 블록 수행
             if (isLinkFlow && authentication instanceof OAuth2AuthenticationToken oauth) {
                 var principal = oauth.getPrincipal();
-                String sub = principal.getAttribute("sub");
 
                 // provider 확인
                 String provider = oauth.getAuthorizedClientRegistrationId();
+
+                String sub = "";
+                if (provider.equals("google")) {
+                    sub = principal.getAttribute("sub").toString();
+                } else if (provider.equals("kakao")) {
+                    // kakao는 id가 고유 식별자
+                    sub = principal.getAttribute("id").toString();
+                }
 
                 // 이미 등록된 소셜 계정인지 확인
                 Optional<SocialEntity> existing = socialRepository.findByProviderAndProviderId(provider, sub);
@@ -127,11 +134,17 @@ public class SecurityConfig {
                     // OAuth2 인증 정보에서 사용자 정보 가져오기
                     var principal = oauth.getPrincipal();
                     String provider = oauth.getAuthorizedClientRegistrationId();
-                    String sub = principal.getAttribute("sub");
+                    String sub = "";
+                    if (provider.equals("google")) {
+                        sub = principal.getAttribute("sub").toString();
+                    } else if (provider.equals("kakao")) {
+                        // kakao는 id가 고유 식별자
+                        sub = principal.getAttribute("id").toString();
+                    }
     
                     // 소셜 계정이 등록되어 있는지 확인
                     Optional<SocialEntity> linked = socialRepository.findByProviderAndProviderId(provider, sub);
-    
+                    
                     // 소셜 계정이 등록되어 있는 경우
                     if (linked.isPresent()) {
                         // 사용자 정보 가져오기

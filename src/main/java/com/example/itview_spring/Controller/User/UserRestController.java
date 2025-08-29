@@ -14,7 +14,12 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 
 import java.io.IOException;
+import java.util.Base64;
+import java.util.Map;
 
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -23,6 +28,8 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.context.SecurityContextRepository;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -30,12 +37,13 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.client.RestTemplate;
 
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/user")
 @CrossOrigin(origins = "http://localhost:3000", allowCredentials = "true")
-public class UserController {
+public class UserRestController {
     
     private final UserService registerService;
     private final AuthenticationManager authenticationManager;
@@ -151,7 +159,7 @@ public class UserController {
     }
 
     // 소셜 계정 연결
-    @PostMapping("/google")
+    @PostMapping("/link")
     public void linkGoogle(HttpServletRequest request,
                            HttpServletResponse response,
                            @AuthenticationPrincipal CustomUserDetails user,
@@ -165,6 +173,8 @@ public class UserController {
         Cookie redirectCookie = new Cookie("REDIRECT_URL", redirectURL);
         redirectCookie.setPath("/");
         redirectCookie.setHttpOnly(false);
+        redirectCookie.setMaxAge(5);
         response.addCookie(redirectCookie);
+        System.out.println("redirectURL: " + redirectURL);
     }
 }

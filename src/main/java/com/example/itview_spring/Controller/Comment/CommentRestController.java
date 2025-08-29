@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -31,6 +32,25 @@ import lombok.RequiredArgsConstructor;
 public class CommentRestController {
     
     private final CommentService commentService;
+    
+    // 컨텐츠 코멘트 수정
+    @PutMapping("/{Id}")
+    public ResponseEntity<Void> putContentComment(@PathVariable("Id") Integer commentId,
+                                                  @AuthenticationPrincipal CustomUserDetails userDetails,
+                                                  @RequestBody TextDTO textDTO) {
+        commentService.updateComment(commentId, textDTO.getText());
+        return ResponseEntity.ok().build();
+    }
+
+    // 컨텐츠 코멘트 삭제
+    @DeleteMapping("/{Id}")
+    public ResponseEntity<Void> deleteContentComment(@PathVariable("Id") Integer commentId,
+                                                     @AuthenticationPrincipal CustomUserDetails userDetails) {
+        if (commentService.deleteComment(commentId)) {
+            return ResponseEntity.ok().build();
+        }
+        return ResponseEntity.notFound().build();
+    }
 
     // 코멘트 + 컨텐츠 조회
     @GetMapping("/{id}")

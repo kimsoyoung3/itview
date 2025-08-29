@@ -96,24 +96,6 @@ public class ContentRestController {
         return ResponseEntity.ok(commentDTO);
     }
 
-    // 컨텐츠 코멘트 수정
-    @PutMapping("/{commentId}/comment")
-    public ResponseEntity<Void> putContentComment(@PathVariable("commentId") Integer commentId,
-                                                  @AuthenticationPrincipal CustomUserDetails userDetails,
-                                                  @RequestBody TextDTO textDTO) {
-        commentService.updateComment(commentId, textDTO.getText());
-        return ResponseEntity.ok().build();
-    }
-
-    // 컨텐츠 코멘트 삭제
-    @DeleteMapping("/{commentId}/comment")
-    public ResponseEntity<Void> deleteContentComment(@PathVariable("commentId") Integer commentId,
-                                                     @AuthenticationPrincipal CustomUserDetails userDetails) {
-        if (commentService.deleteComment(commentId)) {
-            return ResponseEntity.ok().build();
-        }
-        return ResponseEntity.notFound().build();
-    }
 
     // 컨텐츠 코멘트 페이징 조회
     @GetMapping("/{id}/comments")
