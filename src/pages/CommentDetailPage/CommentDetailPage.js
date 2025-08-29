@@ -12,7 +12,8 @@ const CommentDetailPage = ({userInfo, openLogin}) => {
     const [replies, setReplies] = useState([]);
     const [page, setPage] = useState({});
 
-    const { id } = useParams(); // URL에서 :id 가져오기
+    /*URL에서 :id 가져오기*/
+    const { id } = useParams();
 
     useEffect(() => {
         const fetchData = async () => {

@@ -1,6 +1,6 @@
 import React from "react";
 import 'bootstrap/dist/css/bootstrap.min.css';
-import "./ContentEach.css"; // CSS 따로 관리
+import "./ContentEach.css";
 
 const ContentEach = () => {
     return (

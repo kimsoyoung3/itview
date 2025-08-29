@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from "react";
 import 'bootstrap/dist/css/bootstrap.min.css';
-import "./CommentCard.css"; // CSS 따로 관리
+import "./CommentCard.css";
 import { likeComment, postReply, unlikeComment } from "../../API/CommentApi";
 import {NavLink} from "react-router-dom";
 
@@ -139,10 +139,10 @@ const CommentCard = ({comment, content, userInfo, openLogin, newReply, clamp = f
                 </div>
             </div>
 
-            {/*마이코멘트 모달창*/}
+            {/*코멘트 수정 모달창*/}
             {commentModal && (
                 <div className="comment-modal-overlay" onClick={closeComment}>
-                    <div className="comment-modal-content">
+                    <div className="comment-modal-content" onClick={(e) => e.stopPropagation()}>
                         <div className="comment-content-top">
                             <p className="comment-modal-title">{content.title}</p>
                             <button className="comment-close-button" onClick={closeComment}><img src="/x-lg.svg" alt=""/></button>
@@ -158,7 +158,7 @@ const CommentCard = ({comment, content, userInfo, openLogin, newReply, clamp = f
             {/*코멘트 삭제 확인 모달창*/}
             {deleteCommentModal && (
                 <div className="confirm-modal-overlay" onClick={closeDeleteCommentModal}>
-                    <div className="confirm-modal-content">
+                    <div className="confirm-modal-content" onClick={(e) => e.stopPropagation()}>
                         <p>알림</p>
                         <p>삭제하시겠습니까?</p>
                         <div className="confirm-btn-group">
@@ -172,7 +172,7 @@ const CommentCard = ({comment, content, userInfo, openLogin, newReply, clamp = f
             {/*댓글 모달창*/}
             {replyModal && (
                 <div className="comment-modal-overlay" onClick={closeReply}>
-                    <div className="comment-modal-content">
+                    <div className="comment-modal-content"  onClick={(e) => e.stopPropagation()}>
                         <div className="comment-content-top">
                             <p className="comment-modal-title">댓글</p>
                             <button className="comment-close-button" onClick={closeReply}><img src="/x-lg.svg" alt=""/></button>
