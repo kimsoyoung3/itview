@@ -173,7 +173,6 @@ public class UserRestController {
         Cookie redirectCookie = new Cookie("REDIRECT_URL", redirectURL);
         redirectCookie.setPath("/");
         redirectCookie.setHttpOnly(false);
-        redirectCookie.setMaxAge(5);
         response.addCookie(redirectCookie);
         System.out.println("redirectURL: " + redirectURL);
     }
