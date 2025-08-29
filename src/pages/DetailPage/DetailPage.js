@@ -15,21 +15,22 @@ import { deleteComment, updateComment } from "../../API/CommentApi";
 
 const DetailPage = ({userInfo, openLogin}) => {
     const [contentDetail, setContentDetail] = useState(null);
-    const [modalOpen, setModalOpen] = useState(false); // 모달 상태
-    const [modalStartIndex, setModalStartIndex] = useState(0); // 모달 슬라이드 시작 인덱스
     const [contentCredit, setContentCredit] = useState([]);
 
     const [score, setScore] = useState(0);
-    const [hoverScore, setHoverScore] = useState(0); // 마우스 올릴 때 임시 점수
+    /*마우스 올릴 때 임시 점수*/
+    const [hoverScore, setHoverScore] = useState(0);
 
-    const textRef = React.useRef(null); // 코멘트 텍스트 영역 참조
-    const [myCommentModal, setMyCommentModal] = useState();
+    /*코멘트 텍스트 영역 참조*/
+    const textRef = React.useRef(null);
 
     /*코멘트 모달*/
+
+    const [myCommentModal, setMyCommentModal] = useState();
     const openMyComment = () => setMyCommentModal(true);
     const closeMyComment = () => setMyCommentModal(false);
 
-    // 코멘트 작성
+    /*코멘트 작성*/
     const handleCommentPost = async () => {
         const res = await postContentComment(window.location.pathname.split('/').pop(), { text: textRef.current.value })
         if (res.status === 200) {
@@ -43,7 +44,7 @@ const DetailPage = ({userInfo, openLogin}) => {
         }
     };
 
-    // 코멘트 수정
+    /*코멘트 수정*/
     const handleCommentUpdate = async () => {
         const res = await updateComment(contentDetail?.myComment.id, { text: textRef.current.value })
         if (res.status === 200) {
@@ -62,7 +63,8 @@ const DetailPage = ({userInfo, openLogin}) => {
     const [confirmModal, setConfirmModal] = useState(false);
 
     const handleSaveClick = () => {
-        setConfirmModal(true); // 저장/수정 누르면 확인 모달 열림
+        /*저장/수정 누르면 확인 모달 열림*/
+        setConfirmModal(true);
     };
 
     const handleConfirm = () => {
@@ -72,7 +74,7 @@ const DetailPage = ({userInfo, openLogin}) => {
             handleCommentPost();
         }
         setConfirmModal(false);
-        closeMyComment(); // 확인 후 모달 닫기
+        closeMyComment(); 
     };
 
     /*마이코멘트 삭제 확인 모달창*/
@@ -123,13 +125,18 @@ const DetailPage = ({userInfo, openLogin}) => {
         KAKAO: '/externalLogo/kakaoWebtoon.png',
     };
 
-    const openModal = (index) => {
-        setModalStartIndex(index);
-        setModalOpen(true);
+    /*갤러리 모달창*/
+    const [galleryModal, setGalleryModal] = useState(false);
+    /*모달 슬라이드 시작 인덱스*/
+    const [galleryModalStartIndex, setGalleryModalStartIndex] = useState(0);
+
+    const openGalleryModal = (index) => {
+        setGalleryModalStartIndex(index);
+        setGalleryModal(true);
     };
 
-    const closeModal = () => {
-        setModalOpen(false);
+    const closeGalleryModal = () => {
+        setGalleryModal(false);
     };
 
     /*컨텐츠 디테일*/
@@ -167,18 +174,18 @@ const DetailPage = ({userInfo, openLogin}) => {
         fetchContentCredit();
     }, []); 
 
-    // 스와이퍼 레퍼런스
+    /*스와이퍼 레퍼런스*/
     const swiperRef = React.useRef(null);
 
     const [swiperPage, setSwiperPage] = useState(1);
-
-    // 이전 버튼 핸들러
+    
+    /*이전 버튼 핸들러*/
     const handlePrev = () => {
         swiperRef.current.swiper.slidePrev();
         setSwiperPage(prev => prev - 1);
     }
 
-    // 다음 버튼 핸들러
+    /*다음 버튼 핸들러*/
     const handleNext = () => {
         swiperRef.current.swiper.slideNext();
         setSwiperPage(prev => prev + 1);
@@ -203,27 +210,28 @@ const DetailPage = ({userInfo, openLogin}) => {
         }
     }
 
-    // 컨텐츠 정보를 가져온 후
+    /*컨텐츠 정보를 가져온 후*/
     useEffect(() => {
         console.log(contentDetail);
-        // 내가 준 별점 설정
+        /*내가 준 별점 설정*/
         setScore(contentDetail?.myRating || 0);
 
-        // 별점 그래프 높이 계산
+        /*별점 그래프 높이 계산*/
         if (contentDetail && contentDetail.ratingDistribution.some(rating => rating.height === undefined)) {
-            // 최대 값 찾기
+            /*최대 값 찾기*/
             const max = Math.max(...contentDetail.ratingDistribution.map(rating => rating.scoreCount));
 
-            // 최고 점수에 isMax 플래그 추가
+            /*최고 점수에 isMax 플래그 추가*/
             contentDetail.ratingDistribution = contentDetail.ratingDistribution.map(rating => ({
                 ...rating,
                 isMax: rating.scoreCount === max
             }));
 
-            // 각 점수에 대한 높이 계산을 하여 contentDetail에 추가
+            /*각 점수에 대한 높이 계산을 하여 contentDetail에 추가*/
             const updatedDistribution = contentDetail.ratingDistribution.map(rating => ({
                 ...rating,
-                height: (rating.scoreCount / max) * 100 // 예: 최대 높이를 100으로 설정
+                /*예: 최대 높이를 100으로 설정*/
+                height: (rating.scoreCount / max) * 100
             }));
 
             setContentDetail(prev => ({
@@ -392,7 +400,7 @@ const DetailPage = ({userInfo, openLogin}) => {
                 {/*마이코멘트 모달창*/}
                 {myCommentModal && (
                     <div className="comment-modal-overlay" onClick={closeMyComment}>
-                        <div className="comment-modal-content">
+                        <div className="comment-modal-content" onClick={(e) => e.stopPropagation()}>
                             <div className="comment-content-top">
                                 <p className="comment-modal-title">{contentDetail?.contentInfo?.title}</p>
                                 <button className="comment-close-button" onClick={closeMyComment}><img src="/x-lg.svg" alt=""/></button>
@@ -410,7 +418,7 @@ const DetailPage = ({userInfo, openLogin}) => {
                 {/*마이코멘트 작성 확인 모달창*/}
                 {confirmModal && (
                     <div className="confirm-modal-overlay" onClick={() => setConfirmModal(false)}>
-                        <div className="confirm-modal-content">
+                        <div className="confirm-modal-content" onClick={(e) => e.stopPropagation()}>
                             <p>알림</p>
                             <p>{contentDetail?.myComment ? "수정" : "저장"}하시겠습니까?</p>
                             <div className="confirm-btn-group">
@@ -424,7 +432,7 @@ const DetailPage = ({userInfo, openLogin}) => {
                 {/*마이코멘트 삭제 확인 모달창*/}
                 {deleteConfirmModal && (
                     <div className="confirm-modal-overlay" onClick={() => setDeleteConfirmModal(false)}>
-                        <div className="confirm-modal-content">
+                        <div className="confirm-modal-content" onClick={(e) => e.stopPropagation()}>
                             <p>알림</p>
                             <p>삭제하시겠습니까?</p>
                             <div className="confirm-btn-group">
@@ -530,7 +538,7 @@ const DetailPage = ({userInfo, openLogin}) => {
 
                                 {contentDetail?.gallery?.map((gallery, idx) => (
                                     <SwiperSlide className="swiper-slide" key={gallery.id}>
-                                        <div className="slide-image" onClick={() => openModal(idx)} style={{cursor: 'pointer'}}>
+                                        <div className="slide-image" onClick={() => openGalleryModal(idx)} style={{cursor: 'pointer'}}>
                                             <img src={gallery.imageUrl} alt=""/>
                                         </div>
                                     </SwiperSlide>
@@ -542,12 +550,12 @@ const DetailPage = ({userInfo, openLogin}) => {
                     </div>
 
                     {/* 모달 */}
-                    {modalOpen && (
-                        <div className="gallery-modal-overlay" onClick={closeModal}>
-                            <div className="gallery-modal-content">
+                    {galleryModal && (
+                        <div className="gallery-modal-overlay" onClick={closeGalleryModal}>
+                            <div className="gallery-modal-content" onClick={(e) => e.stopPropagation()}>
                                 <Swiper
                                     modules={[Navigation, Pagination]}
-                                    initialSlide={modalStartIndex}
+                                    initialSlide={galleryModalStartIndex}
                                     navigation
                                     spaceBetween={10}
                                     slidesPerView={1}

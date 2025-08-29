@@ -187,7 +187,7 @@ const CommentCard = ({comment, content, userInfo, openLogin, newReply, clamp = f
             {/*코멘트 삭제 확인 모달창*/}
             {deleteCommentModal && (
                 <div className="confirm-modal-overlay" onClick={closeDeleteCommentModal}>
-                    <div className="confirm-modal-content">
+                    <div className="confirm-modal-content" onClick={(e) => e.stopPropagation()}>
                         <p>알림</p>
                         <p>삭제하시겠습니까?</p>
                         <div className="confirm-btn-group">
@@ -201,7 +201,7 @@ const CommentCard = ({comment, content, userInfo, openLogin, newReply, clamp = f
             {/*댓글 모달창*/}
             {replyModal && (
                 <div className="comment-modal-overlay" onClick={closeReply}>
-                    <div className="comment-modal-content">
+                    <div className="comment-modal-content"  onClick={(e) => e.stopPropagation()}>
                         <div className="comment-content-top">
                             <p className="comment-modal-title">댓글</p>
                             <button className="comment-close-button" onClick={closeReply}><img src="/x-lg.svg" alt=""/></button>
