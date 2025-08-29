@@ -8,4 +8,4 @@ export const createVerification = (data) => axios.post('http://localhost:8080/ap
 export const checkEmail = (data) => axios.post('http://localhost:8080/api/user/email', data, {withCredentials: true});
 export const checkVerification = (data) => axios.post('http://localhost:8080/api/user/checkVerification', data, {withCredentials: true});
 export const setPassword = (data) => axios.post('http://localhost:8080/api/user/setPW', data, {withCredentials: true});
-export const google = (data) => axios.post('http://localhost:8080/api/user/google?redirectURL=' + encodeURIComponent(data.redirectURL), {}, {withCredentials: true});
+export const link = (data) => axios.post('http://localhost:8080/api/user/link?redirectURL=' + encodeURIComponent(data.redirectURL), {}, {withCredentials: true});
