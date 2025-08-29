@@ -4,9 +4,8 @@ import Header from './components/Header/Header';
 import AppRoutes from './routes/AppRoutes';
 import "./App.css"
 import { getMyInfo, loginUser, logoutUser } from './API/UserApi';
-import { ToastContainer, Slide } from "react-toastify";
+import { ToastContainer, Slide, toast } from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css';
-import {toast} from "react-toastify";
 
 function App() {
 
@@ -29,7 +28,7 @@ function App() {
         if (!match) return;
         const msg = decodeURIComponent(match[1]);
         if (msg) {
-            toast(msg); // 쿠키에 저장된 메시지를 alert로 표시
+            setTimeout(() => toast(msg), 0); // 쿠키에 저장된 메시지를 alert로 표시
         }
 
         // 쿠키는 일회성으로 쓰고 바로 지우기

@@ -12,6 +12,7 @@ import CreditOrPersonCard from "../../components/CreditOrPersonCard/CreditOrPers
 import CommentCard from "../../components/CommentCard/CommentCard";
 import {NavLink} from "react-router-dom";
 import { deleteComment, updateComment } from "../../API/CommentApi";
+import {toast} from "react-toastify";
 
 const DetailPage = ({userInfo, openLogin}) => {
     const [contentDetail, setContentDetail] = useState(null);
@@ -59,22 +60,14 @@ const DetailPage = ({userInfo, openLogin}) => {
         console.log(res);
     };
 
-    /*코멘트 작성 확인 모달창*/
-    const [confirmModal, setConfirmModal] = useState(false);
-
-    const handleSaveClick = () => {
-        /*저장/수정 누르면 확인 모달 열림*/
-        setConfirmModal(true);
-    };
-
-    const handleConfirm = () => {
+    const handleMyCommentSubmit = () => {
         if (contentDetail?.myComment) {
             handleCommentUpdate();
         } else {
             handleCommentPost();
         }
-        setConfirmModal(false);
-        closeMyComment(); 
+        toast("코멘트를 저장했습니다.")
+        closeMyComment();
     };
 
     /*마이코멘트 삭제 확인 모달창*/
@@ -408,22 +401,8 @@ const DetailPage = ({userInfo, openLogin}) => {
                             <textarea rows="15" placeholder="작품에 대한 코멘트를 남겨주세요." maxLength={1000} ref={textRef}></textarea>
                             <div className="comment-content-bottom">
                                 <button className="comment-content-btn"
-                                        onClick={handleSaveClick}
+                                        onClick={handleMyCommentSubmit}
                                         >{contentDetail?.myComment ? "수정" : "저장"}</button>
-                            </div>
-                        </div>
-                    </div>
-                )}
-
-                {/*마이코멘트 작성 확인 모달창*/}
-                {confirmModal && (
-                    <div className="confirm-modal-overlay" onClick={() => setConfirmModal(false)}>
-                        <div className="confirm-modal-content" onClick={(e) => e.stopPropagation()}>
-                            <p>알림</p>
-                            <p>{contentDetail?.myComment ? "수정" : "저장"}하시겠습니까?</p>
-                            <div className="confirm-btn-group">
-                                <button onClick={handleConfirm}>확인</button>
-                                <button onClick={() => setConfirmModal(false)}>취소</button>
                             </div>
                         </div>
                     </div>

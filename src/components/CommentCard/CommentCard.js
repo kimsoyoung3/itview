@@ -36,7 +36,7 @@ const CommentCard = ({comment, content, userInfo, openLogin, newReply, clamp = f
             try {
                 const response = await updateComment(commentData.id, { text });
                 if (response.status === 200) {
-                    alert("코멘트가 수정되었습니다.");
+                    toast("코멘트가 수정되었습니다.");
                     setCommentData((prev) => ({ ...prev, text }));
                     closeComment();
                 } else {
