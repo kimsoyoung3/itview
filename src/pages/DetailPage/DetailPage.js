@@ -5,12 +5,13 @@ import "../../components/ContentSwiper/ContentSwiper.css";
 import 'swiper/css/navigation';
 import 'swiper/css/pagination';
 import 'swiper/css';
-import { deleteContentComment,getContentCredit, deleteRating, getContentComment, getContentDetail, postContentComment, postContentRating, putContentComment } from "../../API/ContentApi";
+import { getContentCredit, deleteRating, getContentComment, getContentDetail, postContentComment, postContentRating } from "../../API/ContentApi";
 import {Navigation, Pagination} from "swiper/modules";
 import {Swiper, SwiperSlide} from "swiper/react";
 import CreditOrPersonCard from "../../components/CreditOrPersonCard/CreditOrPersonCard";
 import CommentCard from "../../components/CommentCard/CommentCard";
 import {NavLink} from "react-router-dom";
+import { deleteComment, updateComment } from "../../API/CommentApi";
 
 const DetailPage = ({userInfo, openLogin}) => {
     const [contentDetail, setContentDetail] = useState(null);
@@ -45,7 +46,7 @@ const DetailPage = ({userInfo, openLogin}) => {
 
     /*코멘트 수정*/
     const handleCommentUpdate = async () => {
-        const res = await putContentComment(contentDetail?.myComment.id, { text: textRef.current.value })
+        const res = await updateComment(contentDetail?.myComment.id, { text: textRef.current.value })
         if (res.status === 200) {
             closeMyComment();
             getContentComment(window.location.pathname.split('/').pop()).then(response => {
@@ -85,8 +86,8 @@ const DetailPage = ({userInfo, openLogin}) => {
 
     const handleDeleteConfirm = async () => {
         try {
-            await deleteContentComment(contentDetail?.myComment.id);
-            setDeleteConfirmModal(false);
+            await deleteComment(contentDetail?.myComment.id);
+            setDeleteConfirmModal(false); // ✅ 모달 닫기만
             getContentComment(window.location.pathname.split('/').pop()).then(response => {
                 setContentDetail(prev => ({
                     ...prev,

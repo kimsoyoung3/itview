@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from "react";
 import 'bootstrap/dist/css/bootstrap.min.css';
-import "./CommentCard.css";
-import { likeComment, postReply, unlikeComment } from "../../API/CommentApi";
+import "./CommentCard.css"; // CSS 따로 관리
+import { likeComment, postReply, unlikeComment, updateComment } from "../../API/CommentApi";
 import {NavLink} from "react-router-dom";
 import {toast} from "react-toastify";
 
@@ -19,7 +19,34 @@ const CommentCard = ({comment, content, userInfo, openLogin, newReply, clamp = f
     const closeComment = () => setCommentModal(false);
 
     const [replyModal, setReplyModal] = useState();
-    const textRef = React.useRef(null); //댓글 텍스트 영역 참조
+    const replyTextRef = React.useRef(null); //댓글 텍스트 영역 참조
+    const commentTextRef = React.useRef(null); //코멘트 텍스트 영역 참조
+
+    // 코멘트 수정 시 텍스트 영역에 기존 코멘트 내용 채우기
+    useEffect(() => {
+        if (commentTextRef.current && commentData) {
+            commentTextRef.current.value = commentData.text;
+        }
+    }, [commentData, commentModal]);
+
+    // 코멘트 수정
+    const handleCommentUpdate = async () => {
+        const text = commentTextRef.current.value;
+        if (text) {
+            try {
+                const response = await updateComment(commentData.id, { text });
+                if (response.status === 200) {
+                    alert("코멘트가 수정되었습니다.");
+                    setCommentData((prev) => ({ ...prev, text }));
+                    closeComment();
+                } else {
+                    console.error("Failed to update comment");
+                }
+            } catch (error) {
+                console.error("Error updating comment:", error);
+            }
+        }
+    };
 
     /*댓글 모달*/
     const openReply = () => setReplyModal(true);
@@ -36,6 +63,7 @@ const CommentCard = ({comment, content, userInfo, openLogin, newReply, clamp = f
 
     if (!comment) return null;
 
+    // 댓글 좋아요 등록/취소
     const handleLikeComment = async (commentId) => {
         if (commentData.liked) {
             const res = await unlikeComment(commentId);
@@ -62,8 +90,9 @@ const CommentCard = ({comment, content, userInfo, openLogin, newReply, clamp = f
         }
     };
 
+    // 댓글 등록
     const handleReplySubmit = async () => {
-        const text = textRef.current.value;
+        const text = replyTextRef.current.value;
         if (text) {
             const res = await postReply(commentData.id, { text });
             if (res.status === 200) {
@@ -149,9 +178,9 @@ const CommentCard = ({comment, content, userInfo, openLogin, newReply, clamp = f
                             <p className="comment-modal-title">{content.title}</p>
                             <button className="comment-close-button" onClick={closeComment}><img src="/x-lg.svg" alt=""/></button>
                         </div>
-                        <textarea rows="15" placeholder="작품에 대한 코멘트를 남겨주세요." maxLength={1000} ref={textRef}></textarea>
+                        <textarea rows="15" placeholder="작품에 대한 코멘트를 남겨주세요." maxLength={1000} ref={commentTextRef}></textarea>
                         <div className="comment-content-bottom">
-                            <button className="comment-content-btn">수정</button>
+                            <button className="comment-content-btn" onClick={handleCommentUpdate}>수정</button>
                         </div>
                     </div>
                 </div>
@@ -179,7 +208,7 @@ const CommentCard = ({comment, content, userInfo, openLogin, newReply, clamp = f
                             <p className="comment-modal-title">댓글</p>
                             <button className="comment-close-button" onClick={closeReply}><img src="/x-lg.svg" alt=""/></button>
                         </div>
-                        <textarea rows="15" placeholder="코멘트에 대한 댓글을 남겨주세요." maxLength={1000} ref={textRef}></textarea>
+                        <textarea rows="15" placeholder="코멘트에 대한 댓글을 남겨주세요." maxLength={1000} ref={replyTextRef}></textarea>
                         <div className="comment-content-bottom">
                             <button className="comment-content-btn"
                                     onClick={handleReplySubmit}>저장</button>
