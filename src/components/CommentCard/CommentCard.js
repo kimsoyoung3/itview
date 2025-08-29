@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from "react";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import "./CommentCard.css"; // CSS 따로 관리
-import { likeComment, postReply, unlikeComment, updateComment } from "../../API/CommentApi";
+import { deleteComment, likeComment, postReply, unlikeComment, updateComment } from "../../API/CommentApi";
 import {NavLink} from "react-router-dom";
 import {toast} from "react-toastify";
 
@@ -47,6 +47,21 @@ const CommentCard = ({comment, content, userInfo, openLogin, newReply, clamp = f
             }
         }
     };
+
+    // 코멘트 삭제
+    const handleDeleteComment = async () => {
+        try {
+            const contentId = content.id;
+            const response = await deleteComment(commentData.id);
+            if (response.status === 200) {
+                window.location.replace("/content/" + contentId);
+            } else {
+                console.error("Failed to delete comment");
+            }
+        } catch (error) {
+            console.error("Error deleting comment:", error);
+        }
+    }
 
     /*댓글 모달*/
     const openReply = () => setReplyModal(true);
@@ -113,11 +128,9 @@ const CommentCard = ({comment, content, userInfo, openLogin, newReply, clamp = f
             {/* 헤더 */}
             <div className="comment-card-header">
                 <div className="comment-card-header-left">
-                    <div className="comment-card-profile"><img src={commentData?.user?.profile || '/user.png'} alt=""/>
-                    </div>
+                    <div className="comment-card-profile" ><img src={commentData?.user?.profile || '/user.png'} alt=""/></div>
                     <span className="comment-card-nickname">{commentData?.user.nickname}</span>
-                    <span
-                        className="comment-card-date">{new Date(commentData?.createdAt).toLocaleDateString().slice(0, -1)}</span>
+                    <span className="comment-card-date">{new Date(commentData?.createdAt).toLocaleDateString().slice(0, -1)}</span>
                 </div>
                 {commentData?.rating &&
                     <div className="comment-card-header-right">
@@ -184,11 +197,9 @@ const CommentCard = ({comment, content, userInfo, openLogin, newReply, clamp = f
                     <div className="comment-modal-content" onClick={(e) => e.stopPropagation()}>
                         <div className="comment-content-top">
                             <p className="comment-modal-title">{content.title}</p>
-                            <button className="comment-close-button" onClick={closeComment}><img src="/icon/x-lg.svg"
-                                                                                                 alt=""/></button>
+                            <button className="comment-close-button" onClick={closeComment}><img src="/x-lg.svg" alt=""/></button>
                         </div>
-                        <textarea rows="15" placeholder="작품에 대한 코멘트를 남겨주세요." maxLength={1000}
-                                  ref={commentTextRef}></textarea>
+                        <textarea rows="15" placeholder="작품에 대한 코멘트를 남겨주세요." maxLength={1000} ref={commentTextRef}></textarea>
                         <div className="comment-content-bottom">
                             <button className="comment-content-btn" onClick={handleCommentUpdate}>수정</button>
                         </div>
@@ -203,7 +214,7 @@ const CommentCard = ({comment, content, userInfo, openLogin, newReply, clamp = f
                         <p>알림</p>
                         <p>삭제하시겠습니까?</p>
                         <div className="confirm-btn-group">
-                            <button>확인</button>
+                            <button onClick={handleDeleteComment}>확인</button>
                             <button onClick={closeDeleteCommentModal}>취소</button>
                         </div>
                     </div>
@@ -216,11 +227,9 @@ const CommentCard = ({comment, content, userInfo, openLogin, newReply, clamp = f
                     <div className="comment-modal-content" onClick={(e) => e.stopPropagation()}>
                         <div className="comment-content-top">
                             <p className="comment-modal-title">댓글</p>
-                            <button className="comment-close-button" onClick={closeReply}><img src="/icon/x-lg.svg" alt=""/>
-                            </button>
+                            <button className="comment-close-button" onClick={closeReply}><img src="/x-lg.svg" alt=""/></button>
                         </div>
-                        <textarea rows="15" placeholder="코멘트에 대한 댓글을 남겨주세요." maxLength={1000}
-                                  ref={replyTextRef}></textarea>
+                        <textarea rows="15" placeholder="코멘트에 대한 댓글을 남겨주세요." maxLength={1000} ref={replyTextRef}></textarea>
                         <div className="comment-content-bottom">
                             <button className="comment-content-btn"
                                     onClick={handleReplySubmit}>저장
