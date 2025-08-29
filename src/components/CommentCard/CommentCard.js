@@ -12,13 +12,13 @@ const CommentCard = ({comment, content, userInfo, openLogin, newReply, clamp = f
         setCommentData(comment)
     }, [comment]);
 
-    const [commentModal, setCommentModal] = useState();
+    const [commentModal, setCommentModal] = useState(null);
 
     /*코멘트 모달*/
     const openComment = () => setCommentModal(true);
     const closeComment = () => setCommentModal(false);
 
-    const [replyModal, setReplyModal] = useState();
+    const [replyModal, setReplyModal] = useState(null);
     const replyTextRef = React.useRef(null); //댓글 텍스트 영역 참조
     const commentTextRef = React.useRef(null); //코멘트 텍스트 영역 참조
 
@@ -113,7 +113,7 @@ const CommentCard = ({comment, content, userInfo, openLogin, newReply, clamp = f
             {/* 헤더 */}
             <div className="comment-card-header">
                 <div className="comment-card-header-left">
-                    <div className="comment-card-profile" ><img src={commentData?.user?.profile || '/user.png'}alt=""/></div>
+                    <div className="comment-card-profile" ><img src={commentData?.user?.profile || '/user.png'} alt=""/></div>
                     <span className="comment-card-nickname">{commentData?.user.nickname}</span>
                     <span className="comment-card-date">{new Date(commentData?.createdAt).toLocaleDateString().slice(0, -1)}</span>
                 </div>
