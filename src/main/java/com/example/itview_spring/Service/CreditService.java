@@ -1,13 +1,18 @@
 package com.example.itview_spring.Service;
 
 
+import java.util.List;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import com.example.itview_spring.Constant.ContentType;
 import com.example.itview_spring.DTO.CreditDTO;
+import com.example.itview_spring.DTO.WorkDTO;
+import com.example.itview_spring.DTO.WorkDomainDTO;
 import com.example.itview_spring.Repository.CreditRepository;
 
 import lombok.RequiredArgsConstructor;
@@ -25,5 +30,16 @@ public class CreditService {
         Pageable pageable = PageRequest.of(currentPage, pageSize, Sort.by(Sort.Direction.ASC, "id"));
         
         return creditRepository.findByContentId(pageable, contentId);
+    }
+
+    // 인물의 작품 참여 분야 조회
+    public List<WorkDomainDTO> getWorkDomainsByPersonId(Integer personId) {
+        return creditRepository.findWorkDomainsByPersonId(personId);
+    }
+
+    // 분야별 페이징 조회
+    public Page<WorkDTO> getWorks(Integer page, Integer personId, ContentType contentType, String department) {
+        Pageable pageable = PageRequest.of(page - 1, 1);
+        return creditRepository.findWorkDTOPage(pageable, personId, contentType, department);
     }
 }

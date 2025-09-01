@@ -52,6 +52,7 @@ public class PersonService {
         return null;
     }
 
+    // 인물 정보 + 좋아요 여부, 좋아요 수 조회
     public PersonResponseDTO getPersonResponseDTO(Integer userId, Integer personId) {
         return personRepository.findPersonResponseDTO(userId, personId);
     }
