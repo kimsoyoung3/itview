@@ -34,12 +34,12 @@ const PersonDetailPage = ({userInfo, openLogin}) => {
                     <img src={personInfo?.profile ? personInfo?.profile : "/user.png" } alt=""/>
                 </div>
                 <div className="person-detail-page-profile-info">
-                    <h4>{personInfo.name}</h4>
-                    <p>{personInfo.job}</p>
+                    <h4>{personInfo?.name}</h4>
+                    <p>{personInfo?.job}</p>
                 </div>
                  <div className="person-detail-page-profile-like">
                      <hr/>
-                     <div><button><i className="bi bi-hand-thumbs-up"/> 좋아요 {personInfo.likeCount}명이 이 인물을 좋아합니다.</button></div>
+                     <div><button><i className="bi bi-hand-thumbs-up"/> 좋아요 {personInfo?.likeCount}명이 이 인물을 좋아합니다.</button></div>
                      <hr/>
                  </div>
             </section>
