@@ -1,6 +1,6 @@
 import React from 'react'
 import { Route, Routes } from 'react-router-dom';
-import PersonDetailPage from "../components/PersonDetailPage/PersonDetailPage";
+import PersonDetailPage from "../pages/PersonDetailPage/PersonDetailPage";
 
 function ContentRoutes({ userInfo, openLogin }) {
   return (
