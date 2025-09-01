@@ -3,6 +3,7 @@ import { Route, Routes } from 'react-router-dom';
 import Home from "../pages/Home/Home";
 import ContentRoutes from './ContentRoutes';
 import CommentRoutes from './CommentRoutes';
+import PersonRoutes from "./PersonRoutes";
 
 function AppRoutes({ userInfo, openLogin }) {
   return (
@@ -10,6 +11,7 @@ function AppRoutes({ userInfo, openLogin }) {
         <Route path="/" element={<Home />} />
         <Route path="/content/*" element={<ContentRoutes userInfo={userInfo} openLogin={openLogin} />} />
         <Route path="/comment/*" element={<CommentRoutes userInfo={userInfo} openLogin={openLogin} />} />
+        <Route path="/person/*" element={<PersonRoutes userInfo={userInfo} openLogin={openLogin} />} />
     </Routes>
   )
 }

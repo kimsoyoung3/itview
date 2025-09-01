@@ -1,6 +1,7 @@
 import React from "react";
 import "./CreditOrPersonCard.css"
 import PropTypes from "prop-types";
+import {NavLink} from "react-router-dom";
 
 const CreditOrPersonCard = ({data, type}) => {
     const isCredit = type === "credit";
@@ -8,7 +9,7 @@ const CreditOrPersonCard = ({data, type}) => {
 
     return(
         <div className="credit-card">
-            <div className="credit-card-inner">
+            <NavLink className="credit-card-inner">
                 <div className="credit-card-image">
                     <img src={person.profile ? person.profile : "/user.png"} alt={person.name} />
                 </div>
@@ -26,7 +27,7 @@ const CreditOrPersonCard = ({data, type}) => {
                         <li>{person.job}</li>
                     </ul>
                 )}
-            </div>
+            </NavLink>
         </div>
     )
 }

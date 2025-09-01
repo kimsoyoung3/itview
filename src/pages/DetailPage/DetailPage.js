@@ -471,6 +471,7 @@ const DetailPage = ({userInfo, openLogin}) => {
                             ref={swiperRef}
                             modules={[Navigation]}
                             spaceBetween={20}
+                            allowTouchMove={false}
                             slidesPerView={1}
                             className="credit-swiper"
                             onNavigationNext={() => console.log('next')}>
