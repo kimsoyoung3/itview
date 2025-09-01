@@ -473,7 +473,6 @@ const DetailPage = ({userInfo, openLogin}) => {
                             spaceBetween={20}
                             allowTouchMove={false}
                             slidesPerView={1}
-                            allowTouchMove={false}
                             className="credit-swiper"
                             onNavigationNext={() => console.log('next')}>
                             {contentCredit.map((creditPage, pageIndex) => (
