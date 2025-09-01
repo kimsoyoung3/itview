@@ -1,13 +1,21 @@
 import React, {useEffect, useState} from "react";
 import "./PersonDetailPage.css";
 import 'bootstrap/dist/css/bootstrap.min.css';
-import { getPersonInfo, getPersonWorkDomains } from "../../API/PersonApi";
+import { getPersonInfo, getPersonWorkDomains, getPersonWorks } from "../../API/PersonApi";
 import { useParams } from "react-router-dom";
 
 
 const PersonDetailPage = ({userInfo, openLogin}) => {
     const [personInfo, setPersonInfo] = useState(null);
     const [workDomain, setWorkDomain] = useState(null);
+
+    const domainNameMap = {
+        "영화" : "MOVIE",
+        "시리즈" : "SERIES",
+        "책" : "BOOK",
+        "웹툰" : "WEBTOON",
+        "음반" : "RECORD"
+    }
 
     const { id } = useParams();
     useEffect(() => {
@@ -21,9 +29,17 @@ const PersonDetailPage = ({userInfo, openLogin}) => {
 
             const res2 = await getPersonWorkDomains(id);
 
-            var workDomainList = {'영화':[], '시리즈': [], '책': [], '웹툰': [], '음반': []};
+            var workDomainList = {};
             for (const domain of res2.data) {
-                workDomainList[domain.contentType].push(domain.department);
+                workDomainList[domain.contentType] = workDomainList[domain.contentType] || {};
+                workDomainList[domain.contentType][domain.department] = workDomainList[domain.contentType][domain.department] || [];
+            }
+
+            for (const domain in workDomainList) {
+                for (const department in workDomainList[domain]) {
+                    const res3 = await getPersonWorks(id, domainNameMap[domain], department, 1);
+                    workDomainList[domain][department] = res3.data;
+                }
             }
             setWorkDomain(workDomainList);
         };
@@ -56,13 +72,12 @@ const PersonDetailPage = ({userInfo, openLogin}) => {
             </section>
 
             <section className="person-detail-page-content">
-                {workDomain && Object.entries(workDomain).map(([key, value]) => (
-                    value.length > 0 &&
-                    <div key={key} className="person-detail-page-content-domain">
-                        <h5>{key}</h5>
+                {workDomain && Object.entries(workDomain).map(([contentType, departments]) => (
+                    <div key={contentType} className="person-detail-page-content-domain">
+                        <h5>{contentType}</h5>
                         <ul>
-                            {value.map((item, index) => (
-                                <li key={index}>{item}</li>
+                            {Object.entries(departments).map(([department, items]) => (
+                                <li key={department}>{department}</li>
                             ))}
                         </ul>
                     </div>
