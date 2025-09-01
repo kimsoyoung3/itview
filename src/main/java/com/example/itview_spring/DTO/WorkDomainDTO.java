@@ -14,6 +14,11 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class WorkDomainDTO {
     
-    private ContentType contentType;
+    private String contentType;
     private String department;
+
+    public WorkDomainDTO(ContentType contentType, String department) {
+        this.contentType = contentType.getDescription();
+        this.department = department;
+    }
 }
