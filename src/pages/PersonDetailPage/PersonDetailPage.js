@@ -1,12 +1,13 @@
 import React, {useEffect, useState} from "react";
 import "./PersonDetailPage.css";
 import 'bootstrap/dist/css/bootstrap.min.css';
-import { getPersonInfo } from "../../API/PersonApi";
+import { getPersonInfo, getPersonWorkDomains } from "../../API/PersonApi";
 import { useParams } from "react-router-dom";
 
 
 const PersonDetailPage = ({userInfo, openLogin}) => {
     const [personInfo, setPersonInfo] = useState(null);
+    const [workDomain, setWorkDomain] = useState(null);
 
     const { id } = useParams();
     useEffect(() => {
@@ -17,6 +18,13 @@ const PersonDetailPage = ({userInfo, openLogin}) => {
             } else {
                 setPersonInfo(null);
             }
+
+            const res2 = await getPersonWorkDomains(id);
+            if (res2) {
+                setWorkDomain(res2.data);
+            } else {
+                setWorkDomain(null);
+            }
         };
         fetchData();
     }, [id]);
@@ -25,7 +33,9 @@ const PersonDetailPage = ({userInfo, openLogin}) => {
         console.log(personInfo);
     }, [personInfo]);
 
-
+    useEffect(() => {
+        console.log(workDomain);
+    }, [workDomain]);
 
     return(
         <div className="person-detail-page container">
