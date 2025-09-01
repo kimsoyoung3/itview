@@ -1,6 +1,7 @@
 package com.example.itview_spring.Service;
 
 import com.example.itview_spring.DTO.PersonDTO;
+import com.example.itview_spring.DTO.PersonResponseDTO;
 import com.example.itview_spring.Entity.PersonEntity;
 import com.example.itview_spring.Repository.PersonRepository;
 import lombok.RequiredArgsConstructor;
@@ -51,4 +52,7 @@ public class PersonService {
         return null;
     }
 
+    public PersonResponseDTO getPersonResponseDTO(Integer userId, Integer personId) {
+        return personRepository.findPersonResponseDTO(userId, personId);
+    }
 }
