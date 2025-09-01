@@ -20,11 +20,12 @@ const PersonDetailPage = ({userInfo, openLogin}) => {
             }
 
             const res2 = await getPersonWorkDomains(id);
-            if (res2) {
-                setWorkDomain(res2.data);
-            } else {
-                setWorkDomain(null);
+
+            var workDomainList = {'영화':[], '시리즈': [], '책': [], '웹툰': [], '음반': []};
+            for (const domain of res2.data) {
+                workDomainList[domain.contentType].push(domain.department);
             }
+            setWorkDomain(workDomainList);
         };
         fetchData();
     }, [id]);
@@ -55,7 +56,17 @@ const PersonDetailPage = ({userInfo, openLogin}) => {
             </section>
 
             <section className="person-detail-page-content">
-
+                {workDomain && Object.entries(workDomain).map(([key, value]) => (
+                    value.length > 0 &&
+                    <div key={key} className="person-detail-page-content-domain">
+                        <h5>{key}</h5>
+                        <ul>
+                            {value.map((item, index) => (
+                                <li key={index}>{item}</li>
+                            ))}
+                        </ul>
+                    </div>
+                ))}
             </section>
         </div>
     )
