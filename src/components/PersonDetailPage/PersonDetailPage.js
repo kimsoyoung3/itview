@@ -5,6 +5,8 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 
 const PersonDetailPage = ({userInfo, openLogin}) => {
 
+
+
     return(
         <div className="person-detail-page container">
             <section className="person-detail-page-profile">
