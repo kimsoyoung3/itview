@@ -54,6 +54,24 @@ const PersonDetailPage = ({userInfo, openLogin}) => {
         console.log(workInfo);
     }, [workInfo]);
 
+    const handleClickMore = async (contentType, department, page) => {
+        console.log(domainNameMap[contentType], department, page);
+        const res = await getPersonWorks(id, domainNameMap[contentType], department, page);
+        if (res) {
+            setWorkInfo({
+                ...workInfo,
+                [contentType]: {
+                    ...workInfo[contentType],
+                    [department]: {
+                        ...workInfo[contentType][department],
+                        content: [...workInfo[contentType][department].content, ...res.data.content],
+                        page: res.data.page
+                    }
+                }
+            });
+        }
+    }
+
     return(
         <div className="person-detail-page container">
              <section className="person-detail-page-profile">
@@ -77,7 +95,7 @@ const PersonDetailPage = ({userInfo, openLogin}) => {
                         <h5>{contentType}</h5>
                         <ul>
                             {Object.entries(departments).map(([department, items]) => (
-                                <li key={department}>{department}</li>
+                                <li key={department}>{department} {workInfo[contentType][department].page.number+1 < workInfo[contentType][department].page.totalPages ? <button onClick={() => handleClickMore(contentType, department, workInfo[contentType][department].page.number+2)}>더보기</button> : null} {items.content.map(item => (item.title))}</li>
                             ))}
                         </ul>
                     </div>
