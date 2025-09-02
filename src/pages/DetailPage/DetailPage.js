@@ -509,7 +509,7 @@ const DetailPage = ({userInfo, openLogin}) => {
                             <Swiper
                                 modules={[Navigation]}
                                 spaceBetween={16}
-                                slidesPerView={3}
+                                slidesPerView={1}
                                 navigation={{
                                     prevEl: ".gallery-wrapper .gallery-prev",
                                     nextEl: ".gallery-wrapper .gallery-next",
@@ -572,7 +572,7 @@ const DetailPage = ({userInfo, openLogin}) => {
                             <Swiper
                                 modules={[Navigation]}
                                 spaceBetween={16}
-                                slidesPerView={3}
+                                slidesPerView={1}
                                 navigation={{
                                     prevEl: ".video-wrapper .video-prev",
                                     nextEl: ".video-wrapper .video-next",
