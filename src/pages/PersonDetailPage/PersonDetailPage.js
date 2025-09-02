@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from "react";
 import "./PersonDetailPage.css";
 import 'bootstrap/dist/css/bootstrap.min.css';
-import { getPersonInfo, getPersonWorkDomains, getPersonWorks } from "../../API/PersonApi";
+import { getPersonInfo, getPersonWorkDomains, getPersonWorks, likePerson, unlikePerson } from "../../API/PersonApi";
 import {NavLink, useParams} from "react-router-dom";
 
 
@@ -54,7 +54,7 @@ const PersonDetailPage = ({userInfo, openLogin}) => {
         console.log(workInfo);
     }, [workInfo]);
 
-    const handleClickMore = async (contentType, department, page) => {
+    const handleMoreClick = async (contentType, department, page) => {
         console.log(domainNameMap[contentType], department, page);
         const res = await getPersonWorks(id, domainNameMap[contentType], department, page);
         if (res) {
@@ -69,6 +69,28 @@ const PersonDetailPage = ({userInfo, openLogin}) => {
                     }
                 }
             });
+        }
+    }
+
+    const handleLikeClick = async () => {
+        if (personInfo.liked) {
+            const res = await unlikePerson(id);
+            if (res) {
+                setPersonInfo({
+                    ...personInfo,
+                    liked: false,
+                    likeCount: personInfo.likeCount - 1
+                });
+            }
+        } else {
+            const res = await likePerson(id);
+            if (res) {
+                setPersonInfo({
+                    ...personInfo,
+                    liked: true,
+                    likeCount: personInfo.likeCount + 1
+                });
+            }
         }
     }
 
@@ -116,7 +138,7 @@ const PersonDetailPage = ({userInfo, openLogin}) => {
                     <p>{personInfo?.job}</p>
                 </div>
                  <div className="person-detail-page-profile-like">
-                     <div><button><i className="bi bi-hand-thumbs-up"/> 좋아요 {personInfo?.likeCount}명이 이 인물을 좋아합니다.</button></div>
+                     <div><button onClick={() => userInfo ? handleLikeClick() : openLogin()}><i className={personInfo?.liked ? "bi bi-hand-thumbs-up-fill" : "bi bi-hand-thumbs-up"}/> 좋아요 {personInfo?.likeCount}명이 이 인물을 좋아합니다.</button></div>
                  </div>
             </section>
 
@@ -139,7 +161,7 @@ const PersonDetailPage = ({userInfo, openLogin}) => {
                                             <div>감상서비스</div>
                                         </div>
                                         {items.content.map(item =>
-                                            <div className="person-detail-page-content-domain-list">
+                                            <NavLink to={`/content/${item.id}`} className="person-detail-page-content-domain-list">
                                                 <div className="domain-list-date">{(new Date(item.releaseDate).getFullYear())}</div>
                                                 <div className="domain-list-image"><img src={item.poster} alt=""/></div>
                                                 <div className="domain-list-title">{item.title}</div>
@@ -160,9 +182,9 @@ const PersonDetailPage = ({userInfo, openLogin}) => {
                                                     ))}
                                                 </div>
 
-                                            </div>
+                                            </NavLink>
                                         )}
-                                        <div className="person-detail-page-content-domain-btn">{workInfo[contentType][department].page.number+1 < workInfo[contentType][department].page.totalPages ? <button onClick={() => handleClickMore(contentType, department, workInfo[contentType][department].page.number+2)}>더보기</button> : null} </div>
+                                        <div className="person-detail-page-content-domain-btn">{workInfo[contentType][department].page.number+1 < workInfo[contentType][department].page.totalPages ? <button onClick={() => handleMoreClick(contentType, department, workInfo[contentType][department].page.number+2)}>더보기</button> : null} </div>
                                     </div>
                                 ))}
                             </div>
