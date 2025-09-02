@@ -6,6 +6,7 @@ import com.example.itview_spring.DTO.EmailDTO;
 import com.example.itview_spring.DTO.EmailVerificationDTO;
 import com.example.itview_spring.DTO.NewPasswordDTO;
 import com.example.itview_spring.DTO.RegisterDTO;
+import com.example.itview_spring.DTO.UserResponseDTO;
 import com.example.itview_spring.Entity.EmailVerificationEntity;
 import com.example.itview_spring.Entity.UserEntity;
 import com.example.itview_spring.Repository.EmailVerificationRepository;
@@ -133,5 +134,14 @@ public class UserService implements UserDetailsService {
         userEntity.get().setPassword(encodedPassword);
 
         registerRepository.save(userEntity.get());
+    }
+
+    // 유저 페이지 정보 조회
+    public UserResponseDTO getUserProfile(Integer id) {
+        try {
+            return registerRepository.findUserResponseById(id);
+        } catch (Exception e) {
+            throw new IllegalStateException("유저 정보를 불러오는데 실패했습니다.");
+        }
     }
 }

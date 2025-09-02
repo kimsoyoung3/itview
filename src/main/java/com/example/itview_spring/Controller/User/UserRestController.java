@@ -6,6 +6,7 @@ import com.example.itview_spring.DTO.EmailVerificationDTO;
 import com.example.itview_spring.DTO.LoginDTO;
 import com.example.itview_spring.DTO.NewPasswordDTO;
 import com.example.itview_spring.DTO.RegisterDTO;
+import com.example.itview_spring.DTO.UserResponseDTO;
 import com.example.itview_spring.Service.UserService;
 
 import jakarta.servlet.http.Cookie;
@@ -14,12 +15,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 
 import java.io.IOException;
-import java.util.Base64;
-import java.util.Map;
 
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -28,16 +24,14 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.context.SecurityContextRepository;
-import org.springframework.util.LinkedMultiValueMap;
-import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.client.RestTemplate;
 
 @RestController
 @RequiredArgsConstructor
@@ -175,5 +169,15 @@ public class UserRestController {
         redirectCookie.setHttpOnly(false);
         response.addCookie(redirectCookie);
         System.out.println("redirectURL: " + redirectURL);
+    }
+
+    // 유저 페이지 정보 조회
+    @GetMapping("/{id}")
+    public UserResponseDTO getUserProfile(@PathVariable("id") Integer id) {
+        try {
+            return registerService.getUserProfile(id);
+        } catch (Exception e) {
+            throw new IllegalStateException("유저 정보를 불러오는데 실패했습니다.");
+        }
     }
 }
