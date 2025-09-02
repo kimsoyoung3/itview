@@ -1,12 +1,15 @@
 package com.example.itview_spring.Service;
 
+import com.example.itview_spring.Constant.Replyable;
 import com.example.itview_spring.DTO.PersonDTO;
 import com.example.itview_spring.DTO.PersonResponseDTO;
 import com.example.itview_spring.Entity.PersonEntity;
+import com.example.itview_spring.Repository.LikeRepository;
 import com.example.itview_spring.Repository.PersonRepository;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Arrays;
 import java.util.List;
@@ -14,8 +17,10 @@ import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class PersonService {
     private final PersonRepository personRepository;
+    private final LikeRepository likeRepository;
     private final ModelMapper modelMapper ;
     // 전체조회
     public List<PersonDTO>listPersons() {
@@ -55,5 +60,23 @@ public class PersonService {
     // 인물 정보 + 좋아요 여부, 좋아요 수 조회
     public PersonResponseDTO getPersonResponseDTO(Integer userId, Integer personId) {
         return personRepository.findPersonResponseDTO(userId, personId);
+    }
+
+    // 인물에 좋아요 등록
+    public void likePerson(Integer userId, Integer personId) {
+        try {
+            likeRepository.likeTarget(userId, personId, Replyable.PERSON);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    // 인물에 좋아요 취소
+    public void unlikePerson(Integer userId, Integer personId) {
+        try {
+            likeRepository.unlikeTarget(userId, personId, Replyable.PERSON);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }
