@@ -41,7 +41,7 @@ public class CreditService {
 
     // 분야별 페이징 조회
     public Page<WorkDTO> getWorks(Integer page, Integer personId, ContentType contentType, String department) {
-        Pageable pageable = PageRequest.of(page - 1, 1);
+        Pageable pageable = PageRequest.of(page - 1, 6);
         Page<WorkDTO> workDTOPage = creditRepository.findWorkDTOPage(pageable, personId, contentType, department);
         for (WorkDTO workDTO : workDTOPage) {
             workDTO.setExternalServices(externalServiceRepository.findByContentId(workDTO.getId()));
