@@ -3,6 +3,7 @@ import "./ReplyCard.css";
 import React, { useEffect, useState } from 'react';
 import { deleteReply, likeReply, unlikeReply, updateReply } from '../../API/ReplyApi';
 import {toast} from "react-toastify";
+import { NavLink } from 'react-router-dom';
 
 const ReplyCard = ({reply, userInfo, openLogin}) => {
     const [replyData, setReplyData] = useState(reply);
@@ -85,11 +86,11 @@ const ReplyCard = ({reply, userInfo, openLogin}) => {
         <div className="reply-card container">
             <div className="reply-card-wrap">
                 <div  className="reply-card-inner-left">
-                    <div className="reply-card-info">
+                    <NavLink to={`/user/${replyData?.user?.id}`} className="reply-card-info">
                         <div className="reply-card-info-profile"><img src={replyData?.user.profile || "/user.png"} alt=""/></div>
                         <span>{replyData?.user.nickname}</span>
                         <span>{new Date(replyData?.createdAt).toLocaleDateString().slice(0, -1)}</span>
-                    </div>
+                    </NavLink>
                     <p className="reply-card-text">{replyData?.text}</p>
                     <div className="reply-card-footer">
                         <button onClick={userInfo ? handleLike : openLogin} className="like-button">

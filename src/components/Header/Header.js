@@ -174,7 +174,7 @@ const Header = ({userInfo, handleLogin, handleLogout, isLoginOpen, openLogin, cl
                         {/*로그인&회원가입&마이페이지*/}
                         {userInfo ? (
                             <div className="user-menu">
-                                <Link to="/MyPage" className="login-button">마이페이지</Link>
+                                <Link to={`/user/${userInfo}`} className="login-button">마이페이지</Link>
                                 <button onClick={handleLogout} className="login-button">로그아웃</button>
                                 <a href="http://localhost:8080/oauth2/authorization/google"
                                    onClick={() => link({redirectURL: window.location.href})}>

@@ -9,3 +9,4 @@ export const checkEmail = (data) => axios.post('http://localhost:8080/api/user/e
 export const checkVerification = (data) => axios.post('http://localhost:8080/api/user/checkVerification', data, {withCredentials: true});
 export const setPassword = (data) => axios.post('http://localhost:8080/api/user/setPW', data, {withCredentials: true});
 export const link = (data) => axios.post('http://localhost:8080/api/user/link?redirectURL=' + encodeURIComponent(data.redirectURL), {}, {withCredentials: true});
+export const getUserDetail = (id) => axios.get(`http://localhost:8080/api/user/${id}`, {withCredentials: true});

@@ -126,7 +126,7 @@ const CommentCard = ({comment, content, userInfo, openLogin, newReply, clamp = f
     return (
         <div className="comment-card container">
             {/* 헤더 */}
-            <div className="comment-card-header">
+            <NavLink to={`/user/${commentData?.user?.id}`} className="comment-card-header">
                 <div className="comment-card-header-left">
                     <div className="comment-card-profile" ><img src={commentData?.user?.profile || '/user.png'} alt=""/></div>
                     <span className="comment-card-nickname">{commentData?.user.nickname}</span>
@@ -137,7 +137,7 @@ const CommentCard = ({comment, content, userInfo, openLogin, newReply, clamp = f
                         <i className="bi bi-star-fill"/><span>{commentData?.rating / 2}</span>
                     </div>
                 }
-            </div>
+            </NavLink>
 
             {/* 내용 */}
             <div className="comment-card-content">
