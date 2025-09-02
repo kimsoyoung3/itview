@@ -145,7 +145,6 @@
 /*모바일 사이즈*/
 @media (max-width: 480px) {
     .comment-card {
-        width: 400px;
         margin: 15px auto;
         padding: 20px;
     }
@@ -174,5 +173,4 @@
     .comment-card-footer-bottom {
         font-size: 0.8rem;
     }
-
 }

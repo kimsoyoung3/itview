@@ -446,7 +446,9 @@ const DetailPage = ({userInfo, openLogin}) => {
                 </div>
                 {contentDetail && contentDetail.comments && contentDetail.comments.length > 0 ? (
                     <div className="comment-inner">
-                        {contentDetail.comments.map(c => <CommentCard key={c.id} clamp={true} comment={c} userInfo={userInfo} openLogin={openLogin} />)}
+                        {contentDetail.comments
+                            .slice(0, window.innerWidth <= 480 ? 1 : 8)
+                            .map(c => <CommentCard key={c.id} clamp={true} comment={c} userInfo={userInfo} openLogin={openLogin} />)}
                     </div>
 
                 ) : (
@@ -458,16 +460,16 @@ const DetailPage = ({userInfo, openLogin}) => {
              <section className="detail-content container">
                  {/*컨텐츠 타입*/}
                  <p className="detail-category">
-                     {contentDetail?.contentInfo?.contentType === 'MOVIE' && '출연/제작'}
-                     {contentDetail?.contentInfo?.contentType === 'SERIES' && '출연/제작'}
-                     {contentDetail?.contentInfo?.contentType === 'BOOK' && '저자/역자'}
-                     {contentDetail?.contentInfo?.contentType === 'WEBTOON' && '작가'}
-                     {contentDetail?.contentInfo?.contentType === 'RECORD' && '참여'}
+                     {contentDetail?.contentInfo?.contentType === '영화' && '출연/제작'}
+                     {contentDetail?.contentInfo?.contentType === '시리즈' && '출연/제작'}
+                     {contentDetail?.contentInfo?.contentType === '책' && '저자/역자'}
+                     {contentDetail?.contentInfo?.contentType === '웹툰' && '작가'}
+                     {contentDetail?.contentInfo?.contentType === '음반' && '참여'}
                  </p>
 
                  {/*크레딧 정보 리스트*/}
                  {contentCredit[0]?.content.length > 0 ? (
-                    <div className="credit-list">
+                    <div className="credit-list container">
                         <Swiper
                             ref={swiperRef}
                             modules={[Navigation]}
@@ -479,7 +481,9 @@ const DetailPage = ({userInfo, openLogin}) => {
                             {contentCredit.map((creditPage, pageIndex) => (
                                 <SwiperSlide className="swiper-slide" key={pageIndex}>
                                     <div className="credit-list">
-                                        {creditPage.content.map(credit => (
+                                        {creditPage.content
+                                            .slice(0, window.innerWidth <= 480 ? 3 : 12)
+                                            .map(credit => (
                                             <CreditOrPersonCard key={credit.id} type="credit" data={credit} />
                                         ))}
                                     </div>

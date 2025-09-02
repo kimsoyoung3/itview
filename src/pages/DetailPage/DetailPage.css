@@ -147,7 +147,7 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    border-bottom: 1px solid #888888;
+    border-bottom: 1px solid #d9d9d9;
     padding-bottom: 15px;
 }
 
@@ -192,7 +192,7 @@
 
 .info-top-center>p {
     margin: 0;
-    color: #888888;
+    color: #555555;
 }
 
 .average-rating {
@@ -455,6 +455,8 @@
 }
 
 .info-bottom {
+    color: #555555;
+    font-size: 0.9rem;
     padding: 20px 0;
 }
 
@@ -648,3 +650,83 @@
     z-index: 10;
 }
 
+/*모바일 사이즈*/
+@media (max-width: 480px) {
+    .detail-content-inner {
+        flex-direction: column-reverse;
+        align-items: center;
+    }
+
+    .detail-content-inner-poster {
+        width: 100%;
+        max-width: 280px;
+    }
+
+    .info-top {
+        width: 100%;
+        flex-direction: column;
+        text-align: center;
+    }
+
+    .info-top-left, .info-top-center {
+        width: 100%;
+        padding-bottom: 15px;
+        margin-bottom: 15px;
+        border-bottom: 1px solid #d9d9d9;
+    }
+
+    .info-middle {
+        padding: 15px 0;
+    }
+
+    .my-comment-content {
+        flex-direction: column;
+        gap: 15px;
+    }
+
+    .my-comment-content-image {
+        width: 50px;
+        border-radius: 50%;
+    }
+
+    .my-comment-content-image>img {
+        display: block;
+        border-radius: 50%;
+        width: 100%;
+    }
+
+    .my-comment-content>p {
+        width: 80%;
+        margin: 0;
+        text-align: center;
+    }
+
+    .comment-inner {
+        width: 100%;
+        display: grid;
+        grid-template-columns: repeat(1, 1fr); /* 4등분 고정 */
+        gap: 10px;
+    }
+
+    .credit-prev,
+    .credit-next {
+        top: 100%;
+    }
+
+    .credit-prev {
+        left: 40%;
+        transform: translateX(-50%);
+    }
+
+    .credit-next {
+        right: 40%;
+        transform: translateX(-50%);
+    }
+
+    .gallery-prev,
+    .gallery-next,
+    .video-prev,
+    .video-next {
+        display: none;
+    }
+}

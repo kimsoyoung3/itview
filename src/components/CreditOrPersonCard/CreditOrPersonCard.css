@@ -55,3 +55,12 @@
     font-weight: 500;
     color: #888888;
 }
+
+/*모바일 사이즈*/
+@media (max-width: 480px) {
+    .credit-card {
+        flex: 0 0 100%; /* 한 줄에 4개 (100% / 4 - gap) */
+        box-sizing: border-box;
+        height: 100%;
+    }
+}
