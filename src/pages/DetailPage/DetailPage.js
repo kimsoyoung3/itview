@@ -104,7 +104,7 @@ const DetailPage = ({userInfo, openLogin}) => {
     const serviceLogos = {
         NETFLIX: '/externalLogo/netflix.png',
         DISNEY_PLUS: '/externalLogo/disney.png',
-        WAVE: '/externalLogo/wave.png',
+        WAVVE: '/externalLogo/wave.png',
         WATCHA: '/externalLogo/watcha.png',
         TVING: '/externalLogo/tving.png',
         TVN: '/externalLogo/tvn.png',

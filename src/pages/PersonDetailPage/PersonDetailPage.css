@@ -186,8 +186,8 @@
     padding: 5px;
 }
 
-.person-detail-page-content-tab .active {
-    background-color: #5e5e64;
+.person-detail-page-content-tab .active:hover {
+    background-color: #000000;
     color: #ffffff;
     border-radius: 4px;
 }
