@@ -1,24 +1,28 @@
 package com.example.itview_spring.DTO;
 
-import jakarta.persistence.Column;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.web.multipart.MultipartFile;
 
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@NotBlank
+@NotNull
 public class PersonDTO {
     private Integer id;
 
-    @Column(nullable = false, length = 255)
     private String name;
 
-    @Column(length = 1024)
-    private String profile;
-
-    @Column(nullable = false, length = 255)
     private String job;
+
+    private MultipartFile profileImage;
+
+
 }
+
