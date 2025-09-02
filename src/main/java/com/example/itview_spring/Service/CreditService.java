@@ -14,6 +14,7 @@ import com.example.itview_spring.DTO.CreditDTO;
 import com.example.itview_spring.DTO.WorkDTO;
 import com.example.itview_spring.DTO.WorkDomainDTO;
 import com.example.itview_spring.Repository.CreditRepository;
+import com.example.itview_spring.Repository.ExternalServiceRepository;
 
 import lombok.RequiredArgsConstructor;
 
@@ -22,6 +23,7 @@ import lombok.RequiredArgsConstructor;
 public class CreditService {
     
     private final CreditRepository creditRepository;
+    private final ExternalServiceRepository externalServiceRepository;
 
     public Page<CreditDTO> getCreditByContentId(Pageable page, Integer contentId) {
         int currentPage = page.getPageNumber()-1;
@@ -40,6 +42,10 @@ public class CreditService {
     // 분야별 페이징 조회
     public Page<WorkDTO> getWorks(Integer page, Integer personId, ContentType contentType, String department) {
         Pageable pageable = PageRequest.of(page - 1, 1);
-        return creditRepository.findWorkDTOPage(pageable, personId, contentType, department);
+        Page<WorkDTO> workDTOPage = creditRepository.findWorkDTOPage(pageable, personId, contentType, department);
+        for (WorkDTO workDTO : workDTOPage) {
+            workDTO.setExternalServices(externalServiceRepository.findByContentId(workDTO.getId()));
+        }
+        return workDTOPage;
     }
 }
