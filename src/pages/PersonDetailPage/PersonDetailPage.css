@@ -119,14 +119,14 @@
     flex-wrap: wrap;
 }
 
-.domain-list-externalService>a {
+.domain-list-externalService>div {
     display: block;
     width: 30px;
     border-radius: 50%;
     border: 1px solid #d9d9d9;
 }
 
-.domain-list-externalService>a>img {
+.domain-list-externalService>div>img {
     width: 100%;
     border-radius: 50%;
 }
