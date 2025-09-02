@@ -106,14 +106,13 @@ const PersonDetailPage = ({userInfo, openLogin}) => {
         }
     };
 
-
     const [activeTab, setActiveTab] = useState(null);
 
     /*외부서비스 로고*/
     const serviceLogos = {
         NETFLIX: '/externalLogo/netflix.png',
         DISNEY_PLUS: '/externalLogo/disney.png',
-        WAVVE: '/externalLogo/wave.png',
+        WAVVE: '/externalLogo/wavve.png',
         WATCHA: '/externalLogo/watcha.png',
         TVING: '/externalLogo/tving.png',
         TVN: '/externalLogo/tvn.png',
