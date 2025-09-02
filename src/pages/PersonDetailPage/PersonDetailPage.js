@@ -144,9 +144,22 @@ const PersonDetailPage = ({userInfo, openLogin}) => {
                                                 <div className="domain-list-image"><img src={item.poster} alt=""/></div>
                                                 <div className="domain-list-title">{item.title}</div>
                                                 <div className="domain-list-role">{item.role}</div>
-                                                {item.ratingAvg && (
-                                                    <div className="domain-list-ratingAvg">평균 {item.ratingAvg}</div>
-                                                )}
+
+                                                    <div className="domain-list-ratingAvg">
+                                                        {item.ratingAvg && (
+                                                            <div>평균 <i className="bi bi-star-fill"/> {item.ratingAvg.toFixed(1)}</div>
+                                                            )}
+                                                    </div>
+
+
+                                                <div className="domain-list-externalService">
+                                                    {item.externalServices?.map(service => (
+                                                        <a key={service.id} href={service.href} target="_blank" rel="noopener noreferrer">
+                                                            <img src={serviceLogos[service.type] || '/images/default-logo.png'} alt={service.type}/>
+                                                        </a>
+                                                    ))}
+                                                </div>
+
                                             </div>
                                         )}
                                         <div className="person-detail-page-content-domain-btn">{workInfo[contentType][department].page.number+1 < workInfo[contentType][department].page.totalPages ? <button onClick={() => handleClickMore(contentType, department, workInfo[contentType][department].page.number+2)}>더보기</button> : null} </div>
