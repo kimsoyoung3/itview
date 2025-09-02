@@ -161,24 +161,24 @@ const PersonDetailPage = ({userInfo, openLogin}) => {
                                             <div>감상서비스</div>
                                         </div>
                                         {items.content.map(item =>
-                                            <NavLink to={`/content/${item.id}`} className="person-detail-page-content-domain-list">
+                                            <NavLink key={item.id} to={`/content/${item.id}`} className="person-detail-page-content-domain-list">
                                                 <div className="domain-list-date">{(new Date(item.releaseDate).getFullYear())}</div>
                                                 <div className="domain-list-image"><img src={item.poster} alt=""/></div>
                                                 <div className="domain-list-title">{item.title}</div>
                                                 <div className="domain-list-role">{item.role}</div>
 
-                                                    <div className="domain-list-ratingAvg">
-                                                        {item.ratingAvg && (
-                                                            <div>평균 <i className="bi bi-star-fill"/> {item.ratingAvg.toFixed(1)}</div>
-                                                            )}
-                                                    </div>
+                                                <div className="domain-list-ratingAvg">
+                                                    {item.ratingAvg && (
+                                                        <div>평균 <i className="bi bi-star-fill"/> {item.ratingAvg.toFixed(1)}</div>
+                                                    )}
+                                                </div>
 
 
                                                 <div className="domain-list-externalService">
                                                     {item.externalServices?.map(service => (
-                                                        <a key={service.id} href={service.href} target="_blank" rel="noopener noreferrer">
+                                                        <div key={service.id} onClick={(e) => {e.preventDefault(); window.open(service.href)}} target="_blank" rel="noopener noreferrer">
                                                             <img src={serviceLogos[service.type] || '/images/default-logo.png'} alt={service.type}/>
-                                                        </a>
+                                                        </div>
                                                     ))}
                                                 </div>
 
