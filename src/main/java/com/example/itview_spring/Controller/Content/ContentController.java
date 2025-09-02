@@ -1,26 +1,29 @@
 package com.example.itview_spring.Controller.Content;
 
+import aj.org.objectweb.asm.commons.Remapper;
 import com.example.itview_spring.Constant.Genre;
 import com.example.itview_spring.DTO.*;
+import com.example.itview_spring.Entity.PersonEntity;
+import com.example.itview_spring.Entity.VideoEntity;
+import com.example.itview_spring.Repository.VideoRepository;
 import com.example.itview_spring.Service.ContentService;
-import com.example.itview_spring.Service.VideoService;
+//import com.example.itview_spring.Service.VideoService;
 import com.example.itview_spring.Util.PageInfo;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.web.servlet.error.ErrorController;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static org.springframework.data.jpa.domain.AbstractPersistable_.id;
@@ -28,8 +31,11 @@ import static org.springframework.data.jpa.domain.AbstractPersistable_.id;
 @Controller
 @RequiredArgsConstructor
 public class ContentController {
-    private final VideoService videoService;
-    private final ContentService contentService;
+    //  private final VideoService videoService;      //Video 서비스
+    //  private final GalleryService galleryService;  // 갤러리 서비스
+    @Autowired
+    private final ContentService contentService;  // 콘텐츠 서비스
+
     private final PageInfo pageInfo;
 
 //    1. 기능 흐름
@@ -46,16 +52,7 @@ public class ContentController {
 //
 
 
-    // ==================== ERROR PAGE HANDLER ====================
-    //    500 에러가 나더라도 커스텀 오류 페이지 추가 가능 (선택 사항)-----------------------------------
-//    @Controller
-//    public class CustomErrorController implements ErrorController {
-//        @RequestMapping("/error")
-//        public String handleError() {
-//            return "error/customError"; // templates/error/customError.html
-//        }
-//    }
-// ==================== CONTENT CRUD ==========================
+    // ==================== CONTENT CRUD ==========================
 // 등록 폼 이동
     @GetMapping("/content/register")
     public String newContent() {
@@ -283,7 +280,7 @@ public class ContentController {
     // 장르 저장
     @PostMapping("/content/{contentId}/genre")
     public String submitGenres(@PathVariable("contentId") Integer contentId,
-                               @RequestParam(value = "genres", required = false) List<String> genreNames){
+                               @RequestParam(value = "genres", required = false) List<String> genreNames) {
 
 
         System.out.println("✅ [장르 저장] contentId  == " + contentId);
@@ -323,7 +320,8 @@ public class ContentController {
         Genre[] allGenres = Genre.values();
 
         //0825 영상등록 버튼 없을때 자료
-          return "redirect:/content/" + contentId + "/genre";
+        return "redirect:/content/" + contentId + "/credit";
+//          return "redirect:/content/" + contentId + "/genre";
         //  return "redirect:/content/" + contentId + "/video";
 
 
@@ -332,46 +330,225 @@ public class ContentController {
 
     }
 
-/////////0825 vidio 추가///////////////////////////////////////////////////////////////////////////////////////////
+/////////0901 credit 추가///////////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    /**
+     * 크레딧 등록/수정 폼(get)
+     */
+    @GetMapping("/content/{contentId}/credit")
+    public String creditForm(@PathVariable("contentId") Integer contentId,
+                             @RequestParam(value = "id", required = false) Integer creditId,
+                             Model model) {
+
+        // 1️⃣ 단일 CreditDTO 조회 (수정 모드)
+        CreditDTO creditDTO;
+        if (creditId != null) {
+            // 수정 모드: 기존 크레딧 조회
+            creditDTO = contentService.getCreditById(creditId);
+            System.out.println("📌 contentId: " + contentId);
+            System.out.println("📌 creditDTO.id: " + creditDTO.getId());
+
+            if (creditDTO.getPerson() == null) {
+                creditDTO.setPerson(new PersonDTO()); // 안전하게 PersonDTO 초기화
+                System.out.println("📌 person.id: " + creditDTO.getPerson().getId());
+                System.out.println("📌 person.name: " + creditDTO.getPerson().getName());
+            }
+        } else {
+            System.out.println("⚠️ person 정보 없음");
+            // 신규 등록 모드: 빈 CreditDTO + PersonDTO 포함
+            creditDTO = new CreditDTO();
+            creditDTO.setPerson(new PersonDTO());
+        }
+        model.addAttribute("creditDTO", creditDTO);
+
+        // 2️⃣ 전체 CreditDTO 리스트 조회 (목록)
+        List<CreditDTO> creditList = contentService.getCreditsByContentId(contentId);
+        model.addAttribute("creditList", creditList);
+
+        // 3️⃣ ContentId도 모델에 전달
+        model.addAttribute("contentId", contentId);
+
+        return "content/creditForm"; // 템플릿 경로
+    }
+
+    /**
+     * 크레딧 등록 또는 수정 처리 (post)
+     */
+    @PostMapping("/content/{contentId}/credit")
+    public String createOrUpdateCredits(
+            @PathVariable("contentId") Integer contentId,
+            @ModelAttribute CreditDTO creditDTO,
+            RedirectAttributes redirectAttributes) {
+
+        // Person 정보가 없으면 이름 기준으로 조회 후 없으면 생성
+        if ((creditDTO.getPerson() == null || creditDTO.getPerson().getId() == null)
+                && creditDTO.getPerson() != null && creditDTO.getPerson().getName() != null) {
+            PersonEntity person = contentService.getOrCreatePersonByName(creditDTO.getPerson().getName());
+            creditDTO.getPerson().setId(person.getId());
+        }
+
+        if (creditDTO.getId() == null) {
+            // 신규 등록
+            contentService.addCredits(contentId, List.of(creditDTO));
+            redirectAttributes.addFlashAttribute("message", "크레딧이 등록되었습니다.");
+        } else {
+            // 수정 처리
+            contentService.updateCredit(contentId, List.of(creditDTO));
+            redirectAttributes.addFlashAttribute("message", "크레딧이 수정되었습니다.");
+        }
+
+        return "redirect:/content/" + contentId + "/credit";
+    }
+
+    /**
+     * 크레딧 삭제 처리
+     */
+    @PostMapping("/content/{contentId}/credit/delete")
+    public String deleteCredit(@PathVariable Integer contentId,
+                               @RequestParam("creditId") Integer creditId,
+                               RedirectAttributes redirectAttributes) {
+
+        System.out.println("🗑️ [Credit 삭제] contentId == " + contentId);
+        System.out.println("🗑️ [Credit 삭제] creditId == " + creditId);
+
+        contentService.deleteCredit(creditId);
+
+        redirectAttributes.addFlashAttribute("message", "크레딧이 삭제되었습니다.");
+
+        return "redirect:/content/" + contentId + "/credit";
+    }
+
+/////////0901  gallery 추가///////////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    /**
+     * 갤러리 등록/수정 폼(GET)
+     */
+//    @GetMapping("/content/{contentId}/gallery")
+//    public String galleryForm(@PathVariable("contentId") Integer contentId,
+//                              Model model) {
+//
+//        // 콘텐츠 ID 전달 (필수)
+//        model.addAttribute("contentId", contentId);
+//
+//        // 필요하다면 galleryList 조회 로직 추가
+//        // model.addAttribute("galleryList", contentService.getGalleriesByContentId(contentId));
+//
+//        return "content/galleryForm"; // templates/content/galleryForm.html
+//    }
+
+//        @Autowired
+//        public GalleryController(GalleryService galleryService, ContentService contentService) {
+//            this.galleryService = galleryService;  // GalleryService 주입
+//            this.contentService = contentService;  // ContentService 주입
+//        }
+
+    /**
+     * 갤러리 등록/수정 폼 (GET)
+     */
+    @GetMapping("/content/{contentId}/gallery")
+    public String galleryForm(@PathVariable("contentId") Integer contentId,
+                              @RequestParam(value = "id", required = false) Integer galleryId,
+                              Model model) {
+
+        // 1️⃣ 단일 GalleryDTO 조회 (수정 모드)
+        // galleryId가 있을 경우 기존 갤러리 정보를 수정 모드로 가져오고, 없으면 새로운 GalleryDTO를 생성
+        GalleryDTO galleryDTO = (galleryId != null)
+                ? contentService.getGalleryById(galleryId)  // 갤러리 수정 모드일 경우 해당 갤러리 데이터를 조회
+                : new GalleryDTO();                        // 신규 갤러리 등록 모드일 경우 새로운 객체 생성
+
+        model.addAttribute("galleryDTO", galleryDTO);  // 모델에 갤러리 정보를 전달 (수정 또는 새로 추가된 갤러리 정보)
+
+        // 2️⃣ 전체 GalleryDTO 리스트 조회 (목록)
+        // contentId에 해당하는 모든 갤러리 목록을 조회
+        List<GalleryDTO> galleryList = contentService.getGallerysByContentId(contentId);
+        model.addAttribute("galleryList", galleryList);  // 갤러리 목록을 모델에 전달
+
+        // 3️⃣ ContentId도 모델에 전달
+        model.addAttribute("contentId", contentId);  // contentId도 모델에 전달하여 폼에서 사용
+
+        // "content/galleryForm" 템플릿을 반환하여 갤러리 등록/수정 폼을 렌더링
+        return "content/galleryForm"; // 템플릿 경로: templates/content/galleryForm.html
+    }
+
+    /**
+     * 갤러리 등록 또는 수정 처리 (POST)
+     */
+    @PostMapping("/content/{contentId}/gallery")
+    public String createGallery(@PathVariable("contentId") Integer contentId,
+                                @ModelAttribute GalleryDTO galleryDTO,
+                                RedirectAttributes redirectAttributes) {
+
+        // 1️⃣ 신규 갤러리 등록 or 기존 갤러리 수정 여부 판단
+        if (galleryDTO.getId() == null) {  // galleryDTO에 ID가 없으면 신규 갤러리 등록
+            contentService.addGallery(contentId, galleryDTO); // 신규 갤러리 등록 처리
+            redirectAttributes.addFlashAttribute("message", "갤러리가 등록되었습니다."); // 등록 성공 메시지
+        } else {  // galleryDTO에 ID가 있으면 기존 갤러리 수정
+            contentService.updateGallery(galleryDTO.getId(), (List<GalleryDTO>) galleryDTO); // 갤러리 수정 처리
+            redirectAttributes.addFlashAttribute("message", "갤러리가 수정되었습니다."); // 수정 성공 메시지
+        }
+
+        // 폼 제출 후 동일 contentId를 기준으로 갤러리 페이지로 리다이렉트
+        redirectAttributes.addAttribute("contentId", contentId);  // 갤러리 페이지로 리다이렉트 시 contentId 전달
+        return "redirect:/content/" + contentId + "/gallery";  // 갤러리 목록 페이지로 리다이렉트
+    }
+
+    /**
+     * 갤러리 삭제 처리 (POST)
+     */
+    @PostMapping("/content/{contentId}/gallery/delete")
+    public String deleteGallery(@PathVariable Integer contentId,
+                                @RequestParam("galleryId") Integer galleryId,
+                                RedirectAttributes redirectAttributes) {
+
+        // 1️⃣ 갤러리 삭제 처리
+        contentService.deleteGallery(galleryId);  // galleryId에 해당하는 갤러리 삭제 처리
+
+        // 2️⃣ 삭제 후 성공 메시지 추가
+        redirectAttributes.addFlashAttribute("message", "갤러리가 삭제되었습니다.");  // 삭제 완료 메시지
+
+        // 삭제 후 갤러리 목록 페이지로 리다이렉트
+        return "redirect:/content/" + contentId + "/gallery";  // 삭제 후 갤러리 목록 페이지로 리다이렉트
+    }
+
+/// //////gallery end //////////////////////////////////////////////////////////////////////////////////////////////
+
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+/////////0825 vidio 추가///////////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     /**
      * 영상 등록/수정 폼(get)
      */
     @GetMapping("/content/{contentId}/video")
     public String videoForm(@PathVariable("contentId") Integer contentId,
-                                @RequestParam(value = "id", required = false) Integer videoId,
-                                Model model) {
-        // 콘텐츠 정보
-//        ContentCreateDTO contentDTO = contentService.read(contentId);
-//        model.addAttribute("contentDTO", contentDTO);
-//        model.addAttribute("contentId", contentId);
-//
-//        // 기존 영상 데이터가 있다면 조회
-//        VideoDTO videoDTO = contentService.getVideoByContentId(contentId);// <- 존재 여부 체크
-//
-//        if (videoDTO == null) {
-//            videoDTO = new VideoDTO(); // 새로 생성
-//        }
-//        model.addAttribute("videoDTO", videoDTO); // 항상 전달
-//        VideoDTO videoDTO = (videoId != null)  //getVideoByContentId
-//                ? videoService.read(videoId)        // 수정 모드
-//                : new VideoDTO();                  // 등록 모드
+                            @RequestParam(value = "id", required = false) Integer videoId,
+                            Model model) {
 
-        // 1️⃣ 단일 VideoDTO 조회 (수정 모드)
-        VideoDTO videoDTO = (videoId != null)
-                ? contentService.getVideoById(videoId)  // contentService에서 단일 VideoId 조회 메서드 필요
-                : new VideoDTO();                        // 등록 모드
-        model.addAttribute("videoDTO", videoDTO);
+        // videoId로 VideoEntity 가져오기 (비즈니스 로직)
 
-        // 2️⃣ 전체 VideoDTO 리스트 조회 (목록)
-        List<VideoDTO> videoList = contentService.getVideosByContentId(contentId);
-        model.addAttribute("videoList", videoList);
+        VideoEntity videoEntity = videoRepository.findById(videoId)
+                .orElseThrow(() -> new NoSuchElementException("해당 영상이 존재하지 않습니다: " + videoId));
 
-        // 3️⃣ ContentId도 모델에 전달
-        model.addAttribute("contentId", contentId);
 
-        return "content/videoForm"; // 템플릿 경로: templates/content/videoForm.html
+        // 수정 후: Entity -> DTO 매핑 적용
+        VideoDTO videoDTO = modelMapper.map(videoEntity, VideoDTO.class);
+        model.addAttribute("videoDTO", videoDTO); // 모델에 VideoDTO 추가
+
+        // 수정할 비디오가 없을 경우 기본값으로 초기화
+        if (videoId != null && videoDTO == null) {
+            throw new NoSuchElementException("해당 ID에 대한 영상이 존재하지 않습니다: " + videoId);  // 영상이 없으면 예외 처리
+        }
+
+        // 전체 VideoDTO 리스트 조회 (목록)
+        List<VideoDTO> videoList = contentService.getVideosByContentId(contentId);  // `ContentService`에서 `getVideosByContentId` 메서드 호출로 변경
+        model.addAttribute("videoList", videoList);  // 모델에 전체 영상 목록 추가
+
+        // ContentId도 모델에 전달
+        model.addAttribute("contentId", contentId); // 콘텐츠 ID를 모델에 전달
+
+        return "content/videoForm";  // 영상 등록/수정 폼을 보여줄 템플릿 경로
     }
 
     /**
@@ -384,40 +561,40 @@ public class ContentController {
             RedirectAttributes redirectAttributes) {
 
         if (videoDTO.getId() == null) {
-            // 신규 등록
-            contentService.createVideo(contentId, videoDTO);
-            redirectAttributes.addFlashAttribute("message", "등록되었습니다.");
+            // 신규 등록 처리
+            contentService.createVideo(contentId, videoDTO);  // 신규 영상 등록
+            redirectAttributes.addFlashAttribute("message", "등록되었습니다."); // 등록 완료 메시지
         } else {
             // 수정 처리
-            contentService.updateVideo(videoDTO.getId(), videoDTO);
-            redirectAttributes.addFlashAttribute("message", "수정되었습니다.");
+            contentService.updateVideo(videoDTO.getId(), videoDTO);  // 수정된 영상 처리
+            redirectAttributes.addFlashAttribute("message", "수정되었습니다."); // 수정 완료 메시지
         }
 
-        redirectAttributes.addAttribute("contentId", contentId);
-        return "redirect:/content/" + contentId + "/video";
+        redirectAttributes.addAttribute("contentId", contentId);  // contentId를 리다이렉트에 포함
+        return "redirect:/content/" + contentId + "/video";  // 다시 영상 리스트 페이지로 리다이렉트
     }
-
 
     /**
      * 영상 삭제 처리
      */
+//삭제 처리 메서드에서는 contentService.deleteVideo(videoId)를 호출하여
+// 해당 영상을 삭제하고, 삭제 완료 메시지를 리다이렉트 후 전달합니다.
     @PostMapping("/content/{contentId}/video/delete")
     public String deleteVideo(@PathVariable Integer contentId,
-                          @RequestParam("videoId") Integer videoId,
-                          RedirectAttributes redirectAttributes) {
-    System.out.println("🗑️ [Video 삭제] contentId == " + contentId);
-    System.out.println("<UNK> [Video <UNK>] videoId == " + videoId);
+                              @RequestParam("videoId") Integer videoId,
+                              RedirectAttributes redirectAttributes) {
+        System.out.println("🗑️ [Video 삭제] contentId == " + contentId); // 삭제 로그 출력
+        System.out.println("<UNK> [Video <UNK>] videoId == " + videoId);  // 삭제 로그 출력
 
-        contentService.deleteVideo(videoId); //실제 videoId 기반 삭제
-        // ✅ 메시지 추가
+        contentService.deleteVideo(videoId);  // 영상 삭제 메서드 호출
+        redirectAttributes.addFlashAttribute("message", "삭제되었습니다.");  // 삭제 완료 메시지
 
-        redirectAttributes.addFlashAttribute("message", "삭제되었습니다.");
-        // 삭제 후 영상 등록 페이지로 리다이렉트
-        
-        return "redirect:/content/" + contentId + "/video";
+        return "redirect:/content/" + contentId + "/video";  // 삭제 후 영상 리스트 페이지로 리다이렉트
     }
 
-/////////0828  ExternalService 추가///////////////////////////////////////////////////////////////////////////////////////////
+/// ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+/// //////0828  ExternalService 추가///////////////////////////////////////////////////////////////////////////////////////////
+/// ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 @GetMapping("/content/{contentId}/external")
 public String externalServiceForm(@PathVariable("contentId") Integer contentId,
@@ -439,56 +616,55 @@ public String externalServiceForm(@PathVariable("contentId") Integer contentId,
     return "content/externalForm"; // 템플릿 경로: templates/content/externalForm.html
 }
 
-    /**
-     * 외부서비스  등록 또는 수정 처리 (post)
-     */
-    @PostMapping("/content/{contentId}/external")
-    public String createExternalService(
-            @PathVariable("contentId") Integer contentId,
-            @ModelAttribute("externalServiceDTO") @Valid ExternalServiceDTO externalServiceDTO,
-            BindingResult bindingResult,
-            RedirectAttributes redirectAttributes,
-            Model model) {
+/**
+ * 외부서비스  등록 또는 수정 처리 (post)
+ */
+@PostMapping("/content/{contentId}/external")
+public String createExternalService(
+        @PathVariable("contentId") Integer contentId,
+        @ModelAttribute("externalServiceDTO") @Valid ExternalServiceDTO externalServiceDTO,
+        BindingResult bindingResult,
+        RedirectAttributes redirectAttributes,
+        Model model) {
 
 
-        if (bindingResult.hasErrors()) {
-            // 검증 실패 → 다시 폼으로
-            model.addAttribute("externalServiceList", contentService.getExternalServicesByContentId(contentId));
-            model.addAttribute("contentId", contentId);
-            return "content/externalForm";  // 다시 입력폼 보여주기
-        }
-
-        if (externalServiceDTO.getId() == null) {
-            // 신규 등록
-            contentService.createExternalService(contentId, externalServiceDTO);
-            redirectAttributes.addFlashAttribute("message", "등록되었습니다.");
-        } else {
-            // 수정 처리
-            contentService.updateExternalService(externalServiceDTO.getId(), externalServiceDTO);
-            redirectAttributes.addFlashAttribute("message", "수정되었습니다.");
-        }
-
-        return "redirect:/content/" + contentId + "/external";
-    }
-    /**
-     *  외부서비스 삭제 처리
-     */
-    @PostMapping("/content/{contentId}/external/delete")
-    public String deleteExternalService(@PathVariable Integer contentId,
-                                        @RequestParam("externalServiceId") Integer externalServiceId,
-                                        RedirectAttributes redirectAttributes) {
-        System.out.println("🗑️ [ExternalService 삭제] contentId == " + contentId);
-        System.out.println("<UNK> [ExternalService <UNK>] externalServiceId == " + externalServiceId);
-
-        contentService.deleteExternalService(externalServiceId); //실제 externalServiceId 기반 삭제
-        // ✅ 메시지 추가
-        redirectAttributes.addFlashAttribute("message", "삭제되었습니다.");
-        // 삭제 후 영상 등록 페이지로 리다이렉트
-
-        return "redirect:/content/" + contentId + "/external";
+    if (bindingResult.hasErrors()) {
+        // 검증 실패 → 다시 폼으로
+        model.addAttribute("externalServiceList", contentService.getExternalServicesByContentId(contentId));
+        model.addAttribute("contentId", contentId);
+        return "content/externalForm";  // 다시 입력폼 보여주기
     }
 
+    if (externalServiceDTO.getId() == null) {
+        // 신규 등록
+        contentService.createExternalService(contentId, externalServiceDTO);
+        redirectAttributes.addFlashAttribute("message", "등록되었습니다.");
+    } else {
+        // 수정 처리
+        contentService.updateExternalService(externalServiceDTO.getId(), externalServiceDTO);
+        redirectAttributes.addFlashAttribute("message", "수정되었습니다.");
+    }
 
+    return "redirect:/content/" + contentId + "/external";
+}
 
+/**
+ * 외부서비스 삭제 처리
+ */
+@PostMapping("/content/{contentId}/external/delete")
+public String deleteExternalService(@PathVariable Integer contentId,
+                                    @RequestParam("externalServiceId") Integer externalServiceId,
+                                    RedirectAttributes redirectAttributes) {
+    System.out.println("🗑️ [ExternalService 삭제] contentId == " + contentId);
+    System.out.println("<UNK> [ExternalService <UNK>] externalServiceId == " + externalServiceId);
+
+    contentService.deleteExternalService(externalServiceId); //실제 externalServiceId 기반 삭제
+    // ✅ 메시지 추가
+    redirectAttributes.addFlashAttribute("message", "삭제되었습니다.");
+    // 삭제 후 영상 등록 페이지로 리다이렉트
+
+    return "redirect:/content/" + contentId + "/external";
+}
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 }

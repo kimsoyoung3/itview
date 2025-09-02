@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="kr"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/mainlayout}">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>콘텐츠 조회</title>
+</head>
+<body>
+<main layout:fragment="content">
+    <div class="row mt-3 mb-3">
+        <div class="col-4"></div>
+        <div class="col-4">
+            <h1>콘텐츠 조회</h1>
+            <p>콘텐츠 정보</p>
+
+            <div class="d-flex justify-content-center mb-4">
+                <!--포스터 자리-->
+            </div>
+
+            <div class="container">
+                <div class="row mb-2">
+                    <div class="col-3"><strong>제목</strong></div>
+                    <div class="col" th:text="${contentDTO.title}"></div>
+                </div>
+                <div class="row mb-2">
+                    <div class="col-3"><strong>콘텐츠 타입</strong></div>
+                    <div class="col" th:text="${contentDTO.contentType?.description}"></div>
+                </div>
+                <div class="row mb-2">
+                    <div class="col-3"><strong>공개일</strong></div>
+                    <div class="col" th:text="${#temporals.format(contentDTO.releaseDate, 'yyyy-MM-dd')}"></div>
+                </div>
+                <div class="row mb-2">
+                    <div class="col-3"><strong>국가</strong></div>
+                    <div class="col" th:text="${contentDTO.nation}"></div>
+                </div>
+                <div class="row mb-2">
+                    <div class="col-3"><strong>설명</strong></div>
+                    <div class="col" th:utext="${#strings.replace(#strings.replace(#strings.replace(contentDTO.description, '&#13;&#10;', '&lt;br&gt;'), '&#10;', '&lt;br&gt;'), '&#13;', '&lt;br&gt;')}" ></div>
+                </div>
+                <div class="row mb-2">
+                    <div class="col-3"><strong>이용가 제한</strong></div>
+                    <div class="col" th:text="${contentDTO.age}"></div>
+                </div>
+                <div class="row mb-2">
+                    <div class="col-3"><strong>분량</strong></div>
+                    <div class="col" th:text="${contentDTO.duration}"></div>
+                </div>
+                <div class="row mb-2">
+                    <div class="col-3"><strong>연재처</strong></div>
+                    <div class="col" th:text="${contentDTO.channelName?.description}"></div>
+                </div>
+                <div class="row mb-2">
+                    <div class="col-3"><strong>감독 이름</strong></div>
+                    <div class="col" th:text="${contentDTO.creatorName}"></div>
+                </div>
+            </div>
+
+            <div class="text-end mt-4">
+                <a th:href="@{/content/{id}/delete(id=${contentDTO.id})}" class="btn btn-primary">삭제</a>
+                <a th:href="@{/content/{id}/update(id=${contentDTO.id})}" class="btn btn-primary">수정</a>
+                <a th:href="@{/content/list}" class="btn btn-primary">목록</a>
+            </div>
+        </div>
+        <div class="col-4"></div>
+    </div>
+</main>
+</body>
+</html>
