@@ -109,6 +109,7 @@ const DetailPage = ({userInfo, openLogin}) => {
         TVING: '/externalLogo/tving.png',
         TVN: '/externalLogo/tvn.png',
         APPLE_TV_PLUS: '/externalLogo/apple-tv-plus.png',
+        COUPANG_PLAY: '/externalLogo/coupang-play.png',
 
         ALADIN: '/externalLogo/aladin.png',
         YES24: '/externalLogo/yes24.png',
