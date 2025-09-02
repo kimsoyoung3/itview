@@ -13,6 +13,13 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 
+import java.io.IOException;
+import java.util.Base64;
+import java.util.Map;
+
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -21,18 +28,22 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.context.SecurityContextRepository;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.client.RestTemplate;
 
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/user")
 @CrossOrigin(origins = "http://localhost:3000", allowCredentials = "true")
-public class UserController {
+public class UserRestController {
     
     private final UserService registerService;
     private final AuthenticationManager authenticationManager;
@@ -52,21 +63,24 @@ public class UserController {
     // 로그인
     @PostMapping("/login")
     public ResponseEntity<Void> loginPost(@RequestBody LoginDTO loginDTO, HttpServletRequest request, HttpServletResponse response) {
-        // loginDTO로 인증 토큰 생성
-        UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
-                loginDTO.getEmail(), loginDTO.getPassword());
+        try {
+            // loginDTO로 인증 토큰 생성
+            UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
+                    loginDTO.getEmail(), loginDTO.getPassword());
 
-        // 인증 매니저를 사용하여 인증 시도
-        Authentication authentication = authenticationManager.authenticate(authToken); 
-        
-        // 인증이 성공하면 SecurityContextHolder에 인증 정보 저장
-        SecurityContext context = SecurityContextHolder.createEmptyContext();
-        context.setAuthentication(authentication);
-        SecurityContextHolder.setContext(context);
+            // 인증 매니저를 사용하여 인증 시도
+            Authentication authentication = authenticationManager.authenticate(authToken);
 
-        // 세션 생성
-        securityContextRepository.saveContext(context, request, response);
+            // 인증이 성공하면 SecurityContextHolder에 인증 정보 저장
+            SecurityContext context = SecurityContextHolder.createEmptyContext();
+            context.setAuthentication(authentication);
+            SecurityContextHolder.setContext(context);
 
+            // 세션 생성
+            securityContextRepository.saveContext(context, request, response);
+        } catch (Exception e) {
+            return ResponseEntity.status(401).build(); // 인증 실패
+        }
         return ResponseEntity.ok().build();
     }
 
@@ -142,5 +156,24 @@ public class UserController {
             return ResponseEntity.badRequest().build(); // 비밀번호 변경 실패
         }
         return ResponseEntity.ok().build();
+    }
+
+    // 소셜 계정 연결
+    @PostMapping("/link")
+    public void linkGoogle(HttpServletRequest request,
+                           HttpServletResponse response,
+                           @AuthenticationPrincipal CustomUserDetails user,
+                           @RequestParam("redirectURL") String redirectURL) throws IOException {
+        var auth = SecurityContextHolder.getContext().getAuthentication();
+        if (user != null) { // 이미 로그인된 사용자라면 소셜 계정 연동을 위한 정보를 세션에 저장
+            request.getSession().setAttribute("ORIGINAL_AUTH", auth);
+            request.getSession().setAttribute("LINK_FLOW", Boolean.TRUE);
+            request.getSession().setAttribute("USER_ID", user.getId());
+        }
+        Cookie redirectCookie = new Cookie("REDIRECT_URL", redirectURL);
+        redirectCookie.setPath("/");
+        redirectCookie.setHttpOnly(false);
+        response.addCookie(redirectCookie);
+        System.out.println("redirectURL: " + redirectURL);
     }
 }

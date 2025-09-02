@@ -2,7 +2,6 @@ package com.example.itview_spring.Entity;
 
 import lombok.Getter;
 import lombok.Setter;
-import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
@@ -26,11 +25,11 @@ public class WishlistEntity {
 
     // 유저
     @JoinColumn(name = "user_id", nullable = false)
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.LAZY)
     private UserEntity user;
 
     // 컨텐츠
     @JoinColumn(name = "content_id", nullable = false)
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.LAZY)
     private ContentEntity content;
 }

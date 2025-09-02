@@ -8,7 +8,6 @@ import java.time.LocalDateTime;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
-import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EntityListeners;
@@ -35,12 +34,12 @@ public class CommentEntity {
 
     // 코멘트 작성자
     @JoinColumn(name = "user_id", nullable = false)
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.LAZY)
     private UserEntity user;
 
     // 코멘트가 달린 컨텐츠
     @JoinColumn(name = "content_id", nullable = false)
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.LAZY)
     private ContentEntity content;
 
     // 코멘트 내용

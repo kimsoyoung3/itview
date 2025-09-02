@@ -2,7 +2,6 @@ package com.example.itview_spring.Entity;
 
 import lombok.Getter;
 import lombok.Setter;
-import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -27,12 +26,12 @@ public class CreditEntity {
 
     // 컨텐츠
     @JoinColumn(name = "content_id", nullable = false)
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.LAZY)
     private ContentEntity content;
 
     // 인물
     @JoinColumn(name = "person_id", nullable = false)
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.LAZY)
     private PersonEntity person;
 
     // 직책 (연출, 각본 등)

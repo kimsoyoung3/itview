@@ -2,7 +2,6 @@ package com.example.itview_spring.Entity;
 
 import lombok.Getter;
 import lombok.Setter;
-import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -27,7 +26,7 @@ public class VideoEntity {
 
     // 컨텐츠
     @JoinColumn(name = "content_id", nullable = false)
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.LAZY)
     private ContentEntity content;
 
     // 비디오 제목

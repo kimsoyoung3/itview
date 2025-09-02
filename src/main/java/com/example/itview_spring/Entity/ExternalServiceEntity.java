@@ -5,7 +5,6 @@ import lombok.Setter;
 
 import com.example.itview_spring.Constant.Channel;
 
-import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -32,7 +31,7 @@ public class ExternalServiceEntity {
 
     // 컨텐츠
     @JoinColumn(name = "content_id", nullable = false)
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.LAZY)
     private ContentEntity content;
 
     // 외부 서비스 타입 (예: 넷플릭스, 왓챠 등)

@@ -3,8 +3,11 @@ package com.example.itview_spring.Entity;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.List;
+
 import com.example.itview_spring.Constant.Role;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -12,6 +15,7 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 
@@ -50,4 +54,36 @@ public class UserEntity {
     // 유저 소개
     @Column(length = 1024)
     private String introduction;
+
+    // 유저의 컬렉션 목록
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<CollectionEntity> collections;
+
+    // 유저의 코멘트 목록
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<CommentEntity> comments;
+
+    // 유저의 평점 목록
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<RatingEntity> ratings;
+
+    // 유저의 위시리스트 목록
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<WishlistEntity> wishlists;
+
+    // 유저의 댓글 목록
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<ReplyEntity> replies;
+
+    // 유저의 좋아요 목록
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<LikeEntity> likes;
+
+    // 유저의 이메일 인증 목록
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<EmailVerificationEntity> emailVerifications;
+
+    // 유저의 소셜 계정 목록
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<SocialEntity> socials;
 }

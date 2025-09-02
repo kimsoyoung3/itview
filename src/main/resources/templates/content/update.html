@@ -10,148 +10,103 @@
 </head>
 <body>
 <main layout:fragment="content">
-<!--    <h1>Welcome to the Dashboard</h1>-->
-<!--    <p>This is your main content area.</p>-->
-
-    <div class="row">
-        <div class="col-4"></div><!--여백-->
-        <div class="col-4">
-            <h2>콘텐츠수정</h2>
-            <p>신규콘텐츠을 수정합니다:</p>
-<!--            <form th:action="@{/content/update}" method="post">&lt;!&ndash;입력처리&ndash;&gt;-->
-
-            <form th:action="@{/content/{id}/update(id=${contentDTO.id})}" method="post">
+    <div class="row mb-3">
+        <div class="col-12 mx-auto" style="max-width: 600px;">
+            <h1 class="mt-3">콘텐츠 수정</h1>
+            <p>콘텐츠를 수정합니다:</p>
+            <form th:action="@{/content/{id}/update(id=${contentDTO.id})}" method="post" th:object="${contentDTO}">
                 <input type="hidden" name="_method" value="put"/>
-                <!--DTO에 변수를 가지고 작업, id, (title, professor,credits, id)-->
-                <input type="hidden" name="id" th:value="${contentDTO.id}">
+                <input type="hidden" th:field="*{id}">
 
                 <div class="mb-3 mt-3">
-                    <label class="form-label">콘텐츠 제목:</label>
-                    <input type="text" class="form-control" name="title" th:value="${contentDTO.title}">
+                    <label class="form-label">제목:</label>
+                    <input type="text" class="form-control" th:field="*{title}">
                 </div>
-                <!-- 콘텐츠 타입 -->
-                <div class="mb-3">
-<!--                    <label class="form-label">콘텐츠 타입:</label>-->
-<!--                    <select class="form-select" name="contentType" th:value="${contentDTO.contentType}">-->
-<!--                        <option value="MOVIE">영화</option>-->
-<!--                        <option value="SERIES">시리즈</option>-->
-<!--                        <option value="BOOK">책</option>-->
-<!--                        <option value="WEBTOON">웹툰</option>-->
-<!--                        <option value="RECORD">음반</option>-->
-<!--                    </select>-->
 
+                <div class="mb-3">
                     <label class="form-label">콘텐츠 타입:</label>
-
                     <div class="form-check form-check-inline">
-                        <input class="form-check-input" type="radio" name="contentType" id="inlineRadio1"
-                               value="MOVIE" th:checked="${contentDTO.contentType != null and contentDTO.contentType.name() == 'MOVIE'}">
-                        <label class="form-check-label" for="inlineRadio1">1.영화</label>
+                        <input class="form-check-input" type="radio" th:field="*{contentType}" value="MOVIE" id="inlineRadio1">
+                        <label class="form-check-label" for="inlineRadio1">영화</label>
                     </div>
                     <div class="form-check form-check-inline">
-                        <input class="form-check-input" type="radio" name="contentType" id="inlineRadio2"
-                               value="SERIES" th:checked="${contentDTO.contentType != null and contentDTO.contentType.name() == 'SERIES'}">
-                        <label class="form-check-label" for="inlineRadio2">2.시리즈</label>
+                        <input class="form-check-input" type="radio" th:field="*{contentType}" value="SERIES" id="inlineRadio2">
+                        <label class="form-check-label" for="inlineRadio2">시리즈</label>
                     </div>
                     <div class="form-check form-check-inline">
-                        <input class="form-check-input" type="radio" name="contentType" id="inlineRadio3"
-                               value="BOOK" th:checked="${contentDTO.contentType != null and contentDTO.contentType.name() == 'BOOK'}">
-                        <label class="form-check-label" for="inlineRadio3">3.책</label>
+                        <input class="form-check-input" type="radio" th:field="*{contentType}" value="BOOK" id="inlineRadio3">
+                        <label class="form-check-label" for="inlineRadio3">책</label>
                     </div>
                     <div class="form-check form-check-inline">
-                        <input class="form-check-input" type="radio" name="contentType" id="inlineRadio4"
-                               value="WEBTOON" th:checked="${contentDTO.contentType != null and contentDTO.contentType.name() == 'WEBTOON'}">
-                        <label class="form-check-label" for="inlineRadio4">4.웹툰</label>
+                        <input class="form-check-input" type="radio" th:field="*{contentType}" value="WEBTOON" id="inlineRadio4">
+                        <label class="form-check-label" for="inlineRadio4">웹툰</label>
                     </div>
                     <div class="form-check form-check-inline">
-                        <input class="form-check-input" type="radio" name="contentType" id="inlineRadio5"
-                               value="RECORD" th:checked="${contentDTO.contentType != null and contentDTO.contentType.name() == 'RECORD'}">
-                        <label class="form-check-label" for="inlineRadio5">5.음반</label>
+                        <input class="form-check-input" type="radio" th:field="*{contentType}" value="RECORD" id="inlineRadio5">
+                        <label class="form-check-label" for="inlineRadio5">음반</label>
                     </div>
-
                 </div>
-                <!-- 출시 날짜 -->
+
                 <div class="mb-3">
-                    <label class="form-label">출시 날짜:</label>
-                    <input type="date" class="form-control" name="releaseDate" th:value="${contentDTO.releaseDate}">
+                    <label class="form-label">공개일:</label>
+                    <input type="date" class="form-control" name="releaseDate" th:value="${contentDTO.releaseDate != null ? #temporals.format(contentDTO.releaseDate, 'yyyy-MM-dd') : ''}">
                 </div>
-                <!-- 포스터 -->
+
                 <div class="mb-3">
                     <label class="form-label">포스터 url:</label>
-                    <input type="text" class="form-control" name="poster" th:value="${contentDTO.poster}">
+                    <input type="text" class="form-control" th:field="*{poster}">
                 </div>
-                <!-- 국가 -->
-                <div class="mb-3">
-                    <label class="form-label">국가:</label>
-                    <input type="text" class="form-control" name="nation" th:value="${contentDTO.nation}">
+
+                <div class="row">
+                    <div class="col-6 mb-3">
+                        <label class="form-label">국가:</label>
+                        <input type="text" class="form-control" th:field="*{nation}">
+                    </div>
+                    <div class="col-6 mb-3">
+                        <label class="form-label">분량:</label>
+                        <input type="text" class="form-control" th:field="*{duration}">
+                    </div>
                 </div>
-                <!-- 설명 -->
+
+                <div class="row">
+                    <div class="col-6 mb-3">
+                        <label class="form-label">이용가 제한:</label>
+                        <input type="text" class="form-control" th:field="*{age}">
+                    </div>
+                    <div class="col-6 mb-3">
+                        <label class="form-label">감독 이름:</label>
+                        <input type="text" class="form-control" th:field="*{creatorName}">
+                    </div>
+                </div>
+
                 <div class="mb-3">
                     <label class="form-label">설명:</label>
-                    <input type="text" class="form-control" name="description" th:value="${contentDTO.description}">
-                </div>
-                <!-- 길이 -->
-                <div class="mb-3">
-                    <label class="form-label">영화시간 :</label>
-                    <input type="text" class="form-control" name="duration" th:value="${contentDTO.duration}">
-                </div>
-                <!-- 연령 -->
-                <div class="mb-3">
-                    <label class="form-label">이용가 제한:</label>
-                    <input type="text" class="form-control" name="age" th:value="${contentDTO.age}">
-                </div>
-                <!-- 감독 이름 -->
-                <div class="mb-3">
-                    <label class="form-label">감독이름:</label>
-                    <input type="text" class="form-control" name="creatorName"  th:value="${contentDTO.creatorName}">
+                    <textarea class="form-control" th:field="*{description}" rows="5"></textarea>
                 </div>
 
                 <div class="mb-3">
-                    <label class="form-label">채널이름:</label>
-<!--                    <select class="form-select" name="channelName" th:value="${contentDTO.channelName}">-->
-<!--                        <option value="NETFLIX">넷플릭스</option>-->
-<!--                        <option value="DISNEY_PLUS">디즈니+</option>-->
-<!--                        <option value="WAVE">WAVE</option>-->
-<!--                        <option value="WATCHA">왓챠</option>-->
-<!--                        <option value="TVN">TVN</option>-->
-
-<!--                        <option value="ALADIN">알라딘</option>-->
-<!--                        <option value="YES24">예스2</option>-->
-<!--                        <option value="KYOBO">교보문고</option>-->
-
-<!--                        <option value="NAVER">네이버</option>-->
-<!--                        <option value="KAKAO">카카오</option>-->
-<!--                        &lt;!&ndash; 필요에 따라 enum 값 추가 &ndash;&gt;-->
-<!--                    </select>-->
-                        <select class="form-select" name="channelName">
-                            <option value="NETFLIX" th:selected="${contentDTO.channelName.name() == 'NETFLIX'}">넷플릭스</option>
-                            <option value="DISNEY_PLUS" th:selected="${contentDTO.channelName.name() == 'DISNEY_PLUS'}">디즈니+</option>
-                            <option value="WAVE" th:selected="${contentDTO.channelName.name() == 'WAVE'}">WAVE</option>
-                            <option value="WATCHA" th:selected="${contentDTO.channelName.name() == 'WATCHA'}">왓챠</option>
-                            <option value="TVN" th:selected="${contentDTO.channelName.name() == 'TVN'}">TVN</option>
-                            <option value="ALADIN" th:selected="${contentDTO.channelName.name() == 'ALADIN'}">알라딘</option>
-                            <option value="YES24" th:selected="${contentDTO.channelName.name() == 'YES24'}">예스24</option>
-                            <option value="KYOBO" th:selected="${contentDTO.channelName.name() == 'KYOBO'}">교보문고</option>
-                            <option value="NAVER" th:selected="${contentDTO.channelName.name() == 'NAVER'}">네이버</option>
-                            <option value="KAKAO" th:selected="${contentDTO.channelName.name() == 'KAKAO'}">카카오</option>
-                        </select>
-
+                    <label class="form-label">연재처:</label>
+                    <select class="form-select" th:field="*{channelName}">
+                        <option value="NETFLIX">넷플릭스</option>
+                        <option value="DISNEY_PLUS">디즈니+</option>
+                        <option value="WAVE">웨이브</option>
+                        <option value="WATCHA">왓챠</option>
+                        <option value="TVN">tvN</option>
+                        <option value="APPLE_TV_PLUS">애플티비플러스</option>
+                        <option value="ALADIN">알라딘</option>
+                        <option value="YES24">예스2</option>
+                        <option value="KYOBO">교보문고</option>
+                        <option value="NAVER">네이버</option>
+                        <option value="KAKAO">카카오</option>
+                    </select>
                 </div>
-                <button type="submit" class="btn btn-primary">수정</button><!--저장처리-->
-                <button type="reset" class="btn btn-primary">초기화</button><!--내용지우기-->
+
+                <button type="submit" class="btn btn-primary">수정</button>
+                <button type="reset" class="btn btn-primary">초기화</button>
                 <a th:href="@{/content/list}" class="btn btn-primary">목록으로 이동</a>
             </form>
         </div>
-        <div class="col-4"></div><!--여백-->
     </div>
-
 </main>
 </body>
 </html>
-
-
-<!--&lt;!&ndash; 콘텐츠 타입 &ndash;&gt;-->
-<!--<input class="form-check-input" type="radio" name="contentType" value="MOVIE"-->
-<!--       th:checked="${contentDTO.contentType.name() == 'MOVIE'}"> 영화-->
-
-<!--&lt;!&ndash; 채널 이름 &ndash;&gt;-->
-<!--<option value="NETFLIX" th:selected="${contentDTO.channelName.name() == 'NETFLIX'}">넷플릭스</option>-->

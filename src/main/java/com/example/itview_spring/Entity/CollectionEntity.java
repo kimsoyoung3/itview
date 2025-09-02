@@ -4,6 +4,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
@@ -19,6 +20,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 
@@ -36,7 +38,7 @@ public class CollectionEntity {
 
     // 컬렉션 소유자
     @JoinColumn(name = "user_id", nullable = false)
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.LAZY)
     private UserEntity user;
 
     // 컬렉션 이름
@@ -56,4 +58,8 @@ public class CollectionEntity {
     // 컬렉션 설명
     @Column(length = 1024)
     private String description;
+
+    // 컬렉션의 아이템
+    @OneToMany(mappedBy = "collection", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<CollectionItemEntity> items;
 }
