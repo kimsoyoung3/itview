@@ -113,11 +113,12 @@ const PersonDetailPage = ({userInfo, openLogin}) => {
     const serviceLogos = {
         NETFLIX: '/externalLogo/netflix.png',
         DISNEY_PLUS: '/externalLogo/disney.png',
-        WAVE: '/externalLogo/wave.png',
+        WAVVE: '/externalLogo/wave.png',
         WATCHA: '/externalLogo/watcha.png',
         TVING: '/externalLogo/tving.png',
         TVN: '/externalLogo/tvn.png',
         APPLE_TV_PLUS: '/externalLogo/apple-tv-plus.png',
+        COUPANG_PLAY: '/externalLogo/coupang-play.png',
 
         ALADIN: '/externalLogo/aladin.png',
         YES24: '/externalLogo/yes24.png',
