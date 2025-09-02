@@ -2,7 +2,7 @@ import React from 'react'
 import { Route, Routes } from 'react-router-dom';
 import PersonDetailPage from '../pages/PersonDetailPage/PersonDetailPage';
 
-function ContentRoutes({ userInfo, openLogin }) {
+function PersonRoutes({ userInfo, openLogin }) {
   return (
     <Routes>
         <Route path=":id" element={<PersonDetailPage userInfo={userInfo} openLogin={openLogin} />} />
@@ -10,4 +10,4 @@ function ContentRoutes({ userInfo, openLogin }) {
   )
 }
 
-export default ContentRoutes;
+export default PersonRoutes;
