@@ -13,6 +13,7 @@ import CommentCard from "../../components/CommentCard/CommentCard";
 import {NavLink} from "react-router-dom";
 import { deleteComment, updateComment } from "../../API/CommentApi";
 import {toast} from "react-toastify";
+import NotFound from "../NotFound/NotFound";
 
 const DetailPage = ({userInfo, openLogin}) => {
     const [notFound, setNotFound] = useState(false);
@@ -142,9 +143,7 @@ const DetailPage = ({userInfo, openLogin}) => {
                 const response = await getContentDetail(window.location.pathname.split('/').pop());
                 setContentDetail(response.data);
             } catch (error) {
-                if (error.response && error.response.status === 404) {
-                    setNotFound(true);
-                }
+                setNotFound(true);
             }
         };
 
@@ -251,9 +250,7 @@ const DetailPage = ({userInfo, openLogin}) => {
 
     return (
         notFound ? (
-            <div>
-                <h2>컨텐츠를 찾을 수 없습니다.</h2>
-            </div>
+            <NotFound showHeader={false}/>
         ) : (
         <div className="detail">
             {/*상세페이지 배너 섹션*/}
