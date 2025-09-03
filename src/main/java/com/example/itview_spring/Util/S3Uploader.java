@@ -52,7 +52,7 @@ public class S3Uploader {
 
         s3Client.putObject(putObjectRequest, RequestBody.fromBytes(resizedImage));
 
-        return key;
+        return getFileUrl(key);
     }
 
     public String getFileUrl(String keyName) {

@@ -6,14 +6,18 @@ import com.example.itview_spring.DTO.EmailDTO;
 import com.example.itview_spring.DTO.EmailVerificationDTO;
 import com.example.itview_spring.DTO.NewPasswordDTO;
 import com.example.itview_spring.DTO.RegisterDTO;
+import com.example.itview_spring.DTO.UserProfileUpdateDTO;
 import com.example.itview_spring.DTO.UserResponseDTO;
 import com.example.itview_spring.Entity.EmailVerificationEntity;
 import com.example.itview_spring.Entity.UserEntity;
 import com.example.itview_spring.Repository.EmailVerificationRepository;
 import com.example.itview_spring.Repository.UserRepository;
 import com.example.itview_spring.Util.AuthCodeGenerator;
+import com.example.itview_spring.Util.S3Uploader;
 
 import lombok.RequiredArgsConstructor;
+import net.coobird.thumbnailator.tasks.UnsupportedFormatException;
+
 import org.modelmapper.ModelMapper;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -25,6 +29,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 
@@ -37,6 +42,7 @@ public class UserService implements UserDetailsService {
     private final ModelMapper modelMapper;
     private final PasswordEncoder passwordEncoder;
     private final JavaMailSender mailSender;
+    private final S3Uploader s3Uploader;
 
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
@@ -142,6 +148,24 @@ public class UserService implements UserDetailsService {
             return registerRepository.findUserResponseById(id);
         } catch (Exception e) {
             throw new IllegalStateException("유저 정보를 불러오는데 실패했습니다.");
+        }
+    }
+
+    // 유저 프로필 수정
+    public void updateUserProfile(UserProfileUpdateDTO userProfileUpdateDTO) {
+        try {
+            UserEntity user = registerRepository.findById(userProfileUpdateDTO.getId()).orElseThrow(() -> new IllegalStateException("유저를 찾을 수 없습니다."));
+            user.setNickname(userProfileUpdateDTO.getNickname());
+            user.setIntroduction(userProfileUpdateDTO.getIntroduction());
+            if (userProfileUpdateDTO.getProfile() != null) {
+                user.setProfile(s3Uploader.uploadFile(userProfileUpdateDTO.getProfile()));
+            }
+        } catch (UnsupportedFormatException e) {
+            throw new IllegalStateException("지원하지 않는 이미지 형식입니다.");
+        } catch (IOException e) {
+            throw new IllegalStateException("이미지 업로드에 실패했습니다.");
+        } catch (Exception e) {
+            throw new IllegalStateException("프로필 수정에 실패했습니다.");
         }
     }
 }

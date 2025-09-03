@@ -6,8 +6,10 @@ import com.example.itview_spring.DTO.EmailVerificationDTO;
 import com.example.itview_spring.DTO.LoginDTO;
 import com.example.itview_spring.DTO.NewPasswordDTO;
 import com.example.itview_spring.DTO.RegisterDTO;
+import com.example.itview_spring.DTO.UserProfileUpdateDTO;
 import com.example.itview_spring.DTO.UserResponseDTO;
 import com.example.itview_spring.Service.UserService;
+import com.example.itview_spring.Util.S3Uploader;
 
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
@@ -26,8 +28,10 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.context.SecurityContextRepository;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -42,6 +46,8 @@ public class UserRestController {
     private final UserService registerService;
     private final AuthenticationManager authenticationManager;
     private final SecurityContextRepository securityContextRepository;
+    private final UserService userService;
+    private final S3Uploader s3Uploader;
 
     // 회원가입
     @PostMapping
@@ -178,6 +184,22 @@ public class UserRestController {
             return registerService.getUserProfile(id);
         } catch (Exception e) {
             throw new IllegalStateException("유저 정보를 불러오는데 실패했습니다.");
+        }
+    }
+
+    // 유저 프로필 수정
+    @PutMapping
+    public UserResponseDTO updateUserProfile(@AuthenticationPrincipal CustomUserDetails user,
+                                  @ModelAttribute UserProfileUpdateDTO userProfileUpdateDTO) {
+        try {
+            if (user.getId() != userProfileUpdateDTO.getId()) {
+                throw new IllegalStateException("본인의 프로필만 수정할 수 있습니다.");
+            } else {
+                userService.updateUserProfile(userProfileUpdateDTO);
+                return userService.getUserProfile(userProfileUpdateDTO.getId());
+            }
+        } catch (Exception e) {
+            throw new IllegalStateException(e.getMessage());
         }
     }
 }
