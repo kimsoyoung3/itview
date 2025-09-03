@@ -17,6 +17,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 
 import java.io.IOException;
+import java.util.NoSuchElementException;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -27,6 +28,7 @@ import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.context.SecurityContextRepository;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -179,27 +181,28 @@ public class UserRestController {
 
     // 유저 페이지 정보 조회
     @GetMapping("/{id}")
-    public UserResponseDTO getUserProfile(@PathVariable("id") Integer id) {
-        try {
-            return registerService.getUserProfile(id);
-        } catch (Exception e) {
-            throw new IllegalStateException("유저 정보를 불러오는데 실패했습니다.");
-        }
+    public ResponseEntity<UserResponseDTO> getUserProfile(@PathVariable("id") Integer id) {
+        return ResponseEntity.ok(registerService.getUserProfile(id));
     }
 
     // 유저 프로필 수정
     @PutMapping
-    public UserResponseDTO updateUserProfile(@AuthenticationPrincipal CustomUserDetails user,
+    public ResponseEntity<UserResponseDTO> updateUserProfile(@AuthenticationPrincipal CustomUserDetails user,
                                   @ModelAttribute UserProfileUpdateDTO userProfileUpdateDTO) {
-        try {
-            if (user.getId() != userProfileUpdateDTO.getId()) {
-                throw new IllegalStateException("본인의 프로필만 수정할 수 있습니다.");
-            } else {
-                userService.updateUserProfile(userProfileUpdateDTO);
-                return userService.getUserProfile(userProfileUpdateDTO.getId());
-            }
-        } catch (IllegalStateException e) {
-            throw new IllegalStateException(e.getMessage());
+        if (user.getId() != userProfileUpdateDTO.getId()) {
+            throw new IllegalStateException("본인의 프로필만 수정할 수 있습니다.");
         }
+        userService.updateUserProfile(userProfileUpdateDTO);
+        return ResponseEntity.ok(userService.getUserProfile(userProfileUpdateDTO.getId()));
+    }
+
+    @ExceptionHandler(NoSuchElementException.class)
+    public ResponseEntity<String> handleNoSuchElementException(NoSuchElementException ex) {
+        return ResponseEntity.status(404).body(ex.getMessage());
+    }
+
+    @ExceptionHandler(IllegalStateException.class)
+    public ResponseEntity<String> handleIllegalStateException(IllegalStateException ex) {
+        return ResponseEntity.status(400).body(ex.getMessage());
     }
 }

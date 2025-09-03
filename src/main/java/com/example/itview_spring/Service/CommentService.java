@@ -13,7 +13,6 @@ import com.example.itview_spring.DTO.CommentAndContentDTO;
 import com.example.itview_spring.DTO.CommentDTO;
 import com.example.itview_spring.DTO.ReplyDTO;
 import com.example.itview_spring.Entity.CommentEntity;
-import com.example.itview_spring.Entity.LikeEntity;
 import com.example.itview_spring.Entity.ReplyEntity;
 import com.example.itview_spring.Repository.CommentRepository;
 import com.example.itview_spring.Repository.ContentRepository;
@@ -57,21 +56,21 @@ public class CommentService {
 
     // 코멘트 + 컨텐츠 정보 조회
     public CommentAndContentDTO getCommentAndContentDTO(Integer commentId, Integer userId) {
-        CommentAndContentDTO commentAndContent = commentRepository.findCommentAndContentByCommentId(commentId, userId).orElseThrow(() -> new NoSuchElementException("Invalid commentId: " + commentId));
+        CommentAndContentDTO commentAndContent = commentRepository.findCommentAndContentByCommentId(commentId, userId).orElseThrow(() -> new NoSuchElementException("존재하지 않는 코멘트입니다"));
         return commentAndContent;
     }
     
     // 코멘트 수정
     public void updateComment(Integer commentId, String newText) {
         CommentEntity comment = commentRepository.findById(commentId)
-                .orElseThrow(() -> new NoSuchElementException("Invalid commentId: " + commentId));
+                .orElseThrow(() -> new NoSuchElementException("존재하지 않는 코멘트입니다"));
         comment.setText(newText);
         commentRepository.save(comment);
     }
 
     // 코멘트 삭제
     public boolean deleteComment(Integer commentId) {
-        var commentOpt = commentRepository.findById(commentId).orElseThrow(() -> new NoSuchElementException("Invalid commentId: " + commentId));
+        var commentOpt = commentRepository.findById(commentId).orElseThrow(() -> new NoSuchElementException("존재하지 않는 코멘트입니다"));
         commentRepository.delete(commentOpt);
         likeRepository.deleteByTargetIdAndTargetType(commentId, Replyable.COMMENT);
         replyRepository.deleteByTargetIdAndTargetType(commentId, Replyable.COMMENT);
@@ -81,7 +80,7 @@ public class CommentService {
     // 코멘트에 좋아요 등록
     public void likeComment(Integer userId, Integer commentId) {
         if (!commentRepository.existsById(commentId)) {
-            throw new NoSuchElementException("Invalid commentId: " + commentId);
+            throw new NoSuchElementException("존재하지 않는 코멘트입니다");
         }
         likeRepository.likeTarget(userId, commentId, Replyable.COMMENT);
     }
@@ -89,7 +88,7 @@ public class CommentService {
     // 코멘트에 좋아요 취소
     public void unlikeComment(Integer userId, Integer commentId) {
         if (!commentRepository.existsById(commentId)) {
-            throw new NoSuchElementException("Invalid commentId: " + commentId);
+            throw new NoSuchElementException("존재하지 않는 코멘트입니다");
         }
         likeRepository.unlikeTarget(userId, commentId, Replyable.COMMENT);
     }
@@ -97,7 +96,7 @@ public class CommentService {
     // 코멘트에 댓글 작성
     public ReplyDTO addReply(Integer userId, Integer commentId, String text) {
         if (!commentRepository.existsById(commentId)) {
-            throw new NoSuchElementException("Invalid commentId: " + commentId);
+            throw new NoSuchElementException("존재하지 않는 코멘트입니다");
         }
         ReplyEntity reply = new ReplyEntity();
         reply.setUser(userRepository.findById(userId).orElseThrow(() -> new RuntimeException("User not found")));
@@ -115,7 +114,7 @@ public class CommentService {
     // 코멘트의 댓글 페이징 조회
     public Page<ReplyDTO> getCommentReplies(Integer commentId, Integer userId, Integer page) {
         if (!commentRepository.existsById(commentId)) {
-            throw new NoSuchElementException("Invalid commentId: " + commentId);
+            throw new NoSuchElementException("존재하지 않는 코멘트입니다");
         }
         Pageable pageable = PageRequest.of(page - 1, 10);
         Page<ReplyDTO> replies = replyRepository.findRepliesByTargetId(userId, commentId, Replyable.COMMENT, pageable);

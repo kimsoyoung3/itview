@@ -13,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 
 @Service
@@ -60,7 +61,7 @@ public class PersonService {
     // 인물 정보 + 좋아요 여부, 좋아요 수 조회
     public PersonResponseDTO getPersonResponseDTO(Integer userId, Integer personId) {
         if (!personRepository.existsById(personId)) {
-            throw new IllegalArgumentException("Invalid personId: " + personId);
+            throw new NoSuchElementException("존재하지 않는 인물입니다");
         }
         return personRepository.findPersonResponseDTO(userId, personId);
     }
@@ -68,7 +69,7 @@ public class PersonService {
     // 인물에 좋아요 등록
     public void likePerson(Integer userId, Integer personId) {
         if (!personRepository.existsById(personId)) {
-            throw new IllegalArgumentException("Invalid personId: " + personId);
+            throw new NoSuchElementException("존재하지 않는 인물입니다");
         }
         likeRepository.likeTarget(userId, personId, Replyable.PERSON);
     }
@@ -76,7 +77,7 @@ public class PersonService {
     // 인물에 좋아요 취소
     public void unlikePerson(Integer userId, Integer personId) {
         if (!personRepository.existsById(personId)) {
-            throw new IllegalArgumentException("Invalid personId: " + personId);
+            throw new NoSuchElementException("존재하지 않는 인물입니다");
         }
         likeRepository.unlikeTarget(userId, personId, Replyable.PERSON);
     }

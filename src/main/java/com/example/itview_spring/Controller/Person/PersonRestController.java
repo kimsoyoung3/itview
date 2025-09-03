@@ -1,6 +1,7 @@
 package com.example.itview_spring.Controller.Person;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -10,6 +11,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -39,26 +41,18 @@ public class PersonRestController {
     // 인물 정보 조회
     @GetMapping("{id}")
     public ResponseEntity<PersonResponseDTO> getPersonInfo(@PathVariable("id") Integer personId) {
-        try {
-            var auth = SecurityContextHolder.getContext().getAuthentication();
-            Integer userId = 0;
-            if (auth.getPrincipal() != "anonymousUser") {
-                userId = ((CustomUserDetails) auth.getPrincipal()).getId();
-            }
-            return ResponseEntity.ok(personService.getPersonResponseDTO(userId, personId));
-        } catch (Exception e) {
-            return ResponseEntity.notFound().build();   
+        var auth = SecurityContextHolder.getContext().getAuthentication();
+        Integer userId = 0;
+        if (auth.getPrincipal() != "anonymousUser") {
+            userId = ((CustomUserDetails) auth.getPrincipal()).getId();
         }
+        return ResponseEntity.ok(personService.getPersonResponseDTO(userId, personId));
     }
 
     // 인물의 작품 참여 분야 조회
     @GetMapping("/{id}/work-domains")
     public ResponseEntity<List<WorkDomainDTO>> getWorkDomainsByPersonId(@PathVariable("id") Integer personId) {
-        try {
-            return ResponseEntity.ok(creditService.getWorkDomainsByPersonId(personId));
-        } catch (Exception e) {
-            return ResponseEntity.notFound().build();
-        }
+        return ResponseEntity.ok(creditService.getWorkDomainsByPersonId(personId));
     }
 
     // 분야별 페이징 조회
@@ -67,32 +61,25 @@ public class PersonRestController {
                            @PathVariable("id") Integer personId,
                            @RequestParam("type") ContentType contentType,
                            @RequestParam("department") String department) {
-        try {
-            return ResponseEntity.ok(creditService.getWorks(pageable.getPageNumber(), personId, contentType, department));
-        } catch (Exception e) {
-            return ResponseEntity.notFound().build();
-        }
+        return ResponseEntity.ok(creditService.getWorks(pageable.getPageNumber(), personId, contentType, department));
     }
 
     // 인물에 좋아요 등록
     @PostMapping("/{id}/like")
     public ResponseEntity<Void> likePerson(@PathVariable("id") Integer personId, @AuthenticationPrincipal CustomUserDetails user) {
-        try {
-            personService.likePerson(user.getId(), personId);
-            return ResponseEntity.ok().build();
-        } catch (Exception e) {
-            return ResponseEntity.notFound().build();
-        }
+        personService.likePerson(user.getId(), personId);
+        return ResponseEntity.ok().build();
     }
 
     // 인물에 좋아요 취소
     @DeleteMapping("/{id}/like")
     public ResponseEntity<Void> unlikePerson(@PathVariable("id") Integer personId, @AuthenticationPrincipal CustomUserDetails user) {
-        try {
-            personService.unlikePerson(user.getId(), personId);
-            return ResponseEntity.ok().build();
-        } catch (Exception e) {
-            return ResponseEntity.notFound().build();
-        }
+        personService.unlikePerson(user.getId(), personId);
+        return ResponseEntity.ok().build();
+    }
+
+    @ExceptionHandler(NoSuchElementException.class)
+    public ResponseEntity<String> handleNoSuchElementException(NoSuchElementException ex) {
+        return ResponseEntity.status(404).body(ex.getMessage());
     }
 }

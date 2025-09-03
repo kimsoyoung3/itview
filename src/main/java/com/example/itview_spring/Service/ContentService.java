@@ -192,7 +192,7 @@ public class ContentService {
         // 컨텐츠 정보 조회
         ContentResponseDTO contentResponseDTO = contentRepository.findContentWithAvgRating(contentId);
         if (contentResponseDTO == null) {
-            throw new NoSuchElementException("Invalid contentId: " + contentId);
+            throw new NoSuchElementException("존재하지 않는 컨텐츠입니다");
         }
         // 컨텐츠 장르 조회
         List<GenreDTO> genres = contentGenreRepository.findByContentId(contentId);
@@ -252,7 +252,7 @@ public class ContentService {
     // 컨텐츠의 코멘트 페이징 조회
     public Page<CommentDTO> getCommentsByContentId(Integer contentId, Integer userId, String order, int page) {
         if (!contentRepository.existsById(contentId)) {
-            throw new NoSuchElementException("Invalid contentId: " + contentId);
+            throw new NoSuchElementException("존재하지 않는 컨텐츠입니다");
         }
         Pageable pageable = PageRequest.of(page - 1, 1);
         return commentRepository.findByContentId(userId, contentId, order, pageable);

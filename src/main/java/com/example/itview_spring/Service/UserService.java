@@ -31,6 +31,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 
 @Service
@@ -144,17 +145,19 @@ public class UserService implements UserDetailsService {
 
     // 유저 페이지 정보 조회
     public UserResponseDTO getUserProfile(Integer id) {
-        try {
-            return registerRepository.findUserResponseById(id);
-        } catch (Exception e) {
-            throw new IllegalStateException("유저 정보를 불러오는데 실패했습니다.");
+        if (!registerRepository.existsById(id)) {
+            throw new NoSuchElementException("존재하지 않는 유저입니다.");
         }
+        return registerRepository.findUserResponseById(id);
     }
 
     // 유저 프로필 수정
     public void updateUserProfile(UserProfileUpdateDTO userProfileUpdateDTO) {
+        if (!registerRepository.existsById(userProfileUpdateDTO.getId())) {
+            throw new NoSuchElementException("존재하지 않는 유저입니다.");
+        }
         try {
-            UserEntity user = registerRepository.findById(userProfileUpdateDTO.getId()).orElseThrow(() -> new IllegalStateException("유저를 찾을 수 없습니다."));
+            UserEntity user = registerRepository.findById(userProfileUpdateDTO.getId()).get();
             user.setNickname(userProfileUpdateDTO.getNickname());
             user.setIntroduction(userProfileUpdateDTO.getIntroduction());
             if (userProfileUpdateDTO.getProfile() != null) {
@@ -165,8 +168,6 @@ public class UserService implements UserDetailsService {
             throw new IllegalStateException("지원하지 않는 이미지 형식입니다.");
         } catch (IOException e) {
             throw new IllegalStateException("이미지 업로드에 실패했습니다.");
-        } catch (Exception e) {
-            throw new IllegalStateException("프로필 수정에 실패했습니다.");
         }
     }
 }

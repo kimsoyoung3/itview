@@ -1,10 +1,13 @@
 package com.example.itview_spring.Controller.Reply;
 
+import java.util.NoSuchElementException;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -29,55 +32,40 @@ public class ReplyRestController {
     // 댓글에 좋아요 등록
     @PostMapping("/{id}/like")
     public ResponseEntity<Void> likeReply(@AuthenticationPrincipal CustomUserDetails userDetails, @PathVariable("id") Integer id) {
-        try {
-            replyService.likeReply(userDetails.getId(), id);
-            return ResponseEntity.ok().build();
-        } catch (Exception e) {
-            e.printStackTrace();
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-        }
+        replyService.likeReply(userDetails.getId(), id);
+        return ResponseEntity.ok().build();
     }
 
     // 댓글에 좋아요 취소
     @DeleteMapping("/{id}/like")
     public ResponseEntity<Void> unlikeReply(@AuthenticationPrincipal CustomUserDetails userDetails, @PathVariable("id") Integer id) {
-        try {
-            replyService.unlikeReply(userDetails.getId(), id);
-            return ResponseEntity.ok().build();
-        } catch (Exception e) {
-            e.printStackTrace();
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-        }
+        replyService.unlikeReply(userDetails.getId(), id);
+        return ResponseEntity.ok().build();
     }
 
     // 댓글 수정
     @PutMapping("/{id}")
     public ResponseEntity<Void> modifyReply(@PathVariable("id") Integer id, @RequestBody TextDTO newText) {
-        try {
-            Boolean success = replyService.modifyReply(id, newText.getText());
-            if (success) {
-                return ResponseEntity.ok().build();
-            } else {
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        Boolean success = replyService.modifyReply(id, newText.getText());
+        if (success) {
+            return ResponseEntity.ok().build();
+        } else {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         }
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteReply(@PathVariable("id") Integer id) {
-        try {
-            Boolean success = replyService.deleteReply(id);
-            if (success) {
-                return ResponseEntity.ok().build();
-            } else {
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        Boolean success = replyService.deleteReply(id);
+        if (success) {
+            return ResponseEntity.ok().build();
+        } else {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         }
+    }
+
+    @ExceptionHandler(NoSuchElementException.class)
+    public ResponseEntity<String> handleNoSuchElementException(NoSuchElementException ex) {
+        return ResponseEntity.status(404).body(ex.getMessage());
     }
 }
