@@ -151,7 +151,7 @@
 .my-profile-edit-image>label {
   width: 100%;
   height: 100%;
-
+  cursor: pointer;
 }
 
 .my-profile-edit-image>label::after {
