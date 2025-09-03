@@ -15,6 +15,8 @@ import { deleteComment, updateComment } from "../../API/CommentApi";
 import {toast} from "react-toastify";
 
 const DetailPage = ({userInfo, openLogin}) => {
+    const [notFound, setNotFound] = useState(false);
+
     const [contentDetail, setContentDetail] = useState(null);
     const [contentCredit, setContentCredit] = useState([]);
 
@@ -140,9 +142,11 @@ const DetailPage = ({userInfo, openLogin}) => {
                 const response = await getContentDetail(window.location.pathname.split('/').pop());
                 setContentDetail(response.data);
             } catch (error) {
-                console.error('Error fetching content detail:', error);
+                if (error.response && error.response.status === 404) {
+                    setNotFound(true);
+                }
             }
-        }
+        };
 
         fetchContentDetail();
     }, []);
@@ -246,6 +250,11 @@ const DetailPage = ({userInfo, openLogin}) => {
     }, [contentCredit]);
 
     return (
+        notFound ? (
+            <div>
+                <h2>컨텐츠를 찾을 수 없습니다.</h2>
+            </div>
+        ) : (
         <div className="detail">
             {/*상세페이지 배너 섹션*/}
             <section className="detail-banner">
@@ -600,6 +609,7 @@ const DetailPage = ({userInfo, openLogin}) => {
             )}
 
         </div>
+        )
     )
 }
 export default DetailPage;
