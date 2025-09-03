@@ -1,7 +1,7 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import {NavLink, useParams} from "react-router-dom";
 import "./UserDetailPage.css"
-import { getUserDetail } from "../../API/UserApi";
+import {getUserDetail, link} from "../../API/UserApi";
 import { toast } from "react-toastify";
 
 const UserDetailPage = ({ userInfo, openLogin }) => {
@@ -33,6 +33,10 @@ const UserDetailPage = ({ userInfo, openLogin }) => {
         }
     }, [userDetail]);
 
+    const [myProfileEditModal, setMyProfileEditModal] = useState();
+    const openMyProfileEdit = () => setMyProfileEditModal(true);
+    const closeMyProfileEdit = () => setMyProfileEditModal(false);
+
     return (
         <div className="user-detail-page container">
             <div className="user-detail-page-wrap">
@@ -44,7 +48,7 @@ const UserDetailPage = ({ userInfo, openLogin }) => {
                     <p className="user-detail-info-intro">{userDetail?.userProfile.introduction}</p>
                     <div className="user-detail-info-btn">
                         <div style={{display: userInfo === userDetail?.userProfile.id ? "block" : "none"}} className="user-detail-info-edit">
-                            <button>프로필 수정</button>
+                            <button onClick={openMyProfileEdit}>프로필 수정</button>
                         </div>
 
                         <div className="user-detail-info-share">
@@ -81,6 +85,41 @@ const UserDetailPage = ({ userInfo, openLogin }) => {
                         </div>
                     </div>
                 </div>
+
+                {/*마이프로필 수정 모달*/}
+                {myProfileEditModal && (
+                    <div className="modal-overlay" onClick={closeMyProfileEdit}>
+                        <div className="my-profile-edit-modal"  onClick={(e) => e.stopPropagation()}>
+                            <div className="my-profile-edit-modal-hd">
+                                <p>프로필 수정</p>
+                                <button className="my-profile-edit-close-btn" onClick={closeMyProfileEdit}><i className="bi bi-x-lg"></i></button>
+                            </div>
+                            <form action="">
+                                <div className="my-profile-edit-image-wrap">
+                                    <div className="my-profile-edit-image">
+                                        <label htmlFor="image-input">
+                                            <img src={userDetail?.userProfile.profile ? userDetail?.userProfile.profile : "/user.png"} alt=""/>
+                                            <i className="bi bi-camera-fill"></i>
+                                        </label>
+                                        <input id="image-input" type="file"/>
+                                    </div>
+
+                                    <label className="nickName-input" htmlFor="nickName-input">
+                                        <p>닉네임</p>
+                                        <input id="nickName-input" type="text" placeholder="닉네임을 입력해주세요." maxLength="20"/>
+                                    </label>
+
+                                    <label className="introduction-input" htmlFor="nickName-input">
+                                        <p>소개</p>
+                                        <textarea id="introduction-input" placeholder="소개를 입력해주세요." rows={1} maxLength="60"/>
+                                    </label>
+
+                                    <button className="form-btn">확인</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                )}
 
                 <div className="user-detail-collection">
                     <p>보관함</p>
