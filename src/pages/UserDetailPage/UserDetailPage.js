@@ -64,7 +64,7 @@ const UserDetailPage = ({ userInfo, openLogin }) => {
         e.preventDefault();
 
         const formData = new FormData();
-        
+
         const nickname = nameRef.current.value;
         const introduction = introductionRef.current.value;
         const profile = e.target.form[0].files[0];
@@ -152,7 +152,7 @@ const UserDetailPage = ({ userInfo, openLogin }) => {
                                     <div className="my-profile-edit-image">
                                         <label htmlFor="image-input">
                                             <img src={userDetail?.userProfile.profile ? userDetail?.userProfile.profile : "/user.png"} alt=""/>
-                                            <i className="bi bi-camera-fill"></i>
+                                            <div className="image-input-btn-box"><img src="/icon/camera.svg" className="image-input-btn" alt=""/></div>
                                         </label>
                                         <input id="image-input" type="file" onChange={handleImageChange}/>
                                     </div>
