@@ -15,13 +15,16 @@
 
 .user-detail-info-profile {
   width: 80px;
+  height: 80px;
   border-radius: 50%;
   margin-bottom: 10px;
 }
 
 .user-detail-info-profile>img {
   width: 100%;
+  height: 100%;
   border-radius: 50%;
+  object-fit: cover;
 }
 
 .user-detail-info-name {
@@ -33,6 +36,8 @@
 
 .user-detail-info-intro {
   margin-bottom: 10px;
+  font-size: 0.9rem;
+  color: #888888;
 }
 
 .user-detail-info-btn {
@@ -124,7 +129,7 @@
 .my-profile-edit-close-btn {
   border: none;
   background: none;
-  color: #22C55E;
+  color: #000000;
   position: absolute;
   top: 50%;
   left: 85%;
@@ -145,6 +150,8 @@
 
 .my-profile-edit-image>label {
   width: 100%;
+  height: 100%;
+
 }
 
 .my-profile-edit-image>label::after {
@@ -161,7 +168,9 @@
 .my-profile-edit-image>label>img {
   display: block;
   width: 100%;
+  height: 100%;
   border-radius: 50%;
+  object-fit: cover;
 }
 
 .image-input-btn-box {
