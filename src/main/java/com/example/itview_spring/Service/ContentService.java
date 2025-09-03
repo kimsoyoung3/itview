@@ -187,72 +187,73 @@ public class ContentService {
     // 컨텐츠 상세 정보 조회
     @Transactional
     public ContentDetailDTO getContentDetail(Integer contentId, Integer userId) {
-        try {
-            ContentDetailDTO contentDetail = new ContentDetailDTO();
+        ContentDetailDTO contentDetail = new ContentDetailDTO();
 
-            // 컨텐츠 정보 조회
-            ContentResponseDTO contentResponseDTO = contentRepository.findContentWithAvgRating(contentId);
-            // 컨텐츠 장르 조회
-            List<GenreDTO> genres = contentGenreRepository.findByContentId(contentId);
-            genres.forEach(genre -> {
-                contentResponseDTO.getGenres().add(genre.getGenre().getGenreName());
-            });
-            contentDetail.setContentInfo(contentResponseDTO);
-
-            // 갤러리 이미지 조회
-            List<ImageDTO> images = galleryRepository.findByContentId(contentId);
-            contentDetail.setGallery(images);
-
-            // 동영상 조회
-            List<VideoDTO> videos = videoRepository.findByContentId(contentId);
-            contentDetail.setVideos(videos);
-
-            // 외부 서비스 조회
-            List<ExternalServiceDTO> externalServices = externalServiceRepository.findByContentId(contentId);
-            contentDetail.setExternalServices(externalServices);
-
-            // 사용자 별점 조회
-            Integer myRating = ratingRepository.findSomeoneScore(userId, contentId);
-            contentDetail.setMyRating(myRating != null ? myRating : 0);
-
-            // 별점 개수 조회
-            Long ratingCount = ratingRepository.countByContentId(contentId);
-            contentDetail.setRatingCount(ratingCount != null ? ratingCount : 0L);
-
-            // 별점 분포 조회
-            List<RatingCountDTO> ratingDistribution = ratingRepository.findRatingDistributionByContentId(contentId);
-            List<RatingCountDTO> fullRating = new ArrayList<>();
-            Map<Integer, Long> ratingMap = ratingDistribution.stream()
-                    .collect(Collectors.toMap(RatingCountDTO::getScore, RatingCountDTO::getScoreCount));
-            for (int i = 1; i <= 10; i++) {
-                Long count = ratingMap.getOrDefault(i, 0L);
-                fullRating.add(new RatingCountDTO(i, count));
-            }
-            contentDetail.setRatingDistribution(fullRating);
-
-            // 사용자 코멘트 조회
-            CommentDTO myComment = commentService.getCommentDTO(userId, contentId);
-            if (myComment != null) {
-                contentDetail.setMyComment(myComment);
-            }
-
-            // 컨텐츠 좋아요 상위 8개 코멘트 조회
-            List<CommentDTO> comments = commentRepository.findTop8CommentsByContentId(userId, contentId);
-            contentDetail.setComments(comments);
-
-            // 코멘트 개수 조회
-            Long commentCount = commentRepository.countByContentId(contentId);
-            contentDetail.setCommentCount(commentCount);
-
-            return contentDetail;
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
-            return null;
+        // 컨텐츠 정보 조회
+        ContentResponseDTO contentResponseDTO = contentRepository.findContentWithAvgRating(contentId);
+        if (contentResponseDTO == null) {
+            throw new NoSuchElementException("Invalid contentId: " + contentId);
         }
+        // 컨텐츠 장르 조회
+        List<GenreDTO> genres = contentGenreRepository.findByContentId(contentId);
+        genres.forEach(genre -> {
+            contentResponseDTO.getGenres().add(genre.getGenre().getGenreName());
+        });
+        contentDetail.setContentInfo(contentResponseDTO);
+
+        // 갤러리 이미지 조회
+        List<ImageDTO> images = galleryRepository.findByContentId(contentId);
+        contentDetail.setGallery(images);
+
+        // 동영상 조회
+        List<VideoDTO> videos = videoRepository.findByContentId(contentId);
+        contentDetail.setVideos(videos);
+
+        // 외부 서비스 조회
+        List<ExternalServiceDTO> externalServices = externalServiceRepository.findByContentId(contentId);
+        contentDetail.setExternalServices(externalServices);
+
+        // 사용자 별점 조회
+        Integer myRating = ratingRepository.findSomeoneScore(userId, contentId);
+        contentDetail.setMyRating(myRating != null ? myRating : 0);
+
+        // 별점 개수 조회
+        Long ratingCount = ratingRepository.countByContentId(contentId);
+        contentDetail.setRatingCount(ratingCount != null ? ratingCount : 0L);
+
+        // 별점 분포 조회
+        List<RatingCountDTO> ratingDistribution = ratingRepository.findRatingDistributionByContentId(contentId);
+        List<RatingCountDTO> fullRating = new ArrayList<>();
+        Map<Integer, Long> ratingMap = ratingDistribution.stream()
+                .collect(Collectors.toMap(RatingCountDTO::getScore, RatingCountDTO::getScoreCount));
+        for (int i = 1; i <= 10; i++) {
+            Long count = ratingMap.getOrDefault(i, 0L);
+            fullRating.add(new RatingCountDTO(i, count));
+        }
+        contentDetail.setRatingDistribution(fullRating);
+
+        // 사용자 코멘트 조회
+        CommentDTO myComment = commentService.getCommentDTO(userId, contentId);
+        if (myComment != null) {
+            contentDetail.setMyComment(myComment);
+        }
+
+        // 컨텐츠 좋아요 상위 8개 코멘트 조회
+        List<CommentDTO> comments = commentRepository.findTop8CommentsByContentId(userId, contentId);
+        contentDetail.setComments(comments);
+
+        // 코멘트 개수 조회
+        Long commentCount = commentRepository.countByContentId(contentId);
+        contentDetail.setCommentCount(commentCount);
+
+        return contentDetail;
     }
 
     // 컨텐츠의 코멘트 페이징 조회
     public Page<CommentDTO> getCommentsByContentId(Integer contentId, Integer userId, String order, int page) {
+        if (!contentRepository.existsById(contentId)) {
+            throw new NoSuchElementException("Invalid contentId: " + contentId);
+        }
         Pageable pageable = PageRequest.of(page - 1, 1);
         return commentRepository.findByContentId(userId, contentId, order, pageable);
     }

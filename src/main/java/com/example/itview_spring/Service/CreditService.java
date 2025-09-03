@@ -2,6 +2,7 @@ package com.example.itview_spring.Service;
 
 
 import java.util.List;
+import java.util.NoSuchElementException;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -13,6 +14,7 @@ import com.example.itview_spring.Constant.ContentType;
 import com.example.itview_spring.DTO.CreditDTO;
 import com.example.itview_spring.DTO.WorkDTO;
 import com.example.itview_spring.DTO.WorkDomainDTO;
+import com.example.itview_spring.Repository.ContentRepository;
 import com.example.itview_spring.Repository.CreditRepository;
 import com.example.itview_spring.Repository.ExternalServiceRepository;
 
@@ -23,9 +25,13 @@ import lombok.RequiredArgsConstructor;
 public class CreditService {
     
     private final CreditRepository creditRepository;
+    private final ContentRepository contentRepository;
     private final ExternalServiceRepository externalServiceRepository;
 
     public Page<CreditDTO> getCreditByContentId(Pageable page, Integer contentId) {
+        if (!contentRepository.existsById(contentId)) {
+            throw new NoSuchElementException("Invalid contentId: " + contentId);
+        }
         int currentPage = page.getPageNumber()-1;
         int pageSize = 12;
 

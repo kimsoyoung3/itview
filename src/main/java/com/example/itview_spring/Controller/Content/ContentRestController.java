@@ -1,5 +1,7 @@
 package com.example.itview_spring.Controller.Content;
 
+import java.util.NoSuchElementException;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
@@ -11,7 +13,6 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -49,14 +50,22 @@ public class ContentRestController {
         if (auth.getPrincipal() != "anonymousUser") {
             userId = ((CustomUserDetails) auth.getPrincipal()).getId();
         }
-        ContentDetailDTO contentDetail = contentService.getContentDetail(id, userId);
-        return ResponseEntity.ok(contentDetail);
+        try {
+            ContentDetailDTO contentDetail = contentService.getContentDetail(id, userId);
+            return ResponseEntity.ok(contentDetail);
+        } catch (NoSuchElementException e) {
+            return ResponseEntity.notFound().build();
+        }
     }
 
     // 컨텐츠 출연진 및 제작진 정보 조회 (페이징)
     @GetMapping("/{id}/credit")
     public ResponseEntity<Page<CreditDTO>> getContentCredit(@PageableDefault(page=1) Pageable pageable, @PathVariable("id") Integer id) {
-        return ResponseEntity.ok(creditService.getCreditByContentId(pageable, id));
+        try {
+            return ResponseEntity.ok(creditService.getCreditByContentId(pageable, id));
+        } catch (NoSuchElementException e) {
+            return ResponseEntity.notFound().build();
+        }
     }
 
     // 컨텐츠 별점 등록
@@ -64,18 +73,24 @@ public class ContentRestController {
     public ResponseEntity<Void> postContentRating(@PathVariable("id") Integer id,
                                                   @AuthenticationPrincipal CustomUserDetails userDetails,
                                                   @RequestBody RatingRequestDTO ratingRequest) {
-        ratingService.rateContent(userDetails.getId(), id, ratingRequest.getScore());
-        return ResponseEntity.ok().build();
+        try {
+            ratingService.rateContent(userDetails.getId(), id, ratingRequest.getScore());
+            return ResponseEntity.ok().build();
+        } catch (NoSuchElementException e) {
+            return ResponseEntity.notFound().build();
+        }
     }
 
     // 컨텐츠 별점 삭제
     @DeleteMapping("/{id}/rating")
     public ResponseEntity<Void> deleteContentRating(@PathVariable("id") Integer id,
                                                     @AuthenticationPrincipal CustomUserDetails userDetails) {
-        if (ratingService.deleteRating(userDetails.getId(), id)) {
+        try {
+            ratingService.deleteRating(userDetails.getId(), id);
             return ResponseEntity.ok().build();
+        } catch (NoSuchElementException e) {
+            return ResponseEntity.notFound().build();
         }
-        return ResponseEntity.notFound().build();
     }
 
     // 컨텐츠 코멘트 작성
@@ -83,17 +98,24 @@ public class ContentRestController {
     public ResponseEntity<Void> postContentComment(@PathVariable("id") Integer id,
                                                    @AuthenticationPrincipal CustomUserDetails userDetails,
                                                    @RequestBody TextDTO textDTO) {
-        commentService.addComment(userDetails.getId(), id, textDTO.getText());
-
-        return ResponseEntity.ok().build();
+        try {
+            commentService.addComment(userDetails.getId(), id, textDTO.getText());
+            return ResponseEntity.ok().build();
+        } catch (NoSuchElementException e) {
+            return ResponseEntity.notFound().build();
+        }
     }
 
     // 컨텐츠 코멘트 조회
     @GetMapping("/{id}/comment")
     public ResponseEntity<CommentDTO> getContentComment(@PathVariable("id") Integer id,
                                                         @AuthenticationPrincipal CustomUserDetails userDetails) {
-        CommentDTO commentDTO = commentService.getCommentDTO(userDetails.getId(), id);
-        return ResponseEntity.ok(commentDTO);
+        try {
+            CommentDTO commentDTO = commentService.getCommentDTO(userDetails.getId(), id);
+            return ResponseEntity.ok(commentDTO);
+        } catch (NoSuchElementException e) {
+            return ResponseEntity.notFound().build();
+        }
     }
 
 
@@ -102,12 +124,16 @@ public class ContentRestController {
     public ResponseEntity<Page<CommentDTO>> getContentComments(@PathVariable("id") Integer id,
                                                                @RequestParam(value = "order", defaultValue = "new") String order,
                                                                @PageableDefault(page=1) Pageable pageable) {
-        var auth = SecurityContextHolder.getContext().getAuthentication();
-        Integer userId = 0;
-        if (auth.getPrincipal() != "anonymousUser") {
-            userId = ((CustomUserDetails) auth.getPrincipal()).getId();
+        try {
+            var auth = SecurityContextHolder.getContext().getAuthentication();
+            Integer userId = 0;
+            if (auth.getPrincipal() != "anonymousUser") {
+                userId = ((CustomUserDetails) auth.getPrincipal()).getId();
+            }
+            Page<CommentDTO> comments = contentService.getCommentsByContentId(id, userId, order, pageable.getPageNumber());
+            return ResponseEntity.ok(comments);
+        } catch (NoSuchElementException e) {
+            return ResponseEntity.notFound().build();
         }
-        Page<CommentDTO> comments = contentService.getCommentsByContentId(id, userId, order, pageable.getPageNumber());
-        return ResponseEntity.ok(comments);
     }
 }

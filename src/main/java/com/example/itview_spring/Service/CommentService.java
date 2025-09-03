@@ -1,5 +1,7 @@
 package com.example.itview_spring.Service;
 
+import java.util.NoSuchElementException;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -34,6 +36,9 @@ public class CommentService {
 
     // 코멘트 추가
     public void addComment(Integer userId, Integer contentId, String text) {
+        if (!contentRepository.existsById(contentId)) {
+            throw new NoSuchElementException("Invalid contentId: " + contentId);
+        }
         CommentEntity comment = new CommentEntity();
         comment.setUser(userRepository.findById(userId).orElseThrow(() -> new RuntimeException("User not found")));
         comment.setContent(contentRepository.findById(contentId).orElseThrow(() -> new RuntimeException("Content not found")));
@@ -43,6 +48,9 @@ public class CommentService {
 
     // 코멘트 조회
     public CommentDTO getCommentDTO(Integer userId, Integer contentId) {
+        if (!contentRepository.existsById(contentId)) {
+            throw new NoSuchElementException("Invalid contentId: " + contentId);
+        }
         CommentDTO myComment = commentRepository.findCommentDTOByUserIdAndContentId(userId, contentId).orElse(null);
         return myComment;
     }
