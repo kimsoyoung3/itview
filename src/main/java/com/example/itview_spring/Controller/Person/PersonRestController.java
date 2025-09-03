@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -37,47 +38,61 @@ public class PersonRestController {
 
     // 인물 정보 조회
     @GetMapping("{id}")
-    public PersonResponseDTO getPersonInfo(@PathVariable("id") Integer personId) {
-        var auth = SecurityContextHolder.getContext().getAuthentication();
-        Integer userId = 0;
-        if (auth.getPrincipal() != "anonymousUser") {
-            userId = ((CustomUserDetails) auth.getPrincipal()).getId();
+    public ResponseEntity<PersonResponseDTO> getPersonInfo(@PathVariable("id") Integer personId) {
+        try {
+            var auth = SecurityContextHolder.getContext().getAuthentication();
+            Integer userId = 0;
+            if (auth.getPrincipal() != "anonymousUser") {
+                userId = ((CustomUserDetails) auth.getPrincipal()).getId();
+            }
+            return ResponseEntity.ok(personService.getPersonResponseDTO(userId, personId));
+        } catch (Exception e) {
+            return ResponseEntity.notFound().build();   
         }
-        return personService.getPersonResponseDTO(userId, personId);
     }
 
     // 인물의 작품 참여 분야 조회
     @GetMapping("/{id}/work-domains")
-    public List<WorkDomainDTO> getWorkDomainsByPersonId(@PathVariable("id") Integer personId) {
-        return creditService.getWorkDomainsByPersonId(personId);
+    public ResponseEntity<List<WorkDomainDTO>> getWorkDomainsByPersonId(@PathVariable("id") Integer personId) {
+        try {
+            return ResponseEntity.ok(creditService.getWorkDomainsByPersonId(personId));
+        } catch (Exception e) {
+            return ResponseEntity.notFound().build();
+        }
     }
 
     // 분야별 페이징 조회
     @GetMapping("/{id}/work")
-    public Page<WorkDTO> getWorks(@PageableDefault(page = 1) Pageable pageable,
+    public ResponseEntity<Page<WorkDTO>> getWorks(@PageableDefault(page = 1) Pageable pageable,
                            @PathVariable("id") Integer personId,
                            @RequestParam("type") ContentType contentType,
                            @RequestParam("department") String department) {
-        return creditService.getWorks(pageable.getPageNumber(), personId, contentType, department);
+        try {
+            return ResponseEntity.ok(creditService.getWorks(pageable.getPageNumber(), personId, contentType, department));
+        } catch (Exception e) {
+            return ResponseEntity.notFound().build();
+        }
     }
 
     // 인물에 좋아요 등록
     @PostMapping("/{id}/like")
-    public void likePerson(@PathVariable("id") Integer personId, @AuthenticationPrincipal CustomUserDetails user) {
+    public ResponseEntity<Void> likePerson(@PathVariable("id") Integer personId, @AuthenticationPrincipal CustomUserDetails user) {
         try {
             personService.likePerson(user.getId(), personId);
+            return ResponseEntity.ok().build();
         } catch (Exception e) {
-            e.printStackTrace();
+            return ResponseEntity.notFound().build();
         }
     }
 
     // 인물에 좋아요 취소
     @DeleteMapping("/{id}/like")
-    public void unlikePerson(@PathVariable("id") Integer personId, @AuthenticationPrincipal CustomUserDetails user) {
+    public ResponseEntity<Void> unlikePerson(@PathVariable("id") Integer personId, @AuthenticationPrincipal CustomUserDetails user) {
         try {
             personService.unlikePerson(user.getId(), personId);
+            return ResponseEntity.ok().build();
         } catch (Exception e) {
-            e.printStackTrace();
+            return ResponseEntity.notFound().build();
         }
     }
 }

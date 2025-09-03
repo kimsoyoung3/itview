@@ -59,24 +59,25 @@ public class PersonService {
 
     // 인물 정보 + 좋아요 여부, 좋아요 수 조회
     public PersonResponseDTO getPersonResponseDTO(Integer userId, Integer personId) {
+        if (!personRepository.existsById(personId)) {
+            throw new IllegalArgumentException("Invalid personId: " + personId);
+        }
         return personRepository.findPersonResponseDTO(userId, personId);
     }
 
     // 인물에 좋아요 등록
     public void likePerson(Integer userId, Integer personId) {
-        try {
-            likeRepository.likeTarget(userId, personId, Replyable.PERSON);
-        } catch (Exception e) {
-            e.printStackTrace();
+        if (!personRepository.existsById(personId)) {
+            throw new IllegalArgumentException("Invalid personId: " + personId);
         }
+        likeRepository.likeTarget(userId, personId, Replyable.PERSON);
     }
 
     // 인물에 좋아요 취소
     public void unlikePerson(Integer userId, Integer personId) {
-        try {
-            likeRepository.unlikeTarget(userId, personId, Replyable.PERSON);
-        } catch (Exception e) {
-            e.printStackTrace();
+        if (!personRepository.existsById(personId)) {
+            throw new IllegalArgumentException("Invalid personId: " + personId);
         }
+        likeRepository.unlikeTarget(userId, personId, Replyable.PERSON);
     }
 }

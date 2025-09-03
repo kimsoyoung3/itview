@@ -42,11 +42,17 @@ public class CreditService {
 
     // 인물의 작품 참여 분야 조회
     public List<WorkDomainDTO> getWorkDomainsByPersonId(Integer personId) {
+        if (!creditRepository.existsById(personId)) {
+            throw new IllegalArgumentException("Invalid personId: " + personId);
+        }
         return creditRepository.findWorkDomainsByPersonId(personId);
     }
 
     // 분야별 페이징 조회
     public Page<WorkDTO> getWorks(Integer page, Integer personId, ContentType contentType, String department) {
+        if (!creditRepository.existsById(personId)) {
+            throw new IllegalArgumentException("Invalid personId: " + personId);
+        }
         Pageable pageable = PageRequest.of(page - 1, 6);
         Page<WorkDTO> workDTOPage = creditRepository.findWorkDTOPage(pageable, personId, contentType, department);
         for (WorkDTO workDTO : workDTOPage) {
