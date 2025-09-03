@@ -9,7 +9,7 @@ const CreditOrPersonCard = ({data, type}) => {
 
     return(
         <div className="credit-card">
-            <NavLink className="credit-card-inner">
+            <NavLink to={`/person/${data.id}`} className="credit-card-inner">
                 <div className="credit-card-image">
                     <img src={person.profile ? person.profile : "/user.png"} alt={person.name} />
                 </div>

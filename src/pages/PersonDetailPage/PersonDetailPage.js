@@ -131,7 +131,7 @@ const PersonDetailPage = ({userInfo, openLogin}) => {
         <div className="person-detail-page container">
              <section className="person-detail-page-profile">
                 <div className="person-detail-page-profile-img">
-                    <NavLink><img src={personInfo?.profile ? personInfo?.profile : "/user.png" } alt=""/></NavLink>
+                    <img src={personInfo?.profile ? personInfo?.profile : "/user.png" } alt=""/>
                 </div>
                 <div className="person-detail-page-profile-info">
                     <h4>{personInfo?.name}</h4>
