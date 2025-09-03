@@ -158,6 +158,7 @@ public class UserService implements UserDetailsService {
             user.setNickname(userProfileUpdateDTO.getNickname());
             user.setIntroduction(userProfileUpdateDTO.getIntroduction());
             if (userProfileUpdateDTO.getProfile() != null) {
+                s3Uploader.deleteFile(user.getProfile());
                 user.setProfile(s3Uploader.uploadFile(userProfileUpdateDTO.getProfile()));
             }
         } catch (UnsupportedFormatException e) {
