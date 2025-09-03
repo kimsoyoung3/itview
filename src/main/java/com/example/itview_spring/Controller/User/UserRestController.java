@@ -198,7 +198,7 @@ public class UserRestController {
                 userService.updateUserProfile(userProfileUpdateDTO);
                 return userService.getUserProfile(userProfileUpdateDTO.getId());
             }
-        } catch (Exception e) {
+        } catch (IllegalStateException e) {
             throw new IllegalStateException(e.getMessage());
         }
     }
