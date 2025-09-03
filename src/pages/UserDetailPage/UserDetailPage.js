@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {NavLink, useParams} from "react-router-dom";
 import "./UserDetailPage.css"
-import {getUserDetail, link} from "../../API/UserApi";
+import {getUserDetail, link, updateUserProfile} from "../../API/UserApi";
 import { toast } from "react-toastify";
 
 const UserDetailPage = ({ userInfo, openLogin }) => {
@@ -36,6 +36,59 @@ const UserDetailPage = ({ userInfo, openLogin }) => {
     const [myProfileEditModal, setMyProfileEditModal] = useState();
     const openMyProfileEdit = () => setMyProfileEditModal(true);
     const closeMyProfileEdit = () => setMyProfileEditModal(false);
+
+    const nameRef = useRef(null);
+    const introductionRef = useRef(null);
+
+    useEffect(() => {
+        if (nameRef.current && introductionRef.current && userDetail) {
+            nameRef.current.value = userDetail?.userProfile.nickname;
+            introductionRef.current.value = userDetail?.userProfile.introduction;
+        }
+    }, [myProfileEditModal, userDetail]);
+
+    const handleImageChange = (e) => {
+        console.log("이미지 변경");
+        const file = e.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onloadend = () => {
+                const imageUrl = reader.result;
+                document.querySelector(".my-profile-edit-image img").src = imageUrl;
+            };
+            reader.readAsDataURL(file);
+        }
+    }
+
+    const handleProfileUpdate = async (e) => {
+        e.preventDefault();
+
+        const formData = new FormData();
+        
+        const nickname = nameRef.current.value;
+        const introduction = introductionRef.current.value;
+        const profile = e.target.form[0].files[0];
+
+        formData.append("id", userDetail?.userProfile.id);
+        formData.append("nickname", nickname);
+        formData.append("introduction", introduction);
+        if (profile) {
+            formData.append("profile", profile);
+        }
+
+        console.log(nickname, introduction);
+
+        try {
+            const res = await updateUserProfile(formData);
+            if (res.status === 200) {
+                toast("프로필이 수정되었습니다.");
+                closeMyProfileEdit();
+                setUserDetail(res.data);
+            }
+        } catch (error) {
+            toast(error.response.data.message);
+        }
+    };
 
     return (
         <div className="user-detail-page container">
@@ -101,20 +154,20 @@ const UserDetailPage = ({ userInfo, openLogin }) => {
                                             <img src={userDetail?.userProfile.profile ? userDetail?.userProfile.profile : "/user.png"} alt=""/>
                                             <i className="bi bi-camera-fill"></i>
                                         </label>
-                                        <input id="image-input" type="file"/>
+                                        <input id="image-input" type="file" onChange={handleImageChange}/>
                                     </div>
 
                                     <label className="nickName-input" htmlFor="nickName-input">
                                         <p>닉네임</p>
-                                        <input id="nickName-input" type="text" placeholder="닉네임을 입력해주세요." maxLength="20"/>
+                                        <input id="nickName-input" type="text" placeholder="닉네임을 입력해주세요." maxLength="20" ref={nameRef}/>
                                     </label>
 
                                     <label className="introduction-input" htmlFor="nickName-input">
                                         <p>소개</p>
-                                        <textarea id="introduction-input" placeholder="소개를 입력해주세요." rows={1} maxLength="60"/>
+                                        <textarea id="introduction-input" placeholder="소개를 입력해주세요." rows={1} maxLength="60" ref={introductionRef}/>
                                     </label>
 
-                                    <button className="form-btn">확인</button>
+                                    <button className="form-btn" onClick={handleProfileUpdate}>확인</button>
                                 </div>
                             </form>
                         </div>
