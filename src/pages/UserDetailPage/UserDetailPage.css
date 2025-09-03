@@ -121,7 +121,7 @@
   margin-bottom: 0;
 }
 
-.my-profile-edit-modal>div>button {
+.my-profile-edit-close-btn {
   border: none;
   background: none;
   color: #22C55E;
@@ -164,17 +164,20 @@
   border-radius: 50%;
 }
 
-.my-profile-edit-image>label>i {
+.image-input-btn-box {
+  width:30px;
+}
+
+.image-input-btn {
   position: absolute;
   top: 50%;
   left: 50%;
+  width: inherit;
   transform: translate(-50%, -50%);
   border: none;
   background: none;
-  border-radius: 50%;
-  font-size: 1.3rem;
   color: #ffffff;
-  line-height: 1;
+  display: block;
   z-index: 10;
 }
 
@@ -188,7 +191,7 @@
   padding: 15px 0 10px 0;
 }
 
-.nickName-input>p .introduction-input>p {
+.input-title {
   margin-bottom: 5px;
   font-size: 0.8rem;
   color: #888888;
@@ -212,6 +215,8 @@
   width: 100%;
   display: block;
   box-sizing: border-box;
+  white-space: nowrap;
+  resize: none;
 }
 
 .form-btn {

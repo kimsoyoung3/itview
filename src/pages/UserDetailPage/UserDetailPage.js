@@ -99,18 +99,18 @@ const UserDetailPage = ({ userInfo, openLogin }) => {
                                     <div className="my-profile-edit-image">
                                         <label htmlFor="image-input">
                                             <img src={userDetail?.userProfile.profile ? userDetail?.userProfile.profile : "/user.png"} alt=""/>
-                                            <i className="bi bi-camera-fill"></i>
+                                            <div className="image-input-btn-box"><img src="/icon/camera.svg" className="image-input-btn" alt=""/></div>
                                         </label>
                                         <input id="image-input" type="file"/>
                                     </div>
 
                                     <label className="nickName-input" htmlFor="nickName-input">
-                                        <p>닉네임</p>
+                                        <p className="input-title">닉네임</p>
                                         <input id="nickName-input" type="text" placeholder="닉네임을 입력해주세요." maxLength="20"/>
                                     </label>
 
                                     <label className="introduction-input" htmlFor="nickName-input">
-                                        <p>소개</p>
+                                        <p className="input-title">소개</p>
                                         <textarea id="introduction-input" placeholder="소개를 입력해주세요." rows={1} maxLength="60"/>
                                     </label>
 
