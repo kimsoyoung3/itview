@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import {NavLink, useParams} from "react-router-dom";
 import "./UserDetailPage.css"
 import { getUserDetail } from "../../API/UserApi";
+import { toast } from "react-toastify";
 
 const UserDetailPage = ({ userInfo, openLogin }) => {
 
@@ -42,12 +43,19 @@ const UserDetailPage = ({ userInfo, openLogin }) => {
                     <h5 className="user-detail-info-name">{userDetail?.userProfile.nickname}</h5>
                     <p className="user-detail-info-intro">{userDetail?.userProfile.introduction}</p>
                     <div className="user-detail-info-btn">
-                        <div className="user-detail-info-edit">
+                        <div style={{display: userInfo === userDetail?.userProfile.id ? "block" : "none"}} className="user-detail-info-edit">
                             <button>프로필 수정</button>
                         </div>
 
                         <div className="user-detail-info-share">
-                            <button>프로필 공유</button>
+                            <button onClick={() => {
+                                const url = "http://localhost:3000/user/" + userDetail?.userProfile.id;
+                                navigator.clipboard.writeText(url)
+                                    .then(() => {
+                                        toast("링크가 복사되었습니다.")
+                                    });
+                                }
+                            }>프로필 공유</button>
                         </div>
                     </div>
                     <div className="user-detail-info-group">
