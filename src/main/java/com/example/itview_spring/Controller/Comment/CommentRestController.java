@@ -38,18 +38,24 @@ public class CommentRestController {
     public ResponseEntity<Void> putContentComment(@PathVariable("Id") Integer commentId,
                                                   @AuthenticationPrincipal CustomUserDetails userDetails,
                                                   @RequestBody TextDTO textDTO) {
-        commentService.updateComment(commentId, textDTO.getText());
-        return ResponseEntity.ok().build();
+        try {
+            commentService.updateComment(commentId, textDTO.getText());
+            return ResponseEntity.ok().build();
+        } catch (Exception e) {
+            return ResponseEntity.notFound().build();
+        }
     }
 
     // 컨텐츠 코멘트 삭제
     @DeleteMapping("/{Id}")
     public ResponseEntity<Void> deleteContentComment(@PathVariable("Id") Integer commentId,
                                                      @AuthenticationPrincipal CustomUserDetails userDetails) {
-        if (commentService.deleteComment(commentId)) {
+        try {
+            commentService.deleteComment(commentId);
             return ResponseEntity.ok().build();
+        } catch (Exception e) {
+            return ResponseEntity.notFound().build();
         }
-        return ResponseEntity.notFound().build();
     }
 
     // 코멘트 + 컨텐츠 조회
@@ -64,9 +70,8 @@ public class CommentRestController {
             CommentAndContentDTO commentAndContent = commentService.getCommentAndContentDTO(commentId, userId);
             return ResponseEntity.ok(commentAndContent);
         } catch (Exception e) {
-            e.printStackTrace();
+            return ResponseEntity.notFound().build();
         }
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
     }
 
     // 좋아요 등록
@@ -76,9 +81,8 @@ public class CommentRestController {
             commentService.likeComment(userDetails.getId(), commentId);
             return ResponseEntity.ok().build();
         } catch (Exception e) {
-            e.printStackTrace();
+            return ResponseEntity.notFound().build();
         }
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
     }
 
     // 좋아요 취소
@@ -88,9 +92,8 @@ public class CommentRestController {
             commentService.unlikeComment(userDetails.getId(), commentId);
             return ResponseEntity.ok().build();
         } catch (Exception e) {
-            e.printStackTrace();
+            return ResponseEntity.notFound().build();
         }
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
     }
 
     // 댓글 등록
@@ -100,15 +103,13 @@ public class CommentRestController {
             ReplyDTO newReply = commentService.addReply(userDetails.getId(), commentId, textDTO.getText());
             return ResponseEntity.ok(newReply);
         } catch (Exception e) {
-            e.printStackTrace();
+            return ResponseEntity.notFound().build();
         }
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
     }
 
     // 코멘트의 댓글 페이징 조회
     @GetMapping("/{id}/reply")
     public ResponseEntity<Page<ReplyDTO>> getCommentReplies(@PathVariable("id") Integer commentId, @PageableDefault(page = 1) Pageable pageable) {
-
         try {
             var auth = SecurityContextHolder.getContext().getAuthentication();
             Integer userId = 0;
@@ -118,8 +119,7 @@ public class CommentRestController {
             Page<ReplyDTO> replies = commentService.getCommentReplies(commentId, userId, pageable.getPageNumber());
             return ResponseEntity.ok(replies);
         } catch (Exception e) {
-            e.printStackTrace();
+            return ResponseEntity.notFound().build();
         }
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
     }
 }

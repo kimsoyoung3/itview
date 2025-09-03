@@ -53,7 +53,7 @@ public class ContentRestController {
         try {
             ContentDetailDTO contentDetail = contentService.getContentDetail(id, userId);
             return ResponseEntity.ok(contentDetail);
-        } catch (NoSuchElementException e) {
+        } catch (Exception e) {
             return ResponseEntity.notFound().build();
         }
     }
@@ -63,7 +63,7 @@ public class ContentRestController {
     public ResponseEntity<Page<CreditDTO>> getContentCredit(@PageableDefault(page=1) Pageable pageable, @PathVariable("id") Integer id) {
         try {
             return ResponseEntity.ok(creditService.getCreditByContentId(pageable, id));
-        } catch (NoSuchElementException e) {
+        } catch (Exception e) {
             return ResponseEntity.notFound().build();
         }
     }
@@ -76,7 +76,7 @@ public class ContentRestController {
         try {
             ratingService.rateContent(userDetails.getId(), id, ratingRequest.getScore());
             return ResponseEntity.ok().build();
-        } catch (NoSuchElementException e) {
+        } catch (Exception e) {
             return ResponseEntity.notFound().build();
         }
     }
@@ -88,7 +88,7 @@ public class ContentRestController {
         try {
             ratingService.deleteRating(userDetails.getId(), id);
             return ResponseEntity.ok().build();
-        } catch (NoSuchElementException e) {
+        } catch (Exception e) {
             return ResponseEntity.notFound().build();
         }
     }
@@ -101,7 +101,7 @@ public class ContentRestController {
         try {
             commentService.addComment(userDetails.getId(), id, textDTO.getText());
             return ResponseEntity.ok().build();
-        } catch (NoSuchElementException e) {
+        } catch (Exception e) {
             return ResponseEntity.notFound().build();
         }
     }
@@ -113,7 +113,7 @@ public class ContentRestController {
         try {
             CommentDTO commentDTO = commentService.getCommentDTO(userDetails.getId(), id);
             return ResponseEntity.ok(commentDTO);
-        } catch (NoSuchElementException e) {
+        } catch (Exception e) {
             return ResponseEntity.notFound().build();
         }
     }
@@ -132,7 +132,7 @@ public class ContentRestController {
             }
             Page<CommentDTO> comments = contentService.getCommentsByContentId(id, userId, order, pageable.getPageNumber());
             return ResponseEntity.ok(comments);
-        } catch (NoSuchElementException e) {
+        } catch (Exception e) {
             return ResponseEntity.notFound().build();
         }
     }

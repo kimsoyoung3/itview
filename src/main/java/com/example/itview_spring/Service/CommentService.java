@@ -57,42 +57,48 @@ public class CommentService {
 
     // 코멘트 + 컨텐츠 정보 조회
     public CommentAndContentDTO getCommentAndContentDTO(Integer commentId, Integer userId) {
-        CommentAndContentDTO commentAndContent = commentRepository.findCommentAndContentByCommentId(commentId, userId).orElse(null);
+        CommentAndContentDTO commentAndContent = commentRepository.findCommentAndContentByCommentId(commentId, userId).orElseThrow(() -> new NoSuchElementException("Invalid commentId: " + commentId));
         return commentAndContent;
     }
     
     // 코멘트 수정
     public void updateComment(Integer commentId, String newText) {
         CommentEntity comment = commentRepository.findById(commentId)
-                .orElseThrow(() -> new RuntimeException("Comment not found"));
+                .orElseThrow(() -> new NoSuchElementException("Invalid commentId: " + commentId));
         comment.setText(newText);
         commentRepository.save(comment);
     }
 
     // 코멘트 삭제
     public boolean deleteComment(Integer commentId) {
-        var commentOpt = commentRepository.findById(commentId);
-        if (commentOpt.isPresent()) {
-            commentRepository.delete(commentOpt.get());
-            likeRepository.deleteByTargetIdAndTargetType(commentId, Replyable.COMMENT);
-            replyRepository.deleteByTargetIdAndTargetType(commentId, Replyable.COMMENT);
-            return true;
-        }
-        return false;
+        var commentOpt = commentRepository.findById(commentId).orElseThrow(() -> new NoSuchElementException("Invalid commentId: " + commentId));
+        commentRepository.delete(commentOpt);
+        likeRepository.deleteByTargetIdAndTargetType(commentId, Replyable.COMMENT);
+        replyRepository.deleteByTargetIdAndTargetType(commentId, Replyable.COMMENT);
+        return true;
     }
 
     // 코멘트에 좋아요 등록
     public void likeComment(Integer userId, Integer commentId) {
+        if (!commentRepository.existsById(commentId)) {
+            throw new NoSuchElementException("Invalid commentId: " + commentId);
+        }
         likeRepository.likeTarget(userId, commentId, Replyable.COMMENT);
     }
 
     // 코멘트에 좋아요 취소
     public void unlikeComment(Integer userId, Integer commentId) {
+        if (!commentRepository.existsById(commentId)) {
+            throw new NoSuchElementException("Invalid commentId: " + commentId);
+        }
         likeRepository.unlikeTarget(userId, commentId, Replyable.COMMENT);
     }
 
     // 코멘트에 댓글 작성
     public ReplyDTO addReply(Integer userId, Integer commentId, String text) {
+        if (!commentRepository.existsById(commentId)) {
+            throw new NoSuchElementException("Invalid commentId: " + commentId);
+        }
         ReplyEntity reply = new ReplyEntity();
         reply.setUser(userRepository.findById(userId).orElseThrow(() -> new RuntimeException("User not found")));
         reply.setTargetId(commentId);
@@ -108,6 +114,9 @@ public class CommentService {
 
     // 코멘트의 댓글 페이징 조회
     public Page<ReplyDTO> getCommentReplies(Integer commentId, Integer userId, Integer page) {
+        if (!commentRepository.existsById(commentId)) {
+            throw new NoSuchElementException("Invalid commentId: " + commentId);
+        }
         Pageable pageable = PageRequest.of(page - 1, 10);
         Page<ReplyDTO> replies = replyRepository.findRepliesByTargetId(userId, commentId, Replyable.COMMENT, pageable);
         return replies;
