@@ -86,7 +86,7 @@ const UserDetailPage = ({ userInfo, openLogin }) => {
                 setUserDetail(res.data);
             }
         } catch (error) {
-            toast(error.response.data.message);
+            toast(error.response.data);
         }
     };
 
