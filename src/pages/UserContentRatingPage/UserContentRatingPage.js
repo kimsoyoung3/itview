@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import {NavLink, useParams} from "react-router-dom";
 import { getUserContentRating } from "../../API/UserApi";
 import NotFound from "../NotFound/NotFound";
 import "./UserContentRatingPage.css"
@@ -7,8 +7,9 @@ import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css";
 import "swiper/css/navigation";
 import { Navigation } from 'swiper/modules';
+import ContentEach from "../../components/ContentEach/ContentEach";
 
-const UserContentRatingPage = () => {
+const UserContentRatingPage = ({rating}) => {
     const [notFound, setNotFound] = useState(false);
 
     const { id, contentType } = useParams();
@@ -61,19 +62,10 @@ const UserContentRatingPage = () => {
                         {/*컨텐츠 리스트*/}
                         <div className="user-content-rating-page-content-list">
                             {ratings?.content?.map((item) => (
-                                <div key={item.content.id} className="user-content-rating-page-content">
-                                    {/* 포스터 이미지 */}
-                                    <div className="rating-page-content-poster">
-                                        <img
-                                            src={item.content.poster}
-                                            alt={item.content.title}/>
-                                    </div>
-                                    <p>{item.content.title}</p>
-                                    <p>평가함 <i className="bi bi-star-fill"/> {item.score / 2}</p>
-                                </div>
+                                <ContentEach ratingData={item}/>
                             ))}
                         </div>
-                        <div><button>더보기</button></div>
+                        <div className="rating-page-content-list-btn"><button>더보기</button></div>
                     </div>}
 
                     {activeId === "rating-page-tab2" && <div className="rating-page-tab2">
@@ -107,18 +99,7 @@ const UserContentRatingPage = () => {
                                                 >
                                                     {items.map((item) => (
                                                         <SwiperSlide key={item.content.id} className="rating-slide-image">
-                                                            <div className="user-content-rating-page-content">
-                                                                <div className="rating-page-content-poster">
-                                                                    <img
-                                                                        src={item.content.poster}
-                                                                        alt={item.content.title}
-                                                                    />
-                                                                </div>
-                                                                <p className="title">{item.content.title}</p>
-                                                                <p>
-                                                                    평가함 <i className="bi bi-star-fill" /> {item.score}
-                                                                </p>
-                                                            </div>
+                                                            <ContentEach ratingData={item}/>
                                                         </SwiperSlide>
                                                     ))}
                                                 </Swiper>
