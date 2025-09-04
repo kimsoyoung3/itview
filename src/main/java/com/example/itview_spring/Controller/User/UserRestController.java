@@ -23,6 +23,9 @@ import java.io.IOException;
 import java.util.List;
 import java.util.NoSuchElementException;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -206,15 +209,17 @@ public class UserRestController {
     // 유저가 매긴 특정 컨텐츠 타입의 별점 개수 및 위시리스트 개수 조회
     @GetMapping("/{id}/content/{contentType}")
     public ResponseEntity<UserContentCountDTO> getUserContentCount(@PathVariable("id") Integer userId,
-                                                 @PathVariable("contentType") String contentTypeStr) {
+                                                                   @PathVariable("contentType") String contentTypeStr) {
         return ResponseEntity.ok(userService.getUserContentCount(userId, ContentType.valueOf(contentTypeStr.toUpperCase())));
     }
 
     // 유저가 매긴 특정 컨텐츠 타입의 평점 목록 조회
     @GetMapping("/{id}/content/{contentType}/rating")
-    public ResponseEntity<List<RatingDTO>> getUserContentRating(@PathVariable("id") Integer userId,
-                                                 @PathVariable("contentType") String contentTypeStr) {
-        return ResponseEntity.ok(userService.getUserContentRating(userId, ContentType.valueOf(contentTypeStr.toUpperCase())));
+    public ResponseEntity<Page<RatingDTO>> getUserContentRating(@PathVariable("id") Integer userId,
+                                                                @PathVariable("contentType") String contentTypeStr,
+                                                                @PageableDefault(page=1) Pageable pageable,
+                                                                @RequestParam(value = "order", defaultValue = "avg_score_low") String order) {
+        return ResponseEntity.ok(userService.getUserContentRating(userId, ContentType.valueOf(contentTypeStr.toUpperCase()), pageable.getPageNumber(), order));
     }
 
     @ExceptionHandler(NoSuchElementException.class)

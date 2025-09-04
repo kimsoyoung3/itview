@@ -26,6 +26,9 @@ import lombok.RequiredArgsConstructor;
 import net.coobird.thumbnailator.tasks.UnsupportedFormatException;
 
 import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -197,10 +200,12 @@ public class UserService implements UserDetailsService {
     }
 
     // 유저가 매긴 특정 컨텐츠 타입의 별점 조회
-    public List<RatingDTO> getUserContentRating(Integer userId, ContentType contentType) {
+    public Page<RatingDTO> getUserContentRating(Integer userId, ContentType contentType, Integer page, String order) {
         if (!userRepository.existsById(userId)) {
             throw new NoSuchElementException("존재하지 않는 유저입니다.");
         }
-        return ratingRepository.findUserContentRatings(userId, contentType);
+
+        Pageable pageable = PageRequest.of(page - 1, 10);
+        return ratingRepository.findUserContentRatings(pageable, userId, contentType, order);
     }
 }
