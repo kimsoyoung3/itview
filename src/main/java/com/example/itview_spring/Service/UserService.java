@@ -3,9 +3,11 @@ package com.example.itview_spring.Service;
 import com.example.itview_spring.Config.CustomUserDetails;
 import com.example.itview_spring.Constant.ContentType;
 import com.example.itview_spring.Constant.Role;
+import com.example.itview_spring.DTO.ContentResponseDTO;
 import com.example.itview_spring.DTO.EmailDTO;
 import com.example.itview_spring.DTO.EmailVerificationDTO;
 import com.example.itview_spring.DTO.NewPasswordDTO;
+import com.example.itview_spring.DTO.RatingDTO;
 import com.example.itview_spring.DTO.RegisterDTO;
 import com.example.itview_spring.DTO.UserContentCountDTO;
 import com.example.itview_spring.DTO.UserProfileUpdateDTO;
@@ -13,6 +15,7 @@ import com.example.itview_spring.DTO.UserRatingCountDTO;
 import com.example.itview_spring.DTO.UserResponseDTO;
 import com.example.itview_spring.Entity.EmailVerificationEntity;
 import com.example.itview_spring.Entity.UserEntity;
+import com.example.itview_spring.Repository.ContentRepository;
 import com.example.itview_spring.Repository.EmailVerificationRepository;
 import com.example.itview_spring.Repository.RatingRepository;
 import com.example.itview_spring.Repository.UserRepository;
@@ -43,6 +46,7 @@ import java.util.Optional;
 @Transactional
 public class UserService implements UserDetailsService {
     private final UserRepository userRepository;
+    private final ContentRepository contentRepository;
     private final RatingRepository ratingRepository;
     private final EmailVerificationRepository emailVerificationRepository;
     private final ModelMapper modelMapper;
@@ -190,5 +194,13 @@ public class UserService implements UserDetailsService {
             throw new NoSuchElementException("존재하지 않는 유저입니다.");
         }
         return ratingRepository.findUserContentCount(userId, contentType);
+    }
+
+    // 유저가 매긴 특정 컨텐츠 타입의 별점 조회
+    public List<RatingDTO> getUserContentRating(Integer userId, ContentType contentType) {
+        if (!userRepository.existsById(userId)) {
+            throw new NoSuchElementException("존재하지 않는 유저입니다.");
+        }
+        return ratingRepository.findUserContentRatings(userId, contentType);
     }
 }

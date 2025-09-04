@@ -6,6 +6,7 @@ import com.example.itview_spring.DTO.EmailDTO;
 import com.example.itview_spring.DTO.EmailVerificationDTO;
 import com.example.itview_spring.DTO.LoginDTO;
 import com.example.itview_spring.DTO.NewPasswordDTO;
+import com.example.itview_spring.DTO.RatingDTO;
 import com.example.itview_spring.DTO.RegisterDTO;
 import com.example.itview_spring.DTO.UserContentCountDTO;
 import com.example.itview_spring.DTO.UserProfileUpdateDTO;
@@ -19,6 +20,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.NoSuchElementException;
 
 import org.springframework.http.ResponseEntity;
@@ -206,6 +208,13 @@ public class UserRestController {
     public ResponseEntity<UserContentCountDTO> getUserContentCount(@PathVariable("id") Integer userId,
                                                  @PathVariable("contentType") String contentTypeStr) {
         return ResponseEntity.ok(userService.getUserContentCount(userId, ContentType.valueOf(contentTypeStr.toUpperCase())));
+    }
+
+    // 유저가 매긴 특정 컨텐츠 타입의 평점 목록 조회
+    @GetMapping("/{id}/content/{contentType}/rating")
+    public ResponseEntity<List<RatingDTO>> getUserContentRating(@PathVariable("id") Integer userId,
+                                                 @PathVariable("contentType") String contentTypeStr) {
+        return ResponseEntity.ok(userService.getUserContentRating(userId, ContentType.valueOf(contentTypeStr.toUpperCase())));
     }
 
     @ExceptionHandler(NoSuchElementException.class)

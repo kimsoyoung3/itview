@@ -10,6 +10,7 @@ import org.springframework.stereotype.Repository;
 
 import com.example.itview_spring.Constant.ContentType;
 import com.example.itview_spring.DTO.RatingCountDTO;
+import com.example.itview_spring.DTO.RatingDTO;
 import com.example.itview_spring.DTO.UserContentCountDTO;
 import com.example.itview_spring.DTO.UserRatingCountDTO;
 import com.example.itview_spring.Entity.RatingEntity;
@@ -61,4 +62,28 @@ public interface RatingRepository extends JpaRepository<RatingEntity, Integer> {
             WHERE r.user.id = :userId AND r.content.contentType = :contentType
             """)
     UserContentCountDTO findUserContentCount(@Param("userId") Integer userId, @Param("contentType") ContentType contentType);
+
+    // 특정 사용자의 특정 컨텐츠 타입의 평점 목록 조회
+    @Query("""
+            SELECT new com.example.itview_spring.DTO.RatingDTO(
+                new com.example.itview_spring.DTO.ContentResponseDTO(
+                    c.id,
+                    c.title,
+                    c.contentType,
+                    c.creatorName,
+                    c.nation,
+                    c.description,
+                    c.releaseDate,
+                    c.poster,
+                    c.age,
+                    c.duration,
+                    (SELECT AVG(r2.score) FROM RatingEntity r2 WHERE r2.content.id = c.id)
+                ),
+                r.score
+            )
+            FROM RatingEntity r
+            JOIN ContentEntity c ON r.content.id = c.id
+            WHERE r.user.id = :userId AND r.content.contentType = :contentType
+        """)
+    List<RatingDTO> findUserContentRatings(@Param("userId") Integer userId, @Param("contentType") ContentType contentType);
 }
