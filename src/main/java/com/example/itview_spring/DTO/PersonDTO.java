@@ -18,11 +18,10 @@ public class PersonDTO {
     @NotBlank(message = "이름은 필수입니다.")
     private String name;
 
+    private String profile;
+
     @NotBlank(message = "직업은 필수입니다.")
     private String job;
-
-
-    private String profile;
 }
 
 
