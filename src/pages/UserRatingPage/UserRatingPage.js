@@ -1,7 +1,12 @@
 import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import {NavLink, useParams} from 'react-router-dom';
 import { getUserRatingCount } from '../../API/UserApi';
 import NotFound from '../NotFound/NotFound';
+import "./UserRatingPage.css"
+
+function NavKink() {
+    return null;
+}
 
 function UserRatingPage({ userInfo, openLogin }) {
     const [notFound, setNotFound] = useState(false);
@@ -27,7 +32,18 @@ function UserRatingPage({ userInfo, openLogin }) {
     }, [userRatingCount]);
 
     return (notFound ? <NotFound /> :
-        <div>UserRatingPage</div>
+        <div className="user-rating-page container">
+            <div className="user-rating-page-wrap">
+                <h1>평가</h1>
+                <ul className="rating-list">
+                    <li><NavLink>영화 <span>{userRatingCount?.movie}</span></NavLink></li>
+                    <li><NavLink>시리즈 <span>{userRatingCount?.series}</span></NavLink></li>
+                    <li><NavLink>책 <span>{userRatingCount?.book}</span></NavLink></li>
+                    <li><NavLink>웹툰 <span>{userRatingCount?.webtoon}</span></NavLink></li>
+                    <li><NavLink>음반 <span>{userRatingCount?.record}</span></NavLink></li>
+                </ul>
+            </div>
+        </div>
     )
 }
 
