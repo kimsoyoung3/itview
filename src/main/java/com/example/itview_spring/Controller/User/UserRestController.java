@@ -1,11 +1,17 @@
 package com.example.itview_spring.Controller.User;
 
 import com.example.itview_spring.Config.CustomUserDetails;
+import com.example.itview_spring.Constant.ContentType;
 import com.example.itview_spring.DTO.EmailDTO;
 import com.example.itview_spring.DTO.EmailVerificationDTO;
 import com.example.itview_spring.DTO.LoginDTO;
 import com.example.itview_spring.DTO.NewPasswordDTO;
+import com.example.itview_spring.DTO.RatingDTO;
 import com.example.itview_spring.DTO.RegisterDTO;
+import com.example.itview_spring.DTO.UserContentCountDTO;
+import com.example.itview_spring.DTO.UserProfileUpdateDTO;
+import com.example.itview_spring.DTO.UserRatingCountDTO;
+import com.example.itview_spring.DTO.UserResponseDTO;
 import com.example.itview_spring.Service.UserService;
 
 import jakarta.servlet.http.Cookie;
@@ -14,12 +20,12 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 
 import java.io.IOException;
-import java.util.Base64;
-import java.util.Map;
+import java.util.List;
+import java.util.NoSuchElementException;
 
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -28,26 +34,26 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.context.SecurityContextRepository;
-import org.springframework.util.LinkedMultiValueMap;
-import org.springframework.util.MultiValueMap;
-import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.client.RestTemplate;
 
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/user")
-@CrossOrigin(origins = "http://localhost:3000", allowCredentials = "true")
 public class UserRestController {
     
     private final UserService registerService;
     private final AuthenticationManager authenticationManager;
     private final SecurityContextRepository securityContextRepository;
+    private final UserService userService;
 
     // 회원가입
     @PostMapping
@@ -175,5 +181,54 @@ public class UserRestController {
         redirectCookie.setHttpOnly(false);
         response.addCookie(redirectCookie);
         System.out.println("redirectURL: " + redirectURL);
+    }
+
+    // 유저 페이지 정보 조회
+    @GetMapping("/{id}")
+    public ResponseEntity<UserResponseDTO> getUserProfile(@PathVariable("id") Integer id) {
+        return ResponseEntity.ok(registerService.getUserProfile(id));
+    }
+
+    // 유저 프로필 수정
+    @PutMapping
+    public ResponseEntity<UserResponseDTO> updateUserProfile(@AuthenticationPrincipal CustomUserDetails user,
+                                  @ModelAttribute UserProfileUpdateDTO userProfileUpdateDTO) {
+        if (user.getId() != userProfileUpdateDTO.getId()) {
+            throw new IllegalStateException("본인의 프로필만 수정할 수 있습니다.");
+        }
+        userService.updateUserProfile(userProfileUpdateDTO);
+        return ResponseEntity.ok(userService.getUserProfile(userProfileUpdateDTO.getId()));
+    }
+
+    // 유저 평점 개수 조회
+    @GetMapping("/{id}/rating")
+    public ResponseEntity<UserRatingCountDTO> getUserRatingCount(@PathVariable("id") Integer userId) {
+        return ResponseEntity.ok(userService.getUserRatingCount(userId));
+    }
+
+    // 유저가 매긴 특정 컨텐츠 타입의 별점 개수 및 위시리스트 개수 조회
+    @GetMapping("/{id}/content/{contentType}")
+    public ResponseEntity<UserContentCountDTO> getUserContentCount(@PathVariable("id") Integer userId,
+                                                                   @PathVariable("contentType") String contentTypeStr) {
+        return ResponseEntity.ok(userService.getUserContentCount(userId, ContentType.valueOf(contentTypeStr.toUpperCase())));
+    }
+
+    // 유저가 매긴 특정 컨텐츠 타입의 평점 목록 조회
+    @GetMapping("/{id}/content/{contentType}/rating")
+    public ResponseEntity<Page<RatingDTO>> getUserContentRating(@PathVariable("id") Integer userId,
+                                                                @PathVariable("contentType") String contentTypeStr,
+                                                                @PageableDefault(page=1) Pageable pageable,
+                                                                @RequestParam(value = "order", defaultValue = "avg_score_low") String order) {
+        return ResponseEntity.ok(userService.getUserContentRating(userId, ContentType.valueOf(contentTypeStr.toUpperCase()), pageable.getPageNumber(), order));
+    }
+
+    @ExceptionHandler(NoSuchElementException.class)
+    public ResponseEntity<String> handleNoSuchElementException(NoSuchElementException ex) {
+        return ResponseEntity.status(404).body(ex.getMessage());
+    }
+
+    @ExceptionHandler(IllegalStateException.class)
+    public ResponseEntity<String> handleIllegalStateException(IllegalStateException ex) {
+        return ResponseEntity.status(400).body(ex.getMessage());
     }
 }

@@ -1,33 +1,95 @@
 package com.example.itview_spring.Service;
 
+import com.example.itview_spring.Constant.Replyable;
 import com.example.itview_spring.DTO.PersonResponseDTO;
 import com.example.itview_spring.Entity.PersonEntity;
+import com.example.itview_spring.Repository.LikeRepository;
+import com.example.itview_spring.Repository.PersonRepository;
+import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Example;
+import org.springframework.data.domain.ExampleMatcher;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-public interface PersonService {
+@Service
+@RequiredArgsConstructor
+public class PersonService {
 
-    // 검색/리스트 조회
-    Page<PersonEntity> list(Pageable pageable, String keyword);
+    private final PersonRepository personRepository;
+    private final LikeRepository likeRepository;
 
-    // 단건 조회 (Entity)
-    PersonEntity get(Integer personId);
+    public Page<PersonEntity> list(Pageable pageable, String keyword) {
+        if (keyword == null || keyword.isBlank()) {
+            return personRepository.findAll(pageable);
+        }
+        // 리포지토리 추가 쿼리 없이 Query-by-Example로 간단 검색(name/profile/job 포함)
+        ExampleMatcher matcher = ExampleMatcher.matchingAny()
+                .withIgnoreNullValues()
+                .withIgnoreCase()
+                .withMatcher("name", m -> m.contains())
+                .withMatcher("profile", m -> m.contains())
+                .withMatcher("job", m -> m.contains());
+        PersonEntity probe = new PersonEntity();
+        probe.setName(keyword);
+        probe.setProfile(keyword);
+        probe.setJob(keyword);
+        return personRepository.findAll(Example.of(probe, matcher), pageable);
+    }
 
-    // 단건 조회 (좋아요 여부 포함)
-    PersonResponseDTO getPersonResponseDTO(Integer userId, Integer personId);
+    public PersonEntity get(Integer personId) {
+        return personRepository.findById(personId)
+                .orElseThrow(() -> new IllegalArgumentException("Person not found: " + personId));
+    }
 
-    // 등록
-    PersonEntity create(PersonEntity req);
+    public PersonResponseDTO getPersonResponseDTO(Integer userId, Integer personId) {
 
-    // 수정
-    PersonEntity update(Integer personId, PersonEntity req);
+        PersonResponseDTO dto = personRepository.findPersonResponseDTO(userId, personId);
+        if (dto == null) {
+            throw new IllegalArgumentException("Person not found: " + personId);
+        }
+        return dto;
+    }
 
-    // 삭제
-    void delete(Integer personId);
+    @Transactional
+    public PersonEntity create(PersonEntity req) {
 
-    // 좋아요 등록
-    void likePerson(Integer userId, Integer personId);
+        PersonEntity entity = new PersonEntity();
+        entity.setName(req.getName());
+        entity.setProfile(req.getProfile());
+        entity.setJob(req.getJob());
 
-    // 좋아요 취소
-    void unlikePerson(Integer userId, Integer personId);
+        return personRepository.save(entity);
+    }
+
+    @Transactional
+    public PersonEntity update(Integer personId, PersonEntity req) {
+        PersonEntity entity = personRepository.findById(personId)
+                .orElseThrow(() -> new IllegalArgumentException("Person not found: " + personId));
+        entity.setName(req.getName());
+        entity.setProfile(req.getProfile());
+        entity.setJob(req.getJob());
+
+        return personRepository.save(entity);
+    }
+
+    @Transactional
+    public void delete(Integer personId) {
+        if (!personRepository.existsById(personId)) {
+            throw new IllegalArgumentException("Person not found: " + personId);
+        }
+        personRepository.deleteById(personId);
+    }
+
+    @Transactional
+    public void likePerson(Integer userId, Integer personId) {
+
+        likeRepository.likeTarget(userId, personId, Replyable.PERSON);
+    }
+
+    @Transactional
+    public void unlikePerson(Integer userId, Integer personId) {
+        likeRepository.unlikeTarget(userId, personId, Replyable.PERSON);
+    }
 }

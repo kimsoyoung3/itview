@@ -13,6 +13,7 @@ import software.amazon.awssdk.auth.credentials.StaticCredentialsProvider;
 import software.amazon.awssdk.core.sync.RequestBody;
 import software.amazon.awssdk.regions.Region;
 import software.amazon.awssdk.services.s3.S3Client;
+import software.amazon.awssdk.services.s3.model.DeleteObjectRequest;
 import software.amazon.awssdk.services.s3.model.PutObjectRequest;
 
 @Component
@@ -52,7 +53,7 @@ public class S3Uploader {
 
         s3Client.putObject(putObjectRequest, RequestBody.fromBytes(resizedImage));
 
-        return key;
+        return getFileUrl(key);
     }
 
     public String getFileUrl(String keyName) {
@@ -73,5 +74,21 @@ public class S3Uploader {
                 .toOutputStream(baos);
 
         return baos.toByteArray();
+    }
+
+    public String extractKeyFromUrl(String fileUrl) {
+        if (fileUrl == null || fileUrl.isEmpty()) {
+            throw new IllegalArgumentException("fileUrl이 비어있습니다.");
+        }
+        return fileUrl.substring(fileUrl.lastIndexOf("/") + 1);
+    }
+
+    public void deleteFile(String Url) {
+        DeleteObjectRequest deleteObjectRequest = DeleteObjectRequest.builder()
+                .bucket(bucketName)
+                .key(extractKeyFromUrl(Url))
+                .build();
+
+        s3Client.deleteObject(deleteObjectRequest);
     }
 }

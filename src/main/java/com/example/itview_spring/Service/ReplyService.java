@@ -1,5 +1,7 @@
 package com.example.itview_spring.Service;
 
+import java.util.NoSuchElementException;
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -20,33 +22,32 @@ public class ReplyService {
 
     // 댓글 수정
     public Boolean modifyReply(Integer replyId, String newText) {
-        try {
-            ReplyEntity reply = replyRepository.findById(replyId).orElseThrow(() -> new IllegalArgumentException("Reply not found"));
-            reply.setText(newText);
-            replyRepository.save(reply);
-            return true;
-        } catch (Exception e) {
-            e.printStackTrace();
-            return false;
+        if (!replyRepository.existsById(replyId)) {
+            throw new NoSuchElementException("존재하지 않는 댓글입니다");
         }
+        ReplyEntity reply = replyRepository.findById(replyId).get();
+        reply.setText(newText);
+        replyRepository.save(reply);
+        return true;
     }
 
     // 댓글 삭제
     public Boolean deleteReply(Integer replyId) {
-        try {
-            // 댓글에 달린 좋아요 먼저 삭제
-            likeRepository.deleteByTargetIdAndTargetType(replyId, Replyable.REPLY);
-            // 댓글 삭제
-            replyRepository.deleteById(replyId);
-            return true;
-        } catch (Exception e) {
-            e.printStackTrace();
-            return false;
+        if (!replyRepository.existsById(replyId)) {
+            throw new NoSuchElementException("존재하지 않는 댓글입니다");
         }
+        // 댓글에 달린 좋아요 먼저 삭제
+        likeRepository.deleteByTargetIdAndTargetType(replyId, Replyable.REPLY);
+        // 댓글 삭제
+        replyRepository.deleteById(replyId);
+        return true;
     }
 
     // 댓글에 좋아요 등록
     public Boolean likeReply(Integer userId, Integer replyId) {
+        if (!replyRepository.existsById(replyId)) {
+            throw new NoSuchElementException("존재하지 않는 댓글입니다");
+        }
         try {
             likeRepository.likeTarget(userId, replyId, Replyable.REPLY);
             return true;
@@ -58,6 +59,9 @@ public class ReplyService {
 
     // 댓글에 좋아요 취소
     public Boolean unlikeReply(Integer userId, Integer replyId) {
+        if (!replyRepository.existsById(replyId)) {
+            throw new NoSuchElementException("존재하지 않는 댓글입니다");
+        }
         try {
             likeRepository.unlikeTarget(userId, replyId, Replyable.REPLY);
             return true;
