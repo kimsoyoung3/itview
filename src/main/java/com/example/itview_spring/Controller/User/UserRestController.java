@@ -7,6 +7,7 @@ import com.example.itview_spring.DTO.LoginDTO;
 import com.example.itview_spring.DTO.NewPasswordDTO;
 import com.example.itview_spring.DTO.RegisterDTO;
 import com.example.itview_spring.DTO.UserProfileUpdateDTO;
+import com.example.itview_spring.DTO.UserRatingCountDTO;
 import com.example.itview_spring.DTO.UserResponseDTO;
 import com.example.itview_spring.Service.UserService;
 
@@ -190,6 +191,12 @@ public class UserRestController {
         }
         userService.updateUserProfile(userProfileUpdateDTO);
         return ResponseEntity.ok(userService.getUserProfile(userProfileUpdateDTO.getId()));
+    }
+
+    // 유저 평점 개수 조회
+    @GetMapping("/{id}/rating")
+    public ResponseEntity<UserRatingCountDTO> getUserRatingCount(@PathVariable("id") Integer userId) {
+        return ResponseEntity.ok(userService.getUserRatingCount(userId));
     }
 
     @ExceptionHandler(NoSuchElementException.class)
