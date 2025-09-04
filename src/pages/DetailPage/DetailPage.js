@@ -250,7 +250,7 @@ const DetailPage = ({userInfo, openLogin}) => {
 
     return (
         notFound ? (
-            <NotFound showHeader={false}/>
+            <NotFound/>
         ) : (
         <div className="detail">
             {/*상세페이지 배너 섹션*/}
