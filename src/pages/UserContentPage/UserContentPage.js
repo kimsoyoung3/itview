@@ -41,7 +41,7 @@ function UserContentPage({ userInfo, openLogin }) {
                 <h1>{domainNameMap[contentType]}</h1>
                 <div className="user-content-page-content">
                     <div>
-                        <NavLink>
+                        <NavLink to={`/user/${id}/content/${contentType}/rating`}>
                             <p>평가</p>
                             <span>{userContentCount?.rating}</span>
                         </NavLink>
