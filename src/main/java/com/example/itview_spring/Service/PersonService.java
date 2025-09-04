@@ -1,82 +1,33 @@
 package com.example.itview_spring.Service;
 
-import com.example.itview_spring.Constant.Replyable;
-import com.example.itview_spring.DTO.PersonDTO;
 import com.example.itview_spring.DTO.PersonResponseDTO;
 import com.example.itview_spring.Entity.PersonEntity;
-import com.example.itview_spring.Repository.LikeRepository;
-import com.example.itview_spring.Repository.PersonRepository;
-import lombok.RequiredArgsConstructor;
-import org.modelmapper.ModelMapper;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
+public interface PersonService {
 
-@Service
-@RequiredArgsConstructor
-@Transactional
-public class PersonService {
-    private final PersonRepository personRepository;
-    private final LikeRepository likeRepository;
-    private final ModelMapper modelMapper ;
-    // 전체조회
-    public List<PersonDTO>listPersons() {
-        List<PersonEntity> personEntities = personRepository.findAll();
-        List<PersonDTO> personDTOS = Arrays.asList(modelMapper.map(personEntities, PersonDTO[].class));
-        return personDTOS;
-    }
-    //상세보기
-    public PersonDTO readPerson(Integer id){
-        Optional<PersonEntity> personEntity = personRepository.findById(id);
-        PersonDTO personDTO = modelMapper.map(personEntity, PersonDTO.class);
-        return personDTO;
-    }
-    //삽입
-     public void register(PersonDTO personDTO){
-        PersonEntity personEntity = modelMapper.map(personDTO,PersonEntity.class);
-        personRepository.save(personEntity);
-     }
-     //수정
-     public void update(PersonDTO personDTO){
-            PersonEntity save =personRepository.findById(personDTO.getId())
-                    .orElse(null);
-        if (save !=null){
-            PersonEntity personEntity =modelMapper.map(personDTO,PersonEntity.class);
-            personRepository.save(personEntity);
-        }
+    // 검색/리스트 조회
+    Page<PersonEntity> list(Pageable pageable, String keyword);
 
+    // 단건 조회 (Entity)
+    PersonEntity get(Integer personId);
 
-         }
-         //삭제
-    public Void deletePerson(Integer id){
-        personRepository.deleteById(id);
+    // 단건 조회 (좋아요 여부 포함)
+    PersonResponseDTO getPersonResponseDTO(Integer userId, Integer personId);
 
-        return null;
-    }
+    // 등록
+    PersonEntity create(PersonEntity req);
 
-    // 인물 정보 + 좋아요 여부, 좋아요 수 조회
-    public PersonResponseDTO getPersonResponseDTO(Integer userId, Integer personId) {
-        return personRepository.findPersonResponseDTO(userId, personId);
-    }
+    // 수정
+    PersonEntity update(Integer personId, PersonEntity req);
 
-    // 인물에 좋아요 등록
-    public void likePerson(Integer userId, Integer personId) {
-        try {
-            likeRepository.likeTarget(userId, personId, Replyable.PERSON);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
+    // 삭제
+    void delete(Integer personId);
 
-    // 인물에 좋아요 취소
-    public void unlikePerson(Integer userId, Integer personId) {
-        try {
-            likeRepository.unlikeTarget(userId, personId, Replyable.PERSON);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
+    // 좋아요 등록
+    void likePerson(Integer userId, Integer personId);
+
+    // 좋아요 취소
+    void unlikePerson(Integer userId, Integer personId);
 }
