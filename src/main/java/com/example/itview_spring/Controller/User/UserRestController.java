@@ -1,11 +1,13 @@
 package com.example.itview_spring.Controller.User;
 
 import com.example.itview_spring.Config.CustomUserDetails;
+import com.example.itview_spring.Constant.ContentType;
 import com.example.itview_spring.DTO.EmailDTO;
 import com.example.itview_spring.DTO.EmailVerificationDTO;
 import com.example.itview_spring.DTO.LoginDTO;
 import com.example.itview_spring.DTO.NewPasswordDTO;
 import com.example.itview_spring.DTO.RegisterDTO;
+import com.example.itview_spring.DTO.UserContentCountDTO;
 import com.example.itview_spring.DTO.UserProfileUpdateDTO;
 import com.example.itview_spring.DTO.UserRatingCountDTO;
 import com.example.itview_spring.DTO.UserResponseDTO;
@@ -197,6 +199,13 @@ public class UserRestController {
     @GetMapping("/{id}/rating")
     public ResponseEntity<UserRatingCountDTO> getUserRatingCount(@PathVariable("id") Integer userId) {
         return ResponseEntity.ok(userService.getUserRatingCount(userId));
+    }
+
+    // 유저가 매긴 특정 컨텐츠 타입의 별점 개수 및 위시리스트 개수 조회
+    @GetMapping("/{id}/content/{contentType}")
+    public ResponseEntity<UserContentCountDTO> getUserContentCount(@PathVariable("id") Integer userId,
+                                                 @PathVariable("contentType") String contentTypeStr) {
+        return ResponseEntity.ok(userService.getUserContentCount(userId, ContentType.valueOf(contentTypeStr.toUpperCase())));
     }
 
     @ExceptionHandler(NoSuchElementException.class)

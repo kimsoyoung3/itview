@@ -8,7 +8,9 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import com.example.itview_spring.Constant.ContentType;
 import com.example.itview_spring.DTO.RatingCountDTO;
+import com.example.itview_spring.DTO.UserContentCountDTO;
 import com.example.itview_spring.DTO.UserRatingCountDTO;
 import com.example.itview_spring.Entity.RatingEntity;
 
@@ -49,4 +51,14 @@ public interface RatingRepository extends JpaRepository<RatingEntity, Integer> {
     """)
     UserRatingCountDTO findUserRatingCount(@Param("userId") Integer userId);
 
+    // 특정 사용자의 특정 컨텐츠 타입의 별점과 위시리스트 개수 조회
+    @Query("""
+            SELECT new com.example.itview_spring.DTO.UserContentCountDTO(
+                COUNT(r),
+                (SELECT COUNT(w) FROM WishlistEntity w WHERE w.user.id = :userId AND w.content.contentType = :contentType)
+            )
+            FROM RatingEntity r
+            WHERE r.user.id = :userId AND r.content.contentType = :contentType
+            """)
+    UserContentCountDTO findUserContentCount(@Param("userId") Integer userId, @Param("contentType") ContentType contentType);
 }

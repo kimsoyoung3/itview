@@ -1,11 +1,13 @@
 package com.example.itview_spring.Service;
 
 import com.example.itview_spring.Config.CustomUserDetails;
+import com.example.itview_spring.Constant.ContentType;
 import com.example.itview_spring.Constant.Role;
 import com.example.itview_spring.DTO.EmailDTO;
 import com.example.itview_spring.DTO.EmailVerificationDTO;
 import com.example.itview_spring.DTO.NewPasswordDTO;
 import com.example.itview_spring.DTO.RegisterDTO;
+import com.example.itview_spring.DTO.UserContentCountDTO;
 import com.example.itview_spring.DTO.UserProfileUpdateDTO;
 import com.example.itview_spring.DTO.UserRatingCountDTO;
 import com.example.itview_spring.DTO.UserResponseDTO;
@@ -180,5 +182,13 @@ public class UserService implements UserDetailsService {
             throw new NoSuchElementException("존재하지 않는 유저입니다.");
         }
         return ratingRepository.findUserRatingCount(userId);
+    }
+
+    // 유저가 매긴 특정 컨텐츠 타입의 별점 개수 및 위시리스트 개수 조회
+    public UserContentCountDTO getUserContentCount(Integer userId, ContentType contentType) {
+        if (!userRepository.existsById(userId)) {
+            throw new NoSuchElementException("존재하지 않는 유저입니다.");
+        }
+        return ratingRepository.findUserContentCount(userId, contentType);
     }
 }
