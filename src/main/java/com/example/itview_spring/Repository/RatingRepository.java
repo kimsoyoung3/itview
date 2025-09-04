@@ -95,4 +95,28 @@ public interface RatingRepository extends JpaRepository<RatingEntity, Integer> {
                 CASE WHEN :order = 'old' THEN r.createdAt END ASC
         """)
     Page<RatingDTO> findUserContentRatings(Pageable pageable, @Param("userId") Integer userId, @Param("contentType") ContentType contentType, @Param("order") String order);
+
+    @Query("""
+            SELECT new com.example.itview_spring.DTO.RatingDTO(
+                new com.example.itview_spring.DTO.ContentResponseDTO(
+                    c.id,
+                    c.title,
+                    c.contentType,
+                    c.creatorName,
+                    c.nation,
+                    c.description,
+                    c.releaseDate,
+                    c.poster,
+                    c.age,
+                    c.duration,
+                    (SELECT AVG(r2.score) FROM RatingEntity r2 WHERE r2.content.id = c.id)
+                ),
+                r.score
+            )
+            FROM RatingEntity r
+            JOIN ContentEntity c ON r.content.id = c.id
+            WHERE r.user.id = :userId AND r.content.contentType = :contentType AND r.score = :score
+            ORDER BY r.createdAt DESC
+        """)
+    Page<RatingDTO> findUserContentRatingsByScore(Pageable pageable, @Param("userId") Integer userId, @Param("contentType") ContentType contentType, @Param("score") Integer score);
 }
