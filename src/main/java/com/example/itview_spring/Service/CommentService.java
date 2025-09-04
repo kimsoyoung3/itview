@@ -114,6 +114,4 @@ public class CommentService {
         Page<ReplyDTO> replies = replyRepository.findRepliesByTargetId(userId, commentId, Replyable.COMMENT, pageable);
         return replies;
     }
-
-
 }
