@@ -15,3 +15,5 @@ export const updateUserProfile = (data) => axios.put(`${process.env.REACT_APP_AP
 export const getUserRatingCount = (userId) => axios.get(`${process.env.REACT_APP_API_URL}/user/${userId}/rating`, {withCredentials: true});
 export const getUserContentCount = (userId, contentType) => axios.get(`${process.env.REACT_APP_API_URL}/user/${userId}/content/${contentType}`, {withCredentials: true});
 export const getUserContentRating = (userId, contentType) => axios.get(`${process.env.REACT_APP_API_URL}/user/${userId}/content/${contentType}/rating`, {withCredentials: true});
+export const getUserWishlist = (userId, contentType, page, order) => axios.get(`${process.env.REACT_APP_API_URL}/user/${userId}/content/${contentType}/wish?order=${order}&page=${page}`, {withCredentials: true});
+export const getUserComment = (userId, contentType, page) => axios.get(`${process.env.REACT_APP_API_URL}/user/${userId}/comment?contentType=${contentType}&page=${page}`, {withCredentials: true});

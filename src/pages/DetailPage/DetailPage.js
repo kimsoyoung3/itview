@@ -5,7 +5,7 @@ import "../../components/ContentSwiper/ContentSwiper.css";
 import 'swiper/css/navigation';
 import 'swiper/css/pagination';
 import 'swiper/css';
-import { getContentCredit, deleteRating, getContentComment, getContentDetail, postContentComment, postContentRating } from "../../API/ContentApi";
+import { getContentCredit, deleteRating, getContentComment, getContentDetail, postContentComment, postContentRating, unwishContent, wishContent } from "../../API/ContentApi";
 import {Navigation, Pagination} from "swiper/modules";
 import {Swiper, SwiperSlide} from "swiper/react";
 import CreditOrPersonCard from "../../components/CreditOrPersonCard/CreditOrPersonCard";
@@ -101,6 +101,31 @@ const DetailPage = ({userInfo, openLogin}) => {
         deleteRating(id).then(response => {
             console.log('Rating deleted:', response.status);
         });
+    };
+
+    /*보고싶어요 로직 구현*/
+    const handleWish = () => {
+        if (contentDetail?.wishlistCheck) {
+            // 위시리스트에서 제거
+            unwishContent(contentDetail.contentInfo.id).then(response => {
+                if (response.status === 200) {
+                    setContentDetail(prev => ({
+                        ...prev,
+                        wishlistCheck: false
+                    }));
+                }
+            });
+        } else {
+            // 위시리스트에 추가
+            wishContent(contentDetail.contentInfo.id).then(response => {
+                if (response.status === 200) {
+                    setContentDetail(prev => ({
+                        ...prev,
+                        wishlistCheck: true
+                    }));
+                }
+            });
+        }
     };
 
     /*외부서비스 로고*/
@@ -349,9 +374,11 @@ const DetailPage = ({userInfo, openLogin}) => {
                             {/*위시,컬렉션 추가 및 코멘트 달기*/}
                             <ul className="info-top-right">
                                 <li>
-                                    <button>
+                                    <button onClick={async () => {
+                                        userInfo ? handleWish() : openLogin();
+                                    }}>
                                         <img src="/icon/plus.svg" alt=""/>
-                                        <p>보고싶어요</p>
+                                        <p>{contentDetail?.wishlistCheck ? "취소" : "보고싶어요"}</p>
                                     </button>
                                 </li>
                                 <li>
