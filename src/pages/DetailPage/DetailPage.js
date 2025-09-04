@@ -248,10 +248,7 @@ const DetailPage = ({userInfo, openLogin}) => {
         console.log(contentCredit)
     }, [contentCredit]);
 
-    return (
-        notFound ? (
-            <NotFound/>
-        ) : (
+    return (notFound ? <NotFound /> :
         <div className="detail">
             {/*상세페이지 배너 섹션*/}
             <section className="detail-banner">
@@ -319,6 +316,10 @@ const DetailPage = ({userInfo, openLogin}) => {
                                             async () => {
                                                 const newScore = hoverScore === score ? 0 : hoverScore;
                                                 setScore(newScore);
+                                                setContentDetail(prev => ({
+                                                    ...prev,
+                                                    myRating: newScore
+                                                }));
                                                 if (newScore === 0) {
                                                     await handleScoreDelete();
                                                 } else {
@@ -604,9 +605,7 @@ const DetailPage = ({userInfo, openLogin}) => {
                     </div>
                 </section>
             )}
-
         </div>
-        )
     )
 }
 export default DetailPage;

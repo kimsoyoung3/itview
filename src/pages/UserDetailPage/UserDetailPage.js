@@ -3,8 +3,10 @@ import {NavLink, useParams} from "react-router-dom";
 import "./UserDetailPage.css"
 import {getUserDetail, link, updateUserProfile} from "../../API/UserApi";
 import { toast } from "react-toastify";
+import NotFound from "../NotFound/NotFound";
 
 const UserDetailPage = ({ userInfo, openLogin }) => {
+    const [notFound, setNotFound] = useState(false);
 
     const { id } = useParams();
 
@@ -20,8 +22,7 @@ const UserDetailPage = ({ userInfo, openLogin }) => {
                     alert("유저 정보를 불러오지 못했습니다.");
                 }
             } catch (error) {
-                console.error("Error fetching user detail:", error);
-                alert("유저 정보를 불러오지 못했습니다.");
+                setNotFound(true);
             }
         };
         fetchUserDetail();
@@ -90,7 +91,7 @@ const UserDetailPage = ({ userInfo, openLogin }) => {
         }
     };
 
-    return (
+    return (notFound ? <NotFound /> :
         <div className="user-detail-page container">
             <div className="user-detail-page-wrap">
                 <div className="user-detail-info">
@@ -117,7 +118,7 @@ const UserDetailPage = ({ userInfo, openLogin }) => {
                     </div>
                     <div className="user-detail-info-group">
                         <div className="user-detail-info-group-content">
-                            <NavLink>
+                            <NavLink to={`/user/${id}/rating`}>
                                 <p>{userDetail?.ratingCount}</p>
                                 <p>평가</p>
                             </NavLink>
