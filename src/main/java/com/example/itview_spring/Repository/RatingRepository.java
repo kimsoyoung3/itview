@@ -90,7 +90,9 @@ public interface RatingRepository extends JpaRepository<RatingEntity, Integer> {
                 CASE WHEN :order = 'my_score_high' THEN r.score END DESC,
                 CASE WHEN :order = 'my_score_low' THEN r.score END ASC,
                 CASE WHEN :order = 'avg_score_high' THEN (SELECT AVG(r2.score) FROM RatingEntity r2 WHERE r2.content.id = c.id) END DESC,
-                CASE WHEN :order = 'avg_score_low' THEN (SELECT AVG(r2.score) FROM RatingEntity r2 WHERE r2.content.id = c.id) END ASC
+                CASE WHEN :order = 'avg_score_low' THEN (SELECT AVG(r2.score) FROM RatingEntity r2 WHERE r2.content.id = c.id) END ASC,
+                CASE WHEN :order = 'new' THEN r.createdAt END DESC,
+                CASE WHEN :order = 'old' THEN r.createdAt END ASC
         """)
     Page<RatingDTO> findUserContentRatings(Pageable pageable, @Param("userId") Integer userId, @Param("contentType") ContentType contentType, @Param("order") String order);
 }

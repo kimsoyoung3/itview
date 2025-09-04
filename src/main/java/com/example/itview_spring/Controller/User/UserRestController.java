@@ -225,6 +225,8 @@ public class UserRestController {
         // 'my_score_low' : 내가 매긴 평점 낮은 순
         // 'avg_score_high' : 평균 평점 높은 순
         // 'avg_score_low' : 평균 평점 낮은 순
+        // 'new' : 최근 등록 순
+        // 'old' : 오래된 순
         return ResponseEntity.ok(userService.getUserContentRating(userId, ContentType.valueOf(contentTypeStr.toUpperCase()), pageable.getPageNumber(), order));
     }
 
