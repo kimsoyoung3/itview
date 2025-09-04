@@ -7,31 +7,46 @@ import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css";
 import "swiper/css/navigation";
 import { Navigation } from 'swiper/modules';
+import { toast } from "react-toastify";
 
-const UserContentRatingPage = () => {
+const UserContentRatingPage = ({userInfo}) => {
     const [notFound, setNotFound] = useState(false);
 
     const { id, contentType } = useParams();
 
     const [ratings, setRatings] = useState([]);
+    const [order, setOrder] = useState("new");
 
     const [activeId, setActiveId] = useState("rating-page-tab1");
 
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const response = await getUserContentRating(id, contentType);
+                const response = await getUserContentRating(id, contentType, 1, order);
                 setRatings(response.data);
             } catch (error) {
                 setNotFound(true);
             }
         };
         fetchData();
-    }, [id, contentType]);
+    }, [id, contentType, order]);
 
     useEffect(() => {
         console.log(ratings);
     }, [ratings]);
+
+    const handleMoreClick = async () => {
+        try {
+            const response = await getUserContentRating(id, contentType, ratings.page.number + 2, order);
+            setRatings((prev) => ({
+                ...prev,
+                content: [...prev.content, ...response.data.content],
+                page: response.data.page
+            }));
+        } catch (error) {
+            toast("에러 발생");
+        }
+    };
 
     return (notFound ? <NotFound /> :
         <div className="user-content-rating-page container">
@@ -49,12 +64,13 @@ const UserContentRatingPage = () => {
                     {activeId === "rating-page-tab1" && <div className="rating-page-tab1">
                         {/*셀렉트박스*/}
                         <div className="user-content-rating-page-select-box">
-                            <select className="form-select user-content-rating-page-select"  aria-label="Default select example">
-                                <option selected value="new">최신 순</option>
-                                <option value="old">오래된 순</option>
-                                <option value="like">좋아요 순</option>
-                                <option value="rating">별점 순</option>
-                                <option value="reply">댓글 많은 순</option>
+                            <select className="form-select user-content-rating-page-select"  aria-label="Default select example" onChange={(e) => setOrder(e.target.value)} value={order}>
+                                <option selected value="new">담은 순</option>
+                                <option value="old">담은 역순</option>
+                                <option value="my_score_high">{userInfo === id ? "나의 별점 높은 순" : "이 회원의 별점 높은 순"}</option>
+                                <option value="my_score_low">{userInfo === id ? "나의 별점 낮은 순" : "이 회원의 별점 낮은 순"}</option>
+                                <option value="avg_score_high">평균 별점 높은 순</option>
+                                <option value="avg_score_low">평균 별점 낮은 순</option>
                             </select>
                         </div>
 
@@ -73,7 +89,7 @@ const UserContentRatingPage = () => {
                                 </div>
                             ))}
                         </div>
-                        <div><button>더보기</button></div>
+                        <div><button onClick={handleMoreClick} style={{display: ratings?.page?.number + 1 === ratings?.page?.totalPages ? "none" : "block"}}>더보기</button></div>
                     </div>}
 
                     {activeId === "rating-page-tab2" && <div className="rating-page-tab2">
