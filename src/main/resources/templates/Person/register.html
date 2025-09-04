@@ -31,12 +31,13 @@
                 <div style="display:flex;gap:8px;align-items:center;">
                     <input type="url" id="profile" th:field="*{profile}" class="form-control"
                            placeholder="http(s):// 이미지 URL">
-                    <!-- (선택) 파일 버튼은 서버 업로드 없으면 실제 URL 생성 안 됨 -->
+
                     <input type="file" id="profileFile" accept="image/*" style="display:none"
                            onchange="document.getElementById('profile').value = this.files.length ? this.files[0].name : '';">
                     <button type="button" class="btn btn-secondary btn-sm"
                             onclick="document.getElementById('profileFile').click()">파일선택</button>
                 </div>
+                <small class="text-muted">파일 업로드 서버처리 없이 URL만 저장합니다.</small>
             </div>
 
             <div class="mt-3">

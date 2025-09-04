@@ -206,7 +206,7 @@ public class UserService implements UserDetailsService {
             throw new NoSuchElementException("존재하지 않는 유저입니다.");
         }
 
-        Pageable pageable = PageRequest.of(page - 1, 10);
+        Pageable pageable = PageRequest.of(page - 1, 1);
         return ratingRepository.findUserContentRatings(pageable, userId, contentType, order);
     }
 

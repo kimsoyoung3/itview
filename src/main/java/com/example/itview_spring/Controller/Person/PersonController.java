@@ -15,7 +15,6 @@ import org.springframework.web.bind.annotation.*;
 
 @Controller
 @RequiredArgsConstructor
-@RequestMapping("/person")
 public class PersonController {
 
     private final PersonService personService;
@@ -41,14 +40,14 @@ public class PersonController {
     }
 
     /* ======= 목록 ======= */
-    @GetMapping("/list")
+    @GetMapping("/person/list")
     public String list(@PageableDefault(size = 10) Pageable pageable,
                        @RequestParam(required = false) String keyword,
                        Model model) {
 
-        // 요구사항: keyword 가 있으면 /search/content 로 redirect (컨텐츠 검색)
+        // 검색어가 있으면 /search/person으로 리다이렉트
         if (StringUtils.hasText(keyword)) {
-            String redirectUrl = "/search/content?keyword=" + keyword.trim()
+            String redirectUrl = "/search/person?keyword=" + keyword.trim()
                     + "&page=" + pageable.getPageNumber()
                     + "&size=" + pageable.getPageSize();
             return "redirect:" + redirectUrl;
@@ -58,29 +57,57 @@ public class PersonController {
         model.addAttribute("page", page);
         model.addAttribute("personList", page.getContent());
         model.addAttribute("keyword", null);
+        model.addAttribute("baseUrl", "/person/list"); // 페이지네이션용
         return "Person/list";
     }
 
+    /* ======= (사람) 검색 ======= */
+    // /search/person?keyword=홍길동
+    @GetMapping("/search/person")
+    public String searchPerson(@PageableDefault(size = 10) Pageable pageable,
+                               @RequestParam String keyword,
+                               Model model) {
 
+        Page<PersonDTO> page = personService.list(pageable, keyword).map(this::toDTO);
+        model.addAttribute("page", page);
+        model.addAttribute("personList", page.getContent());
+        model.addAttribute("keyword", keyword);
+        model.addAttribute("baseUrl", "/search/person"); // 페이지네이션용
+        return "Person/list"; // 같은 목록 템플릿 재사용
+    }
+
+    /* ======= 상세 ======= */
+    @GetMapping("/person/{id}")
+    public String detail(@PathVariable Integer id, Model model) {
+        var entity = personService.get(id);
+        model.addAttribute("personDTO", toDTO(entity));
+        return "Person/detail";
+    }
 
     /* ======= 등록 폼 ======= */
-    @GetMapping("/register")
+    @GetMapping("/person/register")
     public String registerForm(Model model) {
         model.addAttribute("personDTO", new PersonDTO());
         return "Person/register";
     }
 
     /* ======= 등록 저장 ======= */
-    @PostMapping("/register")
+    @PostMapping("/person/register")
     public String register(@ModelAttribute("personDTO") PersonDTO personDTO) {
         personService.create(toEntity(personDTO));
         return "redirect:/person/list";
     }
 
-
+    /* ======= 수정 폼 ======= */
+    @GetMapping("/person/{id}/update")
+    public String updateForm(@PathVariable Integer id, Model model) {
+        var entity = personService.get(id);
+        model.addAttribute("personDTO", toDTO(entity));
+        return "Person/update";
+    }
 
     /* ======= 수정 저장 (폼은 POST + _method=PUT) ======= */
-    @PutMapping("/{id}/update")
+    @PutMapping("/person/{id}/update")
     public String update(@PathVariable Integer id,
                          @ModelAttribute("personDTO") PersonDTO personDTO) {
         personService.update(id, toEntity(personDTO));
@@ -88,43 +115,9 @@ public class PersonController {
     }
 
     /* ======= 삭제 (폼은 POST + _method=DELETE) ======= */
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/person/{id}")
     public String delete(@PathVariable Integer id) {
         personService.delete(id);
         return "redirect:/person/list";
     }
-// PersonController.java 에서 해당 메서드만 교체/추가
-
-    @GetMapping("/{id}")
-    public String detail(@PathVariable Integer id, Model model) {
-        var entity = personService.get(id); // 없으면 IllegalArgumentException → 404페이지로 바꾸고 싶으면 @ControllerAdvice로 처리
-        model.addAttribute("personDTO", toDTO(entity));
-
-        // 좋아요 상태/카운트는 실패해도 화면은 떠야 하므로 기본값 보장
-        boolean liked = false;
-        long likeCount = 0L;
-        try {
-            Integer userId = 1; // 로그인 연동 전 임시
-            var resp = personService.getPersonResponseDTO(userId, id);
-            if (resp != null) {
-                // resp의 getter 이름은 DTO에 맞춰주세요 (isLiked/getLiked 등)
-                // 아래는 예시:
-                liked = Boolean.TRUE.equals(resp.getLiked());
-                likeCount = resp.getLikeCount() == null ? 0L : resp.getLikeCount();
-            }
-        } catch (Exception ignored) { /* 기본값 유지 */ }
-
-        model.addAttribute("liked", liked);
-        model.addAttribute("likeCount", likeCount);
-
-        return "Person/detail";
-    }
-
-    @GetMapping("/{id}/update")
-    public String updateForm(@PathVariable Integer id, Model model) {
-        var entity = personService.get(id);
-        model.addAttribute("personDTO", toDTO(entity));
-        return "Person/update";
-    }
-
 }
