@@ -3,9 +3,12 @@ import "./PersonDetailPage.css";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { getPersonInfo, getPersonWorkDomains, getPersonWorks, likePerson, unlikePerson } from "../../API/PersonApi";
 import {NavLink, useParams} from "react-router-dom";
+import NotFound from "../NotFound/NotFound";
 
 
 const PersonDetailPage = ({userInfo, openLogin}) => {
+    const [notFound, setNotFound] = useState(false);
+
     const [personInfo, setPersonInfo] = useState(null);
     const [workInfo, setWorkInfo] = useState(null);
 
@@ -20,28 +23,32 @@ const PersonDetailPage = ({userInfo, openLogin}) => {
     const { id } = useParams();
     useEffect(() => {
         const fetchData = async () => {
-            const res = await getPersonInfo(id);
-            if (res) {
-                setPersonInfo(res.data);
-            } else {
-                setPersonInfo(null);
-            }
-
-            const res2 = await getPersonWorkDomains(id);
-
-            var workList = {};
-            for (const domain of res2.data) {
-                workList[domain.contentType] = workList[domain.contentType] || {};
-                workList[domain.contentType][domain.department] = workList[domain.contentType][domain.department] || [];
-            }
-
-            for (const domain in workList) {
-                for (const department in workList[domain]) {
-                    const res3 = await getPersonWorks(id, domainNameMap[domain], department, 1);
-                    workList[domain][department] = res3.data;
+            try {
+                const res = await getPersonInfo(id);
+                if (res) {
+                    setPersonInfo(res.data);
+                } else {
+                    setPersonInfo(null);
                 }
+    
+                const res2 = await getPersonWorkDomains(id);
+    
+                var workList = {};
+                for (const domain of res2.data) {
+                    workList[domain.contentType] = workList[domain.contentType] || {};
+                    workList[domain.contentType][domain.department] = workList[domain.contentType][domain.department] || [];
+                }
+    
+                for (const domain in workList) {
+                    for (const department in workList[domain]) {
+                        const res3 = await getPersonWorks(id, domainNameMap[domain], department, 1);
+                        workList[domain][department] = res3.data;
+                    }
+                }
+                setWorkInfo(workList);
+            } catch (error) {
+                setNotFound(true);
             }
-            setWorkInfo(workList);
         };
         fetchData();
     }, [id]);
@@ -127,7 +134,7 @@ const PersonDetailPage = ({userInfo, openLogin}) => {
         KAKAO: '/externalLogo/kakaoWebtoon.png',
     };
 
-    return(
+    return(notFound ? <NotFound /> :
         <div className="person-detail-page container">
              <section className="person-detail-page-profile">
                 <div className="person-detail-page-profile-img">

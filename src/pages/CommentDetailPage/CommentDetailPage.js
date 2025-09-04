@@ -5,9 +5,12 @@ import {getCommentAndContent, getCommentRepliesPaged} from "../../API/CommentApi
 import {useParams} from "react-router-dom";
 import CommentCard from "../../components/CommentCard/CommentCard";
 import ReplyCard from "../../components/ReplyCard/ReplyCard";
+import NotFound from "../NotFound/NotFound";
 
 
 const CommentDetailPage = ({userInfo, openLogin}) => {
+    const [notFound, setNotFound] = useState(false);
+
     const [comments, setComments] = useState({});
     const [replies, setReplies] = useState([]);
     const [page, setPage] = useState({});
@@ -17,12 +20,16 @@ const CommentDetailPage = ({userInfo, openLogin}) => {
 
     useEffect(() => {
         const fetchData = async () => {
-            const res = await getCommentAndContent(id)
-            setComments(res.data)
-
-            const repliesRes = await getCommentRepliesPaged(id, 1);
-            setReplies(repliesRes.data.content);
-            setPage(repliesRes.data.page);
+            try {
+                const res = await getCommentAndContent(id)
+                setComments(res.data)
+    
+                const repliesRes = await getCommentRepliesPaged(id, 1);
+                setReplies(repliesRes.data.content);
+                setPage(repliesRes.data.page);
+            } catch (error) {
+                setNotFound(true);
+            }
         }
         fetchData();
     }, [id]);
@@ -67,7 +74,7 @@ const CommentDetailPage = ({userInfo, openLogin}) => {
         };
     }, [loadMoreRepliesRef, page]);
 
-    return(
+    return(notFound ? <NotFound /> :
         <div className="comment-detail-page container">
             <div className="comment-detail-page-content">
                 <CommentCard comment={comments?.comment} content={comments?.content} userInfo={userInfo} openLogin={openLogin} newReply={newReply}/>

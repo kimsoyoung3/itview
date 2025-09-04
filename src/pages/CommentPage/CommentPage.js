@@ -4,8 +4,11 @@ import "./CommentPage.css";
 import {useParams} from "react-router-dom";
 import CommentCard from "../../components/CommentCard/CommentCard";
 import {getContentCommentsPaged} from "../../API/ContentApi";
+import NotFound from "../NotFound/NotFound";
 
 const CommentPage = ({userInfo, openLogin}) => {
+    const [notFound, setNotFound] = useState(false);
+
     /*URL에서 :id 가져오기*/
     const { id } = useParams();
     const [comments, setComments] = useState([]);
@@ -20,10 +23,9 @@ const CommentPage = ({userInfo, openLogin}) => {
                 setComments(response.data.content);
                 setPage(response.data.page);
             } catch (error) {
-                console.error(error);
+                setNotFound(true);
             }
         };
-
         fetchComments();
     }, [id]);
 
@@ -85,7 +87,7 @@ const CommentPage = ({userInfo, openLogin}) => {
         };
     }, [loadMoreCommentsRef, page]);
 
-    return(
+    return(notFound ? <NotFound /> :
         <div className="comment-page container">
             <h1 className="comment-page-title">코멘트</h1>
             <div className="comment-page-select-wrap">
