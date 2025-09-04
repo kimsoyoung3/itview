@@ -24,7 +24,7 @@ public class PersonService {
         if (keyword == null || keyword.isBlank()) {
             return personRepository.findAll(pageable);
         }
-        // 리포지토리 추가 쿼리 없이 Query-by-Example로 간단 검색(name/profile/job 포함)
+
         ExampleMatcher matcher = ExampleMatcher.matchingAny()
                 .withIgnoreNullValues()
                 .withIgnoreCase()

@@ -1,26 +1,20 @@
 package com.example.itview_spring.Service;
 
-import java.util.NoSuchElementException;
-
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
 import com.example.itview_spring.Constant.Replyable;
 import com.example.itview_spring.DTO.CommentAndContentDTO;
 import com.example.itview_spring.DTO.CommentDTO;
 import com.example.itview_spring.DTO.ReplyDTO;
 import com.example.itview_spring.Entity.CommentEntity;
 import com.example.itview_spring.Entity.ReplyEntity;
-import com.example.itview_spring.Repository.CommentRepository;
-import com.example.itview_spring.Repository.ContentRepository;
-import com.example.itview_spring.Repository.LikeRepository;
-import com.example.itview_spring.Repository.ReplyRepository;
-import com.example.itview_spring.Repository.UserRepository;
-
+import com.example.itview_spring.Repository.*;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.NoSuchElementException;
 
 @Service
 @RequiredArgsConstructor
@@ -120,4 +114,6 @@ public class CommentService {
         Page<ReplyDTO> replies = replyRepository.findRepliesByTargetId(userId, commentId, Replyable.COMMENT, pageable);
         return replies;
     }
+
+
 }

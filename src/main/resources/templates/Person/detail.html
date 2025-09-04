@@ -21,31 +21,6 @@
                  style="max-width:120px;max-height:120px;object-fit:cover;">
         </p>
 
-        <!-- 좋아요 영역 -->
-        <div class="mt-3">
-            <span>좋아요 수: <strong th:text="${likeCount} ?: 0">0</strong></span>
-
-            <!-- 좋아요 안 눌렀을 때 -->
-            <form th:if="${liked == false}"
-                  th:action="@{/person/{id}/like(id=${personDTO.id})}"
-                  method="post" style="display:inline">
-                <input type="hidden" th:if="${_csrf != null}"
-                       th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
-                <button type="submit" class="btn btn-outline-primary btn-sm">좋아요</button>
-            </form>
-
-            <!-- 좋아요 눌렀을 때 -->
-            <form th:if="${liked == true}"
-                  th:action="@{/person/{id}/unlike(id=${personDTO.id})}"
-                  method="post" style="display:inline">
-                <input type="hidden" th:if="${_csrf != null}"
-                       th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
-                <button type="submit" class="btn btn-outline-secondary btn-sm">좋아요 취소</button>
-            </form>
-        </div>
-
-        <hr/>
-
         <a th:href="@{/person/{id}/update(id=${personDTO.id})}" class="btn btn-outline-primary btn-sm">수정</a>
 
         <!-- 삭제: /person/{id} [DELETE] -->

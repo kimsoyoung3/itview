@@ -13,15 +13,19 @@
 
         <h2>인물 관리</h2>
 
+        <!-- 검색 & 새 인물 등록 -->
+        <div class="top-bar" style="display:flex; justify-content: space-between; align-items:center; margin-bottom:15px;">
 
-        <div class="top-bar" style="display:flex;justify-content:space-between;align-items:center;margin-bottom:15px;">
-            <form th:action="@{/person/list}" method="get" style="display:flex;gap:8px;">
-                <input type="text" name="keyword" th:value="${keyword}" placeholder="인물 검색">
+            <!-- 검색: /search/person 로 보냄 -->
+            <form th:action="@{/search/person}" method="get" style="display:flex; gap:5px;">
+                <input type="text" name="keyword" th:value="${keyword}" placeholder="인물 이름 검색">
                 <button type="submit" class="btn btn-outline-secondary btn-sm">검색</button>
             </form>
+
             <a th:href="@{/person/register}" class="btn btn-outline-primary btn-sm">새 인물 등록</a>
         </div>
 
+        <!-- 인물 목록 테이블 -->
         <table class="table table-bordered table-striped">
             <thead class="table-light">
             <tr>
@@ -32,21 +36,31 @@
             </tr>
             </thead>
             <tbody>
-            <tr th:each="person : ${page.content}">
+            <!-- 결과 없을 때 -->
+            <tr th:if="${#lists.isEmpty(personList)}">
+                <td colspan="4" class="text-center">데이터가 없습니다.</td>
+            </tr>
+
+            <!-- 결과 있을 때 -->
+            <tr th:each="person : ${personList}">
                 <td>
-                    <a th:href="@{/person/{id}(id=${person.id})}" th:text="${person.name}">이름</a>
+                    <a th:href="@{/person/{id}(id=${person.id})}"
+                       th:text="${person.name}">이름</a>
                 </td>
                 <td th:text="${person.job}">직업</td>
                 <td>
-                    <img th:if="${person.profile}" th:src="${person.profile}" alt="프로필"
-                         style="max-width:50px;max-height:50px;object-fit:cover;">
+                    <img th:if="${person.profile}"
+                         th:src="${person.profile}"
+                         alt="프로필"
+                         style="max-width:50px; max-height:50px; object-fit:cover;">
                 </td>
                 <td class="text-end">
-                    <a th:href="@{/person/{id}/update(id=${person.id})}" class="btn btn-outline-primary btn-sm">수정</a>
+                    <a th:href="@{/person/{id}/update(id=${person.id})}"
+                       class="btn btn-outline-primary btn-sm">수정</a>
 
                     <!-- 삭제: /person/{id} [DELETE] -->
-                    <form th:action="@{/person/{id}(id=${person.id})}" method="post"
-                          style="display:inline"
+                    <form th:action="@{/person/{id}(id=${person.id})}"
+                          method="post" style="display:inline"
                           onsubmit="return confirm('정말 삭제하시겠습니까?')">
                         <input type="hidden" name="_method" value="DELETE"/>
                         <input type="hidden" th:if="${_csrf != null}"
@@ -59,33 +73,32 @@
         </table>
 
         <!-- 페이지네이션 -->
-        <nav th:if="${page.totalPages > 1}">
+        <nav th:if="${page != null and page.totalPages > 1}">
             <ul class="pagination">
-                <li class="page-item" th:classappend="${page.first} ? 'disabled'">
+                <li class="page-item" th:classappend="${page.first}? 'disabled'">
                     <a class="page-link"
-                       th:href="@{/person/list(page=${page.number - 1}, size=${page.size}, keyword=${keyword})}">
+                       th:href="@{${baseUrl}(page=${page.number - 1}, size=${page.size}, keyword=${keyword})}">
                         이전
                     </a>
                 </li>
 
                 <li class="page-item"
                     th:each="i : ${#numbers.sequence(0, page.totalPages - 1)}"
-                    th:classappend="${i == page.number} ? 'active'">
+                    th:classappend="${i == page.number}? 'active'">
                     <a class="page-link"
                        th:text="${i + 1}"
-                       th:href="@{/person/list(page=${i}, size=${page.size}, keyword=${keyword})}">
+                       th:href="@{${baseUrl}(page=${i}, size=${page.size}, keyword=${keyword})}">
                     </a>
                 </li>
 
-                <li class="page-item" th:classappend="${page.last} ? 'disabled'">
+                <li class="page-item" th:classappend="${page.last}? 'disabled'">
                     <a class="page-link"
-                       th:href="@{/person/list(page=${page.number + 1}, size=${page.size}, keyword=${keyword})}">
+                       th:href="@{${baseUrl}(page=${page.number + 1}, size=${page.size}, keyword=${keyword})}">
                         다음
                     </a>
                 </li>
             </ul>
         </nav>
-
     </div>
 </main>
 </body>

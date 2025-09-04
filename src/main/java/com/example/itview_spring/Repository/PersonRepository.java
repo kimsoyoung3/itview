@@ -24,4 +24,6 @@ public interface PersonRepository extends JpaRepository <PersonEntity, Integer> 
             WHERE p.id = :personId
             """)
     PersonResponseDTO findPersonResponseDTO(@Param("userId") Integer userId, @Param("personId") Integer personId);
+
+
 }
