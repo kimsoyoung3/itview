@@ -30,7 +30,6 @@ import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequestMapping("/api/comment")
-@CrossOrigin(origins = "http://localhost:3000", allowCredentials = "true")
 @RequiredArgsConstructor
 public class CommentRestController {
     

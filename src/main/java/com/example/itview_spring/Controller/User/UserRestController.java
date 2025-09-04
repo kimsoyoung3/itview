@@ -9,7 +9,6 @@ import com.example.itview_spring.DTO.RegisterDTO;
 import com.example.itview_spring.DTO.UserProfileUpdateDTO;
 import com.example.itview_spring.DTO.UserResponseDTO;
 import com.example.itview_spring.Service.UserService;
-import com.example.itview_spring.Util.S3Uploader;
 
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
@@ -27,7 +26,6 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.context.SecurityContextRepository;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -42,14 +40,12 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/user")
-@CrossOrigin(origins = "http://localhost:3000", allowCredentials = "true")
 public class UserRestController {
     
     private final UserService registerService;
     private final AuthenticationManager authenticationManager;
     private final SecurityContextRepository securityContextRepository;
     private final UserService userService;
-    private final S3Uploader s3Uploader;
 
     // 회원가입
     @PostMapping

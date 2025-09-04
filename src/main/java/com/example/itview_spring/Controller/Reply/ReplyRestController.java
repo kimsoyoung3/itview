@@ -23,7 +23,6 @@ import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequestMapping("/api/reply")
-@CrossOrigin(origins = "http://localhost:3000", allowCredentials = "true")
 @RequiredArgsConstructor
 public class ReplyRestController {
 

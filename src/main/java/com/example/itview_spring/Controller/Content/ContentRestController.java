@@ -35,7 +35,6 @@ import lombok.RequiredArgsConstructor;
 @RestController
 @RequestMapping("/api/content")
 @RequiredArgsConstructor
-@CrossOrigin(origins = "http://localhost:3000", allowCredentials = "true")
 public class ContentRestController {
 
     private final ContentService contentService;
