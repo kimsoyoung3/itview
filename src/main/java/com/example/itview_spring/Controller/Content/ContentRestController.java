@@ -109,6 +109,22 @@ public class ContentRestController {
         return ResponseEntity.ok(comments);
     }
 
+    // 위시리스트 추가
+    @PostMapping("/{id}/wish")
+    public ResponseEntity<Void> addWishlist(@PathVariable("id") Integer id,
+                                            @AuthenticationPrincipal CustomUserDetails userDetails) {
+        contentService.addWishlist(userDetails.getId(), id);
+        return ResponseEntity.ok().build();
+    }
+
+    // 위시리스트 삭제
+    @DeleteMapping("/{id}/wish")
+    public ResponseEntity<Void> removeWishlist(@PathVariable("id") Integer id,
+                                               @AuthenticationPrincipal CustomUserDetails userDetails) {
+        contentService.removeWishlist(userDetails.getId(), id);
+        return ResponseEntity.ok().build();
+    }
+
     @ExceptionHandler(NoSuchElementException.class)
     public ResponseEntity<String> handleNoSuchElementException(NoSuchElementException ex) {
         return ResponseEntity.status(404).body(ex.getMessage());

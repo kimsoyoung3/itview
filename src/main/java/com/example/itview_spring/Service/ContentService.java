@@ -25,6 +25,7 @@ public class ContentService {
     private final CommentService commentService;
 
     private final ContentRepository contentRepository;
+    private final WishlistRepository wishlistRepository;
     private final ContentGenreRepository contentGenreRepository;
     private final GalleryRepository galleryRepository;
     private final VideoRepository videoRepository;
@@ -230,6 +231,10 @@ public class ContentService {
             fullRating.add(new RatingCountDTO(i, count));
         }
         contentDetail.setRatingDistribution(fullRating);
+
+        // 위시리스트 여부 조회
+        Boolean wishlistCheck = wishlistRepository.existsByUserIdAndContentId(userId, contentId);
+        contentDetail.setWishlistCheck(wishlistCheck);
 
         // 사용자 코멘트 조회
         CommentDTO myComment = commentService.getCommentDTO(userId, contentId);
@@ -516,24 +521,29 @@ public class ContentService {
         externalServiceRepository.deleteById(externalServiceId);
     }
 
+    // 위시리스트 추가
+    public void addWishlist(Integer userId, Integer contentId) {
+        if (!userRepository.existsById(userId)) {
+            throw new NoSuchElementException("존재하지 않는 유저입니다.");
+        }
+        if (!contentRepository.existsById(contentId)) {
+            throw new NoSuchElementException("존재하지 않는 컨텐츠입니다.");
+        }
 
-    //////////////////////////////////////////////////////////////////////////////////////////////////
-    // 별점 등록
-    @Transactional
-    public void rateContent(Integer userId, Integer contentId, Integer score) {
+        WishlistEntity wishlistEntity = new WishlistEntity();
+        wishlistEntity.setUser(userRepository.findById(userId).get());
+        wishlistEntity.setContent(contentRepository.findById(contentId).get());
 
-        // 기존 별점 조회
-        Optional<RatingEntity> existingRating = ratingRepository.findByUserIdAndContentId(userId, contentId);
+        wishlistRepository.save(wishlistEntity);
+    }
 
-        if (existingRating.isEmpty()) {
-            RatingEntity ratingEntity = new RatingEntity();
-            ratingEntity.setUser(userRepository.findById(userId).get());
-            ratingEntity.setContent(contentRepository.findById(contentId).get());
-            ratingEntity.setScore(score);
-        } else {
-            // 기존 별점이 있는 경우 업데이트
-            RatingEntity ratingEntity = existingRating.get();
-            ratingEntity.setScore(score);
+    // 위시리스트 삭제
+    public void removeWishlist(Integer userId, Integer contentId) {
+        if (!userRepository.existsById(userId)) {
+            throw new NoSuchElementException("존재하지 않는 유저입니다.");
+        }
+        if (!contentRepository.existsById(contentId)) {
+            throw new NoSuchElementException("존재하지 않는 컨텐츠입니다.");
         }
 
     }

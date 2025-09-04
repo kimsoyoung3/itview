@@ -10,6 +10,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import com.example.itview_spring.Constant.ContentType;
 import com.example.itview_spring.DTO.CommentAndContentDTO;
 import com.example.itview_spring.DTO.CommentDTO;
 import com.example.itview_spring.Entity.CommentEntity;
@@ -145,5 +146,49 @@ public interface CommentRepository extends JpaRepository<CommentEntity, Integer>
             """)
     Optional<CommentAndContentDTO> findCommentAndContentByCommentId(@Param("commentId") Integer commentId, @Param("userId") Integer userId);
 
-
+    // 유저의 코멘트 + 컨텐츠 목록 조회 (페이징)
+    @Query("""
+            SELECT new com.example.itview_spring.DTO.CommentAndContentDTO(
+                new com.example.itview_spring.DTO.CommentDTO(
+                    c.id,
+                    c.createdAt,
+                    case when (exists (
+                        select 1 from LikeEntity l2
+                        where l2.targetId = c.id and l2.targetType = 'COMMENT' and l2.user.id = :loginUserId
+                    )) then true else false end,
+                    (select count(l) from LikeEntity l where l.targetId = c.id and l.targetType = 'COMMENT'),
+                    (select count(r) from ReplyEntity r where r.targetId = c.id and r.targetType = 'COMMENT'),
+                    c.text,
+                    new com.example.itview_spring.DTO.UserProfileDTO(
+                        c.user.id,
+                        c.user.nickname,
+                        c.user.introduction,
+                        c.user.profile
+                    ),
+                    (select r.score from RatingEntity r where r.user.id = c.user.id and r.content.id = c.content.id)
+                ),
+                new com.example.itview_spring.DTO.ContentResponseDTO(
+                    c.content.id,
+                    c.content.title,
+                    c.content.contentType,
+                    c.content.creatorName,
+                    c.content.nation,
+                    c.content.description,
+                    c.content.releaseDate,
+                    c.content.poster,
+                    c.content.age,
+                    c.content.duration,
+                    (select AVG(r2.score) from RatingEntity r2 where r2.content.id = c.content.id)
+                )
+            )
+            FROM CommentEntity c
+            WHERE c.user.id = :userId and c.content.contentType = :contentType
+            ORDER BY 
+                CASE WHEN :order = 'recent' THEN c.createdAt END DESC,
+                CASE WHEN :order = 'like' THEN (select count(l) from LikeEntity l where l.targetId = c.id and l.targetType = 'COMMENT') END DESC,
+                CASE WHEN :order = 'reply' THEN (select count(r) from ReplyEntity r where r.targetId = c.id and r.targetType = 'COMMENT') END DESC,
+                CASE WHEN :order = 'rating' THEN (select r.score from RatingEntity r where r.user.id = c.user.id and r.content.id = c.content.id) END DESC,
+                CASE WHEN :order = 'new' THEN c.content.releaseDate END DESC
+            """)
+    Page<CommentAndContentDTO> findCommentAndContentByUserId(@Param("loginUserId") Integer loginUserId, @Param("userId") Integer userId, @Param("contentType") ContentType contentType, Pageable pageable, @Param("order") String order);
 }

@@ -41,12 +41,12 @@ public class ReplyEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     private UserEntity user;
 
-    // 댓글이 달린 대상 (컨텐츠, 컬렉션 등)
+    // 댓글 작성 시간
     @CreatedDate
     @Column(nullable = false, updatable = false)
     private LocalDateTime createdAt;
 
-    // 댓글 작성 시간
+    // 댓글 내용
     @Column(nullable = false, length = 1024)
     private String text;
 
