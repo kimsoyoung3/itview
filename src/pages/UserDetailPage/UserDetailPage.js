@@ -179,35 +179,35 @@ const UserDetailPage = ({ userInfo, openLogin }) => {
                     <p>보관함</p>
                     <div className="user-detail-collection-wrap">
                         <div className="user-detail-collection-content">
-                            <NavLink>
+                            <NavLink to={`/user/${id}/content/movie`}>
                                 <div><i className="bi bi-film"></i></div>
                                 <p>영화</p>
                             </NavLink>
                         </div>
 
                         <div className="user-detail-collection-content">
-                            <NavLink>
+                            <NavLink to={`/user/${id}/content/series`}>
                                 <div><i className="bi bi-collection-play"></i></div>
                                 <p>시리즈</p>
                             </NavLink>
                         </div>
 
                         <div className="user-detail-collection-content">
-                            <NavLink>
+                            <NavLink to={`/user/${id}/content/book`}>
                                 <div><i className="bi bi-book"></i></div>
                                 <p>책</p>
                             </NavLink>
                         </div>
 
                         <div className="user-detail-collection-content">
-                            <NavLink>
+                            <NavLink to={`/user/${id}/content/webtoon`}>
                                 <div><i className="bi bi-columns"></i></div>
                                 <p>웹툰</p>
                             </NavLink>
                         </div>
 
                         <div className="user-detail-collection-content">
-                            <NavLink>
+                            <NavLink to={`/user/${id}/content/record`}>
                                 <div><i className="bi bi-vinyl"></i></div>
                                 <p>음반</p>
                             </NavLink>
