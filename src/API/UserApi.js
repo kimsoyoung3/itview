@@ -14,3 +14,4 @@ export const getUserDetail = (id) => axios.get(`${process.env.REACT_APP_API_URL}
 export const updateUserProfile = (data) => axios.put(`${process.env.REACT_APP_API_URL}/user`, data, {withCredentials: true});
 export const getUserRatingCount = (userId) => axios.get(`${process.env.REACT_APP_API_URL}/user/${userId}/rating`, {withCredentials: true});
 export const getUserContentCount = (userId, contentType) => axios.get(`${process.env.REACT_APP_API_URL}/user/${userId}/content/${contentType}`, {withCredentials: true});
+export const getUserContentRating = (userId, contentType) => axios.get(`${process.env.REACT_APP_API_URL}/user/${userId}/content/${contentType}/rating`, {withCredentials: true});
