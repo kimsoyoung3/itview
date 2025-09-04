@@ -27,6 +27,8 @@ public class ContentDetailDTO {
     private Long ratingCount;
     // 별점 분포
     private List<RatingCountDTO> ratingDistribution;
+    // 위시리스트 여부
+    private Boolean wishlistCheck;
     // 사용자의 코멘트
     private CommentDTO myComment;
     // 컨텐츠 좋아요 상위 8개 코멘트

@@ -3,6 +3,7 @@ package com.example.itview_spring.Service;
 import com.example.itview_spring.Config.CustomUserDetails;
 import com.example.itview_spring.Constant.ContentType;
 import com.example.itview_spring.Constant.Role;
+import com.example.itview_spring.DTO.CommentAndContentDTO;
 import com.example.itview_spring.DTO.ContentResponseDTO;
 import com.example.itview_spring.DTO.EmailDTO;
 import com.example.itview_spring.DTO.EmailVerificationDTO;
@@ -15,10 +16,7 @@ import com.example.itview_spring.DTO.UserRatingCountDTO;
 import com.example.itview_spring.DTO.UserResponseDTO;
 import com.example.itview_spring.Entity.EmailVerificationEntity;
 import com.example.itview_spring.Entity.UserEntity;
-import com.example.itview_spring.Repository.ContentRepository;
-import com.example.itview_spring.Repository.EmailVerificationRepository;
-import com.example.itview_spring.Repository.RatingRepository;
-import com.example.itview_spring.Repository.UserRepository;
+import com.example.itview_spring.Repository.*;
 import com.example.itview_spring.Util.AuthCodeGenerator;
 import com.example.itview_spring.Util.S3Uploader;
 
@@ -48,7 +46,10 @@ import java.util.Optional;
 @RequiredArgsConstructor
 @Transactional
 public class UserService implements UserDetailsService {
+
+    private final WishlistRepository wishlistRepository;
     private final UserRepository userRepository;
+    private final CommentRepository commentRepository;
     private final ContentRepository contentRepository;
     private final RatingRepository ratingRepository;
     private final EmailVerificationRepository emailVerificationRepository;
@@ -207,5 +208,23 @@ public class UserService implements UserDetailsService {
 
         Pageable pageable = PageRequest.of(page - 1, 10);
         return ratingRepository.findUserContentRatings(pageable, userId, contentType, order);
+    }
+
+    // 유저의 위시리스트 조회
+    public Page<ContentResponseDTO> getUserWishlist(Integer userId, ContentType contentType, Integer page, String order) {
+        if (!userRepository.existsById(userId)) {
+            throw new NoSuchElementException("존재하지 않는 유저입니다.");
+        }
+        Pageable pageable = PageRequest.of(page - 1, 10);
+        return wishlistRepository.findWishlistByUserIdAndContentType(userId, contentType, pageable, order);
+    }
+
+    // 유저의 코멘트 목록 조회
+    public Page<CommentAndContentDTO> getUserComment(Integer loginUserId, Integer userId, ContentType contentType, Integer page, String order) {
+        if (!userRepository.existsById(userId)) {
+            throw new NoSuchElementException("존재하지 않는 유저입니다.");
+        }
+        Pageable pageable = PageRequest.of(page - 1, 10);
+        return commentRepository.findCommentAndContentByUserId(loginUserId, userId, contentType, pageable, order);
     }
 }

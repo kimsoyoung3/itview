@@ -2,6 +2,8 @@ package com.example.itview_spring.Controller.User;
 
 import com.example.itview_spring.Config.CustomUserDetails;
 import com.example.itview_spring.Constant.ContentType;
+import com.example.itview_spring.DTO.CommentAndContentDTO;
+import com.example.itview_spring.DTO.ContentResponseDTO;
 import com.example.itview_spring.DTO.EmailDTO;
 import com.example.itview_spring.DTO.EmailVerificationDTO;
 import com.example.itview_spring.DTO.LoginDTO;
@@ -219,7 +221,44 @@ public class UserRestController {
                                                                 @PathVariable("contentType") String contentTypeStr,
                                                                 @PageableDefault(page=1) Pageable pageable,
                                                                 @RequestParam(value = "order", defaultValue = "avg_score_low") String order) {
+        // 'my_score_high' : 내가 매긴 평점 높은 순
+        // 'my_score_low' : 내가 매긴 평점 낮은 순
+        // 'avg_score_high' : 평균 평점 높은 순
+        // 'avg_score_low' : 평균 평점 낮은 순
         return ResponseEntity.ok(userService.getUserContentRating(userId, ContentType.valueOf(contentTypeStr.toUpperCase()), pageable.getPageNumber(), order));
+    }
+
+    // 유저의 위시리스트 조회
+    @GetMapping("/{id}/content/{contentType}/wish")
+    public ResponseEntity<Page<ContentResponseDTO>> getUserWishlist(@PathVariable("id") Integer userId,
+                                                                    @PathVariable("contentType") String contentTypeStr,
+                                                                    @PageableDefault(page=1) Pageable pageable,
+                                                                    @RequestParam(value = "order", defaultValue = "new") String order) {
+
+        // 'new' : 담은 순
+        // 'old' : 담은 역순
+        // 'rating_high' : 평균 별점 높은 순
+        // 'rating_low' : 평균 별점 낮은 순
+        return ResponseEntity.ok(userService.getUserWishlist(userId, ContentType.valueOf(contentTypeStr.toUpperCase()), pageable.getPageNumber(), order));
+    }
+
+    // 유저의 코멘트 조회
+    @GetMapping("/{id}/comment")
+    public ResponseEntity<Page<CommentAndContentDTO>> getUserComment(@PathVariable("id") Integer userId,
+                                                                     @PathVariable("contentType") String contentTypeStr,
+                                                                     @PageableDefault(page=1) Pageable pageable,
+                                                                     @RequestParam(value = "order", defaultValue = "recent") String order) {
+        // 'recent' : 최근 작성 순
+        // 'like' : 좋아요 많은 순
+        // 'reply' : 댓글 많은 순
+        // 'rating' : 해당 유저의 별점 높은 순
+        // 'new' : 신작 순
+        var auth = SecurityContextHolder.getContext().getAuthentication();
+        Integer loginUserId = 0;
+        if (auth.getPrincipal() != "anonymousUser") {
+            loginUserId = ((CustomUserDetails) auth.getPrincipal()).getId();
+        }
+        return ResponseEntity.ok(userService.getUserComment(loginUserId, userId, ContentType.valueOf(contentTypeStr.toUpperCase()), pageable.getPageNumber(), order));
     }
 
     @ExceptionHandler(NoSuchElementException.class)
