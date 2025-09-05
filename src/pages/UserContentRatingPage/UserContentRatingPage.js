@@ -78,10 +78,10 @@ const UserContentRatingPage = ({userInfo}) => {
                         {/*컨텐츠 리스트*/}
                         <div className="user-content-rating-page-content-list">
                             {ratings?.content?.map((item) => (
-                                <ContentEach ratingData={item}/>
+                                <ContentEach ratingData={item} ratingType={'user'}/>
                             ))}
                         </div>
-                        <div><button onClick={handleMoreClick} style={{display: ratings?.page?.number + 1 === ratings?.page?.totalPages ? "none" : "block"}}>더보기</button></div>
+                        <div className="rating-page-content-list-btn"><button onClick={handleMoreClick} style={{display: ratings?.page?.number + 1 === ratings?.page?.totalPages ? "none" : "block"}}>더보기</button></div>
                     </div>}
 
                     {activeId === "rating-page-tab2" && <div className="rating-page-tab2">
@@ -115,7 +115,7 @@ const UserContentRatingPage = ({userInfo}) => {
                                                 >
                                                     {items.map((item) => (
                                                         <SwiperSlide key={item.content.id} className="rating-slide-image">
-                                                            <ContentEach ratingData={item}/>
+                                                            <ContentEach ratingData={item} ratingType={'avg'}/>
                                                         </SwiperSlide>
                                                     ))}
                                                 </Swiper>

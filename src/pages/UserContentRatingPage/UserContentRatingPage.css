@@ -60,6 +60,15 @@
 .rating-page-content-list-btn {
     display: flex;
     justify-content: center;
+    margin: 20px 0;
+}
+
+.rating-page-content-list-btn>button {
+    border: none;
+    background: #d9d9d9;
+    color: #888888;
+    padding: 8px 20px;
+    border-radius: 5px;
 }
 
 .rating-page-tab2 {

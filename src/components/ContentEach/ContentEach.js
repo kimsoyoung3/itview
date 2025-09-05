@@ -16,8 +16,12 @@ const ContentEach = ({ratingData, ratingType}) => {
                 </NavLink>
             </div>
             <div className="content-each-info">
-                <p>{ratingData?.content.title}</p>
-                <p>평가함 <i className="bi bi-star-fill"/> {ratingData?.score / 2}</p>
+                <p className="content-each-info-title">{ratingData?.content.title}</p>
+                <p className={
+                    ratingType === "user"
+                        ? "content-each-rating-text content-each-rating-text-user"
+                        : "content-each-rating-text content-each-rating-text-avg"
+                }>{ratingType === 'user' ? '평가함' : '평균' } <i className="bi bi-star-fill"/>{ratingType === 'user' ? ratingData?.score / 2 : (ratingData?.content.ratingAvg / 2).toFixed(1)}</p>
             </div>
         </div>
     )
