@@ -41,7 +41,7 @@ const CommentPage = ({userInfo, openLogin}) => {
             setComments((prev) => ([...prev, ...response.data.content]))
             setPage(response.data.page);
         }
-    }
+    };
 
     /*페이지 변경 시 콘솔에 출력*/
     useEffect(() => {

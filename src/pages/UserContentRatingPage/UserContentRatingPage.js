@@ -68,6 +68,7 @@ const UserContentRatingPage = ({userInfo}) => {
 
     const handleMoreClick = async () => {
         try {
+            if (ratings.page.number + 1 === ratings.page.totalPages) return;
             const response = await getUserContentRating(id, contentType, ratings.page.number + 2, order);
             setRatings((prev) => ({
                 ...prev,
@@ -88,11 +89,8 @@ const UserContentRatingPage = ({userInfo}) => {
 
     const handleNextClick = async (score) => {
         swiperRef.current[score].slideNext();
-        if (swiperRef.current[score].isEnd) {
-            console.log(score - 1);
-            console.log(swiperRef.current[score].activeIndex);
-            console.log(scores[score-1]);
-            const response = await getUserContentRatingScore(id, contentType, swiperRef.current[score].activeIndex + 2, score);
+        if (swiperRef.current[score].isEnd && scores[score - 1].page.number + 1 !== scores[score - 1].page.totalPages) {
+            const response = await getUserContentRatingScore(id, contentType, scores[score - 1].page.number + 2, score);
             setScore((prevScores) => {
                 const updatedScores = [...prevScores];
                 updatedScores[score - 1] = {
@@ -104,6 +102,44 @@ const UserContentRatingPage = ({userInfo}) => {
             });
         }
     }
+
+    const loadMoreRef = useRef([]);
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    const handleLoadMore = async (score) => {
+        if (scores[score - 1].page.number + 1 !== scores[score - 1].page.totalPages) {
+            const response = await getUserContentRatingScore(id, contentType, scores[score - 1].page.number + 2, score);
+            setScore((prevScores) => {
+                const updatedScores = [...prevScores];
+                updatedScores[score - 1] = {
+                    ...updatedScores[score - 1],
+                    content: [...updatedScores[score - 1].content, ...response.data.content],
+                    page: response.data.page
+                };
+                return updatedScores;
+            });
+        }
+    };
+
+    useEffect(() => {
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach((entry) => {
+                if (entry.isIntersecting) {
+                    handleLoadMore(loadMoreRef.current.indexOf(entry.target));
+                }
+            });
+        }, {
+            threshold: 0.1
+        });
+        loadMoreRef.current.forEach((el) => {
+            if (el) observer.observe(el);
+        });
+        return () => {
+            loadMoreRef.current.forEach((el) => {
+            if (el) observer.unobserve(el);
+            });
+        };
+    }, [loadMoreRef, handleLoadMore]);
 
     return (notFound ? <NotFound /> :
         <div className="user-content-rating-page container">
@@ -134,7 +170,7 @@ const UserContentRatingPage = ({userInfo}) => {
                         {/*컨텐츠 리스트*/}
                         <div className="user-content-rating-page-content-list">
                             {ratings?.content?.map((item) => (
-                                <ContentEach ratingData={item} ratingType={'user'}/>
+                                <ContentEach key={item.content.id} ratingData={item} ratingType={'user'}/>
                             ))}
                         </div>
                         <div className="rating-page-content-list-btn"><button onClick={handleMoreClick} style={{display: ratings?.page?.number + 1 === ratings?.page?.totalPages ? "none" : "block"}}>더보기</button></div>
@@ -173,6 +209,7 @@ const UserContentRatingPage = ({userInfo}) => {
                                                         <ContentEach ratingData={item} ratingType={'avg'}/>
                                                     </SwiperSlide>
                                                 ))}
+                                                {scores[10-index - 1].page.number + 1 !== scores[10-index - 1].page.totalPages && <SwiperSlide><div ref={(el) => loadMoreRef.current[10 - index] = el}></div></SwiperSlide>}
                                             </Swiper>
                                             <div className="rating-prev" onClick={() => handlePrevClick(10 - index)}><img src="/icon/arrow-left-555.svg" alt=""/></div>
                                             <div className="rating-next" onClick={() => handleNextClick(10 - index)}><img src="/icon/arrow-right-555.svg" alt=""/></div>
