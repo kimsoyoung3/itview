@@ -1,4 +1,4 @@
-import React, {useEffect, useState } from "react";
+import React, {useEffect, useRef, useState } from "react";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import "./DetailPage.css";
 import "../../components/ContentSwiper/ContentSwiper.css";
@@ -197,7 +197,7 @@ const DetailPage = ({userInfo, openLogin}) => {
     }, []); 
 
     /*스와이퍼 레퍼런스*/
-    const swiperRef = React.useRef(null);
+    const swiperRef = useRef(null);
 
     const [swiperPage, setSwiperPage] = useState(1);
     
