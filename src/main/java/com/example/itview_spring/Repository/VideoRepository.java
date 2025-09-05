@@ -29,6 +29,8 @@ public interface VideoRepository extends JpaRepository<VideoEntity, Integer> {
     //0825 추가함
     // ✔️ 콘텐츠 ID로 단일 영상 조회 (Entity 반환)
     Optional<VideoEntity> findFirstByContentId(Integer contentId);
+    // 비디오를 ID로 조회
+    Optional<VideoEntity> findById(Integer videoId);
 
     List<VideoEntity> findByContent_Id(Integer contentId);
 }

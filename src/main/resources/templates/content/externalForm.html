@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="kr"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/mainlayout}">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>콘텐츠 등록/수정</title>
+</head>
+<body>
+<main layout:fragment="content">
+    <!--    <h1>Welcome to the Dashboard</h1>-->
+    <!--    <p>This is your main content area.</p>-->
+
+    <div class="container mt-5">
+        <h2>외부서비스 등록/수정</h2>
+
+        <!-- 등록 버튼은 목록 위쪽에 배치 -->
+        <div class="mb-3">
+            <form th:action="@{/content/{contentId}/external(contentId=${contentId})}"
+                  th:object="${externalServiceDTO}" method="post">
+                <input type="hidden" th:field="*{id}"/>
+                <!-- ✅ contentId 도 hidden 으로 같이 전달 -->
+                <!--                @PathVariable("contentId") 로 contentId를 컨트롤러에서 받고 있으므로, 굳이 hidden 으로 또 넘길 필요는 없습니다.-->
+                <!--                <input type="hidden" name="contentId" th:value="${contentId}"/> &lt;!&ndash; contentId 전달 &ndash;&gt;-->
+
+                <!--                        <div class="mb-3">-->
+                <!--                            <label class="form-label">서비스 타입</label>-->
+                <!--                            <input type="text" class="form-control" th:field="*{type}" required/>-->
+                <!--                            &lt;!&ndash; 에러 메시지 &ndash;&gt;-->
+                <!--                            <div class="text-danger" th:if="${#fields.hasErrors('type')}"-->
+                <!--                                 th:errors="*{type}"></div>-->
+                <!--                        </div>-->
+
+                <!-- 서비스 타입 (enum select) -->
+                <div class="mb-3">
+                    <label class="form-label">서비스 타입</label>
+                    <select class="form-select" th:field="*{type}">
+                        <option th:each="channel : ${T(com.example.itview_spring.Constant.Channel).values()}"
+                                th:value="${channel}" th:text="${channel.description}">
+                        </option>
+                    </select>
+                    <div class="text-danger" th:if="${#fields.hasErrors('type')}"
+                         th:errors="*{type}"></div>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">외부서비스 링크</label>
+                    <input type="text" class="form-control" th:field="*{href}" required/>
+                    <!-- 에러 메시지 -->
+                    <div class="text-danger" th:if="${#fields.hasErrors('href')}"
+                         th:errors="*{href}"></div>
+                </div>
+
+                <button type="submit" class="btn btn-primary">저장</button>
+                <a th:href="@{'/content/' + ${contentId} + '/external'}" class="btn btn-secondary">목록</a>
+                <!-- 추후 수정해야함     목록버튼           -->
+                <!--                <a th:href="@{/content/list}" class="btn btn-secondary">취소</a>-->
+            </form>
+
+            <a th:href="@{'/content/' + ${contentId} + '/list'}"
+               class="btn btn-success mt-3">📂 목록으로이동</a>
+
+        </div>
+        <!-- 목록 테이블 -->
+        <table class="table table-bordered mt-3">
+            <thead class="table-light">
+            <tr>
+                <th>ID</th>
+                <th>타입</th>
+                <th>외부서비스링크</th>
+                <th>작업선택</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="external : ${externalServiceList}">
+                <td th:text="${external.id}">1</td>
+                <td th:text="${external.type}">타입</td>
+                <td>
+                    <a th:href="${external.href}" target="_blank" th:text="${external.href}"></a>
+                </td>
+                <td>
+                    <!-- 수정 -->
+                    <a th:href="@{'/content/' + ${contentId} + '/external?id=' + ${external.id}}"
+                       class="btn btn-sm btn-warning">✏ 수정</a>
+
+                    <!-- 삭제 버튼 (폼 방식으로 externalServiceId 전달) -->
+                    <form th:action="@{'/content/' + ${contentId} + '/external/delete'}"
+                          method="post" style="display:inline;">
+                        <input type="hidden" name="externalServiceId" th:value="${external.id}"/>
+                        <button type="submit" class="btn btn-sm btn-danger">🗑 삭제</button>
+                    </form>
+                </td>
+            </tr>
+            <tr th:if="${externalServiceList == null or #lists.isEmpty(externalServiceList)}">
+                <td colspan="5" class="text-center">등록된 자료가 없습니다.</td>
+            </tr>
+            </tbody>
+        </table>
+
+        <!-- Flash 메시지 출력 -->
+        <div th:if="${message}" class="alert alert-success" role="alert"
+             th:text="${message}">
+        </div>
+    </div>
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+</main>
+</body>
+</html>
+

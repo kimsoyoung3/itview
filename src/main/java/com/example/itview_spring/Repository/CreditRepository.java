@@ -71,4 +71,10 @@ public interface CreditRepository extends JpaRepository<CreditEntity, Integer> {
             ORDER BY con.releaseDate DESC
             """)
     Page<WorkDTO> findWorkDTOPage(Pageable pageable, @Param("personId") Integer personId, @Param("contentType") ContentType contentType, @Param("department") String department);
+
+    List<CreditDTO> findCreditsByContentId(Integer contentId);
+
+    CreditDTO findCreditById(Integer creditId);
+
+    void deleteAllByContent_Id(Integer contentId);
 }

@@ -1,23 +1,17 @@
-package com.example.itview_spring.Controller.Content;
+package com.example.itview_spring.Controller.User;
 
-import aj.org.objectweb.asm.commons.Remapper;
 import com.example.itview_spring.Constant.Genre;
 import com.example.itview_spring.DTO.*;
 import com.example.itview_spring.Entity.PersonEntity;
-import com.example.itview_spring.Entity.VideoEntity;
-import com.example.itview_spring.Repository.VideoRepository;
 import com.example.itview_spring.Service.ContentService;
-//import com.example.itview_spring.Service.VideoService;
 import com.example.itview_spring.Util.PageInfo;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.web.servlet.error.ErrorController;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Controller;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
@@ -25,8 +19,6 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.*;
 import java.util.stream.Collectors;
-
-import static org.springframework.data.jpa.domain.AbstractPersistable_.id;
 
 @Controller
 @RequiredArgsConstructor
@@ -518,6 +510,35 @@ public class ContentController {
 /////////0825 vidio 추가///////////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+//// 콘텐츠 유효성 검사
+//    if (contentService.read(contentId) == null) {
+//        throw new IllegalArgumentException("존재하지 않는 콘텐츠 ID: " + contentId);  // 콘텐츠가 없으면 예외 처리
+//    }
+
+//// 1️⃣ 단일 VideoDTO 조회 (수정 모드)
+//    VideoDTO videoDTO = (videoId != null)
+//            ? contentService.getVideoById(videoId)  // 수정 모드일 경우 영상 ID로 데이터 조회
+//            : new VideoDTO();             // 등록 모드일 경우 새 VideoDTO 생성
+//
+//// 수정할 비디오가 없을 경우 기본값으로 초기화
+//    if (videoId != null && videoDTO == null) {
+//        throw new NoSuchElementException("해당 ID에 대한 영상이 존재하지 않습니다: " + videoId);  // 영상이 없으면 예외 처리
+//    }
+//
+//            model.addAttribute("videoDTO", videoDTO);
+
+//// 2️⃣ 전체 VideoDTO 리스트 조회 (목록)
+//List<VideoDTO> videoList = contentService.getVideosByContentId(contentId);  // 콘텐츠 ID에 해당하는 영상 리스트 조회
+//    model.addAttribute("videoList", videoList); // 모델에 전체 영상 목록 추가
+//
+//// 3️⃣ ContentId도 모델에 전달
+//    model.addAttribute("contentId", contentId); // 콘텐츠 ID를 모델에 전달
+//
+//    return "content/videoForm";  // 영상 등록/수정 폼을 보여줄 템플릿 경로
+//            }
+
+
     /**
      * 영상 등록/수정 폼(get)
      */
@@ -526,14 +547,17 @@ public class ContentController {
                             @RequestParam(value = "id", required = false) Integer videoId,
                             Model model) {
 
-        // videoId로 VideoEntity 가져오기 (비즈니스 로직)
+        // 콘텐츠 유효성 검사
+        // 콘텐츠가 유효한지 검사하는 로직을 제거하고, 대신 `contentService`를 이용한 콘텐츠 확인
+        // 콘텐츠가 존재하지 않으면 IllegalArgumentException을 던지도록 변경
+        // if (ContentService.read(contentId) == null) {  // 삭제된 부분
+        //     throw new IllegalArgumentException("존재하지 않는 콘텐츠 ID: " + contentId);  // 콘텐츠가 없으면 예외 처리
+        // }  // 삭제된 부분
 
-        VideoEntity videoEntity = videoRepository.findById(videoId)
-                .orElseThrow(() -> new NoSuchElementException("해당 영상이 존재하지 않습니다: " + videoId));
-
-
-        // 수정 후: Entity -> DTO 매핑 적용
-        VideoDTO videoDTO = modelMapper.map(videoEntity, VideoDTO.class);
+        // 1️⃣ 단일 VideoDTO 조회 (수정 모드)
+        VideoDTO videoDTO = (videoId != null)
+                ? contentService.getVideoById(videoId)  // contentService에서 단일 VideoId 조회 메서드로 변경
+                : new VideoDTO();                        // 등록 모드에서는 새 VideoDTO 생성
         model.addAttribute("videoDTO", videoDTO); // 모델에 VideoDTO 추가
 
         // 수정할 비디오가 없을 경우 기본값으로 초기화
@@ -541,11 +565,17 @@ public class ContentController {
             throw new NoSuchElementException("해당 ID에 대한 영상이 존재하지 않습니다: " + videoId);  // 영상이 없으면 예외 처리
         }
 
-        // 전체 VideoDTO 리스트 조회 (목록)
+        // 수정할 비디오가 없을 경우 기본값으로 초기화
+        // videoId가 있을 때 해당 영상이 존재하지 않으면 예외를 던지는 코드로 변경
+        if (videoId != null && videoDTO == null) {
+            throw new NoSuchElementException("해당 ID에 대한 영상이 존재하지 않습니다: " + videoId);  // 영상이 없으면 예외 처리
+        }
+
+        // 2️⃣ 전체 VideoDTO 리스트 조회 (목록)
         List<VideoDTO> videoList = contentService.getVideosByContentId(contentId);  // `ContentService`에서 `getVideosByContentId` 메서드 호출로 변경
         model.addAttribute("videoList", videoList);  // 모델에 전체 영상 목록 추가
 
-        // ContentId도 모델에 전달
+        // 3️⃣ ContentId도 모델에 전달
         model.addAttribute("contentId", contentId); // 콘텐츠 ID를 모델에 전달
 
         return "content/videoForm";  // 영상 등록/수정 폼을 보여줄 템플릿 경로
