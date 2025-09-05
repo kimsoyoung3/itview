@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-import { useParams } from "react-router-dom";
+import {NavLink, useParams} from "react-router-dom";
 import { getUserContentRating, getUserContentRatingScore } from "../../API/UserApi";
 import NotFound from "../NotFound/NotFound";
 import "./UserContentRatingPage.css"
@@ -8,6 +8,7 @@ import "swiper/css";
 import "swiper/css/navigation";
 import { Navigation } from 'swiper/modules';
 import { toast } from "react-toastify";
+import ContentEach from "../../components/ContentEach/ContentEach";
 
 const UserContentRatingPage = ({userInfo}) => {
     const [notFound, setNotFound] = useState(false);
@@ -133,16 +134,7 @@ const UserContentRatingPage = ({userInfo}) => {
                         {/*컨텐츠 리스트*/}
                         <div className="user-content-rating-page-content-list">
                             {ratings?.content?.map((item) => (
-                                <div key={item.content.id} className="user-content-rating-page-content">
-                                    {/* 포스터 이미지 */}
-                                    <div className="rating-page-content-poster">
-                                        <img
-                                            src={item.content.poster}
-                                            alt={item.content.title}/>
-                                    </div>
-                                    <p>{item.content.title}</p>
-                                    <p>평가함 <i className="bi bi-star-fill"/> {item.score / 2}</p>
-                                </div>
+                                <ContentEach ratingData={item}/>
                             ))}
                         </div>
                         <div><button onClick={handleMoreClick} style={{display: ratings?.page?.number + 1 === ratings?.page?.totalPages ? "none" : "block"}}>더보기</button></div>

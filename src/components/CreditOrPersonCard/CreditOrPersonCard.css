@@ -20,7 +20,7 @@
 .credit-card-inner {
     display: flex;
     align-items: center;
-    gap: 5px;
+    gap: 8px;
 }
 
 .credit-card-info {
