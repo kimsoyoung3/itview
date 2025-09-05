@@ -140,6 +140,7 @@ const UserContentRatingPage = ({userInfo}) => {
                         <div className="rating-page-content-list-btn"><button onClick={handleMoreClick} style={{display: ratings?.page?.number + 1 === ratings?.page?.totalPages ? "none" : "block"}}>더보기</button></div>
                     </div>}
 
+                    {/*별점순*/}
                     {activeId === "rating-page-tab2" && <div className="rating-page-tab2">
                         {[...scores].reverse().map((items, index) => (
                             <div key={index} className="rating-page-rating-list">
@@ -168,18 +169,7 @@ const UserContentRatingPage = ({userInfo}) => {
                                             >
                                                 {items.content.map((item) => (
                                                     <SwiperSlide key={item.content.id} className="rating-slide-image">
-                                                        <div className="user-content-rating-page-content">
-                                                            <div className="rating-page-content-poster">
-                                                                <img
-                                                                    src={item.content.poster}
-                                                                    alt={item.content.title}
-                                                                />
-                                                            </div>
-                                                            <p className="title">{item.content.title}</p>
-                                                            <p>
-                                                                평가함 <i className="bi bi-star-fill" /> {item.score}
-                                                            </p>
-                                                        </div>
+                                                        <ContentEach ratingData={item} ratingType={'user'}/>
                                                     </SwiperSlide>
                                                 ))}
                                             </Swiper>
