@@ -159,17 +159,18 @@ const UserContentRatingPage = ({userInfo}) => {
                                                     nextEl: ".rating-wrapper .rating-next",
                                                 }}
                                                 spaceBetween={16}
-                                                slidesPerView={5} // 한 화면에 보일 아이템 수
+                                                slidesPerView={3} // 한 화면에 보일 아이템 수
+                                                slidesPerGroup={3}
                                                 breakpoints={{
                                                     640: { slidesPerView: 2 },
                                                     768: { slidesPerView: 3 },
                                                     1024: { slidesPerView: 4 },
-                                                    1280: { slidesPerView: 10 },
+                                                    1280: { slidesPerView: 10, slidesPerGroup: 10 },
                                                 }}
                                             >
                                                 {items.content.map((item) => (
                                                     <SwiperSlide key={item.content.id} className="rating-slide-image">
-                                                        <ContentEach ratingData={item} ratingType={'user'}/>
+                                                        <ContentEach ratingData={item} ratingType={'avg'}/>
                                                     </SwiperSlide>
                                                 ))}
                                             </Swiper>

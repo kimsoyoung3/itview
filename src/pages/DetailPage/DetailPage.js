@@ -5,8 +5,9 @@ import "../../components/ContentSwiper/ContentSwiper.css";
 import 'swiper/css/navigation';
 import 'swiper/css/pagination';
 import 'swiper/css';
+import 'swiper/css/grid';
 import { getContentCredit, deleteRating, getContentComment, getContentDetail, postContentComment, postContentRating, unwishContent, wishContent } from "../../API/ContentApi";
-import {Navigation, Pagination} from "swiper/modules";
+import {Navigation, Pagination, Grid} from "swiper/modules";
 import {Swiper, SwiperSlide} from "swiper/react";
 import CreditOrPersonCard from "../../components/CreditOrPersonCard/CreditOrPersonCard";
 import CommentCard from "../../components/CommentCard/CommentCard";
@@ -504,6 +505,7 @@ const DetailPage = ({userInfo, openLogin}) => {
                  {/*크레딧 정보 리스트*/}
                  {contentCredit[0]?.content.length > 0 ? (
                     <div className="credit-list container">
+
                         <Swiper
                             ref={swiperRef}
                             modules={[Navigation]}
@@ -514,9 +516,8 @@ const DetailPage = ({userInfo, openLogin}) => {
                             onNavigationNext={() => console.log('next')}>
                             {contentCredit.map((creditPage, pageIndex) => (
                                 <SwiperSlide className="swiper-slide" key={pageIndex}>
-                                    <div className="credit-list">
+                                    <div className="credit-content-list">
                                         {creditPage.content
-                                            .slice(0, window.innerWidth <= 480 ? 3 : 12)
                                             .map(credit => (
                                             <CreditOrPersonCard key={credit.id} type="credit" data={credit} />
                                         ))}
@@ -524,6 +525,7 @@ const DetailPage = ({userInfo, openLogin}) => {
                                 </SwiperSlide>
                             ))}
                         </Swiper>
+
                         <div className={`credit-prev ${swiperPage === 1 ? 'disabled' : ''}`} onClick={handlePrev}><img src="/icon/arrow-left.svg" alt=""/></div>
                         <div className={`credit-next ${swiperPage === contentCredit[0].page.totalPages ? 'disabled' : ''}`} onClick={handleNext}><img src="/icon/arrow-right.svg" alt=""/></div>
                     </div>

@@ -478,8 +478,10 @@
 }
 
 /*크레딧 섹션*/
-.credit-swiper {
+
+.credit-list {
     position: relative; /* 버튼 기준점 */
+
 }
 
 .credit-prev,
@@ -513,13 +515,14 @@
     right: -50px;
 }
 
-.credit-list {
+.credit-content-list {
     display: flex;
     flex-wrap: wrap;
     gap: 20px;
-    position: relative;
     justify-content: flex-start;
 }
+
+
 
 /*코멘트 섹션*/
 .comment-text {
