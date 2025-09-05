@@ -89,10 +89,7 @@ const UserContentRatingPage = ({userInfo}) => {
     const handleNextClick = async (score) => {
         swiperRef.current[score].slideNext();
         if (swiperRef.current[score].isEnd) {
-            console.log(score - 1);
-            console.log(swiperRef.current[score].activeIndex);
-            console.log(scores[score-1]);
-            const response = await getUserContentRatingScore(id, contentType, swiperRef.current[score].activeIndex + 2, score);
+            const response = await getUserContentRatingScore(id, contentType, scores[score - 1].page.number + 2, score);
             setScore((prevScores) => {
                 const updatedScores = [...prevScores];
                 updatedScores[score - 1] = {
