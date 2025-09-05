@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useParams } from "react-router-dom";
-import { getUserContentRating } from "../../API/UserApi";
+import { getUserContentRating, getUserContentRatingScore } from "../../API/UserApi";
 import NotFound from "../NotFound/NotFound";
 import "./UserContentRatingPage.css"
 import { Swiper, SwiperSlide } from "swiper/react";
@@ -15,6 +15,8 @@ const UserContentRatingPage = ({userInfo}) => {
     const { id, contentType } = useParams();
 
     const [ratings, setRatings] = useState([]);
+    const [scores, setScore] = useState([]);
+
     const [order, setOrder] = useState("new");
 
     const [activeId, setActiveId] = useState("rating-page-tab1");
@@ -35,6 +37,34 @@ const UserContentRatingPage = ({userInfo}) => {
         console.log(ratings);
     }, [ratings]);
 
+    useEffect(() => {
+        const fetchScores = async () => {
+            try {
+                const scoreData = [];
+                for (let s = 1; s <= 10; s++) {
+                    const response = await getUserContentRatingScore(id, contentType, 1, s);
+                    scoreData.push(response.data);
+                    if (response.data.page.totalPages > 1) {
+                        const response2 = await getUserContentRatingScore(id, contentType, 2, s);
+                        scoreData[s - 1] = {
+                            ...scoreData[s - 1],
+                            content: [...scoreData[s - 1].content, ...response2.data.content],
+                            page: response2.data.page
+                        };
+                    }
+                }
+                setScore(scoreData);
+            } catch (error) {
+                console.error("Error fetching scores:", error);
+            }
+        };
+        fetchScores();
+    }, [id, contentType]);
+
+    useEffect(() => {
+        console.log(scores);
+    }, [scores]);
+
     const handleMoreClick = async () => {
         try {
             const response = await getUserContentRating(id, contentType, ratings.page.number + 2, order);
@@ -47,6 +77,32 @@ const UserContentRatingPage = ({userInfo}) => {
             toast("에러 발생");
         }
     };
+
+    const swiperRef = useRef([]);
+
+    const handlePrevClick = (score) => {
+        swiperRef.current[score].slidePrev();
+        console.log(swiperRef.current[score].activeIndex);
+    }
+
+    const handleNextClick = async (score) => {
+        swiperRef.current[score].slideNext();
+        if (swiperRef.current[score].isEnd) {
+            console.log(score - 1);
+            console.log(swiperRef.current[score].activeIndex);
+            console.log(scores[score-1]);
+            const response = await getUserContentRatingScore(id, contentType, swiperRef.current[score].activeIndex + 2, score);
+            setScore((prevScores) => {
+                const updatedScores = [...prevScores];
+                updatedScores[score - 1] = {
+                    ...updatedScores[score - 1],
+                    content: [...updatedScores[score - 1].content, ...response.data.content],
+                    page: response.data.page
+                };
+                return updatedScores;
+            });
+        }
+    }
 
     return (notFound ? <NotFound /> :
         <div className="user-content-rating-page container">
@@ -93,64 +149,58 @@ const UserContentRatingPage = ({userInfo}) => {
                     </div>}
 
                     {activeId === "rating-page-tab2" && <div className="rating-page-tab2">
-                        {[
-                            5, 4.5, 4, 3.5, 3, 2.5, 2, 1.5, 1, 0.5
-                        ].map((score) => {
-                            // 해당 점수 작품만 필터링
-                            const items = ratings?.content?.filter((item) => item.score / 2 === score) || [];
+                        {[...scores].reverse().map((items, index) => (
+                            <div key={index} className="rating-page-rating-list">
+                                <p>{(10 - index) / 2}점 평가한 작품들</p>
 
-                            return (
-                                <div key={score} className="rating-page-rating-list">
-                                    <p>{score}점 평가한 작품들</p>
-
-                                    <div className="rating-items">
-                                        {items.length > 0 ? (
-                                            <div className="rating-wrapper">
-                                                <Swiper
-                                                    modules={Navigation}
-                                                    navigation={{
-                                                        prevEl: ".rating-wrapper .rating-prev",
-                                                        nextEl: ".rating-wrapper .rating-next",
-                                                    }}
-                                                    spaceBetween={16}
-                                                    slidesPerView={5} // 한 화면에 보일 아이템 수
-                                                    breakpoints={{
-                                                        640: { slidesPerView: 2 },
-                                                        768: { slidesPerView: 3 },
-                                                        1024: { slidesPerView: 4 },
-                                                        1280: { slidesPerView: 10 },
-                                                    }}
-                                                >
-                                                    {items.map((item) => (
-                                                        <SwiperSlide key={item.content.id} className="rating-slide-image">
-                                                            <div className="user-content-rating-page-content">
-                                                                <div className="rating-page-content-poster">
-                                                                    <img
-                                                                        src={item.content.poster}
-                                                                        alt={item.content.title}
-                                                                    />
-                                                                </div>
-                                                                <p className="title">{item.content.title}</p>
-                                                                <p>
-                                                                    평가함 <i className="bi bi-star-fill" /> {item.score}
-                                                                </p>
+                                <div className="rating-items">
+                                    {items.content.length > 0 ? (
+                                        <div className="rating-wrapper">
+                                            <Swiper
+                                                onSwiper={(swiper) => {
+                                                    swiperRef.current[10 - index] = swiper;
+                                                }}
+                                                modules={Navigation}
+                                                navigation={{
+                                                    prevEl: ".rating-wrapper .rating-prev",
+                                                    nextEl: ".rating-wrapper .rating-next",
+                                                }}
+                                                spaceBetween={16}
+                                                slidesPerView={5} // 한 화면에 보일 아이템 수
+                                                breakpoints={{
+                                                    640: { slidesPerView: 2 },
+                                                    768: { slidesPerView: 3 },
+                                                    1024: { slidesPerView: 4 },
+                                                    1280: { slidesPerView: 10 },
+                                                }}
+                                            >
+                                                {items.content.map((item) => (
+                                                    <SwiperSlide key={item.content.id} className="rating-slide-image">
+                                                        <div className="user-content-rating-page-content">
+                                                            <div className="rating-page-content-poster">
+                                                                <img
+                                                                    src={item.content.poster}
+                                                                    alt={item.content.title}
+                                                                />
                                                             </div>
-                                                        </SwiperSlide>
-                                                    ))}
-                                                </Swiper>
-
-                                                <div className="rating-prev"><img src="/icon/arrow-left-555.svg" alt=""/></div>
-                                                <div className="rating-next"><img src="/icon/arrow-right-555.svg" alt=""/></div>
-                                            </div>
-                                        ) : (
-                                            <p className="rating-text">해당 점수 작품이 없습니다 :)</p>
-                                        )}
-                                    </div>
+                                                            <p className="title">{item.content.title}</p>
+                                                            <p>
+                                                                평가함 <i className="bi bi-star-fill" /> {item.score}
+                                                            </p>
+                                                        </div>
+                                                    </SwiperSlide>
+                                                ))}
+                                            </Swiper>
+                                            <div className="rating-prev" onClick={() => handlePrevClick(10 - index)}><img src="/icon/arrow-left-555.svg" alt=""/></div>
+                                            <div className="rating-next" onClick={() => handleNextClick(10 - index)}><img src="/icon/arrow-right-555.svg" alt=""/></div>
+                                        </div>
+                                    ) : (
+                                        <p className="rating-text">해당 점수 작품이 없습니다 :)</p>
+                                    )}
                                 </div>
-                            );
-                        })}
+                            </div>
+                        ))}
                     </div>}
-
                 </div>
             </div>
         </div>
