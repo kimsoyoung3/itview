@@ -25,5 +25,10 @@ public interface PersonRepository extends JpaRepository <PersonEntity, Integer> 
             """)
     PersonResponseDTO findPersonResponseDTO(@Param("userId") Integer userId, @Param("personId") Integer personId);
 
+<<<<<<< HEAD
+    PersonEntity findByName(String name);
+}
+=======
 
 }
+>>>>>>> 5cda48457ce96603910cfe050813ee460fc18ddf

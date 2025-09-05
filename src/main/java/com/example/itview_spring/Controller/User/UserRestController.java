@@ -230,6 +230,15 @@ public class UserRestController {
         return ResponseEntity.ok(userService.getUserContentRating(userId, ContentType.valueOf(contentTypeStr.toUpperCase()), pageable.getPageNumber(), order));
     }
 
+    // 유저가 매긴 특정 컨텐츠 타입의 특정 평점 목록 조회
+    @GetMapping("/{id}/content/{contentType}/rating/{score}")
+    public ResponseEntity<Page<RatingDTO>> getUserContentRatingScore(@PathVariable("id") Integer userId,
+                                                                     @PathVariable("contentType") String contentTypeStr,
+                                                                     @PageableDefault(page=1) Pageable pageable,
+                                                                     @PathVariable("score") Integer score) {
+        return ResponseEntity.ok(userService.getUserContentRatingScore(userId, ContentType.valueOf(contentTypeStr.toUpperCase()), pageable.getPageNumber(), score));
+    }
+
     // 유저의 위시리스트 조회
     @GetMapping("/{id}/content/{contentType}/wish")
     public ResponseEntity<Page<ContentResponseDTO>> getUserWishlist(@PathVariable("id") Integer userId,

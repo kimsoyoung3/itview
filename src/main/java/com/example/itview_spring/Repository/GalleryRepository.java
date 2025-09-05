@@ -2,6 +2,7 @@ package com.example.itview_spring.Repository;
 
 import java.util.List;
 
+import com.example.itview_spring.DTO.GalleryDTO;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -20,4 +21,10 @@ public interface GalleryRepository extends JpaRepository<GalleryEntity, Integer>
                 WHERE g.content.id = :contentId
                 """)
     List<ImageDTO> findByContentId(@Param("contentId") Integer contentId);
+
+    List<GalleryDTO> findGallerysByContentId(Integer contentId);
+
+    void deleteByContentId(Integer contentId);
+
+    boolean existsByContentIdAndPhoto(Integer contentId, String photo);
 }

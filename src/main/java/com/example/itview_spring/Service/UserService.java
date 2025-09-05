@@ -210,6 +210,16 @@ public class UserService implements UserDetailsService {
         return ratingRepository.findUserContentRatings(pageable, userId, contentType, order);
     }
 
+    // 유저가 매긴 특정 컨텐츠 타입의 특정 별점 조회
+    public Page<RatingDTO> getUserContentRatingScore(Integer userId, ContentType contentType, Integer page, Integer score) {
+        if (!userRepository.existsById(userId)) {
+            throw new NoSuchElementException("존재하지 않는 유저입니다.");
+        }
+
+        Pageable pageable = PageRequest.of(page - 1, 10);
+        return ratingRepository.findUserContentRatingsByScore(pageable, userId, contentType, score);
+    }
+
     // 유저의 위시리스트 조회
     public Page<ContentResponseDTO> getUserWishlist(Integer userId, ContentType contentType, Integer page, String order) {
         if (!userRepository.existsById(userId)) {

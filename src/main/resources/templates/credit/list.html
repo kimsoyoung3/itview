@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="kr"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/mainlayout}">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        /* 테이블 레이아웃을 고정하고, 전체 너비를 100%로 설정 */
+        .table-custom-layout {
+            table-layout: fixed;
+            width: 100%;
+        }
+
+        /* 모든 th와 td는 기본적으로 가운데 정렬 */
+        .table-custom-layout th,
+        .table-custom-layout td {
+            text-align: center;
+            word-wrap: break-word;
+        }
+
+        /* 제목 항목만 왼쪽 정렬하는 클래스 */
+        .text-start {
+            text-align: left;
+        }
+
+        .clickable-row {
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+<main layout:fragment="content">
+  <!--  <h1>Welcome to the Dashboard</h1>  -->
+  <!--  <p>This is your main content area.</p>  -->
+
+    <!--전체 내용을 보는 페이지(일반적으로 표(카드)로 구현-->
+    <div class="container mt-3 mb-3">
+        <h1 class="mt-3">동영상 목록</h1>
+        <!--삽입버튼 추가(Controller로 지시하는 태그는 a, button)-->
+        <!--부트스트랩5 클래스구조(모양 색상(글자) 색상(배경) 세부조정)-->
+        <div class="d-flex justify-content-end mb-3">
+            <a th:href="@{/content/register}" type="button" class="btn btn-primary"><i class="bi bi-trash"></i>등록</a>
+        </div>
+        <p>현재 등록한 동영상 목록입니다:</p>
+
+        <table class="table table-hover table-custom-layout">
+            <thead>
+            <tr>
+                <th style="width:60%;">제목</th>
+                <th style="width:20%;">썸네일</th>
+                <th style="width:20%;">비디오</th>
+                <th style="width:20%;">작업선택</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="data:${contentDTOS}"
+                class="clickable-row"
+                th:onclick="|window.location.href='@{/content/detail(id=${data.id})}'|">
+                <td class="text-start" th:text="${data.title}">제목</td>
+                <td class="text-start" th:text="${data.image}">썸네일</td>
+                <td class="text-start" th:text="${data.url}">비디오</td>
+                <td th:text="${data.contentType.getDescription()}">작업선택</td>
+                <td>
+                    <a th:href="@{/content/{id}/update(id=${data.id})}"
+                       type="button" class="btn btn-primary"
+                       onclick="event.stopPropagation();">수정</a>
+
+                    <a th:href="@{/content/delete(id=${data.id})}"
+                       type="button" class="btn btn-primary"
+                       onclick="event.stopPropagation();">삭제</a>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+
+        <!--표 밑에 추가-->
+        <div class="d-flex justify-content-center mt-3" th:if="${pageInfoDTO.start > 0}">
+            <ul class="pagination">
+                <li class="page-item" th:classappend="${pageInfoDTO.current == 1} ? ' disabled' : ''">
+                    <a class="page-link" th:href="@{'?page='+${pageInfoDTO.prev}}">
+                        <span>이전</span>
+                    </a>
+                </li>
+
+                <li class="page-item"
+                    th:classappend="${pageNum == pageInfoDTO.current} ? ' active'"
+                    th:each="pageNum : ${#numbers.sequence(pageInfoDTO.start, pageInfoDTO.end)}">
+                    <a class="page-link"
+                       th:href="@{'?page='+${pageNum}}"
+                       th:text="${pageNum}"></a>
+                </li>
+
+                <li class="page-item" th:classappend="${pageInfoDTO.current == pageInfoDTO.last} ? ' disabled' : ''">
+                    <a class="page-link" th:href="@{'?page='+${pageInfoDTO.next}}">
+                        <span>다음</span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+
+    </div>
+
+</main>
+</body>
+</html>
