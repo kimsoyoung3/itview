@@ -1,5 +1,7 @@
 package com.example.itview_spring.DTO;
 
+import groovy.transform.builder.Builder;
+import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -9,16 +11,18 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 public class PersonDTO {
     private Integer id;
 
-    // 이름
+    @NotBlank(message = "이름은 필수입니다.")
     private String name;
 
-    // 프로필 사진 URL
     private String profile;
 
-    // 직업
+    @NotBlank(message = "직업은 필수입니다.")
     private String job;
 }
+
+
 

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="kr"
+<html lang="ko"
       xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorate="~{layouts/mainlayout}">
@@ -13,13 +13,15 @@
 
         <h2>인물 관리</h2>
 
-        <!-- 검색 & 새 인물 등록 버튼 -->
-        <div class="top-bar"
-             style="display:flex; justify-content: space-between; align-items:center; margin-bottom:15px;">
-            <form th:action="@{/search/content}" method="get" style="display:flex; gap:5px;">
-                <input type="text" name="keyword" th:value="${keyword}" placeholder="인물 검색">
+        <!-- 검색 & 새 인물 등록 -->
+        <div class="top-bar" style="display:flex; justify-content: space-between; align-items:center; margin-bottom:15px;">
+
+            <!-- 검색: /search/person 로 보냄 -->
+            <form th:action="@{/search/person}" method="get" style="display:flex; gap:5px;">
+                <input type="text" name="keyword" th:value="${keyword}" placeholder="인물 이름 검색">
                 <button type="submit" class="btn btn-outline-secondary btn-sm">검색</button>
             </form>
+
             <a th:href="@{/person/register}" class="btn btn-outline-primary btn-sm">새 인물 등록</a>
         </div>
 
@@ -34,41 +36,69 @@
             </tr>
             </thead>
             <tbody>
+            <!-- 결과 없을 때 -->
+            <tr th:if="${#lists.isEmpty(personList)}">
+                <td colspan="4" class="text-center">데이터가 없습니다.</td>
+            </tr>
+
+            <!-- 결과 있을 때 -->
             <tr th:each="person : ${personList}">
-                <!-- 이름 클릭 시 상세 페이지 이동 -->
                 <td>
                     <a th:href="@{/person/{id}(id=${person.id})}"
                        th:text="${person.name}">이름</a>
                 </td>
-
-                <!-- 직업 -->
-                <td th:text="${person.job}"></td>
-
-                <!-- 프로필 이미지 -->
+                <td th:text="${person.job}">직업</td>
                 <td>
-                    <img th:if="${person.profileImage != null}"
-                         th:src="@{${person.profileImage}}"
+                    <img th:if="${person.profile}"
+                         th:src="${person.profile}"
                          alt="프로필"
                          style="max-width:50px; max-height:50px; object-fit:cover;">
                 </td>
-
-                <!-- 수정/삭제 버튼 -->
                 <td class="text-end">
-                    <!-- 수정 버튼 -->
                     <a th:href="@{/person/{id}/update(id=${person.id})}"
                        class="btn btn-outline-primary btn-sm">수정</a>
 
-                    <!-- 삭제 버튼 -->
-                    <form th:action="@{/person/{id}/delete(id=${person.id})}"
+                    <!-- 삭제: /person/{id} [DELETE] -->
+                    <form th:action="@{/person/{id}(id=${person.id})}"
                           method="post" style="display:inline"
                           onsubmit="return confirm('정말 삭제하시겠습니까?')">
-                        <input type="hidden" name="_method" value="delete"/>
+                        <input type="hidden" name="_method" value="DELETE"/>
+                        <input type="hidden" th:if="${_csrf != null}"
+                               th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
                         <button type="submit" class="btn btn-danger btn-sm">삭제</button>
                     </form>
                 </td>
             </tr>
             </tbody>
         </table>
+
+        <!-- 페이지네이션 -->
+        <nav th:if="${page != null and page.totalPages > 1}">
+            <ul class="pagination">
+                <li class="page-item" th:classappend="${page.first}? 'disabled'">
+                    <a class="page-link"
+                       th:href="@{${baseUrl}(page=${page.number - 1}, size=${page.size}, keyword=${keyword})}">
+                        이전
+                    </a>
+                </li>
+
+                <li class="page-item"
+                    th:each="i : ${#numbers.sequence(0, page.totalPages - 1)}"
+                    th:classappend="${i == page.number}? 'active'">
+                    <a class="page-link"
+                       th:text="${i + 1}"
+                       th:href="@{${baseUrl}(page=${i}, size=${page.size}, keyword=${keyword})}">
+                    </a>
+                </li>
+
+                <li class="page-item" th:classappend="${page.last}? 'disabled'">
+                    <a class="page-link"
+                       th:href="@{${baseUrl}(page=${page.number + 1}, size=${page.size}, keyword=${keyword})}">
+                        다음
+                    </a>
+                </li>
+            </ul>
+        </nav>
     </div>
 </main>
 </body>

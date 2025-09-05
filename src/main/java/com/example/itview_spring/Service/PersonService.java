@@ -1,82 +1,95 @@
 package com.example.itview_spring.Service;
 
 import com.example.itview_spring.Constant.Replyable;
-import com.example.itview_spring.DTO.PersonDTO;
 import com.example.itview_spring.DTO.PersonResponseDTO;
 import com.example.itview_spring.Entity.PersonEntity;
 import com.example.itview_spring.Repository.LikeRepository;
 import com.example.itview_spring.Repository.PersonRepository;
 import lombok.RequiredArgsConstructor;
-import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.Example;
+import org.springframework.data.domain.ExampleMatcher;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
-
 @Service
 @RequiredArgsConstructor
-@Transactional
 public class PersonService {
+
     private final PersonRepository personRepository;
     private final LikeRepository likeRepository;
-    private final ModelMapper modelMapper ;
-    // 전체조회
-    public List<PersonDTO>listPersons() {
-        List<PersonEntity> personEntities = personRepository.findAll();
-        List<PersonDTO> personDTOS = Arrays.asList(modelMapper.map(personEntities, PersonDTO[].class));
-        return personDTOS;
-    }
-    //상세보기
-    public PersonDTO readPerson(Integer id){
-        Optional<PersonEntity> personEntity = personRepository.findById(id);
-        PersonDTO personDTO = modelMapper.map(personEntity, PersonDTO.class);
-        return personDTO;
-    }
-    //삽입
-     public void register(PersonDTO personDTO){
-        PersonEntity personEntity = modelMapper.map(personDTO,PersonEntity.class);
-        personRepository.save(personEntity);
-     }
-     //수정
-     public void update(PersonDTO personDTO){
-            PersonEntity save =personRepository.findById(personDTO.getId())
-                    .orElse(null);
-        if (save !=null){
-            PersonEntity personEntity =modelMapper.map(personDTO,PersonEntity.class);
-            personRepository.save(personEntity);
+
+    public Page<PersonEntity> list(Pageable pageable, String keyword) {
+        if (keyword == null || keyword.isBlank()) {
+            return personRepository.findAll(pageable);
         }
 
-
-         }
-         //삭제
-    public Void deletePerson(Integer id){
-        personRepository.deleteById(id);
-
-        return null;
+        ExampleMatcher matcher = ExampleMatcher.matchingAny()
+                .withIgnoreNullValues()
+                .withIgnoreCase()
+                .withMatcher("name", m -> m.contains())
+                .withMatcher("profile", m -> m.contains())
+                .withMatcher("job", m -> m.contains());
+        PersonEntity probe = new PersonEntity();
+        probe.setName(keyword);
+        probe.setProfile(keyword);
+        probe.setJob(keyword);
+        return personRepository.findAll(Example.of(probe, matcher), pageable);
     }
 
-    // 인물 정보 + 좋아요 여부, 좋아요 수 조회
+    public PersonEntity get(Integer personId) {
+        return personRepository.findById(personId)
+                .orElseThrow(() -> new IllegalArgumentException("Person not found: " + personId));
+    }
+
     public PersonResponseDTO getPersonResponseDTO(Integer userId, Integer personId) {
-        return personRepository.findPersonResponseDTO(userId, personId);
+
+        PersonResponseDTO dto = personRepository.findPersonResponseDTO(userId, personId);
+        if (dto == null) {
+            throw new IllegalArgumentException("Person not found: " + personId);
+        }
+        return dto;
     }
 
-    // 인물에 좋아요 등록
+    @Transactional
+    public PersonEntity create(PersonEntity req) {
+
+        PersonEntity entity = new PersonEntity();
+        entity.setName(req.getName());
+        entity.setProfile(req.getProfile());
+        entity.setJob(req.getJob());
+
+        return personRepository.save(entity);
+    }
+
+    @Transactional
+    public PersonEntity update(Integer personId, PersonEntity req) {
+        PersonEntity entity = personRepository.findById(personId)
+                .orElseThrow(() -> new IllegalArgumentException("Person not found: " + personId));
+        entity.setName(req.getName());
+        entity.setProfile(req.getProfile());
+        entity.setJob(req.getJob());
+
+        return personRepository.save(entity);
+    }
+
+    @Transactional
+    public void delete(Integer personId) {
+        if (!personRepository.existsById(personId)) {
+            throw new IllegalArgumentException("Person not found: " + personId);
+        }
+        personRepository.deleteById(personId);
+    }
+
+    @Transactional
     public void likePerson(Integer userId, Integer personId) {
-        try {
-            likeRepository.likeTarget(userId, personId, Replyable.PERSON);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+
+        likeRepository.likeTarget(userId, personId, Replyable.PERSON);
     }
 
-    // 인물에 좋아요 취소
+    @Transactional
     public void unlikePerson(Integer userId, Integer personId) {
-        try {
-            likeRepository.unlikeTarget(userId, personId, Replyable.PERSON);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        likeRepository.unlikeTarget(userId, personId, Replyable.PERSON);
     }
 }

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="kr"
+<html lang="ko"
       xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorate="~{layouts/mainlayout}">
@@ -8,20 +8,32 @@
     <title>인물 상세</title>
 </head>
 <body>
-<div class="container mt-3">
+<main layout:fragment="content">
+    <div class="container mt-3">
+        <h2>인물 상세</h2>
 
-        <main class="main-content">
+        <p><strong>이름:</strong> <span th:text="${personDTO.name}">이름</span></p>
+        <p><strong>직업:</strong> <span th:text="${personDTO.job}">직업</span></p>
+        <p><strong>프로필 URL:</strong> <span th:text="${personDTO.profile}">/images/..</span></p>
 
-            <h2>인물 상세</h2>
-            <p><strong>이름:</strong> <span th:text="${personDTO.name}"></span></p>
-            <p><strong>직업:</strong> <span th:text="${personDTO.job}"></span></p>
-            <p><strong>프로필:</strong> <span th:text="${personDTO.description}"></span></p>
+        <p>
+            <img th:if="${personDTO.profile}" th:src="${personDTO.profile}" alt="프로필"
+                 style="max-width:120px;max-height:120px;object-fit:cover;">
+        </p>
 
-            <a th:href="@{/person/{id}update(id=${personDTO.id})}" class="btn btn-outline-primary btn-sm">수정</a>
-            <a th:href="@{/person/{id}delete(id=${personDTO.id})}"
-               onclick="return confirm('정말 삭제하시겠습니까?')" class="btn btn-danger btn-sm">삭제</a>
-            <a th:href="@{/person/list}" class="btn btn-secondary">목록으로</a>
-        </main>
+        <a th:href="@{/person/{id}/update(id=${personDTO.id})}" class="btn btn-outline-primary btn-sm">수정</a>
+
+        <!-- 삭제: /person/{id} [DELETE] -->
+        <form th:action="@{/person/{id}(id=${personDTO.id})}" method="post"
+              style="display:inline"
+              onsubmit="return confirm('정말 삭제하시겠습니까?')">
+            <input type="hidden" name="_method" value="DELETE"/>
+            <input type="hidden" th:if="${_csrf != null}"
+                   th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+            <button type="submit" class="btn btn-danger btn-sm">삭제</button>
+        </form>
+
+        <a th:href="@{/person/list}" class="btn btn-secondary btn-sm">목록</a>
     </div>
 </main>
 </body>

@@ -1,5 +1,7 @@
 package com.example.itview_spring.Controller.Content;
 
+import java.util.NoSuchElementException;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
@@ -8,10 +10,10 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -33,7 +35,6 @@ import lombok.RequiredArgsConstructor;
 @RestController
 @RequestMapping("/api/content")
 @RequiredArgsConstructor
-@CrossOrigin(origins = "http://localhost:3000", allowCredentials = "true")
 public class ContentRestController {
 
     private final ContentService contentService;
@@ -72,10 +73,8 @@ public class ContentRestController {
     @DeleteMapping("/{id}/rating")
     public ResponseEntity<Void> deleteContentRating(@PathVariable("id") Integer id,
                                                     @AuthenticationPrincipal CustomUserDetails userDetails) {
-        if (ratingService.deleteRating(userDetails.getId(), id)) {
-            return ResponseEntity.ok().build();
-        }
-        return ResponseEntity.notFound().build();
+        ratingService.deleteRating(userDetails.getId(), id);
+        return ResponseEntity.ok().build();
     }
 
     // 컨텐츠 코멘트 작성
@@ -84,7 +83,6 @@ public class ContentRestController {
                                                    @AuthenticationPrincipal CustomUserDetails userDetails,
                                                    @RequestBody TextDTO textDTO) {
         commentService.addComment(userDetails.getId(), id, textDTO.getText());
-
         return ResponseEntity.ok().build();
     }
 
@@ -109,5 +107,26 @@ public class ContentRestController {
         }
         Page<CommentDTO> comments = contentService.getCommentsByContentId(id, userId, order, pageable.getPageNumber());
         return ResponseEntity.ok(comments);
+    }
+
+    // 위시리스트 추가
+    @PostMapping("/{id}/wish")
+    public ResponseEntity<Void> addWishlist(@PathVariable("id") Integer id,
+                                            @AuthenticationPrincipal CustomUserDetails userDetails) {
+        contentService.addWishlist(userDetails.getId(), id);
+        return ResponseEntity.ok().build();
+    }
+
+    // 위시리스트 삭제
+    @DeleteMapping("/{id}/wish")
+    public ResponseEntity<Void> removeWishlist(@PathVariable("id") Integer id,
+                                               @AuthenticationPrincipal CustomUserDetails userDetails) {
+        contentService.removeWishlist(userDetails.getId(), id);
+        return ResponseEntity.ok().build();
+    }
+
+    @ExceptionHandler(NoSuchElementException.class)
+    public ResponseEntity<String> handleNoSuchElementException(NoSuchElementException ex) {
+        return ResponseEntity.status(404).body(ex.getMessage());
     }
 }

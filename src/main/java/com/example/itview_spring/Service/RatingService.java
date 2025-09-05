@@ -1,5 +1,6 @@
 package com.example.itview_spring.Service;
 
+import java.util.NoSuchElementException;
 import java.util.Optional;
 
 import org.springframework.stereotype.Service;
@@ -24,6 +25,10 @@ public class RatingService {
     // 별점 등록
     public void rateContent(Integer userId, Integer contentId, Integer score) {
 
+        if (!contentRepository.existsById(contentId)) {
+            throw new NoSuchElementException("Invalid contentId: " + contentId);
+        }
+
         // 기존 별점 조회
         Optional<RatingEntity> existingRating = ratingRepository.findByUserIdAndContentId(userId, contentId);
 
@@ -43,10 +48,10 @@ public class RatingService {
     }
 
     // 별점 삭제
-    public Boolean deleteRating(Integer userId, Integer contentId) {
+    public void deleteRating(Integer userId, Integer contentId) {
+        if (!contentRepository.existsById(contentId)) {
+            throw new NoSuchElementException("Invalid contentId: " + contentId);
+        }
         ratingRepository.deleteByUserIdAndContentId(userId, contentId);
-        // 삭제 후 해당 별점이 존재하는지 확인
-        Optional<RatingEntity> deletedRating = ratingRepository.findByUserIdAndContentId(userId, contentId);
-        return deletedRating.isEmpty();
     }
 }
