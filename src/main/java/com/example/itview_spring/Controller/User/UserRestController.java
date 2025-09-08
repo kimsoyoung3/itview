@@ -253,7 +253,7 @@ public class UserRestController {
     }
 
     // 유저의 코멘트 조회
-    @GetMapping("/{id}/comment")
+    @GetMapping("/{id}/comment/{contentType}")
     public ResponseEntity<Page<CommentAndContentDTO>> getUserComment(@PathVariable("id") Integer userId,
                                                                      @PathVariable("contentType") String contentTypeStr,
                                                                      @PageableDefault(page=1) Pageable pageable,
