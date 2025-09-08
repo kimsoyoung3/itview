@@ -69,3 +69,15 @@
     margin-top: 100px;
     color: #555555;
 }
+
+.comment-page-tab-btn-box {
+    text-align: center;
+}
+
+.comment-page-tab-content-btn {
+    border: none;
+    background: #d9d9d9;
+    color: #888888;
+    padding: 8px 20px;
+    border-radius: 5px;
+}
