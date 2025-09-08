@@ -63,3 +63,9 @@
     padding: 10px;
     border-color: #d9d9d9;
 }
+
+.comment-page-tab>p {
+    text-align: center;
+    margin-top: 100px;
+    color: #555555;
+}

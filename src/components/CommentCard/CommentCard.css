@@ -57,7 +57,12 @@
 .comment-card-content>a {
     display: inline-block;
     width: 100%;
-    min-height: 120px;
+}
+
+.comment-inner .comment-card-content>a {
+    display: inline-block;
+    width: 100%;
+    min-height: 100px;
 }
 
 .clamp-4 {

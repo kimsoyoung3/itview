@@ -2,6 +2,8 @@ import React, {useEffect, useState} from "react";
 import "./UserCommentPage.css"
 import { useParams } from "react-router-dom";
 import { getUserComment } from "../../API/UserApi";
+import CommentCard from "../../components/CommentCard/CommentCard";
+import NotFound from "../NotFound/NotFound";
 
 function UserCommentPage({ userInfo, openLogin }) {
     const [contentType, setContentType] = useState("MOVIE");
@@ -33,7 +35,7 @@ function UserCommentPage({ userInfo, openLogin }) {
         console.log(commentList);
     }, [commentList]);
 
-    return (
+    return (notFound ? <NotFound /> :
         <div className="user-comment-page container">
             <div className="user-comment-page-wrap">
                 <h1>코멘트</h1>
@@ -74,27 +76,57 @@ function UserCommentPage({ userInfo, openLogin }) {
 
                 <div className="user-comment-tab-content">
 
-                    {contentType === "MOVIE" && <div className="comment-page-tab1">
-                        <p>탭1</p>
+                    {contentType === "MOVIE" && <div className="comment-page-tab comment-page-tab1">
+                        {commentList[contentType]?.content?.length > 0 ? (
+                            <div className="comment-page-content">
+                                {commentList[contentType]?.content?.map((c) => (<CommentCard key={c.comment.id} comment={c.comment} content={c.content} userInfo={userInfo} openLogin={openLogin}/>))}
+                            </div>
+                        ) : (
+                            <p>코멘트가 없습니다 :)</p>
+                        )}
                     </div>}
 
-                    {contentType === "SERIES" && <div className="comment-page-tab2">
-                        <p>탭2</p>
+                    {contentType === "SERIES" && <div className="comment-page-tab comment-page-tab2">
+                        {commentList[contentType]?.content?.length > 0 ? (
+                            <div className="comment-page-content">
+                                {commentList[contentType]?.content?.map((c) => (<CommentCard key={c.comment.id} comment={c.comment} content={c.content} userInfo={userInfo} openLogin={openLogin}/>))}
+                            </div>
+                        ) : (
+                            <p>코멘트가 없습니다 :)</p>
+                        )}
                     </div>}
 
 
-                    {contentType === "BOOK" && <div className="comment-page-tab3">
-                        <p>탭3</p>
+                    {contentType === "BOOK" && <div className="comment-page-tab comment-page-tab3">
+                        {commentList[contentType]?.content?.length > 0 ? (
+                            <div className="comment-page-content">
+                                {commentList[contentType]?.content?.map((c) => (<CommentCard key={c.comment.id} comment={c.comment} content={c.content} userInfo={userInfo} openLogin={openLogin}/>))}
+                            </div>
+                        ) : (
+                            <p>코멘트가 없습니다 :)</p>
+                        )}
                     </div>}
 
 
-                    {contentType === "WEBTOON" && <div className="comment-page-tab4">
-                        <p>탭4</p>
+                    {contentType === "WEBTOON" && <div className="comment-page-tab comment-page-tab4">
+                        {commentList[contentType]?.content?.length > 0 ? (
+                            <div className="comment-page-content">
+                                {commentList[contentType]?.content?.map((c) => (<CommentCard key={c.comment.id} comment={c.comment} content={c.content} userInfo={userInfo} openLogin={openLogin}/>))}
+                            </div>
+                        ) : (
+                            <p>코멘트가 없습니다 :)</p>
+                        )}
                     </div>}
 
 
-                    {contentType === "RECORD" && <div className="comment-page-tab5">
-                        <p>탭5</p>
+                    {contentType === "RECORD" && <div className="comment-page-tab comment-page-tab5">
+                        {commentList[contentType]?.content?.length > 0 ? (
+                            <div className="comment-page-content">
+                                {commentList[contentType]?.content?.map((c) => (<CommentCard key={c.comment.id} comment={c.comment} content={c.content} userInfo={userInfo} openLogin={openLogin}/>))}
+                            </div>
+                        ) : (
+                            <p>코멘트가 없습니다 :)</p>
+                        )}
                     </div>}
 
                 </div>

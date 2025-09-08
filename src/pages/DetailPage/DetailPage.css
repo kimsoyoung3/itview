@@ -656,6 +656,8 @@
     z-index: 10;
 }
 
+
+
 /*모바일 사이즈*/
 @media (max-width: 480px) {
     .detail-content-inner {
