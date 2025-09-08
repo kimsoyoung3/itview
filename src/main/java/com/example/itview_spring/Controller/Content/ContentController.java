@@ -1,32 +1,24 @@
 package com.example.itview_spring.Controller.Content;
 
-import com.example.itview_spring.Constant.Genre;
-import com.example.itview_spring.DTO.ContentCreateDTO;
-import com.example.itview_spring.DTO.ExternalServiceDTO;
-import com.example.itview_spring.DTO.PageInfoDTO;
-import com.example.itview_spring.DTO.VideoDTO;
+import com.example.itview_spring.DTO.*;
 import com.example.itview_spring.Service.ContentService;
 import com.example.itview_spring.Util.PageInfo;
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-
-import java.util.*;
-import java.util.stream.Collectors;
 
 @Controller
 @RequiredArgsConstructor
 public class ContentController {
     //  private final VideoService videoService;      //Video 서비스
     //  private final GalleryService galleryService;  // 갤러리 서비스
-
+    @Autowired
     private final ContentService contentService;  // 콘텐츠 서비스
 
     private final PageInfo pageInfo;
@@ -81,8 +73,6 @@ public class ContentController {
         //모든 데이터를 조회
         //keyword  추가 ****
         Page<ContentCreateDTO> contentDTOS = contentService.getAllContents(pageable);
-        System.out.println("오류");
-        System.out.println(contentDTOS);
         model.addAttribute("contentDTOS", contentDTOS);
         //    System.out.println("contentDTO.            ==", contentDTOS);
 
@@ -100,7 +90,7 @@ public class ContentController {
 //    @GetMapping("/content/{id}/detail")
 //    public String detailContent(@PathVariable("id") Integer id, Model model) {
     @GetMapping("/content/detail")
-    public String detailContent(@RequestParam Integer id, Model model) {
+    public String detailContent(Integer id, Model model) {
         // URL 경로 변수인 {id}를 받으려면 @PathVariable을 써야 합니다.
         ContentCreateDTO contentDTO = contentService.read(id);
         model.addAttribute("contentDTO", contentDTO);
@@ -108,6 +98,17 @@ public class ContentController {
         System.out.println("deteil contentDTO ===>" + contentDTO);
         return "content/detail"; // 경로가 정확한지 확인 필요
     }
+
+//
+//    @GetMapping("/content/{id:\\d+}")
+//    public String detail(@RequestParam("id") Integer id, Model model) {
+//        ContentDetailDTO detailDTO = contentService.getContentDetail(id);
+//        model.addAttribute("contentDTO", detailDTO.getContentInfo()); // ContentResponseDTO
+//        model.addAttribute("gallery", detailDTO.getGallery());
+//        model.addAttribute("videos", detailDTO.getVideos());
+//        model.addAttribute("externalServices", detailDTO.getExternalServices());
+//        return "content/detail";
+//    }
 
     // 수정 폼 이동
     @GetMapping("/content/{id}/update")
@@ -120,7 +121,8 @@ public class ContentController {
     // 수정 처리 (→ 장르 수정 화면으로 리디렉트)
     @PostMapping("/content/{id}/update")
     public String updateContentProc(@PathVariable("id") Integer id, ContentCreateDTO contentDTO) {
-
+//        contentService.update(id, contentDTO);
+//        return "redirect:/content/list";
         // Service에서 수정 처리 후 저장된 DTO 반환 받음
         ContentCreateDTO savedContent = contentService.update(id, contentDTO);
 //        System.out.println(" 22 savedContent ==" + savedContent);
@@ -130,9 +132,8 @@ public class ContentController {
 
     // 삭제 처리 (id를 @RequestParam 으로 받음)
     @GetMapping("/content/delete")
-    public String deleteContent(@RequestParam Integer id) {
+    public String deleteContent(@RequestParam("id") Integer id) {
         contentService.delete(id);
         return "redirect:/content/list";
     }
-
 }

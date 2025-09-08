@@ -1,14 +1,9 @@
 package com.example.itview_spring.Service;
 
 import com.example.itview_spring.DTO.*;
-import com.example.itview_spring.Entity.ContentEntity;
-import com.example.itview_spring.Entity.ExternalServiceEntity;
-import com.example.itview_spring.Entity.RatingEntity;
-import com.example.itview_spring.Entity.VideoEntity;
-import com.example.itview_spring.Entity.WishlistEntity;
+import com.example.itview_spring.Entity.*;
 import com.example.itview_spring.Repository.*;
 import lombok.RequiredArgsConstructor;
-import org.hibernate.collection.spi.PersistentBag;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -25,16 +20,13 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 @Transactional
 public class ContentService {
-
-    private final CreditRepository creditRepository;
     private final CommentService commentService;
-    private final PersonRepository personRepository;
-    private final WishlistRepository wishlistRepository;
 
     private final ContentRepository contentRepository;
+    private final WishlistRepository wishlistRepository;
     private final ContentGenreRepository contentGenreRepository;
     private final GalleryRepository galleryRepository;
-//    @Autowired
+    //    @Autowired
     private final VideoRepository videoRepository;
     private final ExternalServiceRepository externalServiceRepository;
     private final RatingRepository ratingRepository;
@@ -67,14 +59,6 @@ public class ContentService {
 
         Pageable pageable = PageRequest.of(currentPage, pageLimits, Sort.by(Sort.Direction.DESC, "id"));
         Page<ContentEntity> contentEntities = contentRepository.findAll(pageable);
-
-        // PersistentBag을 초기화   0905 error 발생 주석처리함
-//        contentEntities.getContent().forEach(content -> {
-//            if (content.getGenres() instanceof PersistentBag) {
-//                content.setGenres(new ArrayList<>(content.getGenres()));// PersistentBag을 ArrayList로 변환
-//            }
-//        });
-
         System.out.println("총 페이지 수: " + contentEntities.getTotalPages());
         System.out.println("총 컨텐츠 수: " + contentEntities.getTotalElements());
         System.out.println("현재 페이지 번호: " + contentEntities.getNumber());
@@ -91,9 +75,8 @@ public class ContentService {
             System.out.println("Genres: " + content.getGenres());
             System.out.println("외부 서비스: " + content.getVideos());
         }
-        // ModelMapper로 Entity를 DTO로 변환
-        Page<ContentCreateDTO> contentDTOS = contentEntities.map(
-                data -> modelMapper.map(data, ContentCreateDTO.class));
+        Page<ContentCreateDTO> contentDTOS = contentEntities.map(data -> modelMapper.map(
+                data, ContentCreateDTO.class));
         return contentDTOS;
     }
 //    public List<ContentCreateDTO> List() {
@@ -111,17 +94,17 @@ public class ContentService {
     //public ProductDTO 역시 안알려줌(Integer id) {
     //public ProductDTO read(Integer id) {    ex)
     @Transactional
-    public  ContentCreateDTO read(Integer contentId) {
+    public  ContentCreateDTO read(Integer id) {
         //해당내용을 조회
-        if (contentId == null) {
+        if (id == null) {
             throw new IllegalArgumentException("id는 null일 수 없습니다.");
         }
-        Optional<ContentEntity> contentEntity = contentRepository.findById(contentId);
+        Optional<ContentEntity> contentEntity = contentRepository.findById(id);
         if (contentEntity.isEmpty()) {
-            throw new NoSuchElementException("해당 ID에 대한 콘텐츠를 찾을 수 없습니다: " + contentId);
+            throw new NoSuchElementException("해당 ID에 대한 콘텐츠를 찾을 수 없습니다: " + id);
         }
-        // Entity를 DTO로 변환하여 반환
-        return modelMapper.map(contentEntity, ContentCreateDTO.class);
+        ContentCreateDTO adminContentDTO = modelMapper.map(contentEntity.get(), ContentCreateDTO.class);
+        return adminContentDTO;
     }
 
     //등록(저장)
@@ -136,10 +119,7 @@ public class ContentService {
         System.out.println("service add dto:" + dto);
         System.out.println("service add entity:" + contentEntity);
 
-        // Entity를 DB에 저장
         contentRepository.save(contentEntity);
-
-        // 저장된 Entity를 DTO로 변환하여 반환
         return modelMapper.map(contentEntity, ContentCreateDTO.class);
     }
 
@@ -147,23 +127,17 @@ public class ContentService {
     //주문번호와 DTO를 받아서, 주문번호로 조회해서 DTO의 내용을 저장
     // public void 수정할까(Integer orderId, ProductDTO productDTO) {
     // public void update(Integer orderId, ProductDTO productDTO) {   ex)
-    /**
-     * 콘텐츠 수정 (ID와 수정할 DTO를 받아서 수정)
-     *
-     * @param id  콘텐츠 ID
-     * @param dto 수정할 콘텐츠 정보
-     * @return ContentCreateDTO
-     */
-    @Transactional
-
     public ContentCreateDTO update(Integer id, ContentCreateDTO dto) {
         //해당내용찾기
-        //        System.out.println("dto:"+dto);
+//        System.out.println("dto:"+dto);
         ContentEntity contentEntity = contentRepository.findById(id)
                 .orElseThrow(() -> new NoSuchElementException("콘텐츠 ID가 유효하지 않습니다: " + id));
 
-        //        System.out.println("entity:"+contentEntity);
-        //내용을 저장(@Id가 있는 변수는 저장 불가)
+        if (contentEntity == null) {
+            return null;
+        }
+//        System.out.println("entity:"+contentEntity);
+//내용을 저장(@Id가 있는 변수는 저장 불가)
         contentEntity.setTitle(dto.getTitle());
         contentEntity.setContentType(dto.getContentType());
         contentEntity.setReleaseDate(dto.getReleaseDate());
@@ -175,10 +149,7 @@ public class ContentService {
         contentEntity.setCreatorName(dto.getCreatorName());
         contentEntity.setChannelName(dto.getChannelName());
 
-        // 변경된 엔티티를 DB에 저장
         contentRepository.save(contentEntity);
-
-        // 수정된 Entity를 DTO로 변환하여 반환
         return modelMapper.map(contentEntity, ContentCreateDTO.class);
     }
 
@@ -186,121 +157,111 @@ public class ContentService {
     //주문번호를 받아서 삭제
     //  public void 삭제가될까(Integer id) {
     //  public void delete(Integer id) {
-    /**
-     * 콘텐츠 삭제 (ID를 받아 해당 콘텐츠 삭제)
-     *
-     * @param id 콘텐츠 ID
-     */
+//    public boolean delete(Integer id) {
+//        // First delete related entries in content_genre_entity
+//        if(contentRepository.existsById(id)) { //데이터가 존재하면
+//            contentGenreRepository.deleteByContentId(id); // Assuming you have a method in repository for this
+//
+//            // Then delete the content entity
+//            contentRepository.deleteById(id); //삭제
+//            return true;
+//        }
+//        return false;
+//    }
+
 
     @Transactional
     public void delete(Integer id) {
         ContentEntity content = contentRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("콘텐츠 ID가 유효하지 않습니다. id: " + id));
 
-        // 관련된 콘텐츠 장르 먼저 삭제
-        contentGenreRepository.deleteByContentId(id);
+        // Delete the related genres first
+        contentGenreRepository.deleteByContent(content);
 
-        // 콘텐츠 삭제
+        // Now delete the content entity
         contentRepository.delete(content);
     }
 
-    //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     // 컨텐츠 상세 정보 조회
-    //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     @Transactional
     public ContentDetailDTO getContentDetail(Integer contentId, Integer userId) {
-        try {
-            ContentDetailDTO contentDetail = new ContentDetailDTO();
+        ContentDetailDTO contentDetail = new ContentDetailDTO();
 
-            // 컨텐츠 정보 조회
-            ContentResponseDTO contentResponseDTO = contentRepository.findContentWithAvgRating(contentId);
-            // 컨텐츠 장르 조회
-            List<GenreDTO> genres = contentGenreRepository.findByContentId(contentId);
-            genres.forEach(genre -> {
-                contentResponseDTO.getGenres().add(genre.getGenre().getGenreName());
-            });
-            contentDetail.setContentInfo(contentResponseDTO);
-
-            // 갤러리 이미지 조회
-            List<ImageDTO> images = galleryRepository.findByContentId(contentId);
-            contentDetail.setGallery(images);
-
-            // 동영상 조회
-            List<VideoDTO> videos = videoRepository.findByContentId(contentId);
-            contentDetail.setVideos(videos);
-
-            // 외부 서비스 조회
-            List<ExternalServiceDTO> externalServices = externalServiceRepository.findByContentId(contentId);
-            contentDetail.setExternalServices(externalServices);
-
-            // 사용자 별점 조회
-            Integer myRating = ratingRepository.findSomeoneScore(userId, contentId);
-            contentDetail.setMyRating(myRating != null ? myRating : 0);
-
-            // 별점 개수 조회
-            Long ratingCount = ratingRepository.countByContentId(contentId);
-            contentDetail.setRatingCount(ratingCount != null ? ratingCount : 0L);
-
-            // 별점 분포 조회
-            List<RatingCountDTO> ratingDistribution = ratingRepository.findRatingDistributionByContentId(contentId);
-            List<RatingCountDTO> fullRating = new ArrayList<>();
-            Map<Integer, Long> ratingMap = ratingDistribution.stream()
-                    .collect(Collectors.toMap(RatingCountDTO::getScore, RatingCountDTO::getScoreCount));
-            for (int i = 1; i <= 10; i++) {
-                Long count = ratingMap.getOrDefault(i, 0L);
-                fullRating.add(new RatingCountDTO(i, count));
-            }
-            contentDetail.setRatingDistribution(fullRating);
-
-            // 사용자 코멘트 조회
-            CommentDTO myComment = commentService.getCommentDTO(userId, contentId);
-            if (myComment != null) {
-                contentDetail.setMyComment(myComment);
-            }
-
-            // 컨텐츠 좋아요 상위 8개 코멘트 조회
-            List<CommentDTO> comments = commentRepository.findTop8CommentsByContentId(userId, contentId);
-            contentDetail.setComments(comments);
-
-            // 코멘트 개수 조회
-            Long commentCount = commentRepository.countByContentId(contentId);
-            contentDetail.setCommentCount(commentCount);
-
-            return contentDetail;
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
-            return null;
+        // 컨텐츠 정보 조회
+        ContentResponseDTO contentResponseDTO = contentRepository.findContentWithAvgRating(contentId);
+        if (contentResponseDTO == null) {
+            throw new NoSuchElementException("존재하지 않는 컨텐츠입니다");
         }
+        // 컨텐츠 장르 조회
+        List<GenreDTO> genres = contentGenreRepository.findByContentId(contentId);
+        genres.forEach(genre -> {
+            contentResponseDTO.getGenres().add(genre.getGenre().getGenreName());
+        });
+        contentDetail.setContentInfo(contentResponseDTO);
+
+        // 갤러리 이미지 조회
+        List<ImageDTO> images = galleryRepository.findByContentId(contentId);
+        contentDetail.setGallery(images);
+
+        // 동영상 조회
+        List<VideoDTO> videos = videoRepository.findByContentId(contentId);
+        contentDetail.setVideos(videos);
+
+        // 외부 서비스 조회
+        List<ExternalServiceDTO> externalServices = externalServiceRepository.findByContentId(contentId);
+        contentDetail.setExternalServices(externalServices);
+
+        // 사용자 별점 조회
+        Integer myRating = ratingRepository.findSomeoneScore(userId, contentId);
+        contentDetail.setMyRating(myRating != null ? myRating : 0);
+
+        // 별점 개수 조회
+        Long ratingCount = ratingRepository.countByContentId(contentId);
+        contentDetail.setRatingCount(ratingCount != null ? ratingCount : 0L);
+
+        // 별점 분포 조회
+        List<RatingCountDTO> ratingDistribution = ratingRepository.findRatingDistributionByContentId(contentId);
+        List<RatingCountDTO> fullRating = new ArrayList<>();
+        Map<Integer, Long> ratingMap = ratingDistribution.stream()
+                .collect(Collectors.toMap(RatingCountDTO::getScore, RatingCountDTO::getScoreCount));
+        for (int i = 1; i <= 10; i++) {
+            Long count = ratingMap.getOrDefault(i, 0L);
+            fullRating.add(new RatingCountDTO(i, count));
+        }
+        contentDetail.setRatingDistribution(fullRating);
+
+        // 위시리스트 여부 조회
+        Boolean wishlistCheck = wishlistRepository.existsByUserIdAndContentId(userId, contentId);
+        contentDetail.setWishlistCheck(wishlistCheck);
+
+        // 사용자 코멘트 조회
+        CommentDTO myComment = commentService.getCommentDTO(userId, contentId);
+        if (myComment != null) {
+            contentDetail.setMyComment(myComment);
+        }
+
+        // 컨텐츠 좋아요 상위 8개 코멘트 조회
+        List<CommentDTO> comments = commentRepository.findTop8CommentsByContentId(userId, contentId);
+        contentDetail.setComments(comments);
+
+        // 코멘트 개수 조회
+        Long commentCount = commentRepository.countByContentId(contentId);
+        contentDetail.setCommentCount(commentCount);
+
+        return contentDetail;
     }
 
     // 컨텐츠의 코멘트 페이징 조회
     public Page<CommentDTO> getCommentsByContentId(Integer contentId, Integer userId, String order, int page) {
+        if (!contentRepository.existsById(contentId)) {
+            throw new NoSuchElementException("존재하지 않는 컨텐츠입니다");
+        }
         Pageable pageable = PageRequest.of(page - 1, 1);
         return commentRepository.findByContentId(userId, contentId, order, pageable);
     }
 
-
-    //////////////////////////////////////////////////////////////////////////////////////////////////
-    // 별점 등록
-    @Transactional
-    public void rateContent(Integer userId, Integer contentId, Integer score) {
-
-        // 기존 별점 조회
-        Optional<RatingEntity> existingRating = ratingRepository.findByUserIdAndContentId(userId, contentId);
-
-        if (existingRating.isEmpty()) {
-            RatingEntity ratingEntity = new RatingEntity();
-            ratingEntity.setUser(userRepository.findById(userId).get());
-            ratingEntity.setContent(contentRepository.findById(contentId).get());
-            ratingEntity.setScore(score);
-        } else {
-            // 기존 별점이 있는 경우 업데이트
-            RatingEntity ratingEntity = existingRating.get();
-            ratingEntity.setScore(score);
-        }
-    }
-
-        // 위시리스트 추가
+    // 위시리스트 추가
     public void addWishlist(Integer userId, Integer contentId) {
         if (!userRepository.existsById(userId)) {
             throw new NoSuchElementException("존재하지 않는 유저입니다.");
