@@ -64,12 +64,11 @@ function UserCommentPage({ userInfo, openLogin }) {
 
                     <div className="user-comment-page-select-box">
                         <select className="form-select user-comment-page-select"  aria-label="Default select example">
-                            <option selected value="new">담은 순</option>
-                            <option value="old">담은 역순</option>
-                            <option value="my_score_high">1</option>
-                            <option value="my_score_low">2</option>
-                            <option value="avg_score_high">평균 별점 높은 순</option>
-                            <option value="avg_score_low">평균 별점 낮은 순</option>
+                            <option selected value="recent">작성 순</option>
+                            <option value="like">좋아요 순</option>
+                            <option value="reply">댓글 순</option>
+                            <option value="rating">{Number(userInfo) === Number(id) ? "나의 별점 높은 순" : "이 회원의 별점 높은 순"}</option>
+                            <option value="new">신작 순</option>
                         </select>
                     </div>
                 </div>

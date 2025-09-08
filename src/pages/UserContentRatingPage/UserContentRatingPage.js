@@ -172,8 +172,8 @@ const UserContentRatingPage = ({userInfo}) => {
                                 <select className="form-select user-rating-page-select" aria-label="Default select example" onChange={(e) => setOrder(e.target.value)} value={order}>
                                     <option selected value="new">담은 순</option>
                                     <option value="old">담은 역순</option>
-                                    <option value="my_score_high">{userInfo === id ? "나의 별점 높은 순" : "이 회원의 별점 높은 순"}</option>
-                                    <option value="my_score_low">{userInfo === id ? "나의 별점 낮은 순" : "이 회원의 별점 낮은 순"}</option>
+                                    <option value="my_score_high">{Number(userInfo) === Number(id) ? "나의 별점 높은 순" : "이 회원의 별점 높은 순"}</option>
+                                    <option value="my_score_low">{Number(userInfo) === Number(id) ? "나의 별점 낮은 순" : "이 회원의 별점 낮은 순"}</option>
                                     <option value="avg_score_high">평균 별점 높은 순</option>
                                     <option value="avg_score_low">평균 별점 낮은 순</option>
                                 </select>
