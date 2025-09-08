@@ -11,6 +11,8 @@ import com.example.itview_spring.Service.ContentService;
 import com.example.itview_spring.Util.PageInfo;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.web.servlet.error.ErrorController;
 import org.springframework.data.domain.Page;
@@ -35,6 +37,8 @@ public class ContentController {
     //  private final GalleryService galleryService;  // 갤러리 서비스
     @Autowired
     private final ContentService contentService;  // 콘텐츠 서비스
+    private final VideoRepository videoRepository;
+    private final ModelMapper modelMapper;
 
     private final PageInfo pageInfo;
 
