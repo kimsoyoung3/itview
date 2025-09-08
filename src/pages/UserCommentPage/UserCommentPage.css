@@ -49,3 +49,17 @@
     background: #555;
     transition: transform 0.3s ease, width 0.3s ease;
 }
+
+.user-comment-page-select-box {
+    width: 100%;
+    display: flex;
+    justify-content: right;
+    margin: 20px 0;
+}
+
+.user-comment-page-select {
+    width: 300px;
+    border-radius: 0;
+    padding: 10px;
+    border-color: #d9d9d9;
+}

@@ -57,13 +57,13 @@
     margin-top: 20px;
 }
 
-.user-content-rating-page-select-box {
+.user-rating-page-select-box {
     width: 100%;
     display: flex;
     justify-content: right;
 }
 
-.user-content-rating-page-select {
+.user-rating-page-select {
     width: 300px;
     border-radius: 0;
     padding: 10px;

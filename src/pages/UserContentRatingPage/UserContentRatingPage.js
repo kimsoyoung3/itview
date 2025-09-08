@@ -168,8 +168,8 @@ const UserContentRatingPage = ({userInfo}) => {
                         {/*평가 페이지 전체순*/}
                         {activeId === "rating-page-tab1" && <div className="rating-page-tab1">
                             {/*셀렉트박스*/}
-                            <div className="user-content-rating-page-select-box">
-                                <select className="form-select user-content-rating-page-select"  aria-label="Default select example" onChange={(e) => setOrder(e.target.value)} value={order}>
+                            <div className="user-rating-page-select-box">
+                                <select className="form-select user-rating-page-select" aria-label="Default select example" onChange={(e) => setOrder(e.target.value)} value={order}>
                                     <option selected value="new">담은 순</option>
                                     <option value="old">담은 역순</option>
                                     <option value="my_score_high">{userInfo === id ? "나의 별점 높은 순" : "이 회원의 별점 높은 순"}</option>
