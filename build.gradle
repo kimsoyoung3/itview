@@ -21,7 +21,11 @@ configurations {
 
 repositories {
 	mavenCentral()
-}	
+}
+
+tasks.withType(JavaCompile).configureEach {
+	options.compilerArgs += ['-parameters']
+}
 
 dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-mail'
