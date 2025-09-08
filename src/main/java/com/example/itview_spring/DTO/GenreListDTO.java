@@ -18,6 +18,6 @@ import java.time.LocalDate;
 @NoArgsConstructor
 public class GenreListDTO {
     private Integer id;            // 장르 ID (수정 시 필요)
-    private Integer contentId;     //컨텐츠
+    private ContentEntity content; //컨텐츠
     private Genre genre;           // 장르 ENUM
 }

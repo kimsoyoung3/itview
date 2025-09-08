@@ -13,20 +13,12 @@ import java.util.List;
 @Repository
 public interface ContentGenreRepository extends JpaRepository<ContentGenreEntity, Integer> {
 
-    /**
-     * 특정 콘텐츠의 장르 엔티티 전체 조회
-     */
+    // 특정 컨텐츠 ID로 장르 리스트 조회
     List<ContentGenreEntity> findByContent (ContentEntity content);
 
-    /**
-     * 특정 콘텐츠 ID로 모든 장르 삭제
-     */
+    // 삭제 시: 특정 컨텐츠에 연관된 모든 장르 삭제
+    void deleteByContent (ContentEntity content);
     void deleteByContentId(Integer contentId);
-
-    /**
-     * 특정 콘텐츠에 특정 장르가 이미 존재하는지 확인
-     */
-    boolean existsByContentIdAndGenre(Integer contentId, com.example.itview_spring.Constant.Genre genre);
 
     // 특정 컨텐츠 ID로 장르 DTO 리스트 조회
     @Query(value = """

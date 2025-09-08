@@ -1,4 +1,4 @@
-package com.example.itview_spring.Service;
+package com.example.itview_spring.Controller.User;
 
 import com.example.itview_spring.Constant.Genre;
 import com.example.itview_spring.DTO.*;
@@ -6,12 +6,12 @@ import com.example.itview_spring.Entity.*;
 import com.example.itview_spring.Repository.*;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
-import org.modelmapper.PropertyMap;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -32,10 +32,9 @@ public class ContentService {
     private final PersonRepository personRepository;
 
     private final ContentRepository contentRepository;
-    private final WishlistRepository wishlistRepository;
     private final ContentGenreRepository contentGenreRepository;
     private final GalleryRepository galleryRepository;
-    //    @Autowired
+//    @Autowired
     private final VideoRepository videoRepository;
     private final ExternalServiceRepository externalServiceRepository;
     private final RatingRepository ratingRepository;
@@ -195,77 +194,72 @@ public class ContentService {
     // 컨텐츠 상세 정보 조회
     @Transactional
     public ContentDetailDTO getContentDetail(Integer contentId, Integer userId) {
-        ContentDetailDTO contentDetail = new ContentDetailDTO();
+        try {
+            ContentDetailDTO contentDetail = new ContentDetailDTO();
 
-        // 컨텐츠 정보 조회
-        ContentResponseDTO contentResponseDTO = contentRepository.findContentWithAvgRating(contentId);
-        if (contentResponseDTO == null) {
-            throw new NoSuchElementException("존재하지 않는 컨텐츠입니다");
+            // 컨텐츠 정보 조회
+            ContentResponseDTO contentResponseDTO = contentRepository.findContentWithAvgRating(contentId);
+            // 컨텐츠 장르 조회
+            List<GenreDTO> genres = contentGenreRepository.findByContentId(contentId);
+            genres.forEach(genre -> {
+                contentResponseDTO.getGenres().add(genre.getGenre().getGenreName());
+            });
+            contentDetail.setContentInfo(contentResponseDTO);
+
+            // 갤러리 이미지 조회
+            List<ImageDTO> images = galleryRepository.findByContentId(contentId);
+            contentDetail.setGallery(images);
+
+            // 동영상 조회
+            List<VideoDTO> videos = videoRepository.findByContentId(contentId);
+            contentDetail.setVideos(videos);
+
+            // 외부 서비스 조회
+            List<ExternalServiceDTO> externalServices = externalServiceRepository.findByContentId(contentId);
+            contentDetail.setExternalServices(externalServices);
+
+            // 사용자 별점 조회
+            Integer myRating = ratingRepository.findSomeoneScore(userId, contentId);
+            contentDetail.setMyRating(myRating != null ? myRating : 0);
+
+            // 별점 개수 조회
+            Long ratingCount = ratingRepository.countByContentId(contentId);
+            contentDetail.setRatingCount(ratingCount != null ? ratingCount : 0L);
+
+            // 별점 분포 조회
+            List<RatingCountDTO> ratingDistribution = ratingRepository.findRatingDistributionByContentId(contentId);
+            List<RatingCountDTO> fullRating = new ArrayList<>();
+            Map<Integer, Long> ratingMap = ratingDistribution.stream()
+                    .collect(Collectors.toMap(RatingCountDTO::getScore, RatingCountDTO::getScoreCount));
+            for (int i = 1; i <= 10; i++) {
+                Long count = ratingMap.getOrDefault(i, 0L);
+                fullRating.add(new RatingCountDTO(i, count));
+            }
+            contentDetail.setRatingDistribution(fullRating);
+
+            // 사용자 코멘트 조회
+            CommentDTO myComment = commentService.getCommentDTO(userId, contentId);
+            if (myComment != null) {
+                contentDetail.setMyComment(myComment);
+            }
+
+            // 컨텐츠 좋아요 상위 8개 코멘트 조회
+            List<CommentDTO> comments = commentRepository.findTop8CommentsByContentId(userId, contentId);
+            contentDetail.setComments(comments);
+
+            // 코멘트 개수 조회
+            Long commentCount = commentRepository.countByContentId(contentId);
+            contentDetail.setCommentCount(commentCount);
+
+            return contentDetail;
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            return null;
         }
-        // 컨텐츠 장르 조회
-        List<GenreDTO> genres = contentGenreRepository.findByContentId(contentId);
-        genres.forEach(genre -> {
-            contentResponseDTO.getGenres().add(genre.getGenre().getGenreName());
-        });
-        contentDetail.setContentInfo(contentResponseDTO);
-
-        // 갤러리 이미지 조회
-        List<ImageDTO> images = galleryRepository.findByContentId(contentId);
-        contentDetail.setGallery(images);
-
-        // 동영상 조회
-        List<VideoDTO> videos = videoRepository.findByContentId(contentId);
-        contentDetail.setVideos(videos);
-
-        // 외부 서비스 조회
-        List<ExternalServiceDTO> externalServices = externalServiceRepository.findByContentId(contentId);
-        contentDetail.setExternalServices(externalServices);
-
-        // 사용자 별점 조회
-        Integer myRating = ratingRepository.findSomeoneScore(userId, contentId);
-        contentDetail.setMyRating(myRating != null ? myRating : 0);
-
-        // 별점 개수 조회
-        Long ratingCount = ratingRepository.countByContentId(contentId);
-        contentDetail.setRatingCount(ratingCount != null ? ratingCount : 0L);
-
-        // 별점 분포 조회
-        List<RatingCountDTO> ratingDistribution = ratingRepository.findRatingDistributionByContentId(contentId);
-        List<RatingCountDTO> fullRating = new ArrayList<>();
-        Map<Integer, Long> ratingMap = ratingDistribution.stream()
-                .collect(Collectors.toMap(RatingCountDTO::getScore, RatingCountDTO::getScoreCount));
-        for (int i = 1; i <= 10; i++) {
-            Long count = ratingMap.getOrDefault(i, 0L);
-            fullRating.add(new RatingCountDTO(i, count));
-        }
-        contentDetail.setRatingDistribution(fullRating);
-
-        // 위시리스트 여부 조회
-        Boolean wishlistCheck = wishlistRepository.existsByUserIdAndContentId(userId, contentId);
-        contentDetail.setWishlistCheck(wishlistCheck);
-
-        // 사용자 코멘트 조회
-        CommentDTO myComment = commentService.getCommentDTO(userId, contentId);
-        if (myComment != null) {
-            contentDetail.setMyComment(myComment);
-        }
-
-        // 컨텐츠 좋아요 상위 8개 코멘트 조회
-        List<CommentDTO> comments = commentRepository.findTop8CommentsByContentId(userId, contentId);
-        contentDetail.setComments(comments);
-
-        // 코멘트 개수 조회
-        Long commentCount = commentRepository.countByContentId(contentId);
-        contentDetail.setCommentCount(commentCount);
-
-        return contentDetail;
     }
 
     // 컨텐츠의 코멘트 페이징 조회
     public Page<CommentDTO> getCommentsByContentId(Integer contentId, Integer userId, String order, int page) {
-        if (!contentRepository.existsById(contentId)) {
-            throw new NoSuchElementException("존재하지 않는 컨텐츠입니다");
-        }
         Pageable pageable = PageRequest.of(page - 1, 1);
         return commentRepository.findByContentId(userId, contentId, order, pageable);
     }
@@ -411,35 +405,35 @@ public class ContentService {
     }
 
     /** 콘텐츠에 크레딧 추가 (중복 방지 포함) */
-    public void addCredits(Integer contentId, List<CreditDTO> credits) {
+     public void addCredits(Integer contentId, List<CreditDTO> credits) {
         ContentEntity content = contentRepository.findById(contentId)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 콘텐츠 ID: " + contentId));
 
         List<CreditDTO> existingCredits = creditRepository.findCreditsByContentId(contentId);
 
-        for (CreditDTO creditDTO : credits) {
-            // 디버깅 출력
-            System.out.println("📝 addCredits 진입 - creditDTO: " + creditDTO);
-            if (creditDTO.getPerson() != null){
-                System.out.println("📝 person.id: " + creditDTO.getPerson().getId());
-                System.out.println("📝 person.name: " + creditDTO.getPerson().getName());
-            } else {
-                System.out.println("⚠️ creditDTO.getPerson()가 null입니다.");
-            }
+         for (CreditDTO creditDTO : credits) {
+             // 디버깅 출력
+             System.out.println("📝 addCredits 진입 - creditDTO: " + creditDTO);
+             if (creditDTO.getPerson() != null){
+                 System.out.println("📝 person.id: " + creditDTO.getPerson().getId());
+                 System.out.println("📝 person.name: " + creditDTO.getPerson().getName());
+             } else {
+                 System.out.println("⚠️ creditDTO.getPerson()가 null입니다.");
+             }
 
-            if (creditDTO.getPerson() == null || creditDTO.getPerson().getId() == null) {
-                throw new IllegalArgumentException("Person 정보가 필요합니다.");
-            }
+             if (creditDTO.getPerson() == null || creditDTO.getPerson().getId() == null) {
+                 throw new IllegalArgumentException("Person 정보가 필요합니다.");
+             }
 
-            boolean alreadyExists = existingCredits.stream()
-                    .anyMatch(c -> c.getPerson().getId().equals(creditDTO.getPerson().getId()) &&
-                            c.getDepartment().equals(creditDTO.getDepartment()) &&
-                            c.getRole().equals(creditDTO.getRole()));
+             boolean alreadyExists = existingCredits.stream()
+                     .anyMatch(c -> c.getPerson().getId().equals(creditDTO.getPerson().getId()) &&
+                             c.getDepartment().equals(creditDTO.getDepartment()) &&
+                             c.getRole().equals(creditDTO.getRole()));
 
-            if (!alreadyExists) {
-                saveCredit(content, creditDTO);
-            }
-        }
+             if (!alreadyExists) {
+                 saveCredit(content, creditDTO);
+             }
+         }
     }
 
     /** 콘텐츠 크레딧 수정 (전체 삭제 후 새로 등록) */
@@ -491,7 +485,7 @@ public class ContentService {
         creditRepository.delete(credit);
     }
     /////////////////////////////////////////////////////////////////////////////////////////////
-    /// 0902 gallery //////////////////////////////////////////////////////////////////////////////
+    /// 0901 gallery //////////////////////////////////////////////////////////////////////////////
     //////////////////////////////////////////////////////////////////////////////////////////////
 //    1.getGallerysByContentId:
 //
@@ -603,186 +597,186 @@ public class ContentService {
     /// ///////////////////////////////////////////////////////////////////////////////////////////
     // 1. 전체 조회 (Get all videos contentId 기준 모든영상)
     // ✔️ 목록용: 여러 영상 조회 (DTO 리스트)
-    @Transactional(readOnly = true)
-    public List<VideoDTO> getVideosByContentId(Integer contentId) {
-         // 변경: Repository에서 DTO를 바로 반환하도록 수정
-         return videoRepository.findByContentId(contentId); // Repository에서 DTO 바로 반환
-    }
-//    VideoRepository에 이미 JPQL로 List<VideoDTO> findByContentId(Integer contentId)를 정의해두셨으므로,
-//    return videoRepository.findByContentId(contentId); //처럼 한 줄로 바로 반환할 수도 있습니다.
-
-    // 2. 단일 VideoDTO 조회 (수정 모드)
-    @Transactional(readOnly = true)
-    public VideoDTO getVideoById(Integer videoId) {
-        // 변경 없음: 여전히 VideoEntity -> VideoDTO 변환
-        VideoEntity videoEntity = videoRepository.findById(videoId)
-                .orElseThrow(() -> new NoSuchElementException("해당 영상이 존재하지 않습니다: " + videoId));
-
-        // 명시적 매핑 규칙 추가
-        modelMapper.addMappings(new PropertyMap<VideoEntity, VideoDTO>() {
-            protected void configure() {
-                map(source.getTitle(), destination.getTitle()); // 제목 매핑
-                map(source.getImage(), destination.getImage()); // 이미지 매핑
-                map(source.getUrl(), destination.getUrl());     // URL 매핑
-            }
-        });
-        // 명시적인 매핑 규칙이 적용된 ModelMapper 사용
-        return modelMapper.map(videoEntity, VideoDTO.class);
-    }
-//
-//    // 첫 번째 영상 조회: contentId 기준
 //    @Transactional(readOnly = true)
-//    public VideoDTO getFirstVideoByContentId(Integer contentId) {
-//        Optional<VideoEntity> videoOpt = videoRepository.findFirstByContentId(contentId);
-//        if (videoOpt.isPresent()) {
-//            VideoEntity v = videoOpt.get();
-//            // 명시적 DTO 생성자 사용 → JPQL Projection 호환
-//            return new VideoDTO(v.getId(), v.getTitle(), v.getImage(), v.getUrl());
-//        }
-//        return null;
+//    public List<VideoDTO> getVideosByContentId(Integer contentId) {
+////        // 1️⃣ VideoEntity 리스트 조회
+////        List<VideoEntity> videos = videoRepository.findByContent_Id(contentId);
+////
+////        // 2️⃣ VideoEntity -> VideoDTO 변환
+////        List<VideoDTO> videoDTOs = videos.stream()
+////                .map(v -> new VideoDTO(v.getId(), v.getTitle(), v.getImage(), v.getUrl()))
+////                .toList();
+//////        List<VideoEntity> videos = videoRepository.findByContent_Id(contentId);
+////        List<VideoDTO> videoDTOS = Arrays.asList(modelMapper.map(videos, VideoDTO[].class));
+////        return videoDTOs;
+//        return videoRepository.findByContentId(contentId); // Repository에서 DTO 바로 반환
+//    }
+////    VideoRepository에 이미 JPQL로 List<VideoDTO> findByContentId(Integer contentId)를 정의해두셨으므로,
+////    return videoRepository.findByContentId(contentId); //처럼 한 줄로 바로 반환할 수도 있습니다.
+//
+////    // 2. 개별 조회 (Get videoId기준 )
+////
+//    // 단일 VideoDTO 조회
+//    @Transactional(readOnly = true)
+//    public VideoDTO getVideoById(Integer videoId) {
+////        return videoRepository.findById(videoId)
+////                .map(v -> new VideoDTO(v.getId(), v.getTitle(), v.getImage(), v.getUrl()))
+////                .orElse(null);
+//        VideoEntity videoEntity = videoRepository.findById(videoId)
+//                .orElseThrow(() -> new NoSuchElementException("해당 영상이 존재하지 않습니다: " + videoId));
+//
+//        // VideoEntity -> VideoDTO로 변환
+//        return new VideoDTO(videoEntity.getId(), videoEntity.getTitle(), videoEntity.getImage(), videoEntity.getUrl());
+//    }
+////
+////    // 첫 번째 영상 조회: contentId 기준
+////    @Transactional(readOnly = true)
+////    public VideoDTO getFirstVideoByContentId(Integer contentId) {
+////        Optional<VideoEntity> videoOpt = videoRepository.findFirstByContentId(contentId);
+////        if (videoOpt.isPresent()) {
+////            VideoEntity v = videoOpt.get();
+////            // 명시적 DTO 생성자 사용 → JPQL Projection 호환
+////            return new VideoDTO(v.getId(), v.getTitle(), v.getImage(), v.getUrl());
+////        }
+////        return null;
+////    }
+////
+////
+//    // 3. 입력 (Create new video)
+//    @Transactional
+//    public VideoDTO createVideo(Integer contentId, VideoDTO videoDTO) {
+//
+//        VideoEntity entity = new VideoEntity();
+//        entity.setTitle(videoDTO.getTitle());
+//        entity.setImage(videoDTO.getImage());
+//        entity.setUrl(videoDTO.getUrl());
+////        entity.setContentId(contentId); // VideoEntity에 contentId 연동
+//
+//
+//        // ✅ URL에서 넘어온 contentId 활용
+//        ContentEntity contentEntity = contentRepository.findById(contentId)
+//                .orElseThrow(() -> new IllegalArgumentException("해당 콘텐츠가 존재하지 않습니다. ID: " + contentId));
+//        entity.setContent(contentEntity);
+//        System.out.println(" createVideo contentId :" + contentId);
+//
+//        videoRepository.save(entity);
+//
+//        return new VideoDTO(entity.getId(), entity.getTitle(), entity.getImage(), entity.getUrl());
 //    }
 //
+//    // 4. 수정 (Update existing video)
+//    @Transactional
+//    public VideoDTO updateVideo(Integer id, VideoDTO dto) {
+//        VideoEntity entity = videoRepository.findById(id)
+//                .orElseThrow(() -> new NoSuchElementException("해당 외부 서비스가 존재하지 않습니다. ID: " + id));
 //
-    // 3. 입력 (Create new video)
-    @Transactional
-    public VideoDTO createVideo(Integer contentId, VideoDTO videoDTO) {
-        VideoEntity entity = new VideoEntity();
-        entity.setTitle(videoDTO.getTitle());
-        entity.setImage(videoDTO.getImage());
-        entity.setUrl(videoDTO.getUrl());
-
-        // contentId를 이용하여 ContentEntity를 찾아서 VideoEntity와 연결
-        ContentEntity contentEntity = contentRepository.findById(contentId)
-                .orElseThrow(() -> new IllegalArgumentException("해당 콘텐츠가 존재하지 않습니다. ID: " + contentId));
-        entity.setContent(contentEntity);
-
-        videoRepository.save(entity);
-
-        return new VideoDTO(entity.getId(), entity.getTitle(), entity.getImage(), entity.getUrl());
-    }
-
-    // 4. 수정 (Update existing video)
-    @Transactional
-    public VideoDTO updateVideo(Integer id, VideoDTO dto) {
-        VideoEntity entity = videoRepository.findById(id)
-                .orElseThrow(() -> new NoSuchElementException("해당 영상 서비스가 존재하지 않습니다. ID: " + id));
-
-        entity.setTitle(dto.getTitle());
-        entity.setImage(dto.getImage());
-        entity.setUrl(dto.getUrl());
-        videoRepository.save(entity);
-
-        return new VideoDTO(entity.getId(), entity.getTitle(), entity.getImage(), entity.getUrl());
-    }
-
-    // 5. 삭제 (Delete video)
-    @Transactional
-    public void deleteVideo(Integer videoId) {
-        // 주어진 videoId로  엔티티 조회
-        VideoEntity videoEntity = videoRepository.findById(videoId)
-                .orElseThrow(() -> new NoSuchElementException("삭제할 영상 서비스를 찾을 수 없습니다. ID: " + videoId));
-
-        // videoId로 엔티티 삭제
-        videoRepository.delete(videoEntity);
-    }
-
-//    /// ///////////////////////////////////////////////////////////////////////////////////////////
-//    /// 0828 exteral service 작성함
-//    /// ///////////////////////////////////////////////////////////////////////////////////////////
-// 1. 전체 조회 (Get all external_services contentId 기준 모든영상)
-// ✔️ 목록용: 여러 영상 조회 (DTO 리스트)
-    @Transactional(readOnly = true)
-    public List<ExternalServiceDTO> getExternalServicesByContentId(Integer contentId) {
-
-        return externalServiceRepository.findByContentId(contentId); // Repository에서 DTO 바로 반환
-    }
-// 2. 개별 조회 (Get external_serviceId기준 )
-
-    // 단일 ExternalServiceDTO 조회
-    @Transactional(readOnly = true)
-    public ExternalServiceDTO getExternalServiceById(Integer externalServiceId) {
-        return externalServiceRepository.findById(externalServiceId)
-                .map(v -> new ExternalServiceDTO(
-                        v.getId(),
-                                            v.getType(),   // Channel 타입
-                                            v.getHref()    // 링크 URL
-                ))
-                .orElse(null);
-    }
+//        entity.setTitle(dto.getTitle());
+//        entity.setImage(dto.getImage());
+//        entity.setUrl(dto.getUrl());
+//        videoRepository.save(entity);
+//        return new VideoDTO(entity.getId(), entity.getTitle(), entity.getImage(), entity.getUrl());
+//    }
 //
-    // 3. 입력 (Create new externalService)
+//    // 5. 삭제 (Delete video)
+//    @Transactional
+//    public void deleteVideo(Integer videoId) {
+//        // 주어진 videoId로 외부 서비스 엔티티 조회
+//        VideoEntity videoEntity = videoRepository.findById(videoId)
+//                .orElseThrow(() -> new NoSuchElementException("삭제할 외부 서비스를 찾을 수 없습니다. ID: " + videoId));
+//
+//        // 외부 서비스 엔티티 삭제
+//        videoRepository.delete(videoEntity);
+//    }
+//
+////    /// ///////////////////////////////////////////////////////////////////////////////////////////
+////    /// 0828 exteral service 작성함
+////    /// ///////////////////////////////////////////////////////////////////////////////////////////
+//// 1. 전체 조회 (Get all external_services contentId 기준 모든영상)
+//// ✔️ 목록용: 여러 영상 조회 (DTO 리스트)
+//    @Transactional(readOnly = true)
+//    public List<ExternalServiceDTO> getExternalServicesByContentId(Integer contentId) {
+//
+//        return externalServiceRepository.findByContentId(contentId); // Repository에서 DTO 바로 반환
+//    }
+//// 2. 개별 조회 (Get external_serviceId기준 )
+//
+//    // 단일 ExternalServiceDTO 조회
+//    @Transactional(readOnly = true)
+//    public ExternalServiceDTO getExternalServiceById(Integer externalServiceId) {
+//        return externalServiceRepository.findById(externalServiceId)
+//                .map(v -> new ExternalServiceDTO(
+//                        v.getId(),
+//                                            v.getType(),   // Channel 타입
+//                                            v.getHref()    // 링크 URL
+//                ))
+//                .orElse(null);
+//    }
+////
+//    // 3. 입력 (Create new externalService)
+//    @Transactional
+//    public ExternalServiceDTO createExternalService(Integer contentId, ExternalServiceDTO externalServiceDTO) {
+//
+//        ExternalServiceEntity entity = new ExternalServiceEntity();
+//        // ✅ DTO 필드와 Entity 필드 매핑
+//        entity.setType(externalServiceDTO.getType()); // Channel enum
+//        entity.setHref(externalServiceDTO.getHref()); // URL
+//
+//        // ✅ URL에서 넘어온 contentId 활용
+//        ContentEntity contentEntity = contentRepository.findById(contentId)
+//                .orElseThrow(() -> new IllegalArgumentException("해당 외부 서비스가 존재하지 않습니다. ID: " + contentId));
+//        entity.setContent(contentEntity);
+//        System.out.println("createExternalService contentId: " + contentId);
+//
+//        externalServiceRepository.save(entity);
+//        // ✅ DTO 반환 시 필드 맞춤
+//        return new ExternalServiceDTO(entity.getId(), entity.getType(), entity.getHref());
+//    }
+//
+//    // 4. 수정 (Update existing externalService)
+//    @Transactional
+//    public ExternalServiceDTO updateExternalService(Integer id, ExternalServiceDTO dto) {
+//        ExternalServiceEntity entity = externalServiceRepository.findById(id)
+//                .orElseThrow(() -> new NoSuchElementException("해당 외부 서비스가 존재하지 않습니다. ID: " + id));
+//
+//        // DTO → Entity 매핑
+//        entity.setType(dto.getType());  // Channel enum
+//        entity.setHref(dto.getHref());  // URL
+//
+//        externalServiceRepository.save(entity);
+//        // Entity → DTO 반환
+//        return new ExternalServiceDTO(entity.getId(), entity.getType(), entity.getHref());
+//    }
+//
+//    // 5. 삭제 (Delete externalService)
+//    @Transactional
+//    public void deleteExternalService(Integer externalServiceId) {
+//        if (!externalServiceRepository.existsById(externalServiceId)) {
+//            throw new NoSuchElementException(
+//                    "삭제할 외부 서비스를 찾을 수 없습니다. ID: " + externalServiceId
+//            );
+//        }
+//
+//        externalServiceRepository.deleteById(externalServiceId);
+//    }
+
+
+    //////////////////////////////////////////////////////////////////////////////////////////////////
+    // 별점 등록
     @Transactional
-    public ExternalServiceDTO createExternalService(Integer contentId, ExternalServiceDTO externalServiceDTO) {
+    public void rateContent(Integer userId, Integer contentId, Integer score) {
 
-        ExternalServiceEntity entity = new ExternalServiceEntity();
-        // ✅ DTO 필드와 Entity 필드 매핑
-        entity.setType(externalServiceDTO.getType()); // Channel enum
-        entity.setHref(externalServiceDTO.getHref()); // URL
+        // 기존 별점 조회
+        Optional<RatingEntity> existingRating = ratingRepository.findByUserIdAndContentId(userId, contentId);
 
-        // ✅ URL에서 넘어온 contentId 활용
-        ContentEntity contentEntity = contentRepository.findById(contentId)
-                .orElseThrow(() -> new IllegalArgumentException("해당 외부 서비스가 존재하지 않습니다. ID: " + contentId));
-        entity.setContent(contentEntity);
-        System.out.println("createExternalService contentId: " + contentId);
-
-        externalServiceRepository.save(entity);
-        // ✅ DTO 반환 시 필드 맞춤
-        return new ExternalServiceDTO(entity.getId(), entity.getType(), entity.getHref());
-    }
-
-    // 4. 수정 (Update existing externalService)
-    @Transactional
-    public ExternalServiceDTO updateExternalService(Integer id, ExternalServiceDTO dto) {
-        ExternalServiceEntity entity = externalServiceRepository.findById(id)
-                .orElseThrow(() -> new NoSuchElementException("해당 외부 서비스가 존재하지 않습니다. ID: " + id));
-
-        // DTO → Entity 매핑
-        entity.setType(dto.getType());  // Channel enum
-        entity.setHref(dto.getHref());  // URL
-
-        externalServiceRepository.save(entity);
-        // Entity → DTO 반환
-        return new ExternalServiceDTO(entity.getId(), entity.getType(), entity.getHref());
-    }
-
-    // 5. 삭제 (Delete externalService)
-    @Transactional
-    public void deleteExternalService(Integer externalServiceId) {
-        if (!externalServiceRepository.existsById(externalServiceId)) {
-            throw new NoSuchElementException(
-                    "삭제할 외부 서비스를 찾을 수 없습니다. ID: " + externalServiceId
-            );
+        if (existingRating.isEmpty()) {
+            RatingEntity ratingEntity = new RatingEntity();
+            ratingEntity.setUser(userRepository.findById(userId).get());
+            ratingEntity.setContent(contentRepository.findById(contentId).get());
+            ratingEntity.setScore(score);
+        } else {
+            // 기존 별점이 있는 경우 업데이트
+            RatingEntity ratingEntity = existingRating.get();
+            ratingEntity.setScore(score);
         }
-
-        externalServiceRepository.deleteById(externalServiceId);
     }
-
-    // 위시리스트 추가
-    public void addWishlist(Integer userId, Integer contentId) {
-        if (!userRepository.existsById(userId)) {
-            throw new NoSuchElementException("존재하지 않는 유저입니다.");
-        }
-        if (!contentRepository.existsById(contentId)) {
-            throw new NoSuchElementException("존재하지 않는 컨텐츠입니다.");
-        }
-
-        WishlistEntity wishlistEntity = new WishlistEntity();
-        wishlistEntity.setUser(userRepository.findById(userId).get());
-        wishlistEntity.setContent(contentRepository.findById(contentId).get());
-
-        wishlistRepository.save(wishlistEntity);
-    }
-
-    // 위시리스트 삭제
-    public void removeWishlist(Integer userId, Integer contentId) {
-        if (!userRepository.existsById(userId)) {
-            throw new NoSuchElementException("존재하지 않는 유저입니다.");
-        }
-        if (!contentRepository.existsById(contentId)) {
-            throw new NoSuchElementException("존재하지 않는 컨텐츠입니다.");
-        }
-
-    }
-
-
 }

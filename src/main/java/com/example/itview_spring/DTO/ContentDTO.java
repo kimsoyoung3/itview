@@ -52,7 +52,4 @@ public class ContentDTO {
 
     // 플랫폼 이름
     private Channel channelName;
-    
-    // ✅ 장르 리스트 0902 생성
-    private List<Genre> genres; // Enum 값만 전달
 }
