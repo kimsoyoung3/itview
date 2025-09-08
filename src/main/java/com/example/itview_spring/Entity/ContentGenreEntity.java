@@ -38,4 +38,6 @@ public class ContentGenreEntity {
     @Column(nullable = false, length = 255)
     @Enumerated(EnumType.STRING)
     private Genre genre;
+
+
 }

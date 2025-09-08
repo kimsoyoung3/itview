@@ -50,9 +50,9 @@
         <table class="table table-hover table-custom-layout">
             <thead>
             <tr>
-                <th style="width:60%;">콘텐츠제목</th>
-                <th style="width:20%;">콘텐츠타입</th>
-                <th style="width:20%;">작업선택</th>
+                <th class="text-start" style="width:60%;">콘텐츠제목</th>
+                <th class="text-start" style="width:20%;">콘텐츠타입</th>
+                <th class="text-start" style="width:20%;">작업선택</th>
             </tr>
             </thead>
             <tbody>
@@ -60,7 +60,7 @@
                 class="clickable-row"
                 th:onclick="|window.location.href='@{/content/detail(id=${data.id})}'|">
                 <td class="text-start" th:text="${data.title}">영화</td>
-                <td th:text="${data.contentType.getDescription()}">타입</td>
+                <td class="text-start" th:text="${data.contentType.getDescription()}">타입</td>
                 <td>
                     <a th:href="@{/content/{id}/update(id=${data.id})}"
                        type="button" class="btn btn-primary"
@@ -72,6 +72,33 @@
                 </td>
             </tr>
             </tbody>
+<!-- 추후 체크후 변경할 사항 0909 -->
+<!--            <tr th:each="data:${contentDTOS}" class="clickable-row">-->
+<!--                <td class="text-start">-->
+<!--                    <a th:href="@{/content/detail(id=${data.id})}" th:text="${data.title}">영화</a>-->
+<!--                </td>-->
+<!--                <td class="text-start" th:text="${data.contentType.getDescription()}">타입</td>-->
+<!--                <td>-->
+<!--                    <a th:href="@{/content/{id}/update(id=${data.id})}"-->
+<!--                       type="button" class="btn btn-primary"-->
+<!--                       onclick="event.stopPropagation();">수정</a>-->
+
+<!--                    <a th:href="@{/content/delete(id=${data.id})}"-->
+<!--                       type="button" class="btn btn-danger"-->
+<!--                       onclick="event.stopPropagation();">삭제</a>-->
+<!--                </td>-->
+<!--            </tr>-->
+<!--            -->
+
+
+<!--            <tr th:each="data:${contentDTOS}"-->
+<!--                class="clickable-row">-->
+<!--                <td class="text-start">-->
+<!--                    <a th:href="@{/content/detail(id=${data.id})}" th:text="${data.title}">영화</a>-->
+<!--                </td>-->
+<!--         이렇게 하면, 제목을 클릭했을 때 페이지가 이동하도록 할 수 있습니   -->
+
+
         </table>
 
         <!--표 밑에 추가-->

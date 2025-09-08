@@ -2,6 +2,8 @@ package com.example.itview_spring.Repository;
 
 import java.util.List;
 
+import com.example.itview_spring.Entity.ContentEntity;
+import com.example.itview_spring.Entity.PersonEntity;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -42,6 +44,7 @@ public interface CreditRepository extends JpaRepository<CreditEntity, Integer> {
             WHERE cre.person.id = :personId
             GROUP BY con.contentType, cre.department
             ORDER BY
+            
                 CASE con.contentType
                     WHEN 'MOVIE' THEN 1
                     WHEN 'SERIES' THEN 2
@@ -72,9 +75,27 @@ public interface CreditRepository extends JpaRepository<CreditEntity, Integer> {
             """)
     Page<WorkDTO> findWorkDTOPage(Pageable pageable, @Param("personId") Integer personId, @Param("contentType") ContentType contentType, @Param("department") String department);
 
-    List<CreditDTO> findCreditsByContentId(Integer contentId);
+    // 0910 수정 처리
+    List<CreditEntity> findByContentId(Integer contentId);
 
-    CreditDTO findCreditById(Integer creditId);
+    // ✅ 단건 조회  //0910 추가
+    @Query("""
+        SELECT new com.example.itview_spring.DTO.CreditDTO(
+            c.id,
+            new com.example.itview_spring.DTO.PersonDTO(p.id, p.name, p.profile, p.job),
+            c.characterName,
+            c.department,
+            c.role
+        )
+        FROM CreditEntity c
+        JOIN c.person p
+        WHERE c.id = :creditId
+    """)
+    CreditDTO findCreditById(@Param("creditId") Integer creditId);
 
+    // ✅ 삭제
     void deleteAllByContent_Id(Integer contentId);
+    // ✅ 중복 확인
+    boolean existsByContentAndPerson(ContentEntity content, PersonEntity person);
+
 }

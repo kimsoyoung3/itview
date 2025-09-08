@@ -50,7 +50,6 @@ public class UserService implements UserDetailsService {
     private final WishlistRepository wishlistRepository;
     private final UserRepository userRepository;
     private final CommentRepository commentRepository;
-    private final ContentRepository contentRepository;
     private final RatingRepository ratingRepository;
     private final EmailVerificationRepository emailVerificationRepository;
     private final ModelMapper modelMapper;

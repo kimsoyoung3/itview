@@ -58,10 +58,9 @@
                 <!-- 추후 수정해야함     목록버튼           -->
                 <!--                <a th:href="@{/content/list}" class="btn btn-secondary">취소</a>-->
             </form>
-
-            <a th:href="@{'/content/' + ${contentId} + '/list'}"
-               class="btn btn-success mt-3">📂 목록으로이동</a>
-
+<!--            <a th:href="@{'/content/' + ${contentId} + '/video'}"-->
+<!--               class="btn btn-success mt-3">📂비디오(Video) 등록/수정</a>-->
+            <a th:href="@{/content/list}" class="btn btn-success mt-3">목록으로 이동</a>
         </div>
         <!-- 목록 테이블 -->
         <table class="table table-bordered mt-3">

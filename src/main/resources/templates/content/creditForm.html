@@ -17,39 +17,41 @@
         <h2>크레딧 등록/수정</h2>
 
         <form th:action="@{/content/{contentId}/credit(contentId=${contentId})}" method="post">
+            <!-- 수정할 크레딧 정보 전송 -->
             <input type="hidden" name="id" th:value="${creditDTO.id}"/>
-            <input type="hidden" name="person.id" th:value="${creditDTO.person != null ? creditDTO.person.id : ''}"/>
-        <!-- 등록 버튼은 목록 위쪽에 배치 -->
+            <input type="hidden" name="person.id"
+                   th:value="${creditDTO.person != null ? creditDTO.person.id : ''}"/>
+            <!-- 등록 버튼은 목록 위쪽에 배치 -->
             <div class="mb-3">
                 <label class="form-label">인물 이름</label>
                 <input type="text" class="form-control" name="person.name"
-                       th:value="${creditDTO.person != null ? creditDTO.person.name : ''}" required/>
+                       th:value="${creditDTO.person?.name}" placeholder="인물 이름 입력" required/>
             </div>
 
             <div class="mb-3">
                 <label class="form-label">부서</label>
                 <input type="text" class="form-control" name="department"
-                       th:value="${creditDTO.department != null ? creditDTO.department : ''}" required/>
+                       th:value="${creditDTO.department}" required/>
             </div>
 
             <div class="mb-3">
                 <label class="form-label">역할</label>
                 <input type="text" class="form-control" name="role"
-                       th:value="${creditDTO.role != null ? creditDTO.role : ''}" required/>
+                       th:value="${creditDTO.role}" required/>
             </div>
 
             <div class="mb-3">
                 <label class="form-label">캐릭터 이름</label>
                 <input type="text" class="form-control" name="characterName"
-                       th:value="${creditDTO.characterName != null ? creditDTO.characterName : ''}"/>
+                       th:value="${creditDTO.characterName}"/>
             </div>
 
+            <!-- 제출 및 목록 버튼 -->
             <button type="submit" class="btn btn-primary">저장</button>
             <a th:href="@{'/content/' + ${contentId} + '/credit'}" class="btn btn-secondary">목록</a>
             <a th:href="@{'/content/' + ${contentId} + '/gallery'}"class="btn btn-success mt-3">📂 갤러리 등록/수정</a>
         </form>
         <!-- form 종료 -->
-
 
         <!-- 등록된 크레딧 목록 -->
         <table class="table table-bordered mt-3">
@@ -66,10 +68,10 @@
             <tbody>
             <tr th:each="credit : ${creditList}">
                 <td th:text="${credit.id}">1</td>
-                <td th:text="${credit.person != null ? credit.person.name : ''}">인물 이름</td>
-                <td th:text="${credit.department != null ? credit.department : ''}">부서</td>
-                <td th:text="${credit.role != null ? credit.role : ''}">역할</td>
-                <td th:text="${credit.characterName != null ? credit.characterName : ''}">캐릭터</td>
+                <td th:text="${credit.person?.name}">인물</td>
+                <td th:text="${credit.department}">부서</td>
+                <td th:text="${credit.role}">역할</td>
+                <td th:text="${credit.characterName}">캐릭터</td>
                 <td>
                     <a th:href="@{'/content/' + ${contentId} + '/credit?id=' + ${credit.id}}"
                        class="btn btn-sm btn-warning">✏ 수정</a>
@@ -80,16 +82,14 @@
                     </form>
                 </td>
             </tr>
-            <tr th:if="${creditList == null or #lists.isEmpty(creditList)}">
+            <tr th:if="${#lists.isEmpty(creditList)}">
                 <td colspan="6" class="text-center">등록된 크레딧이 없습니다.</td>
             </tr>
             </tbody>
         </table>
-
         <!-- Flash 메시지 출력 -->
-        <div th:if="${message}" class="alert alert-success" role="alert"
-             th:text="${message}">
-        </div>
+        <div th:if="${message}" class="alert alert-success" role="alert" th:text="${message}"></div>
+        <div th:if="${error}" class="alert alert-danger" role="alert" th:text="${error}"></div>
     </div>
 
     <!-- Bootstrap JS -->

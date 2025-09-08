@@ -15,9 +15,8 @@
 
     <div class="container mt-5">
         <h2>콘텐츠 장르 등록/수정</h2>
-
-        <!--        <form th:action="@{|/content/${contentId}/genre|}" method="post">-->
         <form th:action="@{/content/{contentId}/genre(contentId=${contentDTO.id})}" method="post">
+
             <!-- 숨김 ID 필드 -->
             <!-- ✅ CSRF 토큰 추가 (Spring Security 사용하는 경우 필수) -->
             <!--            <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>-->

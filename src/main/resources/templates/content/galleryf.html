@@ -11,7 +11,8 @@
     <h2 th:text="${galleryDTO.id != null ? '갤러리 수정' : '갤러리 등록'}"></h2>
 
     <!-- 갤러리 등록/수정 폼 -->
-    <form th:action="@{${galleryDTO.id != null ? '/content/' + contentId + '/gallery' : '/content/' + contentId + '/gallery'}}" method="post">
+<!--    <form th:action="@{${galleryDTO.id != null ? '/content/' + contentId + '/gallery' : '/content/' + contentId + '/gallery'}}" method="post">-->
+    form th:action="@{/content/{contentId}/gallery(contentId=${contentId})}" method="post">
         <!-- 갤러리 ID (수정 시에만 필요) -->
         <input type="hidden" th:name="id" th:value="${galleryDTO.id != null ? galleryDTO.id : ''}" />
 
@@ -20,9 +21,12 @@
 
         <!-- 사진 URL -->
         <div class="mb-3">
-            <label for="photo" class="form-label">사진 URL</label>
-            <input type="text" id="photo" name="photo" class="form-control"
-                   th:value="${galleryDTO.photo}" required />
+            <label class="form-label">Photo</label>
+            <input type="text" class="form-control" name="photo"
+                   th:value="${galleryDTO != null ? galleryDTO.photo : ''}" required/>
+<!--            <label for="photo" class="form-label">사진 URL</label>            -->
+<!--            <input type="text" id="photo" name="photo" class="form-control"-->
+<!--                   th:value="${galleryDTO.photo}" required />-->
         </div>
 
         <div class="mb-3">
@@ -61,8 +65,8 @@
                 </form>
             </td>
         </tr>
-        <tr th:if="${#lists.isEmpty(galleryList)}">
-            <td colspan="3" class="text-center">등록된 갤러리가 없습니다.</td>
+        <tr th:if="${galleryList == null or #lists.isEmpty(galleryList)}">
+            <td colspan="4" class="text-center">등록된 갤러리가 없습니다.</td>
         </tr>
         </tbody>
     </table>
