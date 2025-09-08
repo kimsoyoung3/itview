@@ -125,7 +125,7 @@ const UserDetailPage = ({ userInfo, openLogin }) => {
                         </div>
 
                         <div className="user-detail-info-group-content">
-                            <NavLink>
+                            <NavLink to={`/user/${id}/comment`}>
                                 <p>{userDetail?.commentCount}</p>
                                 <p>코멘트</p>
                             </NavLink>

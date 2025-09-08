@@ -6,7 +6,8 @@
 
 .content-each-post {
     width: 100%;
-    height: auto;
+    aspect-ratio: 2 / 3;
+    overflow: hidden;
     border-radius: 4px;
     margin-bottom: 8px;
 }
@@ -16,13 +17,13 @@
     width: 100%;
     height: 100%;
     border-radius: 4px;
-    object-fit: cover;
 }
 
 .content-each-post>a>img {
     display: block;
     width: 100%;
     height: 100%;
+    object-fit: cover;
     border-radius: 4px;
 }
 

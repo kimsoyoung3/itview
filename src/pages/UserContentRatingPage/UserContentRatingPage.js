@@ -147,78 +147,92 @@ const UserContentRatingPage = ({userInfo}) => {
                 <h1>평가한 작품들</h1>
                 <div className="rating-wrap">
                     <div className="rating-wrap-title">
-                        <p className={`rating-page-tab-btn ${activeId === "rating-page-tab1" ? "active" : ""}`}
-                           onClick={(e) => setActiveId(e.target.id)} id="rating-page-tab1">전체</p>
-                        <p className={`rating-page-tab-btn ${activeId === "rating-page-tab2" ? "active" : ""}`}
-                           onClick={(e) => setActiveId(e.target.id)} id="rating-page-tab2">별점순</p>
+                        <div className={`rating-page-tab-btn ${activeId === "rating-page-tab1" ? "active" : ""}`}
+                           onClick={(e) => setActiveId(e.target.id)} id="rating-page-tab1">전체</div>
+                        <div className={`rating-page-tab-btn ${activeId === "rating-page-tab2" ? "active" : ""}`}
+                           onClick={(e) => setActiveId(e.target.id)} id="rating-page-tab2">별점순</div>
+
+                        <span
+                            className="rating-tab-indicator"
+                            style={{
+                                width: activeId === "rating-page-tab1" ? "50%" : "50%",
+                                transform:
+                                    activeId === "rating-page-tab1"
+                                        ? "translateX(0%)"
+                                        : "translateX(100%)",
+                            }}
+                        />
                     </div>
 
-                    {/*평가 페이지 전체순*/}
-                    {activeId === "rating-page-tab1" && <div className="rating-page-tab1">
-                        {/*셀렉트박스*/}
-                        <div className="user-content-rating-page-select-box">
-                            <select className="form-select user-content-rating-page-select"  aria-label="Default select example" onChange={(e) => setOrder(e.target.value)} value={order}>
-                                <option selected value="new">담은 순</option>
-                                <option value="old">담은 역순</option>
-                                <option value="my_score_high">{userInfo === id ? "나의 별점 높은 순" : "이 회원의 별점 높은 순"}</option>
-                                <option value="my_score_low">{userInfo === id ? "나의 별점 낮은 순" : "이 회원의 별점 낮은 순"}</option>
-                                <option value="avg_score_high">평균 별점 높은 순</option>
-                                <option value="avg_score_low">평균 별점 낮은 순</option>
-                            </select>
-                        </div>
-
-                        {/*컨텐츠 리스트*/}
-                        <div className="user-content-rating-page-content-list">
-                            {ratings?.content?.map((item) => (
-                                <ContentEach key={item.content.id} ratingData={item} ratingType={'user'}/>
-                            ))}
-                        </div>
-                        <div className="rating-page-content-list-btn"><button onClick={handleMoreClick} style={{display: ratings?.page?.number + 1 === ratings?.page?.totalPages ? "none" : "block"}}>더보기</button></div>
-                    </div>}
-
-                    {/*별점순*/}
-                    {activeId === "rating-page-tab2" && <div className="rating-page-tab2">
-                        {[...scores].reverse().map((items, index) => (
-                            <div key={index} className="rating-page-rating-list">
-                                <p>{(10 - index) / 2}점 평가한 작품들</p>
-
-                                <div className="rating-items">
-                                    {items.content.length > 0 ? (
-                                        <div className="rating-wrapper">
-                                            <Swiper
-                                                onSwiper={(swiper) => {
-                                                    swiperRef.current[10 - index] = swiper;
-                                                }}
-                                                modules={Navigation}
-                                                navigation={{
-                                                    prevEl: ".rating-wrapper .rating-prev",
-                                                    nextEl: ".rating-wrapper .rating-next",
-                                                }}
-                                                spaceBetween={16}
-                                                slidesPerView={3} // 한 화면에 보일 아이템 수
-                                                slidesPerGroup={3}
-                                                breakpoints={{
-                                                    480: { slidesPerView: 3, slidesPerGroup: 3 },
-                                                    1280: { slidesPerView: 10, slidesPerGroup: 10 },
-                                                }}
-                                            >
-                                                {items.content.map((item) => (
-                                                    <SwiperSlide key={item.content.id} className="rating-slide-image">
-                                                        <ContentEach ratingData={item} ratingType={'avg'}/>
-                                                    </SwiperSlide>
-                                                ))}
-                                                {scores[10-index - 1].page.number + 1 !== scores[10-index - 1].page.totalPages && <SwiperSlide><div ref={(el) => loadMoreRef.current[10 - index] = el}></div></SwiperSlide>}
-                                            </Swiper>
-                                            <div className="rating-prev" onClick={() => handlePrevClick(10 - index)}><img src="/icon/arrow-left-555.svg" alt=""/></div>
-                                            <div className="rating-next" onClick={() => handleNextClick(10 - index)}><img src="/icon/arrow-right-555.svg" alt=""/></div>
-                                        </div>
-                                    ) : (
-                                        <p className="rating-text">해당 점수 작품이 없습니다 :)</p>
-                                    )}
-                                </div>
+                    <div className="rating-wrap-content">
+                        {/*평가 페이지 전체순*/}
+                        {activeId === "rating-page-tab1" && <div className="rating-page-tab1">
+                            {/*셀렉트박스*/}
+                            <div className="user-content-rating-page-select-box">
+                                <select className="form-select user-content-rating-page-select"  aria-label="Default select example" onChange={(e) => setOrder(e.target.value)} value={order}>
+                                    <option selected value="new">담은 순</option>
+                                    <option value="old">담은 역순</option>
+                                    <option value="my_score_high">{userInfo === id ? "나의 별점 높은 순" : "이 회원의 별점 높은 순"}</option>
+                                    <option value="my_score_low">{userInfo === id ? "나의 별점 낮은 순" : "이 회원의 별점 낮은 순"}</option>
+                                    <option value="avg_score_high">평균 별점 높은 순</option>
+                                    <option value="avg_score_low">평균 별점 낮은 순</option>
+                                </select>
                             </div>
-                        ))}
-                    </div>}
+
+                            {/*컨텐츠 리스트*/}
+                            <div className="user-content-rating-page-content-list">
+                                {ratings?.content?.map((item) => (
+                                    <ContentEach key={item.content.id} ratingData={item} ratingType={'user'}/>
+                                ))}
+                            </div>
+                            <div className="rating-page-content-list-btn"><button onClick={handleMoreClick} style={{display: ratings?.page?.number + 1 === ratings?.page?.totalPages ? "none" : "block"}}>더보기</button></div>
+                        </div>}
+
+                        {/*별점순*/}
+                        {activeId === "rating-page-tab2" && <div className="rating-page-tab2">
+                            {[...scores].reverse().map((items, index) => (
+                                <div key={index} className="rating-page-rating-list">
+                                    <p><i className="bi bi-star-fill"/> {(10 - index) / 2}점</p>
+
+                                    <div className="rating-items">
+                                        {items.content.length > 0 ? (
+                                            <div className="rating-wrapper">
+                                                <Swiper
+                                                    onSwiper={(swiper) => {
+                                                        swiperRef.current[10 - index] = swiper;
+                                                    }}
+                                                    modules={Navigation}
+                                                    navigation={{
+                                                        prevEl: ".rating-wrapper .rating-prev",
+                                                        nextEl: ".rating-wrapper .rating-next",
+                                                    }}
+                                                    spaceBetween={16}
+                                                    slidesPerView={3} // 한 화면에 보일 아이템 수
+                                                    slidesPerGroup={3}
+                                                    breakpoints={{
+                                                        480: { slidesPerView: 3, slidesPerGroup: 3 },
+                                                        1280: { slidesPerView: 10, slidesPerGroup: 10 },
+                                                    }}
+                                                >
+                                                    {items.content.map((item) => (
+                                                        <SwiperSlide key={item.content.id} className="rating-slide-image">
+                                                            <ContentEach ratingData={item} ratingType={'avg'}/>
+                                                        </SwiperSlide>
+                                                    ))}
+                                                    {scores[10-index - 1].page.number + 1 !== scores[10-index - 1].page.totalPages && <SwiperSlide><div ref={(el) => loadMoreRef.current[10 - index] = el}></div></SwiperSlide>}
+                                                </Swiper>
+                                                <div className="rating-prev" onClick={() => handlePrevClick(10 - index)}><img src="/icon/arrow-left-555.svg" alt=""/></div>
+                                                <div className="rating-next" onClick={() => handleNextClick(10 - index)}><img src="/icon/arrow-right-555.svg" alt=""/></div>
+                                            </div>
+                                        ) : (
+                                            <p className="rating-text">해당 점수 작품이 없습니다 :)</p>
+                                        )}
+                                    </div>
+                                </div>
+                            ))}
+                        </div>}
+                    </div>
+
                 </div>
             </div>
         </div>

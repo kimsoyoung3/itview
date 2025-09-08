@@ -15,9 +15,11 @@
     text-align: center;
     width: 100%;
     cursor: pointer;
+    position: relative;
+    border-bottom: 1px solid #eeeeee;
 }
 
-.rating-wrap-title>p {
+.rating-wrap-title>div {
     width: 100%;
     cursor: pointer;
     color: #888888;
@@ -25,13 +27,31 @@
     font-size: 0.8rem;
     margin-bottom: 5px;
     padding-bottom: 5px;
-    border-bottom: 1px solid #eeeeee;
 }
 
-.rating-wrap>div>p.active {
-    border-bottom: 2px solid #555555;
+.rating-page-tab-btn {
+    flex: 1;
+    text-align: center;
+    cursor: pointer;
+    color: #888888;
+    font-weight: bold;
+    font-size: 0.8rem;
+    padding: 5px 0;
+}
+
+.rating-page-tab-btn.active {
     color: black;
 }
+
+.rating-tab-indicator {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    height: 2px;
+    background: #555555;
+    transition: transform 0.3s ease, width 0.3s ease;
+}
+
 
 .rating-page-tab1 {
     margin-top: 20px;
