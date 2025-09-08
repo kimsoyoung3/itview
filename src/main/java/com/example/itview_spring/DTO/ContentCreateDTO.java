@@ -2,7 +2,6 @@ package com.example.itview_spring.DTO;
 
 import com.example.itview_spring.Constant.Channel;
 import com.example.itview_spring.Constant.ContentType;
-import com.example.itview_spring.Constant.Genre;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

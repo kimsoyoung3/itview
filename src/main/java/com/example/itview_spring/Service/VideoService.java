@@ -2,146 +2,110 @@ package com.example.itview_spring.Service;
 
 
 import com.example.itview_spring.DTO.*;
+import com.example.itview_spring.Entity.ContentEntity;
 import com.example.itview_spring.Entity.VideoEntity;
 import com.example.itview_spring.Repository.*;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
+import org.modelmapper.PropertyMap;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.NoSuchElementException;
-import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
 @Transactional
 public class VideoService {
+
     private final VideoRepository videoRepository;
+    private final ContentRepository contentRepository;
     private final ModelMapper modelMapper;
 
-    private final GalleryRepository galleryRepository;
-    private final ExternalServiceRepository externalServiceRepository;
-    private final RatingRepository ratingRepository;
-    private final UserRepository userRepository;
-
-    //전체조회
-    //목록(전체조회)
-    //모두 읽어서 list<방금 작성한 DTO> 전달
-    //public 전달할 모양 이름은 마음대로(받을것{
-    //
-    //     사용한 Repository.작업할 함수.var
-    //     return 전달할 값;
-    //}
-    // public List<ProductDTO> 안알려줌() {
-    // public List<ProductDTO> List() {      ex)
-    /**
-     * 전체 목록조회
-     *
-     * @param page 조회할 페이지 번호
-     * @return 결과
-     */
-
-    public Page<VideoDTO> getAllVideos(Pageable page) {
-        int currentPage = page.getPageNumber()-1;
-        int pageLimits = 10 ;
-
-        Pageable pageable = PageRequest.of(currentPage,pageLimits, Sort.by(Sort.Direction.DESC, "id"));
-        Page<VideoEntity> videoEntities = videoRepository.findAll(pageable) ;
-        Page<VideoDTO> videoDTOS = videoEntities.map(data->modelMapper.map(
-                data, VideoDTO.class));
-        return videoDTOS;
+    // 1. 전체 조회 (Get all videos contentId 기준 모든영상)
+    // ✔️ 목록용: 여러 영상 조회 (DTO 리스트)
+    @Transactional(readOnly = true)
+    public List<VideoDTO> getVideosByContentId(Integer contentId) {
+        // 변경: Repository에서 DTO를 바로 반환하도록 수정
+        return videoRepository.findByContentId(contentId); // Repository에서 DTO 바로 반환
     }
-//    public List<VideoDTO> List() {
-//        //읽기,수정/저장/삭제 ==>Repository
-//        List<VideoEntity> videoEntities = videoRepository.findAll();
-//        //Entity =있으면 밑에 DTO변환
-//        List<VideoDTO> videoDTOs = Arrays.asList(modelMapper.map(videoEntities, VideoDTO[].class));
-//        //DTO가 보이면 return DTO를지정
-//        return videoDTOs;
-//    }
+//    VideoRepository에 이미 JPQL로 List<VideoDTO> findByContentId(Integer contentId)를 정의해두셨으므로,
+//    return videoRepository.findByContentId(contentId); //처럼 한 줄로 바로 반환할 수도 있습니다.
 
-
-
-    //상세보기,수정(개별조회)
-    //주문번호를 받아서 해당하는 DTO에 전달
-    //public ProductDTO 역시 안알려줌(Integer id) {
-    //public ProductDTO read(Integer id) {    ex)
-    public VideoDTO read(Integer id) {
-        //해당내용을 조회
-        if (id == null) {
-            throw new IllegalArgumentException("id는 null일 수 없습니다.");
-        }
-        Optional<VideoEntity> videoEntity = videoRepository.findById(id);
-        if (videoEntity.isEmpty()) {
-            throw new NoSuchElementException("해당 ID에 대한 콘텐츠를 찾을 수 없습니다: " + id);
-        }
-        VideoDTO adminVideoDTO = modelMapper.map(videoEntity.get(), VideoDTO.class);
-        return adminVideoDTO;
-    }
-
-    // 단일 VideoDTO 조회
+    // 2. 단일 VideoDTO 조회 (수정 모드)
+    @Transactional(readOnly = true)
     public VideoDTO getVideoById(Integer videoId) {
-        return videoRepository.findById(videoId)
-                .map(v -> new VideoDTO(v.getId(), v.getTitle(), v.getImage(), v.getUrl()))
-                .orElse(null);
-    }
-    //등록(저장)
-    //DTO를 받아서 저장
-    //public void 내맘대로 (ProductDTO productDTO) {
-    //public void create (ProductDTO productDTO) {  ex)
-    public VideoDTO create(VideoDTO dto) {
-        //DTO가 이있으면 반드시 Entity 변환
+        // 변경 없음: 여전히 VideoEntity -> VideoDTO 변환
+        VideoEntity videoEntity = videoRepository.findById(videoId)
+                .orElseThrow(() -> new NoSuchElementException("해당 영상이 존재하지 않습니다: " + videoId));
 
-        VideoEntity videoEntity = modelMapper.map(dto, VideoEntity.class);
-        System.out.println("service add dto:"+dto);
-        System.out.println("service add entity:"+videoEntity);
-
-        videoRepository.save(videoEntity);
+        // 명시적 매핑 규칙 추가
+        modelMapper.addMappings(new PropertyMap<VideoEntity, VideoDTO>() {
+            protected void configure() {
+                map(source.getTitle(), destination.getTitle()); // 제목 매핑
+                map(source.getImage(), destination.getImage()); // 이미지 매핑
+                map(source.getUrl(), destination.getUrl());     // URL 매핑
+            }
+        });
+        // 명시적인 매핑 규칙이 적용된 ModelMapper 사용
         return modelMapper.map(videoEntity, VideoDTO.class);
     }
+//
+//    // 첫 번째 영상 조회: contentId 기준
+//    @Transactional(readOnly = true)
+//    public VideoDTO getFirstVideoByContentId(Integer contentId) {
+//        Optional<VideoEntity> videoOpt = videoRepository.findFirstByContentId(contentId);
+//        if (videoOpt.isPresent()) {
+//            VideoEntity v = videoOpt.get();
+//            // 명시적 DTO 생성자 사용 → JPQL Projection 호환
+//            return new VideoDTO(v.getId(), v.getTitle(), v.getImage(), v.getUrl());
+//        }
+//        return null;
+//    }
+//
+//
+    // 3. 입력 (Create new video)
+    @Transactional
+    public VideoDTO createVideo(Integer contentId, VideoDTO videoDTO) {
+        VideoEntity entity = new VideoEntity();
+        entity.setTitle(videoDTO.getTitle());
+        entity.setImage(videoDTO.getImage());
+        entity.setUrl(videoDTO.getUrl());
 
-    //수정
-    //주문번호와 DTO를 받아서, 주문번호로 조회해서 DTO의 내용을 저장
-    // public void 수정할까(Integer orderId, ProductDTO productDTO) {
-    // public void update(Integer orderId, ProductDTO productDTO) {   ex)
-    public VideoDTO update(Integer id, VideoDTO dto) {
-        //해당내용찾기
-//        System.out.println("dto:"+dto);
-        VideoEntity videoEntity = modelMapper.map(dto, VideoEntity.class);
+        // contentId를 이용하여 ContentEntity를 찾아서 VideoEntity와 연결
+        ContentEntity contentEntity = contentRepository.findById(contentId)
+                .orElseThrow(() -> new IllegalArgumentException("해당 콘텐츠가 존재하지 않습니다. ID: " + contentId));
+        entity.setContent(contentEntity);
 
-        if (videoEntity == null) {
-            return null;
-        }
-//        System.out.println("entity:"+videoEntity);
-        //내용을 저장(@Id가 있는 변수는 저장 불가)
-        videoEntity.setTitle(dto.getTitle());
+        videoRepository.save(entity);
 
-        videoRepository.save(videoEntity);
-        return modelMapper.map(videoEntity, VideoDTO .class);
+        return new VideoDTO(entity.getId(), entity.getTitle(), entity.getImage(), entity.getUrl());
     }
 
-    //삭제
-    //주문번호를 받아서 삭제
-    //  public void 삭제가될까(Integer id) {
-    //  public void delete(Integer id) {
+    // 4. 수정 (Update existing video)
     @Transactional
-    public void delete(Integer id) {
-        VideoEntity video = videoRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("콘텐츠 ID가 유효하지 않습니다. id: " + id));
+    public VideoDTO updateVideo(Integer id, VideoDTO dto) {
+        VideoEntity entity = videoRepository.findById(id)
+                .orElseThrow(() -> new NoSuchElementException("해당 영상 서비스가 존재하지 않습니다. ID: " + id));
 
-        // Now delete the video entity
-        videoRepository.delete(video);
+        entity.setTitle(dto.getTitle());
+        entity.setImage(dto.getImage());
+        entity.setUrl(dto.getUrl());
+        videoRepository.save(entity);
+
+        return new VideoDTO(entity.getId(), entity.getTitle(), entity.getImage(), entity.getUrl());
+    }
+
+    // 5. 삭제 (Delete video)
+    @Transactional
+    public void deleteVideo(Integer videoId) {
+        // 주어진 videoId로  엔티티 조회
+        VideoEntity videoEntity = videoRepository.findById(videoId)
+                .orElseThrow(() -> new NoSuchElementException("삭제할 영상 서비스를 찾을 수 없습니다. ID: " + videoId));
+
+        // videoId로 엔티티 삭제
+        videoRepository.delete(videoEntity);
     }
 
 }
-
-
-
-
-

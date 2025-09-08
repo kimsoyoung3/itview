@@ -22,7 +22,6 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 
 import java.io.IOException;
-import java.util.List;
 import java.util.NoSuchElementException;
 
 import org.springframework.data.domain.Page;

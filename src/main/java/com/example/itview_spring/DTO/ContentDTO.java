@@ -2,18 +2,12 @@ package com.example.itview_spring.DTO;
 
 import com.example.itview_spring.Constant.Channel;
 import com.example.itview_spring.Constant.ContentType;
-import com.example.itview_spring.Constant.Genre;
-import jakarta.persistence.Column;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.Lob;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDate;
-import java.util.List;
 
 @Getter
 @Setter
