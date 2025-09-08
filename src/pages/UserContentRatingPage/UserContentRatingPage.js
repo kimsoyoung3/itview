@@ -198,9 +198,7 @@ const UserContentRatingPage = ({userInfo}) => {
                                                 slidesPerView={3} // 한 화면에 보일 아이템 수
                                                 slidesPerGroup={3}
                                                 breakpoints={{
-                                                    640: { slidesPerView: 2 },
-                                                    768: { slidesPerView: 3 },
-                                                    1024: { slidesPerView: 4 },
+                                                    480: { slidesPerView: 3, slidesPerGroup: 3 },
                                                     1280: { slidesPerView: 10, slidesPerGroup: 10 },
                                                 }}
                                             >
