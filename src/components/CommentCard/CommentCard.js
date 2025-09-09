@@ -34,16 +34,12 @@ const CommentCard = ({comment, content, userInfo, openLogin, newReply, clamp = f
         const text = commentTextRef.current.value;
         if (text) {
             try {
-                const response = await updateComment(commentData.id, { text });
-                if (response.status === 200) {
-                    toast("코멘트가 수정되었습니다.");
-                    setCommentData((prev) => ({ ...prev, text }));
-                    closeComment();
-                } else {
-                    console.error("Failed to update comment");
-                }
+                await updateComment(commentData.id, { text });
+                toast("코멘트가 수정되었습니다.");
+                setCommentData((prev) => ({ ...prev, text }));
+                closeComment();
             } catch (error) {
-                console.error("Error updating comment:", error);
+                toast(error.response.data);
             }
         }
     };
@@ -81,26 +77,26 @@ const CommentCard = ({comment, content, userInfo, openLogin, newReply, clamp = f
     // 댓글 좋아요 등록/취소
     const handleLikeComment = async (commentId) => {
         if (commentData.liked) {
-            const res = await unlikeComment(commentId);
-            if (res.status === 200) {
+            try {
+                await unlikeComment(commentId);
                 setCommentData((prev) => ({
                     ...prev,
                     liked: false,
                     likeCount: prev.likeCount - 1,
                 }));
-            } else {
-                console.error("Failed to unlike comment");
+            } catch (error) {
+                toast(error.response.data);
             }
         } else {
-            const res = await likeComment(commentId);
-            if (res.status === 200) {
+            try {
+                await likeComment(commentId);
                 setCommentData((prev) => ({
                     ...prev,
                     liked: true,
                     likeCount: prev.likeCount + 1,
                 }));
-            } else {
-                console.error("Failed to like comment");
+            } catch (error) {
+                toast(error.response.data);
             }
         }
     };
@@ -109,15 +105,15 @@ const CommentCard = ({comment, content, userInfo, openLogin, newReply, clamp = f
     const handleReplySubmit = async () => {
         const text = replyTextRef.current.value;
         if (text) {
-            const res = await postReply(commentData.id, { text });
-            if (res.status === 200) {
+            try {
+                const res = await postReply(commentData.id, { text });
                 toast("댓글이 등록되었습니다.");
 
                 if (newReply) {
                     newReply(res.data);
                 }
-            } else {
-                toast("댓글 등록에 실패했습니다. 다시 시도해주세요.");
+            } catch (error) {
+                toast(error.response.data);
             }
         }
         closeReply();
