@@ -285,6 +285,6 @@ public class ContentService {
         if (!contentRepository.existsById(contentId)) {
             throw new NoSuchElementException("존재하지 않는 컨텐츠입니다.");
         }
-
+        wishlistRepository.deleteByUserIdAndContentId(userId, contentId);
     }
 }

@@ -107,5 +107,4 @@ public class VideoService {
         // videoId로 엔티티 삭제
         videoRepository.delete(videoEntity);
     }
-
 }
