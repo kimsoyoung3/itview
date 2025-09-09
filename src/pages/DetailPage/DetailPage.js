@@ -37,8 +37,8 @@ const DetailPage = ({userInfo, openLogin}) => {
 
     /*코멘트 작성*/
     const handleCommentPost = async () => {
-        const res = await postContentComment(window.location.pathname.split('/').pop(), { text: textRef.current.value })
-        if (res.status === 200) {
+        try {
+            const res = await postContentComment(window.location.pathname.split('/').pop(), { text: textRef.current.value })
             closeMyComment();
             getContentComment(window.location.pathname.split('/').pop()).then(response => {
                 setContentDetail(prev => ({
@@ -46,22 +46,29 @@ const DetailPage = ({userInfo, openLogin}) => {
                     myComment: response.data
                 }));
             });
+            toast("코멘트가 등록되었습니다.");
+        } catch (error) {
+            toast(error.response.data);    
         }
     };
 
     /*코멘트 수정*/
     const handleCommentUpdate = async () => {
-        const res = await updateComment(contentDetail?.myComment.id, { text: textRef.current.value })
-        if (res.status === 200) {
-            closeMyComment();
-            getContentComment(window.location.pathname.split('/').pop()).then(response => {
-                setContentDetail(prev => ({
-                    ...prev,
-                    myComment: response.data
-                }));
-            });
+        try {
+            const res = await updateComment(contentDetail?.myComment.id, { text: textRef.current.value })
+            if (res.status === 200) {
+                closeMyComment();
+                getContentComment(window.location.pathname.split('/').pop()).then(response => {
+                    setContentDetail(prev => ({
+                        ...prev,
+                        myComment: response.data
+                    }));
+                });
+            }
+            toast("코멘트가 수정되었습니다.");
+        } catch (error) {
+            toast(error.response.data);
         }
-        console.log(res);
     };
 
     const handleMyCommentSubmit = () => {
@@ -70,7 +77,6 @@ const DetailPage = ({userInfo, openLogin}) => {
         } else {
             handleCommentPost();
         }
-        toast("코멘트를 저장했습니다.")
         closeMyComment();
     };
 

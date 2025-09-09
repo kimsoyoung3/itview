@@ -10,6 +10,8 @@ function UserContentWishPage({ userInfo, openLogin }) {
 
     const { id, contentType } = useParams();
 
+    const [order, setOrder] = useState("new");
+
     const [wishlist, setWishlist] = useState([]);
 
     const domainNameMap = {
@@ -23,50 +25,59 @@ function UserContentWishPage({ userInfo, openLogin }) {
     useEffect(() => {
         const fetchWishlist = async () => {
             try {
-                const response = await getUserWishlist(id, contentType, 1, "new");
+                const response = await getUserWishlist(id, contentType, 1, order);
                 setWishlist(response.data);
             } catch (error) {
                 setNotFound(true);
             }
         };
         fetchWishlist();
-    }, [id, contentType]);
+    }, [id, contentType, order]);
 
     useEffect(() => {
         console.log(wishlist);
     }, [wishlist]);
 
-    return (/*notFound ? <NotFound /> :*/ /*여기부분 주석 해제하면 에러나더라구여 근데 gpt말로는 백엔드에선 wishlist로 받고 프론트에선 widh로 받아서 값이 달라서 그렇다고 하는데 잘 모르겠어서 남겨요*/
+    const handleMoreClick = async () => {
+        try {
+            const response = await getUserWishlist(id, contentType, wishlist.page.number + 2, order);
+            setWishlist(prevWishlist => ({
+                ...prevWishlist,
+                content: [...prevWishlist.content, ...response.data.content],
+                page: response.data.page
+            }));
+        } catch (error) {
+            console.error("더보기 실패:", error);
+        }
+    }
+
+    return (notFound ? <NotFound /> :
         <div className="user-content-wish-page container">
             <div className="user-content-wish-page-wrap">
                 <h1>보고싶어요한 {domainNameMap[contentType]}</h1>
 
                 {/*셀렉트 박스*/}
                 <div className="user-wish-page-select-box">
-                    <select className="form-select user-wish-page-select" aria-label="Default select example">
+                    <select className="form-select user-wish-page-select" aria-label="Default select example"
+                            onChange={(e) => setOrder(e.target.value)}>
                         <option selected value="new">담은 순</option>
                         <option value="old">담은 역순</option>
-                        <option value="my_score_high">{Number(userInfo) === Number(id) ? "나의 별점 높은 순" : "이 회원의 별점 높은 순"}</option>
-                        <option value="my_score_low">{Number(userInfo) === Number(id) ? "나의 별점 낮은 순" : "이 회원의 별점 낮은 순"}</option>
-                        <option value="avg_score_high">평균 별점 높은 순</option>
-                        <option value="avg_score_low">평균 별점 낮은 순</option>
+                        <option value="rating_high">평균 별점 높은 순</option>
+                        <option value="rating_low">평균 별점 낮은 순</option>
                     </select>
                 </div>
 
                 {/*컨텐츠 리스트*/}
                 <div className="user-wish-page-content-list">
-                    {/*여기부분은 컨텐츠 맵 돌리는건데 아무리 해도 안되더라구여.. 버튼이랑 여기부분 클래스네임으로 평가부분이랑 똑같이 10개씩 보이는걸로 해놨어요..
-                    평가부분은 레이팅에서 컨텐츠안에 배열에서 컨텐츠를 받아오는데 여기는 위시리스트에서 바로 배열로 컨텐츠 받아오더라구여 근데 안돼여ㅜㅜ 자꾸 초기값 지정하라해서 일단 안건드리고
-                    주석처리 해놨어여..*/}
-                    {/*{wishlist?.content?.length > 0 ? (
-                        wishlist?.content?.map(item => (
-                            <ContentEach key={item.id} ratingData={item} ratingType={'user'}/>
+                    {wishlist?.content?.length > 0 ? (
+                        wishlist.content.map(item => (
+                            <ContentEach key={item.id} ratingData={{content : item}} ratingType={'avg'}/>
                         ))
                     ) : (
-                        <p>준비중입니다.</p>
-                    )}*/}
+                        <p>위시리스트가 없어용~</p>
+                    )}
                 </div>
-                <div className="wish-page-content-list-btn"><button>더보기</button></div>
+                <div className="wish-page-content-list-btn" style={{display: wishlist?.page?.number + 1 === wishlist?.page?.totalPages ? "none" : ""}}><button onClick={handleMoreClick}>더보기</button></div>
             </div>
         </div>
     );
