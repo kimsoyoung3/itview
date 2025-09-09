@@ -111,27 +111,31 @@ const DetailPage = ({userInfo, openLogin}) => {
     };
 
     /*보고싶어요 로직 구현*/
-    const handleWish = () => {
+    const handleWish = async () => {
         if (contentDetail?.wishlistCheck) {
             // 위시리스트에서 제거
-            unwishContent(contentDetail.contentInfo.id).then(response => {
-                if (response.status === 200) {
-                    setContentDetail(prev => ({
-                        ...prev,
-                        wishlistCheck: false
-                    }));
-                }
-            });
+            try {
+                await unwishContent(contentDetail.contentInfo.id);
+                setContentDetail(prev => ({
+                    ...prev,
+                    wishlistCheck: false
+                }));
+                toast("위시리스트에서 제거되었습니다.");
+            } catch (error) {
+                toast(error.response.data);
+            }
         } else {
             // 위시리스트에 추가
-            wishContent(contentDetail.contentInfo.id).then(response => {
-                if (response.status === 200) {
-                    setContentDetail(prev => ({
-                        ...prev,
-                        wishlistCheck: true
-                    }));
-                }
-            });
+            try {
+                await wishContent(contentDetail.contentInfo.id)
+                setContentDetail(prev => ({
+                    ...prev,
+                    wishlistCheck: true
+                }));
+                toast("위시리스트에 추가되었습니다.");
+            } catch (error) {
+                toast(error.response.data);
+            }
         }
     };
 
