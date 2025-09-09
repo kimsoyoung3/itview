@@ -47,7 +47,7 @@ function UserContentPage({ userInfo, openLogin }) {
                         </NavLink>
                     </div>
                     <div>
-                        <NavLink>
+                        <NavLink to={`/user/${id}/content/${contentType}/wish`}>
                             <p>보고싶어요</p>
                             <span>{userContentCount?.wishlist}</span>
                         </NavLink>
