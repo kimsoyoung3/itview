@@ -43,17 +43,16 @@ public interface WishlistRepository extends JpaRepository<WishlistEntity, Intege
                 c.poster,
                 c.age,
                 c.duration,
-                AVG(r.score)
+                (SELECT AVG(r.score) FROM RatingEntity r WHERE r.content.id = c.id)
             )
             FROM WishlistEntity w
             JOIN w.content c
-            LEFT JOIN c.ratings r
             WHERE w.user.id = :userId AND c.contentType = :contentType
             ORDER BY 
                 CASE WHEN :order = 'new' THEN w.createdAt END DESC,
                 CASE WHEN :order = 'old' THEN w.createdAt END ASC,
-                CASE WHEN :order = 'rating_high' THEN AVG(r.score) END DESC,
-                CASE WHEN :order = 'rating_low' THEN AVG(r.score) END ASC
+                CASE WHEN :order = 'rating_high' THEN (SELECT AVG(r.score) FROM RatingEntity r WHERE r.content.id = c.id) END DESC,
+                CASE WHEN :order = 'rating_low' THEN (SELECT AVG(r.score) FROM RatingEntity r WHERE r.content.id = c.id) END ASC
             """)
     Page<ContentResponseDTO> findWishlistByUserIdAndContentType(@Param("userId") Integer userId, @Param("contentType") ContentType contentType, Pageable pageable, @Param("order") String order);
 }
