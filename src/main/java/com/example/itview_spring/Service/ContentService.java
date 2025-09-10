@@ -264,7 +264,7 @@ public class ContentService {
         if (!contentRepository.existsById(contentId)) {
             throw new NoSuchElementException("존재하지 않는 컨텐츠입니다");
         }
-        Pageable pageable = PageRequest.of(page - 1, 1);
+        Pageable pageable = PageRequest.of(page - 1, 3);
         return commentRepository.findByContentId(userId, contentId, order, pageable);
     }
 
