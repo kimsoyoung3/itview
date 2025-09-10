@@ -8,6 +8,7 @@ import com.example.itview_spring.DTO.EmailDTO;
 import com.example.itview_spring.DTO.EmailVerificationDTO;
 import com.example.itview_spring.DTO.LoginDTO;
 import com.example.itview_spring.DTO.NewPasswordDTO;
+import com.example.itview_spring.DTO.PersonDTO;
 import com.example.itview_spring.DTO.RatingDTO;
 import com.example.itview_spring.DTO.RegisterDTO;
 import com.example.itview_spring.DTO.UserContentCountDTO;
@@ -269,6 +270,13 @@ public class UserRestController {
             loginUserId = ((CustomUserDetails) auth.getPrincipal()).getId();
         }
         return ResponseEntity.ok(userService.getUserComment(loginUserId, userId, ContentType.valueOf(contentTypeStr.toUpperCase()), pageable.getPageNumber(), order));
+    }
+
+    // 유저의 좋아요한 인물 조회
+    @GetMapping("/{id}/like/person")
+    public ResponseEntity<Page<PersonDTO>> getUserLike(@PathVariable("id") Integer userId,
+                                                       @PageableDefault(page=1) Pageable pageable) {
+        return ResponseEntity.ok(userService.getPersonUserLike(userId, pageable.getPageNumber()));
     }
 
     @ExceptionHandler(NoSuchElementException.class)

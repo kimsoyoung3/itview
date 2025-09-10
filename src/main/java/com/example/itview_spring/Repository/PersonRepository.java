@@ -1,7 +1,11 @@
 package com.example.itview_spring.Repository;
 
+import com.example.itview_spring.DTO.PersonDTO;
 import com.example.itview_spring.DTO.PersonResponseDTO;
 import com.example.itview_spring.Entity.PersonEntity;
+
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -26,4 +30,18 @@ public interface PersonRepository extends JpaRepository <PersonEntity, Integer> 
     PersonResponseDTO findPersonResponseDTO(@Param("userId") Integer userId, @Param("personId") Integer personId);
 
     PersonEntity findByName(String name);
+
+    @Query("""
+            select new com.example.itview_spring.DTO.PersonDTO(
+                p.id,
+                p.name,
+                p.profile,
+                p.job
+            )
+            from LikeEntity l
+            join PersonEntity p on l.targetId = p.id and l.targetType = 'PERSON'
+            where l.user.id = :id and l.targetType = 'PERSON'
+            order by l.id desc
+            """)
+    Page<PersonDTO> findPersonUserLike(@Param("id") Integer id, Pageable pageable);
 }

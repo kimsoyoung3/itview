@@ -8,6 +8,7 @@ import com.example.itview_spring.DTO.ContentResponseDTO;
 import com.example.itview_spring.DTO.EmailDTO;
 import com.example.itview_spring.DTO.EmailVerificationDTO;
 import com.example.itview_spring.DTO.NewPasswordDTO;
+import com.example.itview_spring.DTO.PersonDTO;
 import com.example.itview_spring.DTO.RatingDTO;
 import com.example.itview_spring.DTO.RegisterDTO;
 import com.example.itview_spring.DTO.UserContentCountDTO;
@@ -51,6 +52,7 @@ public class UserService implements UserDetailsService {
     private final UserRepository userRepository;
     private final CommentRepository commentRepository;
     private final RatingRepository ratingRepository;
+    private final PersonRepository personRepository;
     private final EmailVerificationRepository emailVerificationRepository;
     private final ModelMapper modelMapper;
     private final PasswordEncoder passwordEncoder;
@@ -235,5 +237,14 @@ public class UserService implements UserDetailsService {
         }
         Pageable pageable = PageRequest.of(page - 1, 1);
         return commentRepository.findCommentAndContentByUserId(loginUserId, userId, contentType, pageable, order);
+    }
+
+    // 유저가 좋아요한 인물 조회
+    public Page<PersonDTO> getPersonUserLike(Integer userId, Integer page) {
+        if (!userRepository.existsById(userId)) {
+            throw new NoSuchElementException("존재하지 않는 유저입니다.");
+        }
+        Pageable pageable = PageRequest.of(page - 1, 10);
+        return personRepository.findPersonUserLike(userId, pageable);
     }
 }
