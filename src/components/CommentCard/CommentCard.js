@@ -195,7 +195,7 @@ const CommentCard = ({comment, content, userInfo, openLogin, newReply, onDelete,
                     <div className="comment-modal-content" onClick={(e) => e.stopPropagation()}>
                         <div className="comment-content-top">
                             <p className="comment-modal-title">{content.title}</p>
-                            <button className="comment-close-button" onClick={closeComment}><img src="/x-lg.svg" alt=""/></button>
+                            <button className="comment-close-button" onClick={closeComment}><img src="/icon/x-lg.svg" alt=""/></button>
                         </div>
                         <textarea rows="15" placeholder="작품에 대한 코멘트를 남겨주세요." maxLength={1000} ref={commentTextRef}></textarea>
                         <div className="comment-content-bottom">
@@ -225,7 +225,7 @@ const CommentCard = ({comment, content, userInfo, openLogin, newReply, onDelete,
                     <div className="comment-modal-content" onClick={(e) => e.stopPropagation()}>
                         <div className="comment-content-top">
                             <p className="comment-modal-title">댓글</p>
-                            <button className="comment-close-button" onClick={closeReply}><img src="/x-lg.svg" alt=""/></button>
+                            <button className="comment-close-button" onClick={closeReply}><img src="/icon/x-lg.svg" alt=""/></button>
                         </div>
                         <textarea rows="15" placeholder="코멘트에 대한 댓글을 남겨주세요." maxLength={1000} ref={replyTextRef}></textarea>
                         <div className="comment-content-bottom">
