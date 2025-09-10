@@ -223,8 +223,7 @@ const UserDetailPage = ({ userInfo, openLogin }) => {
                     </NavLink>
 
                     <NavLink to={`/user/${id}/like?type=collection`} className="user-detail-like-list">
-                        <div>좋아한 컬렉션 <span>{userDetail?.collectionLikeCount
-                        }</span></div>
+                        <div>좋아한 컬렉션 <span>{userDetail?.collectionLikeCount}</span></div>
                         <button><i className="bi bi-chevron-right"></i></button>
                     </NavLink>
 
