@@ -247,4 +247,13 @@ public class UserService implements UserDetailsService {
         Pageable pageable = PageRequest.of(page - 1, 10);
         return personRepository.findPersonUserLike(userId, pageable);
     }
+
+    // 유저가 좋아요한 코멘트 조회
+    public Page<CommentAndContentDTO> getCommentUserLike(Integer loginUserId, Integer userId, Integer page) {
+        if (!userRepository.existsById(userId)) {
+            throw new NoSuchElementException("존재하지 않는 유저입니다.");
+        }
+        Pageable pageable = PageRequest.of(page - 1, 1);
+        return commentRepository.findCommentAndContentUserLike(loginUserId, userId, pageable);
+    }
 }

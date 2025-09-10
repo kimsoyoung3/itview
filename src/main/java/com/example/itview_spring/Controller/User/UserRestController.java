@@ -279,6 +279,18 @@ public class UserRestController {
         return ResponseEntity.ok(userService.getPersonUserLike(userId, pageable.getPageNumber()));
     }
 
+    // 유저의 좋아요한 코멘트 조회
+    @GetMapping("/{id}/like/comment")
+    public ResponseEntity<Page<CommentAndContentDTO>> getUserLikeComment(@PathVariable("id") Integer userId,
+                                                                         @PageableDefault(page=1) Pageable pageable) {
+        var auth = SecurityContextHolder.getContext().getAuthentication();
+        Integer loginUserId = 0;
+        if (auth.getPrincipal() != "anonymousUser") {
+            loginUserId = ((CustomUserDetails) auth.getPrincipal()).getId();
+        }
+        return ResponseEntity.ok(userService.getCommentUserLike(loginUserId, userId, pageable.getPageNumber()));
+    }
+
     @ExceptionHandler(NoSuchElementException.class)
     public ResponseEntity<String> handleNoSuchElementException(NoSuchElementException ex) {
         return ResponseEntity.status(404).body(ex.getMessage());
