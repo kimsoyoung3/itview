@@ -6,7 +6,7 @@ function UserLikePage() {
     const [notFound, setNotFound] = useState(false);
 
     const [searchParams] = new useSearchParams();
-    const type = searchParams.get("type") || "person";
+    const [contentType, setContentType] = useState(searchParams.get('type') || 'person');
 
     const { id } = useParams();
     const [personLikes, setPersonLikes] = useState({});
@@ -38,7 +38,12 @@ function UserLikePage() {
     }, [commentLikes]);
 
     return (
-        <div>유저가 좋아요한 {type} 페이지 - 준비중</div>
+        <>
+            <div>유저가 좋아요한 {contentType} 페이지 - 준비중</div>
+            <button onClick={() => setContentType('person')}>사람</button>
+            <button onClick={() => setContentType('collection')}>컬렉션</button>
+            <button onClick={() => setContentType('comment')}>코멘트</button>
+        </>
     );
 }
 
