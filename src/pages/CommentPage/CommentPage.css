@@ -19,7 +19,7 @@
     border-radius: 0;
     padding: 10px 20px;
     border-color: #eeeeee;
-    margin: 20px 0;
+    margin-top: 20px;
 }
 
 .form-select:focus,
@@ -29,10 +29,6 @@
     box-shadow: none !important; /* 기본 focus 그림자 제거 */
     outline: none !important; /* outline 제거 */
     border-color: #eeeeee;
-}
-
-.comment-page-content>* {
-    margin: 20px 0;
 }
 
 /* 📱 반응형 스타일 */
