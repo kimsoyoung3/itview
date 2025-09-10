@@ -1,8 +1,9 @@
 /*코멘트 컴포넌트 스타일*/
 .comment-card {
+    width: 100%;
     background: #f6f6f6;
     border-radius: 8px;
-    padding: 30px;
+    padding: 20px;
     box-shadow: 0 1px 3px rgba(0,0,0,0.1);
 }
 
@@ -10,6 +11,7 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
+    gap: 10px;
     margin-bottom: 8px;
     color: #5e5e64;
     font-weight: 500;
@@ -25,6 +27,7 @@
     width: 40px;
     height: 40px;
     border-radius: 50%;
+    flex-shrink: 0;
 }
 
 .comment-card-profile>img {
@@ -34,6 +37,10 @@
     object-fit: cover;
 }
 
+.comment-inner .comment-card-date {
+    display: none;
+}
+
 .comment-card-date {
     font-size: 0.7rem;
     font-weight: 400;
@@ -41,7 +48,11 @@
 
 .comment-card-header-right {
     display: flex;
-    gap: 5px;
+    gap: 3px;
+    font-size: 0.8rem;
+}
+
+.comment-card-header-right>i {
 }
 
 .comment-card-content {
@@ -143,6 +154,12 @@
 
 /*노트북 사이즈*/
 @media (max-width: 1024px) {
+    .comment-card-nickname {
+        max-width: 40px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
 }
 
 /*태블릿 사이즈*/
