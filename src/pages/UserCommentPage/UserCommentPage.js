@@ -7,6 +7,7 @@ import NotFound from "../NotFound/NotFound";
 
 function UserCommentPage({ userInfo, openLogin }) {
     const [contentType, setContentType] = useState("movie");
+    const [order, setOrder] = useState("recent");
 
     const { id } = useParams();
 
@@ -18,25 +19,49 @@ function UserCommentPage({ userInfo, openLogin }) {
         const fetchData = async () => {
             try {
                 const res = {}
-                res["movie"] = (await getUserComment(id, "movie", 1)).data;
-                res["series"] = (await getUserComment(id, "series", 1)).data;
-                res["book"] = (await getUserComment(id, "book", 1)).data;
-                res["webtoon"] = (await getUserComment(id, "webtoon", 1)).data;
-                res["record"] = (await getUserComment(id, "record", 1)).data;
+                res["movie"] = (await getUserComment(id, "movie", 1, order)).data;
+                res["series"] = (await getUserComment(id, "series", 1, order)).data;
+                res["book"] = (await getUserComment(id, "book", 1, order)).data;
+                res["webtoon"] = (await getUserComment(id, "webtoon", 1, order)).data;
+                res["record"] = (await getUserComment(id, "record", 1, order)).data;
                 setCommentList(res);
             } catch (error) {
                 setNotFound(true);
             }
         }
         fetchData();
-    }, [id]);
+    }, [id, order]);
 
     useEffect(() => {
         console.log(commentList);
     }, [commentList]);
 
+    const handleClickMore = async () => {
+        if (commentList[contentType]?.page?.number < commentList[contentType]?.page?.totalPages - 1) {
+            const response = await getUserComment(id, contentType, commentList[contentType]?.page?.number + 2, order);
+            setCommentList((prev) => ({
+                ...prev,
+                [contentType]: {
+                    content: [...prev[contentType].content, ...response.data.content],
+                    page: response.data.page
+                }
+            }));
+        }
+    }
+
     const onDelete = async () => {
-        window.location.reload();
+        let newCommentList = [];
+        for (let i = 0; i < commentList[contentType].page.number + 1; i++) {
+            const res = (await getUserComment(id, contentType, i + 1, order));
+            newCommentList = [...newCommentList, ...res.data.content];
+        }
+        setCommentList((prev) => ({
+            ...prev,
+            [contentType]: {
+                content: newCommentList,
+                page: prev[contentType].page
+            }
+        }));
     }
 
     return (notFound ? <NotFound /> :
@@ -66,7 +91,7 @@ function UserCommentPage({ userInfo, openLogin }) {
                     </div>
 
                     <div className="user-comment-page-select-box">
-                        <select className="form-select user-comment-page-select"  aria-label="Default select example">
+                        <select className="form-select user-comment-page-select" aria-label="Default select example" onChange={(e) => setOrder(e.target.value)} value={order}>
                             <option selected value="recent">작성 순</option>
                             <option value="like">좋아요 순</option>
                             <option value="reply">댓글 순</option>
@@ -81,7 +106,7 @@ function UserCommentPage({ userInfo, openLogin }) {
                     {contentType === "movie" && <div className="comment-page-tab comment-page-tab1">
                         {commentList[contentType]?.content?.length > 0 ? (
                             <div className="comment-page-content">
-                                {commentList[contentType]?.content?.map((c) => (<CommentCard key={c.comment.id} comment={c.comment} content={c.content} userInfo={userInfo} openLogin={openLogin}/>))}
+                                {commentList[contentType]?.content?.map((c) => (<CommentCard key={c.comment.id} comment={c.comment} content={c.content} userInfo={userInfo} openLogin={openLogin} onDelete={onDelete}/>))}
                             </div>
                         ) : (
                             <p>코멘트가 없습니다 :)</p>
@@ -91,7 +116,7 @@ function UserCommentPage({ userInfo, openLogin }) {
                     {contentType === "series" && <div className="comment-page-tab comment-page-tab2">
                         {commentList[contentType]?.content?.length > 0 ? (
                             <div className="comment-page-content">
-                                {commentList[contentType]?.content?.map((c) => (<CommentCard key={c.comment.id} comment={c.comment} content={c.content} userInfo={userInfo} openLogin={openLogin}/>))}
+                                {commentList[contentType]?.content?.map((c) => (<CommentCard key={c.comment.id} comment={c.comment} content={c.content} userInfo={userInfo} openLogin={openLogin} onDelete={onDelete}/>))}
                             </div>
                         ) : (
                             <p>코멘트가 없습니다 :)</p>
@@ -102,7 +127,7 @@ function UserCommentPage({ userInfo, openLogin }) {
                     {contentType === "book" && <div className="comment-page-tab comment-page-tab3">
                         {commentList[contentType]?.content?.length > 0 ? (
                             <div className="comment-page-content">
-                                {commentList[contentType]?.content?.map((c) => (<CommentCard key={c.comment.id} comment={c.comment} content={c.content} userInfo={userInfo} openLogin={openLogin}/>))}
+                                {commentList[contentType]?.content?.map((c) => (<CommentCard key={c.comment.id} comment={c.comment} content={c.content} userInfo={userInfo} openLogin={openLogin} onDelete={onDelete}/>))}
                             </div>
                         ) : (
                             <p>코멘트가 없습니다 :)</p>
@@ -113,7 +138,7 @@ function UserCommentPage({ userInfo, openLogin }) {
                     {contentType === "webtoon" && <div className="comment-page-tab comment-page-tab4">
                         {commentList[contentType]?.content?.length > 0 ? (
                             <div className="comment-page-content">
-                                {commentList[contentType]?.content?.map((c) => (<CommentCard key={c.comment.id} comment={c.comment} content={c.content} userInfo={userInfo} openLogin={openLogin}/>))}
+                                {commentList[contentType]?.content?.map((c) => (<CommentCard key={c.comment.id} comment={c.comment} content={c.content} userInfo={userInfo} openLogin={openLogin} onDelete={onDelete}/>))}
                             </div>
                         ) : (
                             <p>코멘트가 없습니다 :)</p>
@@ -124,7 +149,7 @@ function UserCommentPage({ userInfo, openLogin }) {
                     {contentType === "record" && <div className="comment-page-tab comment-page-tab5">
                         {commentList[contentType]?.content?.length > 0 ? (
                             <div className="comment-page-content">
-                                {commentList[contentType]?.content?.map((c) => (<CommentCard key={c.comment.id} comment={c.comment} content={c.content} userInfo={userInfo} openLogin={openLogin}/>))}
+                                {commentList[contentType]?.content?.map((c) => (<CommentCard key={c.comment.id} comment={c.comment} content={c.content} userInfo={userInfo} openLogin={openLogin} onDelete={onDelete}/>))}
                             </div>
                         ) : (
                             <p>코멘트가 없습니다 :)</p>
@@ -133,7 +158,8 @@ function UserCommentPage({ userInfo, openLogin }) {
 
                     {commentList[contentType]?.content?.length > 0 && (
                         <div className="comment-page-tab-btn-box">
-                        <button className="comment-page-tab-content-btn">더보기</button>
+                        <button className="comment-page-tab-content-btn" onClick={handleClickMore}
+                                style={{display: commentList[contentType]?.page?.number + 1 === commentList[contentType]?.page?.totalPages ? "none" : ""}}>더보기</button>
                         </div>
                     )}
 
