@@ -244,7 +244,7 @@ public class UserService implements UserDetailsService {
         if (!userRepository.existsById(userId)) {
             throw new NoSuchElementException("존재하지 않는 유저입니다.");
         }
-        Pageable pageable = PageRequest.of(page - 1, 10);
+        Pageable pageable = PageRequest.of(page - 1, 12);
         return personRepository.findPersonUserLike(userId, pageable);
     }
 
