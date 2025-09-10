@@ -497,7 +497,7 @@ const DetailPage = ({userInfo, openLogin}) => {
                     </div>
 
                 ) : (
-                    <p>코멘트가 없습니다.</p>
+                    <p>코멘트가 없습니다 :)</p>
                 )}
             </section>
 
@@ -541,7 +541,7 @@ const DetailPage = ({userInfo, openLogin}) => {
                     </div>
 
                     ) : (
-                        <p>크레딧 정보가 없습니다.</p>
+                        <p>크레딧 정보가 없습니다 :)</p>
                     )}
 
              </section>

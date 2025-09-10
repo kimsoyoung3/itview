@@ -113,7 +113,7 @@ const CommentPage = ({userInfo, openLogin}) => {
                     {comments.map((c, index) => <CommentCard key={c.id} comment={c} content={{title}} userInfo={userInfo} openLogin={openLogin} onDelete={() => onDelete(index)}/>)}
                 </div>
             ) : (
-                <p>코멘트가 없습니다.</p>
+                <p className="empty-message">코멘트가 없습니다 :)</p>
             )}
             <div ref={loadMoreCommentsRef} style={{ height: '20px' }}></div>
         </div>

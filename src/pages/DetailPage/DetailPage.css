@@ -64,6 +64,10 @@
     margin-bottom: 70px;
 }
 
+.detail-content>p {
+    color: #555555;
+}
+
 .detail-content-bg {
     background-color: #f6f6f6;
 }

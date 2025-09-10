@@ -180,13 +180,20 @@ const UserContentRatingPage = ({userInfo}) => {
                             </div>
 
                             {/*컨텐츠 리스트*/}
-                            <div className="user-content-rating-page-content-list">
-                                {ratings?.content?.map((item) => (
-                                    <ContentEach key={item.content.id} ratingData={item} ratingType={'user'}/>
-                                ))}
-                            </div>
-                            <div className="rating-page-content-list-btn"><button onClick={handleMoreClick} style={{display: ratings?.page?.number + 1 === ratings?.page?.totalPages ? "none" : "block"}}>더보기</button></div>
-                        </div>}
+                            {ratings?.content?.length > 0 ?(
+                                    <div className="user-content-rating-page-content">
+                                        <div className="rating-page-content-list">
+                                            {   ratings?.content?.map((item) => (
+                                                <ContentEach key={item.content.id} ratingData={item} ratingType={'user'}/>
+                                            ))}
+                                        </div>
+                                        <div className="rating-page-content-list-btn"><button onClick={handleMoreClick} style={{display: ratings?.page?.number + 1 === ratings?.page?.totalPages ? "none" : "block"}}>더보기</button></div>
+                                    </div>
+                                ) : (
+                                    <p className="empty-message">평가한 작품이 없습니다 :)</p>
+                                )}
+
+                            </div>}
 
                         {/*별점순*/}
                         {activeId === "rating-page-tab2" && <div className="rating-page-tab2">
