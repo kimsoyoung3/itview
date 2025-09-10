@@ -1,16 +1,18 @@
 import { React, useEffect, useState } from 'react';
 import { useParams, useSearchParams } from 'react-router-dom';
-import { getUserLikePerson } from '../../API/UserApi';
+import { getUserLikeComment, getUserLikePerson } from '../../API/UserApi';
 import "./UserLilkePage.css"
 
 function UserLikePage() {
     const [notFound, setNotFound] = useState(false);
 
     const [searchParams] = new useSearchParams();
-    const type = searchParams.get("type") || "person";
+    const [contentType, setContentType] = useState(searchParams.get('type') || 'person');
 
     const { id } = useParams();
     const [personLikes, setPersonLikes] = useState({});
+    const [collectionLikes, setCollectionLikes] = useState({});
+    const [commentLikes, setCommentLikes] = useState({});
 
     const [activeId, setActiveId] = useState("rating-page-tab1");
 
@@ -18,8 +20,12 @@ function UserLikePage() {
     useEffect(() => {
         try {
             const fetchData = async () => {
-                const res = await getUserLikePerson(id, 1);
-                setPersonLikes(res.data);
+                const personRes = await getUserLikePerson(id, 1);
+                setPersonLikes(personRes.data);
+                // const collectionRes = await getUserLikeCollection(id, 1);
+                // setCollectionLikes(collectionRes.data);
+                const commentRes = await getUserLikeComment(id, 1);
+                setCommentLikes(commentRes.data);
             }
             fetchData();
         } catch (error) {
@@ -31,28 +37,17 @@ function UserLikePage() {
         console.log(personLikes);
     }, [personLikes]);
 
-    return (
-        <div className="user-like-page container">유저가 좋아요한 {type} 페이지 - 준비중
-            <div className="user-like-page-wrap-page-wrap">
-                <h1>좋아요</h1>
-                {/*<div className="user-like-page-wrap-tab-title">
-                    <div className={`comment-page-tab-btn ${activeId=== "movie" ? "active" : ""}`}
-                         onClick={(e) => setContentType(e.target.id)} id="movie">인물</div>
-                    <div className={`comment-page-tab-btn ${activeId === "series" ? "active" : ""}`}
-                         onClick={(e) => setContentType(e.target.id)} id="series">컬렉션</div>
-                    <div className={`comment-page-tab-btn ${activeId === "book" ? "active" : ""}`}
-                         onClick={(e) => setContentType(e.target.id)} id="book">코멘트</div>
+    useEffect(() => {
+        console.log(commentLikes);
+    }, [commentLikes]);
 
-                    <span
-                        className="comment-tab-indicator"
-                        style={{
-                            width: "20%",
-                            transform: `translateX(${["movie","series","book","webtoon","record"].indexOf(contentType) * 100}%)`
-                        }}
-                    />
-                </div>*/}
-            </div>
-        </div>
+    return (
+        <>
+            <div>유저가 좋아요한 {contentType} 페이지 - 준비중</div>
+            <button onClick={() => setContentType('person')}>사람</button>
+            <button onClick={() => setContentType('collection')}>컬렉션</button>
+            <button onClick={() => setContentType('comment')}>코멘트</button>
+        </>
     );
 }
 
