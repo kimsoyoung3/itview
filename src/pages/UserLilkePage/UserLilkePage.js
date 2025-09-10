@@ -4,6 +4,7 @@ import { getUserLikeComment, getUserLikePerson } from '../../API/UserApi';
 import "./UserLilkePage.css"
 import CommentCard from "../../components/CommentCard/CommentCard";
 import CreditOrPersonCard from "../../components/CreditOrPersonCard/CreditOrPersonCard";
+import { toast } from 'react-toastify';
 
 function UserLikePage({userInfo, openLogin, onDelete}) {
     const [notFound, setNotFound] = useState(false);
@@ -36,9 +37,37 @@ function UserLikePage({userInfo, openLogin, onDelete}) {
         console.log(personLikes);
     }, [personLikes]);
 
+    const handlePersonLoadMore = async () => {
+        try {
+            const nextPage = personLikes.page.number + 2;
+            const res = await getUserLikePerson(id, nextPage);
+            setPersonLikes(prevState => ({
+                ...res.data,
+                content: [...prevState.content, ...res.data.content],
+                page: res.data.page
+            }));
+        } catch (error) {
+            toast("정보를 불러오지 못했습니다.");
+        }
+    };
+
     useEffect(() => {
         console.log(commentLikes);
     }, [commentLikes]);
+
+    const handleCommentLoadMore = async () => {
+        try {
+            const nextPage = commentLikes.page.number + 2;
+            const res = await getUserLikeComment(id, nextPage);
+            setCommentLikes(prevState => ({
+                ...res.data,
+                content: [...prevState.content, ...res.data.content],
+                page: res.data.page
+            }));
+        } catch (error) {
+            toast("정보를 불러오지 못했습니다.");
+        }
+    };
 
     return (
         <>
@@ -73,7 +102,7 @@ function UserLikePage({userInfo, openLogin, onDelete}) {
                                     </div>
 
                                     <div className="like-page-content-btn">
-                                        <button>더보기</button>
+                                        <button style={{display: personLikes?.page?.number + 1 === personLikes?.page?.totalPages ? "none" : ""}} onClick={handlePersonLoadMore}>더보기</button>
                                     </div>
                                 </div>
                             ) : (
@@ -101,7 +130,7 @@ function UserLikePage({userInfo, openLogin, onDelete}) {
                                     </div>
 
                                     <div className="like-page-content-btn">
-                                        <button>더보기</button>
+                                        <button style={{display: commentLikes?.page?.number + 1 === commentLikes?.page?.totalPages ? "none" : ""}} onClick={handleCommentLoadMore}>더보기</button>
                                     </div>
                                 </div>
                             ) : (
