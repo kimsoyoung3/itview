@@ -182,6 +182,13 @@ public class ContentService {
         contentRepository.delete(content);
     }
 
+    // 컨텐츠 제목 조회
+    public String getContentTitle(Integer contentId) {
+        if (!contentRepository.existsById(contentId)) {
+            throw new NoSuchElementException("존재하지 않는 컨텐츠입니다");
+        }
+        return contentRepository.findTitleById(contentId);
+    }
 
     // 컨텐츠 상세 정보 조회
     @Transactional
@@ -270,7 +277,7 @@ public class ContentService {
             throw new NoSuchElementException("존재하지 않는 컨텐츠입니다.");
         }
         if (wishlistRepository.existsByUserIdAndContentId(userId, contentId)) {
-            throw new IllegalStateException("이미 위시리스트에 추가된 컨텐츠입니다.");
+            return;
         }
 
         WishlistEntity wishlistEntity = new WishlistEntity();

@@ -32,4 +32,8 @@ public interface ContentRepository extends JpaRepository<ContentEntity, Integer>
                 c.description, c.releaseDate, c.poster, c.age, c.duration
     """)
     ContentResponseDTO findContentWithAvgRating(@Param("id") Integer id);
+
+    // 컨텐츠 ID로 컨텐츠 제목 조회
+    @Query("SELECT c.title FROM ContentEntity c WHERE c.id = :id")
+    String findTitleById(@Param("id") Integer id);
 }

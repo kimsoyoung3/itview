@@ -48,6 +48,9 @@ public class ReplyService {
         if (!replyRepository.existsById(replyId)) {
             throw new NoSuchElementException("존재하지 않는 댓글입니다");
         }
+        if (likeRepository.existsByUserIdAndTargetIdAndTargetType(userId, replyId, Replyable.REPLY)) {
+            return true;
+        }
         try {
             likeRepository.likeTarget(userId, replyId, Replyable.REPLY);
             return true;

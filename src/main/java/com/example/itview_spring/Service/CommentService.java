@@ -79,6 +79,9 @@ public class CommentService {
         if (!commentRepository.existsById(commentId)) {
             throw new NoSuchElementException("존재하지 않는 코멘트입니다");
         }
+        if (likeRepository.existsByUserIdAndTargetIdAndTargetType(userId, commentId, Replyable.COMMENT)) {
+            return;
+        }
         likeRepository.likeTarget(userId, commentId, Replyable.COMMENT);
     }
 

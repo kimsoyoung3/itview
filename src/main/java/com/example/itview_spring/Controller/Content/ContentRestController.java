@@ -41,6 +41,13 @@ public class ContentRestController {
     private final CommentService commentService;
     private final RatingService ratingService;
 
+    // 컨텐츠 제목 조회
+    @GetMapping("/{id}/title")
+    public ResponseEntity<String> getContentTitle(@PathVariable("id") Integer id) {
+        String title = contentService.getContentTitle(id);
+        return ResponseEntity.ok(title);
+    }
+
     // 컨텐츠 상세 정보 조회
     @GetMapping("/{id}")
     public ResponseEntity<ContentDetailDTO> getContentDetail(@PathVariable("id") Integer id) {
