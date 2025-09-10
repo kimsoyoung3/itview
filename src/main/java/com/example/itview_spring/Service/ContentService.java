@@ -270,7 +270,7 @@ public class ContentService {
             throw new NoSuchElementException("존재하지 않는 컨텐츠입니다.");
         }
         if (wishlistRepository.existsByUserIdAndContentId(userId, contentId)) {
-            throw new IllegalStateException("이미 위시리스트에 추가된 컨텐츠입니다.");
+            return;
         }
 
         WishlistEntity wishlistEntity = new WishlistEntity();
