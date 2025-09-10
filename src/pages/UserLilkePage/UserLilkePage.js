@@ -1,6 +1,6 @@
 import { React, useEffect, useState } from 'react';
 import { useParams, useSearchParams } from 'react-router-dom';
-import { getUserLikePerson } from '../../API/UserApi';
+import { getUserLikeComment, getUserLikePerson } from '../../API/UserApi';
 
 function UserLikePage() {
     const [notFound, setNotFound] = useState(false);
@@ -10,12 +10,18 @@ function UserLikePage() {
 
     const { id } = useParams();
     const [personLikes, setPersonLikes] = useState({});
+    const [collectionLikes, setCollectionLikes] = useState({});
+    const [commentLikes, setCommentLikes] = useState({});
 
     useEffect(() => {
         try {
             const fetchData = async () => {
-                const res = await getUserLikePerson(id, 1);
-                setPersonLikes(res.data);
+                const personRes = await getUserLikePerson(id, 1);
+                setPersonLikes(personRes.data);
+                // const collectionRes = await getUserLikeCollection(id, 1);
+                // setCollectionLikes(collectionRes.data);
+                const commentRes = await getUserLikeComment(id, 1);
+                setCommentLikes(commentRes.data);
             }
             fetchData();
         } catch (error) {
@@ -26,6 +32,10 @@ function UserLikePage() {
     useEffect(() => {
         console.log(personLikes);
     }, [personLikes]);
+
+    useEffect(() => {
+        console.log(commentLikes);
+    }, [commentLikes]);
 
     return (
         <div>유저가 좋아요한 {type} 페이지 - 준비중</div>
