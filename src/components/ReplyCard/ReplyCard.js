@@ -94,7 +94,7 @@ const ReplyCard = ({reply, userInfo, openLogin}) => {
                     <p className="reply-card-text">{replyData?.text}</p>
                     <div className="reply-card-footer">
                         <button onClick={userInfo ? handleLike : openLogin} className="like-button">
-                            <i className={replyData?.liked ? "bi bi-hand-thumbs-up-fill" : "bi bi-hand-thumbs-up"}/>
+                            <i className={replyData?.liked ? "bi bi-heart-fill" : "bi bi-heart"}/>
                         </button>
                         <p>좋아요 <span>{replyData?.likeCount}</span></p>
                     </div>

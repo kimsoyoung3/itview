@@ -70,9 +70,15 @@
 .reply-card-footer>button {
     border: none;
     background: none;
-    font-size: 0.9rem;
+    font-size: 0.8rem;
+    color: #888888;
+}
+
+.bi {
+    vertical-align: middle; /* 텍스트와 세로 가운데 맞춤 */
 }
 
 .reply-card-footer>p {
     margin-bottom: 0;
 }
+

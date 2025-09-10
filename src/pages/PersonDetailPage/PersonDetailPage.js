@@ -145,7 +145,7 @@ const PersonDetailPage = ({userInfo, openLogin}) => {
                     <p>{personInfo?.job}</p>
                 </div>
                  <div className="person-detail-page-profile-like">
-                     <div><button onClick={() => userInfo ? handleLikeClick() : openLogin()}><i className={personInfo?.liked ? "bi bi-hand-thumbs-up-fill" : "bi bi-hand-thumbs-up"}/> 좋아요 {personInfo?.likeCount}명이 이 인물을 좋아합니다.</button></div>
+                     <div><button onClick={() => userInfo ? handleLikeClick() : openLogin()}><i className={personInfo?.liked ? "bi bi-heart-fill" : "bi bi-heart"}/> 좋아요 {personInfo?.likeCount}명이 이 인물을 좋아합니다.</button></div>
                  </div>
             </section>
 

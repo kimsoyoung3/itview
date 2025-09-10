@@ -13,6 +13,9 @@
     margin: 0;
 }
 
+.bi-heart-fill {
+    color: #22C55E;
+}
 
 .comment-card-header {
     display: flex;

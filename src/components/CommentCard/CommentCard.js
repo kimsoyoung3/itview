@@ -165,7 +165,7 @@ const CommentCard = ({comment, content, userInfo, openLogin, newReply, onDelete,
                 <div className="comment-card-footer-btn">
                     <div>
                         <button onClick={userInfo ? () => handleLikeComment(commentData?.id) : openLogin}>
-                            <i className={commentData?.liked ? "bi bi-hand-thumbs-up-fill" : "bi bi-hand-thumbs-up"}/>
+                            <i className={commentData?.liked ? "bi bi-heart-fill" : "bi bi-heart"}/>
                         </button>
                         <button onClick={userInfo ? openReply : openLogin}><i className="bi bi-chat-square"/></button>
                         <button onClick={() => {
