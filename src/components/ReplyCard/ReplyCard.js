@@ -39,45 +39,45 @@ const ReplyCard = ({reply, userInfo, openLogin}) => {
         const text = textRef.current.value;
         if (text) {
             try {
-                const response = await updateReply(replyData.id, { text });
-                if (response.status === 200) {
-                    toast("댓글이 수정되었습니다.");
+                await updateReply(replyData.id, { text });
+                toast("댓글이 수정되었습니다.");
 
-                    setReplyData((prev) => ({ ...prev, text }));
-                    closeUpdateReply();
-                } else {
-                    console.error("Failed to update reply");
-                }
+                setReplyData((prev) => ({ ...prev, text }));
+                closeUpdateReply();
             } catch (error) {
-                console.error("Error updating reply:", error);
+                toast(error.response.data);
             }
         }
     };
 
     const handleReplyDelete = async () => {
         try {
-            const response = await deleteReply(replyData.id);
-            if (response.status === 200) {
-                toast("댓글이 삭제되었습니다.",{
+            await deleteReply(replyData.id);
+            toast("댓글이 삭제되었습니다.",{
 
-                });
+            });
 
-                setReplyData(null);
-            } else {
-                console.error("Failed to delete reply");
-            }
+            setReplyData(null);
         } catch (error) {
-            console.error("Error deleting reply:", error);
+            toast(error.response.data);
         }
     };
 
-    const handleLike = () => {
+    const handleLike = async () => {
         if (replyData?.liked) {
-            unlikeReply(replyData.id);
-            setReplyData((prev) => ({ ...prev, liked: false, likeCount: prev.likeCount - 1 }));
+            try {
+                await unlikeReply(replyData.id);
+                setReplyData((prev) => ({ ...prev, liked: false, likeCount: prev.likeCount - 1 }));
+            } catch (error) {
+                toast(error.response.data);
+            }
         } else {
-            likeReply(replyData.id);
-            setReplyData((prev) => ({ ...prev, liked: true, likeCount: prev.likeCount + 1 }));
+            try {
+                await likeReply(replyData.id);
+                setReplyData((prev) => ({ ...prev, liked: true, likeCount: prev.likeCount + 1 }));
+            } catch (error) {
+                toast(error.response.data);
+            }
         }
     };
 

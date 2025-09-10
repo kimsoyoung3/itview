@@ -35,6 +35,10 @@ function UserCommentPage({ userInfo, openLogin }) {
         console.log(commentList);
     }, [commentList]);
 
+    const onDelete = async () => {
+        window.location.reload();
+    }
+
     return (notFound ? <NotFound /> :
         <div className="user-comment-page container">
             <div className="user-comment-page-wrap">

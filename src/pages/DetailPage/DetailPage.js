@@ -37,8 +37,8 @@ const DetailPage = ({userInfo, openLogin}) => {
 
     /*코멘트 작성*/
     const handleCommentPost = async () => {
-        const res = await postContentComment(window.location.pathname.split('/').pop(), { text: textRef.current.value })
-        if (res.status === 200) {
+        try {
+            const res = await postContentComment(window.location.pathname.split('/').pop(), { text: textRef.current.value })
             closeMyComment();
             getContentComment(window.location.pathname.split('/').pop()).then(response => {
                 setContentDetail(prev => ({
@@ -46,22 +46,29 @@ const DetailPage = ({userInfo, openLogin}) => {
                     myComment: response.data
                 }));
             });
+            toast("코멘트가 등록되었습니다.");
+        } catch (error) {
+            toast(error.response.data);    
         }
     };
 
     /*코멘트 수정*/
     const handleCommentUpdate = async () => {
-        const res = await updateComment(contentDetail?.myComment.id, { text: textRef.current.value })
-        if (res.status === 200) {
-            closeMyComment();
-            getContentComment(window.location.pathname.split('/').pop()).then(response => {
-                setContentDetail(prev => ({
-                    ...prev,
-                    myComment: response.data
-                }));
-            });
+        try {
+            const res = await updateComment(contentDetail?.myComment.id, { text: textRef.current.value })
+            if (res.status === 200) {
+                closeMyComment();
+                getContentComment(window.location.pathname.split('/').pop()).then(response => {
+                    setContentDetail(prev => ({
+                        ...prev,
+                        myComment: response.data
+                    }));
+                });
+            }
+            toast("코멘트가 수정되었습니다.");
+        } catch (error) {
+            toast(error.response.data);
         }
-        console.log(res);
     };
 
     const handleMyCommentSubmit = () => {
@@ -70,7 +77,6 @@ const DetailPage = ({userInfo, openLogin}) => {
         } else {
             handleCommentPost();
         }
-        toast("코멘트를 저장했습니다.")
         closeMyComment();
     };
 
@@ -105,27 +111,31 @@ const DetailPage = ({userInfo, openLogin}) => {
     };
 
     /*보고싶어요 로직 구현*/
-    const handleWish = () => {
+    const handleWish = async () => {
         if (contentDetail?.wishlistCheck) {
             // 위시리스트에서 제거
-            unwishContent(contentDetail.contentInfo.id).then(response => {
-                if (response.status === 200) {
-                    setContentDetail(prev => ({
-                        ...prev,
-                        wishlistCheck: false
-                    }));
-                }
-            });
+            try {
+                await unwishContent(contentDetail.contentInfo.id);
+                setContentDetail(prev => ({
+                    ...prev,
+                    wishlistCheck: false
+                }));
+                toast("위시리스트에서 제거되었습니다.");
+            } catch (error) {
+                toast(error.response.data);
+            }
         } else {
             // 위시리스트에 추가
-            wishContent(contentDetail.contentInfo.id).then(response => {
-                if (response.status === 200) {
-                    setContentDetail(prev => ({
-                        ...prev,
-                        wishlistCheck: true
-                    }));
-                }
-            });
+            try {
+                await wishContent(contentDetail.contentInfo.id)
+                setContentDetail(prev => ({
+                    ...prev,
+                    wishlistCheck: true
+                }));
+                toast("위시리스트에 추가되었습니다.");
+            } catch (error) {
+                toast(error.response.data);
+            }
         }
     };
 

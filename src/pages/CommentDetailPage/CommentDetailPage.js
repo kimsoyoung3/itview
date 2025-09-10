@@ -11,7 +11,7 @@ import NotFound from "../NotFound/NotFound";
 const CommentDetailPage = ({userInfo, openLogin}) => {
     const [notFound, setNotFound] = useState(false);
 
-    const [comments, setComments] = useState({});
+    const [comment, setComment] = useState({});
     const [replies, setReplies] = useState([]);
     const [page, setPage] = useState({});
 
@@ -22,7 +22,7 @@ const CommentDetailPage = ({userInfo, openLogin}) => {
         const fetchData = async () => {
             try {
                 const res = await getCommentAndContent(id)
-                setComments(res.data)
+                setComment(res.data)
     
                 const repliesRes = await getCommentRepliesPaged(id, 1);
                 setReplies(repliesRes.data.content);
@@ -35,12 +35,16 @@ const CommentDetailPage = ({userInfo, openLogin}) => {
     }, [id]);
 
     useEffect(() => {
-        console.log(comments.comment)
-    }, [comments]);
+        console.log(comment.comment)
+    }, [comment]);
 
     useEffect(() => {
         console.log(replies);
     }, [replies]);
+
+    const onDelete = async () => {
+        window.location.href = `/content/${comment.content.id}`;
+    }
 
     const newReply = (data) => {
         setReplies((prev) => ([data, ...prev]));
@@ -77,7 +81,7 @@ const CommentDetailPage = ({userInfo, openLogin}) => {
     return(notFound ? <NotFound /> :
         <div className="comment-detail-page container">
             <div className="comment-detail-page-content">
-                <CommentCard comment={comments?.comment} content={comments?.content} userInfo={userInfo} openLogin={openLogin} newReply={newReply}/>
+                <CommentCard comment={comment?.comment} content={comment?.content} userInfo={userInfo} openLogin={openLogin} newReply={newReply} onDelete={onDelete}/>
 
                 {replies.length > 0 ? (
                     <div>

@@ -2,15 +2,17 @@ import React, {useEffect, useState} from "react";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import "./CommentCard.css"; // CSS 따로 관리
 import { deleteComment, likeComment, postReply, unlikeComment, updateComment } from "../../API/CommentApi";
-import {NavLink} from "react-router-dom";
+import {NavLink, useNavigate} from "react-router-dom";
 import {toast} from "react-toastify";
 
-const CommentCard = ({comment, content, userInfo, openLogin, newReply, clamp = false}) => {
+const CommentCard = ({comment, content, userInfo, openLogin, newReply, onDelete, clamp = false}) => {
     const [commentData, setCommentData] = useState(null);
+    const [contentData, setContentData] = useState(null);
 
     useEffect(() => {
         setCommentData(comment)
-    }, [comment]);
+        setContentData(content)
+    }, [comment, content]);
 
     const [commentModal, setCommentModal] = useState(null);
 
@@ -34,27 +36,23 @@ const CommentCard = ({comment, content, userInfo, openLogin, newReply, clamp = f
         const text = commentTextRef.current.value;
         if (text) {
             try {
-                const response = await updateComment(commentData.id, { text });
-                if (response.status === 200) {
-                    toast("코멘트가 수정되었습니다.");
-                    setCommentData((prev) => ({ ...prev, text }));
-                    closeComment();
-                } else {
-                    console.error("Failed to update comment");
-                }
+                await updateComment(commentData.id, { text });
+                toast("코멘트가 수정되었습니다.");
+                setCommentData((prev) => ({ ...prev, text }));
+                closeComment();
             } catch (error) {
-                console.error("Error updating comment:", error);
+                toast(error.response.data);
             }
         }
     };
 
+    const navigate = useNavigate();
     // 코멘트 삭제
     const handleDeleteComment = async () => {
         try {
-            const contentId = content.id;
             const response = await deleteComment(commentData.id);
             if (response.status === 200) {
-                window.location.replace("/content/" + contentId);
+                onDelete();
             } else {
                 console.error("Failed to delete comment");
             }
@@ -81,26 +79,26 @@ const CommentCard = ({comment, content, userInfo, openLogin, newReply, clamp = f
     // 댓글 좋아요 등록/취소
     const handleLikeComment = async (commentId) => {
         if (commentData.liked) {
-            const res = await unlikeComment(commentId);
-            if (res.status === 200) {
+            try {
+                await unlikeComment(commentId);
                 setCommentData((prev) => ({
                     ...prev,
                     liked: false,
                     likeCount: prev.likeCount - 1,
                 }));
-            } else {
-                console.error("Failed to unlike comment");
+            } catch (error) {
+                toast(error.response.data);
             }
         } else {
-            const res = await likeComment(commentId);
-            if (res.status === 200) {
+            try {
+                await likeComment(commentId);
                 setCommentData((prev) => ({
                     ...prev,
                     liked: true,
                     likeCount: prev.likeCount + 1,
                 }));
-            } else {
-                console.error("Failed to like comment");
+            } catch (error) {
+                toast(error.response.data);
             }
         }
     };
@@ -109,15 +107,15 @@ const CommentCard = ({comment, content, userInfo, openLogin, newReply, clamp = f
     const handleReplySubmit = async () => {
         const text = replyTextRef.current.value;
         if (text) {
-            const res = await postReply(commentData.id, { text });
-            if (res.status === 200) {
+            try {
+                const res = await postReply(commentData.id, { text });
                 toast("댓글이 등록되었습니다.");
 
                 if (newReply) {
                     newReply(res.data);
                 }
-            } else {
-                toast("댓글 등록에 실패했습니다. 다시 시도해주세요.");
+            } catch (error) {
+                toast(error.response.data);
             }
         }
         closeReply();
@@ -141,15 +139,15 @@ const CommentCard = ({comment, content, userInfo, openLogin, newReply, clamp = f
 
             {/* 내용 */}
             <div className="comment-card-content">
-                {content && (
+                {contentData?.id && (
                     <div className="comment-card-content-wrap">
                         <div className="comment-card-content-left">
-                            <NavLink to={`/content/${content.id}`}><img src={content.poster} alt=""/></NavLink>
+                            <NavLink to={`/content/${contentData.id}`}><img src={contentData.poster} alt=""/></NavLink>
                         </div>
                         <ul className="comment-card-content-right m-0 p-0">
-                            <li>{content.title}</li>
-                            <li>{content.contentType} &middot; <span>{content.releaseDate}</span></li>
-                            <li>평균 <i className="bi bi-star-fill"/>{content.ratingAvg.toFixed(1)}</li>
+                            <li>{contentData.title}</li>
+                            <li>{contentData.contentType} &middot; <span>{contentData.releaseDate}</span></li>
+                            <li>평균 <i className="bi bi-star-fill"/>{contentData.ratingAvg.toFixed(1)}</li>
                         </ul>
                     </div>
                 )}

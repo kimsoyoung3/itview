@@ -1,5 +1,6 @@
 import axios from "axios";
 
+export const getContentTitle = (contentId) => axios.get(`${process.env.REACT_APP_API_URL}/content/${contentId}/title`, {withCredentials: true});
 export const getContentDetail = (contentId) => axios.get(`${process.env.REACT_APP_API_URL}/content/${contentId}`, {withCredentials: true});
 export const getContentCredit = (contentId, page) => axios.get(`${process.env.REACT_APP_API_URL}/content/${contentId}/credit?page=${page}`, {withCredentials: true});
 export const postContentRating = (contentId, data) => axios.post(`${process.env.REACT_APP_API_URL}/content/${contentId}/rating`, data, {withCredentials: true});
