@@ -176,7 +176,7 @@ const PersonDetailPage = ({userInfo, openLogin}) => {
 
                                                 <div className="domain-list-ratingAvg">
                                                     {item.ratingAvg && (
-                                                        <div>평균 <i className="bi bi-star-fill"/> {item.ratingAvg.toFixed(1)}</div>
+                                                        <div>평균 <i className="bi bi-star-fill"/> {(item.ratingAvg / 2).toFixed(1)}</div>
                                                     )}
                                                 </div>
 

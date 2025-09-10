@@ -303,7 +303,7 @@ const DetailPage = ({userInfo, openLogin}) => {
                         </div>
                         <ul className="poster-bottom">
                             <li>별점 그래프</li>
-                            <li>평균 <i className="bi bi-star-fill"></i> {contentDetail?.contentInfo?.ratingAvg?.toFixed(1)}
+                            <li>평균 <i className="bi bi-star-fill"></i> {(contentDetail?.contentInfo?.ratingAvg / 2).toFixed(1)}
                                 <span className="poster-bottom-num"> &#40;{contentDetail?.ratingCount}명&#41;</span>
                             </li>
                             {/*별점 그래프 들어갈 자리*/}
@@ -368,7 +368,7 @@ const DetailPage = ({userInfo, openLogin}) => {
 
                             {/*평균 별점 표시*/}
                             <div className="info-top-center">
-                                <p className="average-rating">{contentDetail?.contentInfo?.ratingAvg?.toFixed(1)}</p>
+                                <p className="average-rating">{(contentDetail?.contentInfo?.ratingAvg / 2).toFixed(1)}</p>
                                 <p className="average-rating-text">평균 별점 <span className="average-rating-num">&#40;{contentDetail?.ratingCount}명&#41;</span></p>
                             </div>
 

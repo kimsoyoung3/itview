@@ -5,22 +5,24 @@
     height: 100%;
 }
 
-.credit-card-image {
-    width: 60px;
-}
-
-.credit-card-image img {
-    width: 100%;
-    max-width: 150px;
-    border-radius: 4px;
-    object-fit: cover;
-    display: block;
-}
-
 .credit-card-inner {
     display: flex;
     align-items: center;
     gap: 8px;
+}
+
+.credit-card-image {
+    width: 50px;
+    height: 50px;
+    flex-shrink: 0;
+}
+
+.credit-card-image>img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    border-radius: 4px;
+    object-fit: cover;
 }
 
 .credit-card-info {
