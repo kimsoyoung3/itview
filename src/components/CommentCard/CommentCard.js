@@ -2,15 +2,17 @@ import React, {useEffect, useState} from "react";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import "./CommentCard.css"; // CSS 따로 관리
 import { deleteComment, likeComment, postReply, unlikeComment, updateComment } from "../../API/CommentApi";
-import {NavLink} from "react-router-dom";
+import {NavLink, useNavigate} from "react-router-dom";
 import {toast} from "react-toastify";
 
-const CommentCard = ({comment, content, userInfo, openLogin, newReply, clamp = false}) => {
+const CommentCard = ({comment, content, userInfo, openLogin, newReply, onDelete, clamp = false}) => {
     const [commentData, setCommentData] = useState(null);
+    const [contentData, setContentData] = useState(null);
 
     useEffect(() => {
         setCommentData(comment)
-    }, [comment]);
+        setContentData(content)
+    }, [comment, content]);
 
     const [commentModal, setCommentModal] = useState(null);
 
@@ -44,13 +46,13 @@ const CommentCard = ({comment, content, userInfo, openLogin, newReply, clamp = f
         }
     };
 
+    const navigate = useNavigate();
     // 코멘트 삭제
     const handleDeleteComment = async () => {
         try {
-            const contentId = content.id;
             const response = await deleteComment(commentData.id);
             if (response.status === 200) {
-                window.location.replace("/content/" + contentId);
+                onDelete();
             } else {
                 console.error("Failed to delete comment");
             }
@@ -137,15 +139,15 @@ const CommentCard = ({comment, content, userInfo, openLogin, newReply, clamp = f
 
             {/* 내용 */}
             <div className="comment-card-content">
-                {content && (
+                {contentData?.id && (
                     <div className="comment-card-content-wrap">
                         <div className="comment-card-content-left">
-                            <NavLink to={`/content/${content.id}`}><img src={content.poster} alt=""/></NavLink>
+                            <NavLink to={`/content/${contentData.id}`}><img src={contentData.poster} alt=""/></NavLink>
                         </div>
                         <ul className="comment-card-content-right m-0 p-0">
-                            <li>{content.title}</li>
-                            <li>{content.contentType} &middot; <span>{content.releaseDate}</span></li>
-                            <li>평균 <i className="bi bi-star-fill"/>{content.ratingAvg.toFixed(1)}</li>
+                            <li>{contentData.title}</li>
+                            <li>{contentData.contentType} &middot; <span>{contentData.releaseDate}</span></li>
+                            <li>평균 <i className="bi bi-star-fill"/>{contentData.ratingAvg.toFixed(1)}</li>
                         </ul>
                     </div>
                 )}

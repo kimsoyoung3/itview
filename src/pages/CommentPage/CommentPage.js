@@ -3,7 +3,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import "./CommentPage.css";
 import {useParams} from "react-router-dom";
 import CommentCard from "../../components/CommentCard/CommentCard";
-import {getContentCommentsPaged} from "../../API/ContentApi";
+import {getContentCommentsPaged, getContentTitle} from "../../API/ContentApi";
 import NotFound from "../NotFound/NotFound";
 
 const CommentPage = ({userInfo, openLogin}) => {
@@ -11,6 +11,7 @@ const CommentPage = ({userInfo, openLogin}) => {
 
     /*URL에서 :id 가져오기*/
     const { id } = useParams();
+    const [title, setTitle] = useState("");
     const [comments, setComments] = useState([]);
     const [page, setPage] = useState({});
     const [order, setOrder] = useState("new");
@@ -22,6 +23,8 @@ const CommentPage = ({userInfo, openLogin}) => {
                 const response = await getContentCommentsPaged(id, "new", 1);
                 setComments(response.data.content);
                 setPage(response.data.page);
+                const titleResponse = await getContentTitle(id);
+                setTitle(titleResponse.data);
             } catch (error) {
                 setNotFound(true);
             }
@@ -34,8 +37,13 @@ const CommentPage = ({userInfo, openLogin}) => {
         console.log(comments)
     }, [comments]);
 
+    const onDelete = async () => {
+        window.location.reload();
+    }
+
     /*다음 페이지 불러오기*/
     const handleNextPage = async () => {
+        console.log("감지")
         if (page.number < page.totalPages - 1) {
             const response = await getContentCommentsPaged(id, order, page.number+2);
             setComments((prev) => ([...prev, ...response.data.content]))
@@ -102,7 +110,7 @@ const CommentPage = ({userInfo, openLogin}) => {
 
             {comments.length > 0 ? (
                 <div className="comment-page-content">
-                    {comments.map(c => <CommentCard key={c.id} comment={c} userInfo={userInfo} openLogin={openLogin}/>)}
+                    {comments.map((c, index) => <CommentCard key={c.id} comment={c} content={{title}} userInfo={userInfo} openLogin={openLogin} onDelete={() => onDelete(index)}/>)}
                 </div>
             ) : (
                 <p>코멘트가 없습니다.</p>
