@@ -147,7 +147,7 @@ const CommentCard = ({comment, content, userInfo, openLogin, newReply, onDelete,
                         <ul className="comment-card-content-right m-0 p-0">
                             <li>{contentData.title}</li>
                             <li>{contentData.contentType} &middot; <span>{contentData.releaseDate}</span></li>
-                            <li>평균 <i className="bi bi-star-fill"/>{(contentData.ratingAvg / 2).toFixed(1)}</li>
+                            <li>평균 <i className="bi bi-star-fill"/>{contentData.ratingAvg ? (contentData.ratingAvg / 2).toFixed(1) : 0}</li>
                         </ul>
                     </div>
                 )}

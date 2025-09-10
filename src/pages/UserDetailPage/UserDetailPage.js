@@ -217,19 +217,19 @@ const UserDetailPage = ({ userInfo, openLogin }) => {
 
                 <div className="user-detail-like">
                     <p>좋아요</p>
-                    <NavLink className="user-detail-like-list">
+                    <NavLink to={`/user/${id}/like?type=person`} className="user-detail-like-list">
                         <div>좋아한 인물 <span>{userDetail?.personLikeCount}</span></div>
                         <button><i className="bi bi-chevron-right"></i></button>
                     </NavLink>
 
-                    <NavLink className="user-detail-like-list">
+                    <NavLink to={`/user/${id}/like?type=collection`} className="user-detail-like-list">
                         <div>좋아한 컬렉션 <span>{userDetail?.collectionLikeCount
                         }</span></div>
                         <button><i className="bi bi-chevron-right"></i></button>
                     </NavLink>
 
-                    <NavLink className="user-detail-like-list">
-                        <div>좋아한 코멘트 <span>{userDetail?.commentCount}</span></div>
+                    <NavLink to={`/user/${id}/like?type=comment`} className="user-detail-like-list">
+                        <div>좋아한 코멘트 <span>{userDetail?.commentLikeCount}</span></div>
                         <i className="bi bi-chevron-right"></i>
                     </NavLink>
                 </div>
