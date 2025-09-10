@@ -71,15 +71,15 @@ function UserCommentPage({ userInfo, openLogin }) {
                 <div>
                     <div className="user-comment-tab-title">
                         <div className={`comment-page-tab-btn ${contentType === "movie" ? "active" : ""}`}
-                             onClick={(e) => setContentType(e.target.id)} id="movie">영화</div>
+                             onClick={() => setContentType('movie')}>영화</div>
                         <div className={`comment-page-tab-btn ${contentType === "series" ? "active" : ""}`}
-                             onClick={(e) => setContentType(e.target.id)} id="series">시리즈</div>
+                             onClick={() => setContentType('series')}>시리즈</div>
                         <div className={`comment-page-tab-btn ${contentType === "book" ? "active" : ""}`}
-                             onClick={(e) => setContentType(e.target.id)} id="book">책</div>
+                             onClick={() => setContentType('book')}>책</div>
                         <div className={`comment-page-tab-btn ${contentType === "webtoon" ? "active" : ""}`}
-                             onClick={(e) => setContentType(e.target.id)} id="webtoon">웹툰</div>
+                             onClick={() => setContentType('webtoon')}>웹툰</div>
                         <div className={`comment-page-tab-btn ${contentType === "record" ? "active" : ""}`}
-                             onClick={(e) => setContentType(e.target.id)} id="record">음반</div>
+                             onClick={() => setContentType('record')}>음반</div>
 
                         <span
                             className="comment-tab-indicator"

@@ -148,9 +148,9 @@ const UserContentRatingPage = ({userInfo}) => {
                 <div className="rating-wrap">
                     <div className="rating-wrap-title">
                         <div className={`rating-page-tab-btn ${activeId === "rating-page-tab1" ? "active" : ""}`}
-                           onClick={(e) => setActiveId(e.target.id)} id="rating-page-tab1">전체</div>
+                           onClick={() => setActiveId('rating-page-tab1')}>전체</div>
                         <div className={`rating-page-tab-btn ${activeId === "rating-page-tab2" ? "active" : ""}`}
-                           onClick={(e) => setActiveId(e.target.id)} id="rating-page-tab2">별점순</div>
+                           onClick={() => setActiveId('rating-page-tab2')}>별점순</div>
 
                         <span
                             className="rating-tab-indicator"

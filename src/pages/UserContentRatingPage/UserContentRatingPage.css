@@ -52,7 +52,6 @@
     transition: transform 0.3s ease, width 0.3s ease;
 }
 
-
 .rating-page-tab1 {
     margin-top: 20px;
 }
@@ -92,6 +91,7 @@
 }
 
 .empty-message {
+    font-size: 0.9rem;
     margin: 50px 0;
     color: #555555;
     text-align: center;

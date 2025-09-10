@@ -1,9 +1,69 @@
 .user-like-page {
     margin-top: 114px;
+    max-width: 700px;
 }
 
 .user-like-page-wrap>h1 {
     font-size: 1.5rem;
     font-weight: bold;
     margin-bottom: 30px;
+}
+
+.user-like-title {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    text-align: center;
+    width: 100%;
+    cursor: pointer;
+    position: relative;
+    border-bottom: 1px solid #eeeeee;
+}
+
+.like-page-tab-btn {
+    flex: 1;
+    text-align: center;
+    cursor: pointer;
+    color: #888888;
+    font-weight: bold;
+    font-size: 0.8rem;
+    padding: 5px 0;
+}
+
+.like-page-tab-btn.active {
+    color: black;
+}
+
+.like-tab-indicator {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    height: 2px;
+    background: #555555;
+    transition: transform 0.3s ease, width 0.3s ease;
+}
+
+.like-page-person-content {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr); /* 4등분 */
+    gap: 10px;
+    margin-top: 20px;
+}
+
+.like-page-content-btn {
+    display: flex;
+    justify-content: center;
+    margin: 20px 0;
+}
+
+.like-page-content-btn>button {
+    border: none;
+    background: #d9d9d9;
+    color: #888888;
+    padding: 8px 20px;
+    border-radius: 5px;
+}
+
+.like-page-content {
+    margin-top: 20px;
 }
