@@ -71,12 +71,17 @@
     margin: 0;
 }
 
-.user-collection-add-image-title>button {
+.user-collection-add-image-title-btn>button {
     border: none;
     background: none;
     font-size: 0.9rem;
     color: #22c55e;
 }
+
+.user-collection-add-image-title-prev-btn {
+    padding-right: 8px;
+}
+
 
 .user-collection-add-image-list {
     display: grid;
