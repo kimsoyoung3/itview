@@ -1,7 +1,8 @@
-import {React, useRef, useState} from 'react';
+import {React, use, useEffect, useRef, useState} from 'react';
 import "./UserCollectionAddPage.css"
 import { toast } from 'react-toastify';
 import { CollectionCreate } from '../../API/CollectionApi';
+import { searchContent } from '../../API/ContentApi';
 
 const UserCollectionAddPage = () => {
     const [collectionAddModal, setCollectionAddModal] = useState()
@@ -11,6 +12,42 @@ const UserCollectionAddPage = () => {
 
     const title = useRef();
     const description = useRef();
+
+    const [keyword, setKeyword] = useState("");
+    const [debounceQuery, setDebounceQuery] = useState(keyword);
+    const [searchResults, setSearchResults] = useState({});
+
+    useEffect(() => {
+        const handler = setTimeout(() => {
+            setDebounceQuery(keyword);
+        }, 500);
+
+        return () => {
+            clearTimeout(handler);
+        };
+    }, [keyword]);
+
+    useEffect(() => {
+        const fetchSearchResults = async () => {
+            if(debounceQuery){
+                try {
+                    const res = await searchContent(debounceQuery, 1);
+                    setSearchResults(res.data);
+                    toast("작품 검색에 성공했습니다.");
+                } catch (error) {
+                    toast("작품 검색에 실패했습니다.");
+                    return;
+                }
+            }
+        }
+        fetchSearchResults();
+    }, [debounceQuery]);
+
+    useEffect(() => {
+        if (searchResults?.content?.length > 0) {
+            console.log(searchResults);
+        }
+    }, [searchResults]);
 
     const handleCreateCollection = async () => {
         if(title.current.value === ""){
@@ -80,6 +117,8 @@ const UserCollectionAddPage = () => {
                                     type="text"
                                     placeholder="검색하여 작품 추가하기"
                                     className="collection-add-modal-search-input"
+                                    onChange={(e) => setKeyword(e.target.value)}
+                                    value={keyword}
                                 />
                             </div>
                         </div>
