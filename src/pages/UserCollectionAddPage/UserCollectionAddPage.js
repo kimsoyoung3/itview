@@ -153,7 +153,7 @@ const UserCollectionAddPage = () => {
 
                     <div className="user-collection-add-image-list">
                         <div className="user-collection-add-image-box">
-                            <button className="user-collection-add-image-btn" onClick={openCollectionAddModal}>
+                            <button className="user-collection-add-image-btn" onClick={() => {openCollectionAddModal(); setTempItems([]); setEdit(false);}}>
                                 <i className="bi bi-plus-lg"></i>
                                 <p>작품추가</p>
                             </button>
@@ -163,7 +163,7 @@ const UserCollectionAddPage = () => {
                         {selectedItems?.length > 0 && (selectedItems?.map((item, index) =>
                             <div className="form-check user-collection-add-image-map">
                                 {edit &&(
-                                    <input className="form-check-input add-image-input " type="checkbox" value="" id={`add-image-input-${index}`}/>
+                                    <input className="form-check-input add-image-input " type="checkbox" value="" id={`add-image-input-${index}`} onChange={() => handleDeleteItems(item)}/>
                                 )}
 
                                 <label className="form-check-label user-collection-add-image" htmlFor={`add-image-input-${index}`}>
