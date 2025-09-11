@@ -122,12 +122,27 @@ const UserCollectionAddPage = () => {
                 <textarea placeholder="컬렉션 설명을 입력해주세요" rows={5} className="user-collection-add-text" maxLength={200} ref={description}/>
 
                 <div className="user-collection-add-image-wrap">
-                    <p>작품들</p>
-                    <div className="user-collection-add-image-box">
-                        <button className="user-collection-add-image-btn" onClick={openCollectionAddModal}>
-                            <i className="bi bi-plus-lg"></i>
-                            <p>작품추가</p>
-                        </button>
+                    <div className="user-collection-add-image-title">
+                        <p>작품들</p>
+                        {selectedItems?.length > 0 &&(
+                            <span>수정하기</span>
+                        )}
+                    </div>
+
+                    <div className="user-collection-add-image-list">
+                        <div className="user-collection-add-image-box">
+                            <button className="user-collection-add-image-btn" onClick={openCollectionAddModal}>
+                                <i className="bi bi-plus-lg"></i>
+                                <p>작품추가</p>
+                            </button>
+                            <p>아무것도 없음</p>
+                        </div>
+                        {selectedItems?.length > 0 && (selectedItems?.map(item =>
+                            <div className="user-collection-add-image">
+                                <img src={item.poster} alt=""/>
+                                <p>{item.title}</p>
+                            </div>
+                        ))}
                     </div>
                 </div>
             </div>
@@ -142,7 +157,9 @@ const UserCollectionAddPage = () => {
 
                         <div className="collection-add-modal-content-top">
                             <p className="collection-add-modal-title">작품 추가</p>
-                            <button className="collection-add-modal-content-btn" onClick={handleAddItems}>추가</button>
+                            <button className={`collection-add-modal-content-btn ${tempItems?.length > 0 ? 'has-items' : ''}`} onClick={handleAddItems}>
+                                {tempItems?.length > 0 && `${tempItems?.length}개`} 추가
+                            </button>
                         </div>
 
                         <div className="collection-add-modal-content-middle">
