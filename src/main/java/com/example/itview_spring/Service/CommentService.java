@@ -30,7 +30,10 @@ public class CommentService {
     // 코멘트 추가
     public void addComment(Integer userId, Integer contentId, String text) {
         if (!contentRepository.existsById(contentId)) {
-            throw new NoSuchElementException("Invalid contentId: " + contentId);
+            throw new NoSuchElementException("존재하지 않는 컨텐츠입니다");
+        }
+        if (commentRepository.findByUserIdAndContentId(userId, contentId).isPresent()) {
+            throw new IllegalStateException("이미 코멘트를 작성한 컨텐츠입니다");
         }
         CommentEntity comment = new CommentEntity();
         comment.setUser(userRepository.findById(userId).orElseThrow(() -> new RuntimeException("User not found")));
@@ -42,7 +45,7 @@ public class CommentService {
     // 코멘트 조회
     public CommentDTO getCommentDTO(Integer userId, Integer contentId) {
         if (!contentRepository.existsById(contentId)) {
-            throw new NoSuchElementException("Invalid contentId: " + contentId);
+            throw new NoSuchElementException("존재하지 않는 컨텐츠입니다");
         }
         CommentDTO myComment = commentRepository.findCommentDTOByUserIdAndContentId(userId, contentId).orElse(null);
         return myComment;
@@ -75,6 +78,9 @@ public class CommentService {
     public void likeComment(Integer userId, Integer commentId) {
         if (!commentRepository.existsById(commentId)) {
             throw new NoSuchElementException("존재하지 않는 코멘트입니다");
+        }
+        if (likeRepository.existsByUserIdAndTargetIdAndTargetType(userId, commentId, Replyable.COMMENT)) {
+            return;
         }
         likeRepository.likeTarget(userId, commentId, Replyable.COMMENT);
     }

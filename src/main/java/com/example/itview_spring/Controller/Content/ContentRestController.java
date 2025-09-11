@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.example.itview_spring.Config.CustomUserDetails;
 import com.example.itview_spring.DTO.CommentDTO;
+import com.example.itview_spring.DTO.ContentDTO;
 import com.example.itview_spring.DTO.ContentDetailDTO;
 import com.example.itview_spring.DTO.CreditDTO;
 import com.example.itview_spring.DTO.RatingRequestDTO;
@@ -40,6 +41,21 @@ public class ContentRestController {
     private final CreditService creditService;
     private final CommentService commentService;
     private final RatingService ratingService;
+
+    // 컨텐츠 제목 조회
+    @GetMapping("/{id}/title")
+    public ResponseEntity<String> getContentTitle(@PathVariable("id") Integer id) {
+        String title = contentService.getContentTitle(id);
+        return ResponseEntity.ok(title);
+    }
+
+    // 컨텐츠 제목 검색
+    @GetMapping("/search")
+    public ResponseEntity<Page<ContentDTO>> searchContentByTitle(@RequestParam("title") String title,
+                                                                 @PageableDefault(page=1) Pageable pageable) {
+        Page<ContentDTO> contents = contentService.searchContentByTitle(title, pageable.getPageNumber());
+        return ResponseEntity.ok(contents);
+    }
 
     // 컨텐츠 상세 정보 조회
     @GetMapping("/{id}")
@@ -127,5 +143,10 @@ public class ContentRestController {
     @ExceptionHandler(NoSuchElementException.class)
     public ResponseEntity<String> handleNoSuchElementException(NoSuchElementException ex) {
         return ResponseEntity.status(404).body(ex.getMessage());
+    }
+
+    @ExceptionHandler(IllegalStateException.class)
+    public ResponseEntity<String> handleIllegalStateException(IllegalStateException ex) {
+        return ResponseEntity.status(400).body(ex.getMessage());
     }
 }

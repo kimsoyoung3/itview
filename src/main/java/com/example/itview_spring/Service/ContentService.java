@@ -20,9 +20,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 @Transactional
 public class ContentService {
-    private final CreditRepository creditRepository;
     private final CommentService commentService;
-    private final PersonRepository personRepository;
 
     private final ContentRepository contentRepository;
     private final WishlistRepository wishlistRepository;
@@ -194,6 +192,22 @@ public class ContentService {
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     // 0909 아래 holdind함
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    // 컨텐츠 제목 조회
+    public String getContentTitle(Integer contentId) {
+        if (!contentRepository.existsById(contentId)) {
+            throw new NoSuchElementException("존재하지 않는 컨텐츠입니다");
+        }
+        return contentRepository.findTitleById(contentId);
+    }
+
+    // 컨텐츠 제목 검색
+    public Page<ContentDTO> searchContentByTitle(String title, int page) {
+        Pageable pageable = PageRequest.of(page - 1, 10);
+
+        Page<ContentEntity> contentPage = contentRepository.findByTitleContainingOrderByReleaseDateDesc(title, pageable);
+        return contentPage.map(content -> modelMapper.map(content, ContentDTO.class));
+    }
+
     // 컨텐츠 상세 정보 조회
     @Transactional
     public ContentDetailDTO getContentDetail(Integer contentId, Integer userId) {
@@ -268,7 +282,7 @@ public class ContentService {
         if (!contentRepository.existsById(contentId)) {
             throw new NoSuchElementException("존재하지 않는 컨텐츠입니다");
         }
-        Pageable pageable = PageRequest.of(page - 1, 1);
+        Pageable pageable = PageRequest.of(page - 1, 3);
         return commentRepository.findByContentId(userId, contentId, order, pageable);
     }
 
@@ -279,6 +293,9 @@ public class ContentService {
         }
         if (!contentRepository.existsById(contentId)) {
             throw new NoSuchElementException("존재하지 않는 컨텐츠입니다.");
+        }
+        if (wishlistRepository.existsByUserIdAndContentId(userId, contentId)) {
+            return;
         }
 
         WishlistEntity wishlistEntity = new WishlistEntity();
@@ -296,6 +313,6 @@ public class ContentService {
         if (!contentRepository.existsById(contentId)) {
             throw new NoSuchElementException("존재하지 않는 컨텐츠입니다.");
         }
-
+        wishlistRepository.deleteByUserIdAndContentId(userId, contentId);
     }
 }

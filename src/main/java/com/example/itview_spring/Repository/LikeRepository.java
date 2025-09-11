@@ -16,6 +16,9 @@ public interface LikeRepository extends JpaRepository<LikeEntity, Integer> {
     @Query("DELETE FROM LikeEntity l WHERE l.targetId = :targetId AND l.targetType = :targetType")
     void deleteByTargetIdAndTargetType(@Param("targetId") Integer targetId, @Param("targetType") Replyable targetType);
 
+    // 특정 대상에 대한 사용자의 좋아요 존재 여부 확인
+    Boolean existsByUserIdAndTargetIdAndTargetType(Integer userId, Integer targetId, Replyable targetType);
+
     // 특정 대상에 좋아요 등록
     @Modifying
     @Query("INSERT INTO LikeEntity (user.id, targetId, targetType) VALUES (:userId, :targetId, :targetType)")

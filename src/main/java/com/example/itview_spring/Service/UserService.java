@@ -8,12 +8,14 @@ import com.example.itview_spring.DTO.ContentResponseDTO;
 import com.example.itview_spring.DTO.EmailDTO;
 import com.example.itview_spring.DTO.EmailVerificationDTO;
 import com.example.itview_spring.DTO.NewPasswordDTO;
+import com.example.itview_spring.DTO.PersonDTO;
 import com.example.itview_spring.DTO.RatingDTO;
 import com.example.itview_spring.DTO.RegisterDTO;
 import com.example.itview_spring.DTO.UserContentCountDTO;
 import com.example.itview_spring.DTO.UserProfileUpdateDTO;
 import com.example.itview_spring.DTO.UserRatingCountDTO;
 import com.example.itview_spring.DTO.UserResponseDTO;
+import com.example.itview_spring.DTO.AdminUserDTO;
 import com.example.itview_spring.Entity.EmailVerificationEntity;
 import com.example.itview_spring.Entity.UserEntity;
 import com.example.itview_spring.Repository.*;
@@ -36,6 +38,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 
 import java.io.IOException;
 import java.util.List;
@@ -51,6 +54,7 @@ public class UserService implements UserDetailsService {
     private final UserRepository userRepository;
     private final CommentRepository commentRepository;
     private final RatingRepository ratingRepository;
+    private final PersonRepository personRepository;
     private final EmailVerificationRepository emailVerificationRepository;
     private final ModelMapper modelMapper;
     private final PasswordEncoder passwordEncoder;
@@ -233,7 +237,49 @@ public class UserService implements UserDetailsService {
         if (!userRepository.existsById(userId)) {
             throw new NoSuchElementException("존재하지 않는 유저입니다.");
         }
-        Pageable pageable = PageRequest.of(page - 1, 10);
+        Pageable pageable = PageRequest.of(page - 1, 1);
         return commentRepository.findCommentAndContentByUserId(loginUserId, userId, contentType, pageable, order);
+    }
+
+    // 유저가 좋아요한 인물 조회
+    public Page<PersonDTO> getPersonUserLike(Integer userId, Integer page) {
+        if (!userRepository.existsById(userId)) {
+            throw new NoSuchElementException("존재하지 않는 유저입니다.");
+        }
+        Pageable pageable = PageRequest.of(page - 1, 12);
+        return personRepository.findPersonUserLike(userId, pageable);
+    }
+
+    // 유저가 좋아요한 코멘트 조회
+    public Page<CommentAndContentDTO> getCommentUserLike(Integer loginUserId, Integer userId, Integer page) {
+        if (!userRepository.existsById(userId)) {
+            throw new NoSuchElementException("존재하지 않는 유저입니다.");
+        }
+        Pageable pageable = PageRequest.of(page - 1, 1);
+        return commentRepository.findCommentAndContentUserLike(loginUserId, userId, pageable);
+    }
+
+    // 관리자 페이지 - 유저 목록 조회
+    public Page<AdminUserDTO> list(Pageable pageable, String keyword) {
+        Page<UserEntity> userEntities;
+
+        if (StringUtils.hasText(keyword)) {
+            // 새로 추가한 레포지토리 메서드를 호출하여 검색
+            userEntities = userRepository.findByKeyword(keyword, pageable);
+        } else {
+            // 키워드가 없으면 전체 목록 조회
+            userEntities = userRepository.findAll(pageable);
+        }
+
+        // UserEntity Page를 AdminUserDTO Page로 변환
+        return userEntities.map(userEntity -> {
+            AdminUserDTO dto = new AdminUserDTO();
+            dto.setId(userEntity.getId());
+            dto.setNickname(userEntity.getNickname());
+            dto.setIntroduce(userEntity.getIntroduction());
+            dto.setProfile(userEntity.getProfile());
+            dto.setEmail(userEntity.getEmail());
+            return dto;
+        });
     }
 }

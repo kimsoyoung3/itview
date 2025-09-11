@@ -45,8 +45,10 @@
         <!-- 영상 등록 버튼은 a 태그로 분리 -->
 <!--         <a th:href="@{/content/{contentId}/credit(contentId=${contentDTO.id})}"-->
 <!--           class="btn btn-success mt-3">📹 크레딧 등록/수정</a>-->
-         <a th:href="@{'/content/' + ${contentId} + '/credit'}"
-           class="btn btn-success mt-3">📂 크레딧 등록/수정</a>
+            <a th:href="@{'/content/' + ${contentId} + '/credit'}"
+               class="btn btn-success mt-3">📂 크레딧 등록/수정</a>
+<!--        <a th:href="@{/person/list}" class="btn btn-success mt-3">📂 인물 목록</a>-->
+
         <!-- 수정된 후 데이터 보기 -->
         <!-- 선택된 장르를 단순 리스트로 표현 -->
 

@@ -37,6 +37,7 @@ public class CreditService {
     private final ContentRepository contentRepository;
     private final ExternalServiceRepository externalServiceRepository;
     private final PersonRepository personRepository;
+
     private final ModelMapper modelMapper;
 
     //    itview-spring/
@@ -75,16 +76,16 @@ public class CreditService {
     /**
      * 전체 조회
      */
-    @Transactional(readOnly = true)
-    public List<CreditDTO> getCreditsByContentId(Integer contentId) {
-        if (!contentRepository.existsById(contentId)) {
-            throw new NoSuchElementException("존재하지 않는 콘텐츠입니다: " + contentId);
-        }
-        return creditRepository.findByContentId(contentId)
-                .stream()
-                .map(this::mapToDTO)
-                .collect(Collectors.toList());
-    }
+//    @Transactional(readOnly = true)
+//    public List<CreditDTO> getCreditsByContentId(Integer contentId) {
+//        if (!contentRepository.existsById(contentId)) {
+//            throw new NoSuchElementException("존재하지 않는 콘텐츠입니다: " + contentId);
+//        }
+//        return creditRepository.findByContentId(contentId)
+//                .stream()
+//                .map(this::mapToDTO)
+//                .collect(Collectors.toList());
+//    }
     // ✅ 콘텐츠 ID로 페이징 조회
     @Transactional(readOnly = true)
     public Page<CreditDTO> getCreditByContentId(Pageable pageable, Integer contentId) {
@@ -215,8 +216,51 @@ public class CreditService {
                 creditEntity.getRole()
         );
     }
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    ////0911 인물검색하여 처리하는 것 추가////////////////////////////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    // 🔹 인물 이름 검색 (부분 일치)
+    @Transactional(readOnly = true)
+    public List<PersonDTO> searchPersons(String keyword) {
+        return personRepository.findByNameContainingIgnoreCase(keyword)
+                .stream()
+                .map(p -> new PersonDTO(
+                        p.getId(),
+                        p.getName(),
+                        p.getProfile(),
+                        p.getJob()
+                ))
+                .collect(Collectors.toList());
+    }
+
+    // 기존 코드 (생략 가능) 위에 holding 처리함
+    @Transactional(readOnly = true)
+    public List<CreditDTO> getCreditsByContentId(Integer contentId) {
+        return creditRepository.findByContentId(contentId)
+                .stream()
+                .map(this::mapToDTO)
+                .collect(Collectors.toList());
+    }
+    ////0911 인물검색하여 처리하는 것 추가 끝 //////////////////////////////////////////////////////////////
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////
     /// ///////////////////////////////////////////////////////////////////////////////////////
     /// ///////////////////////////////////////////////////////////////////////////////////////
     /// ///////////////////////////////////////////////////////////////////////////////////////
@@ -254,5 +298,4 @@ public class CreditService {
         }
         return workDTOPage;
     }
-
 }

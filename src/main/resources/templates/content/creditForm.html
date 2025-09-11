@@ -7,6 +7,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>콘텐츠 등록/수정</title>
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </head>
 <body>
 <main layout:fragment="content">
@@ -22,11 +24,80 @@
             <input type="hidden" name="person.id"
                    th:value="${creditDTO.person != null ? creditDTO.person.id : ''}"/>
             <!-- 등록 버튼은 목록 위쪽에 배치 -->
-            <div class="mb-3">
-                <label class="form-label">인물 이름</label>
-                <input type="text" class="form-control" name="person.name"
-                       th:value="${creditDTO.person?.name}" placeholder="인물 이름 입력" required/>
-            </div>
+            <!------- 0911 검색 추가-->
+
+            <!--            <input type="text" class="form-control" name="keyword" th:value="${keyword}" placeholder="인물 이름검색">-->
+            <!--            <button class="btn btn-success" type="submit">검색</button>-->
+<!--            <label>인물 검색</label>-->
+<!--            <div class="input-group">-->
+<!--                <input type="text" id="personSearchInput" class="form-control" placeholder="인물 이름 입력">-->
+<!--                <button type="button" id="personSearchBtn" class="btn btn-primary">검색</button>-->
+<!--            </div>-->
+
+<!--            &lt;!&ndash; 🔹 검색 결과 표시 &ndash;&gt;-->
+<!--            <ul id="personResults" class="list-group mt-2">-->
+
+<!--                <li th:each="person : ${personResults}"-->
+<!--                    class="list-group-item d-flex justify-content-between align-items-center">-->
+<!--                    <span th:text="${person.name + ' (' + person.job + ')'}">Person Name</span>-->
+<!--                    <button type="button" class="btn btn-sm btn-success selectPersonBtn"-->
+<!--                            th:data-id="${person.id}" th:data-name="${person.name}">선택-->
+<!--                    </button>-->
+<!--                </li>-->
+<!--            </ul>-->
+            <!-- 🔹 선택된 인물  -->
+<!--            <div class="mb-3">-->
+<!--                <label class="form-label">선택된 인물</label>-->
+<!--                <input type="text" class="form-control" name="person.name"-->
+<!--                       th:value="${creditDTO.person?.name}" readonly required/>-->
+<!--            </div>-->
+                <div class="mb-3">
+                    <label class="form-label">선택된 인물</label>
+                    <div class="input-group">
+                        <input type="text" class="form-control" name="person.name"
+                               th:value="${creditDTO.person?.name}" readonly required/>
+                        <button type="button" class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#personModal">
+                            🔍 인물 검색
+                        </button>
+                    </div>
+                </div>
+
+<!--            <input type="hidden" name="person.id" th:value="${creditDTO.person?.id}">-->
+<!--            <input type="text" name="person.name" class="form-control mt-2" th:value="${creditDTO.person?.name}" readonly>-->
+
+
+<!------------------------------------------------------------------------------------------------------------>
+<!--            <tbody>-->
+<!--                <tr th:each="gallery : ${galleryList}">-->
+<!--                    <td th:text="${gallery.id}">1</td>-->
+<!--                    <td th:text="${gallery.photo}">Photo</td>-->
+<!--                    <td>-->
+<!--                        &lt;!&ndash; 수정 버튼 &ndash;&gt;-->
+<!--                        <a th:href="@{'/content/' + ${contentId} + '/gallery?id=' + ${gallery.id}}"-->
+<!--                           class="btn btn-sm btn-warning">✏ 수정</a>-->
+
+<!--                        &lt;!&ndash; 삭제 버튼 (폼 방식으로 galleryId 전달) &ndash;&gt;-->
+<!--                        <form th:action="@{'/content/' + ${contentId} + '/gallery/delete'}"-->
+<!--                              method="post" style="display:inline;">-->
+<!--                            <input type="hidden" name="galleryId" th:value="${gallery.id}"/>-->
+<!--                            <button type="submit" class="btn btn-sm btn-danger">🗑 삭제</button>-->
+<!--                        </form>-->
+<!--                    </td>-->
+<!--                </tr>-->
+<!--                <tr th:if="${galleryList == null or #lists.isEmpty(galleryList)}">-->
+<!--                    <td colspan="4" class="text-center">등록된 갤러리가 없습니다.</td>-->
+<!--                </tr>-->
+<!--            </tbody>-->
+<!--            </table>-->
+<!--        </form>-->
+
+        <!--------------------------------------------->
+
+<!--        <div class="mb-3">-->
+<!--            <label class="form-label">인물 이름</label>-->
+<!--            <input type="text" class="form-control" name="person.name"-->
+<!--                   th:value="${creditDTO.person?.name}" placeholder="인물 이름 입력" required/>-->
+<!--        </div>-->
 
             <div class="mb-3">
                 <label class="form-label">부서</label>
@@ -49,7 +120,7 @@
             <!-- 제출 및 목록 버튼 -->
             <button type="submit" class="btn btn-primary">저장</button>
             <a th:href="@{'/content/' + ${contentId} + '/credit'}" class="btn btn-secondary">목록</a>
-            <a th:href="@{'/content/' + ${contentId} + '/gallery'}"class="btn btn-success mt-3">📂 갤러리 등록/수정</a>
+            <a th:href="@{'/content/' + ${contentId} + '/gallery'}" class="btn btn-success mt-3">📂 갤러리 등록/수정</a>
         </form>
         <!-- form 종료 -->
 
@@ -88,12 +159,69 @@
             </tbody>
         </table>
         <!-- Flash 메시지 출력 -->
-        <div th:if="${message}" class="alert alert-success" role="alert" th:text="${message}"></div>
-        <div th:if="${error}" class="alert alert-danger" role="alert" th:text="${error}"></div>
+<!--        <div th:if="${message}" class="alert alert-success" role="alert" th:text="${message}"></div>-->
+<!--        <div th:if="${error}" class="alert alert-danger" role="alert" th:text="${error}"></div>-->
     </div>
 
-    <!-- Bootstrap JS -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- 인물 검색 모달 -->
+    <div class="modal fade" id="personModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">인물 검색</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="input-group mb-3">
+                        <input type="text" id="personSearchInput" class="form-control" placeholder="인물 이름 입력">
+                        <button class="btn btn-primary" id="personSearchBtn">검색</button>
+                    </div>
+                    <div class="row" id="personResults"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('personSearchBtn').addEventListener('click', function () {
+            console.log("1111 가나다라")
+
+            const keyword = document.getElementById('personSearchInput').value;
+            const contentId = [[${contentId}]];
+            fetch(`/content/${contentId}/credit/search-person?keyword=${encodeURIComponent(keyword)}`)
+                .then(res => res.json())
+                .then(data => {
+                    const results = document.getElementById('personResults');
+                    results.innerHTML = '';
+                    if (data.length === 0) {
+                        results.innerHTML = `<p class="text-muted">검색 결과 없음</p>`;
+                        return;
+                    }
+                    data.forEach(person => {
+                        results.innerHTML += `
+                        <div class="col-md-4">
+                          <div class="card mb-3">
+                            <img src="${person.profile ? person.profile : '/images/default-profile.png'}"
+                                 class="card-img-top" style="height:180px; object-fit:cover;">
+                            <div class="card-body">
+                              <h5 class="card-title">${person.name}</h5>
+                              <p class="card-text"><small>${person.job}</small></p>
+                              <button type="button" class="btn btn-success btn-sm"
+                                      onclick="selectPerson('${person.id}', '${person.name}')">선택</button>
+                            </div>
+                          </div>
+                        </div>`;
+                    });
+                });
+        });
+
+        function selectPerson(id, name) {
+            document.querySelector('input[name="person.id"]').value = id;
+            document.querySelector('input[name="person.name"]').value = name;
+            const modal = bootstrap.Modal.getInstance(document.getElementById('personModal'));
+            modal.hide();
+        }
+    </script>
 
 </main>
 </body>
