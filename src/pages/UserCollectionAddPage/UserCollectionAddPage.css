@@ -89,3 +89,88 @@
     font-weight: 600;
 }
 
+/*컬렉션 이미지 추가 모달창*/
+.collection-add-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.7);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+}
+
+.collection-add-modal-content {
+    position: relative;
+    border-radius: 8px;
+    width: 350px;
+    height: 70vh;
+    background-color: white;
+    box-sizing: border-box;
+    overflow: hidden;
+}
+
+.collection-add-modal-close-button {
+    border: none;
+    background: none;
+    color: #22C55E;
+    padding: 10px;
+
+}
+
+.collection-add-modal-content-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 10px;
+}
+
+.collection-add-modal-content-top>p {
+    font-size: 1.1rem;
+    font-weight: bold;
+    margin: 0;
+}
+
+.collection-add-modal-content-top>button {
+    border: none;
+    background: none;
+}
+
+.collection-add-modal-content-middle {
+    border-bottom: 1px solid #eeeeee;
+    padding: 10px;
+}
+
+.collection-add-modal-search-bar {
+    display: flex;
+    align-items: center;
+    background-color: #eee;
+    width: 100%;
+    border-radius: 8px;
+    gap: 10px;
+    padding: 10px ;
+}
+
+.collection-add-modal-search-input {
+    border: none;
+    background: transparent;
+    outline: none;
+    flex: 1;
+    font-size: 1rem;
+}
+
+.collection-add-modal-search-input::placeholder {
+    color: #888888;
+}
+
+.collection-add-modal-search-button {
+    border: none;
+    background: none;
+    font-size: 1rem;
+    cursor: pointer;
+    color: #888;
+}
+
