@@ -117,7 +117,7 @@
     border: none;
     background: none;
     color: #22C55E;
-    padding: 10px;
+    padding: 10px 20px;
 
 }
 
@@ -125,7 +125,7 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 0 10px;
+    padding: 0 20px;
 }
 
 .collection-add-modal-content-top>p {
@@ -137,11 +137,12 @@
 .collection-add-modal-content-top>button {
     border: none;
     background: none;
+    color: #888888;
 }
 
 .collection-add-modal-content-middle {
     border-bottom: 1px solid #eeeeee;
-    padding: 10px;
+    padding: 10px 20px;
 }
 
 .collection-add-modal-search-bar {
