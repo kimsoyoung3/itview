@@ -69,18 +69,18 @@ public class ContentController {
      */
     @GetMapping("/content/list")
     // 전체 목록 조회
-    public String listContent(@PageableDefault(page = 1) Pageable pageable, Model model) {
-        //모든 데이터를 조회
-        //keyword  추가 ****
+    public String listContent(@PageableDefault(page = 0) Pageable pageable, Model model) {
         Page<ContentCreateDTO> contentDTOS = contentService.getAllContents(pageable);
         model.addAttribute("contentDTOS", contentDTOS);
-        //    System.out.println("contentDTO.            ==", contentDTOS);
 
-        // 페이지 정보 생성 후 모델에 추가
-        PageInfoDTO pageInfoDTO = pageInfo.getPageInfo(contentDTOS);
-        model.addAttribute("pageInfoDTO", pageInfoDTO);
-//        model.addAttribute("contentDTOS", contentDTOS);
-//        model.addAttribute("pageInfoDTO", pageInfo.getPageInfo(contentDTOS));
+        // 페이지네이션 블록 계산 로직
+        int currentBlock = contentDTOS.getNumber() / 10; // 한 블록에 10개 페이지 표시
+        int startPage = currentBlock * 10;
+        int endPage = Math.min(startPage + 9, contentDTOS.getTotalPages() - 1);
+
+        model.addAttribute("startPage", startPage);
+        model.addAttribute("endPage", endPage);
+
         return "content/list";
     }
 

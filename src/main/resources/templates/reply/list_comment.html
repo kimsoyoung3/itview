@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="ko"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/mainlayout}">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>댓글 관리</title>
+    <style>
+        /* 테이블 레이아웃을 고정하고, 전체 너비를 100%로 설정 */
+        .table-custom-layout {
+            table-layout: fixed;
+            width: 100%;
+        }
+
+        /* 모든 th와 td는 기본적으로 가운데 정렬 */
+        .table-custom-layout th,
+        .table-custom-layout td {
+            text-align: center;
+            word-wrap: break-word;
+            vertical-align: middle; /* 세로 가운데 정렬 추가 */
+        }
+
+        /* 제목 항목만 왼쪽 정렬하는 클래스 */
+        .text-start {
+            text-align: left;
+        }
+    </style>
+</head>
+<body>
+<main layout:fragment="content">
+    <div class="container mt-3 mb-3">
+        <div class="row">
+            <div class="col-12">
+                <h3 class="mt-5">댓글 관리</h3>
+                <p class="mt-3" th:text="${user.nickname} + '님의 댓글 목록입니다:'"></p>
+
+                <div class="d-flex align-items-center mb-4">
+                    <img th:if="${user.profile}" th:src="${user.profile}" alt="프로필"
+                         class="rounded-circle border border-2 me-3"
+                         style="width: 80px; height: 80px; object-fit: cover;">
+                    <div th:unless="${user.profile}"
+                         class="rounded-circle border border-2 me-3 bg-light d-flex justify-content-center align-items-center"
+                         style="width: 80px; height: 80px;">
+                        <span class="text-muted">No Profile</span>
+                    </div>
+                    <div>
+                        <h5 class="mb-0" th:text="${user.nickname}">닉네임</h5>
+                        <small class="text-muted" th:text="${user.email}">이메일주소</small>
+                    </div>
+                </div>
+
+                <ul class="nav nav-tabs mb-3">
+                    <li class="nav-item">
+                        <a class="nav-link active" aria-current="page" href="#">코멘트</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">컬렉션</a>
+                    </li>
+                </ul>
+
+                <table class="table table-hover table-custom-layout">
+                    <thead>
+                    <tr>
+                        <th class="text-start" style="width:40%;">내용</th>
+                        <th style="width:20%;">타입</th>
+                        <th style="width:20%;">작성 시각</th>
+                        <th style="width:20%;">작업</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:if="${#lists.isEmpty(replies.content)}">
+                        <td colspan="4" class="text-center">작성된 댓글이 없습니다.</td>
+                    </tr>
+                    <tr th:each="reply : ${replies.content}">
+                        <td class="text-start" th:text="${reply.text}"></td>
+                        <td th:text="${reply.targetType}"></td>
+                        <td th:text="${#temporals.format(reply.createdAt, 'yyyy-MM-dd HH:mm')}"></td>
+                        <td>
+                            <a th:href="@{/admin/reply/move/{id}(id=${reply.id})}" class="btn btn-primary">이동</a>
+                            <form th:action="@{/admin/reply/{id}(id=${reply.id})}"
+                                  method="post"
+                                  style="display:inline;"
+                                  onsubmit="return confirm('정말 삭제하시겠습니까?');">
+                                <input type="hidden" name="_method" value="DELETE"/>
+                                <button type="submit" class="btn btn-primary">삭제</button>
+                            </form>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+
+                <div class="d-flex justify-content-center mt-3" th:if="${replies.totalPages >= 1}">
+                    <ul class="pagination">
+                        <li class="page-item" th:classappend="${replies.first} ? 'disabled'">
+                            <a class="page-link"
+                               th:href="@{/user/{id}(id=${user.id}, page=${replies.number - 1})}"
+                               aria-label="Previous">
+                                <span>&laquo;</span>
+                            </a>
+                        </li>
+                        <li class="page-item"
+                            th:each="page : ${#numbers.sequence(0, replies.totalPages - 1)}"
+                            th:classappend="${page eq replies.number} ? 'active'">
+                            <a class="page-link"
+                               th:text="${page + 1}"
+                               th:href="@{/reply/{id}/comment(id=${user.id}, page=${page})}">
+                            </a>
+                        </li>
+                        <li class="page-item" th:classappend="${replies.last} ? 'disabled'">
+                            <a class="page-link"
+                               th:href="@{/user/{id}(id=${user.id}, page=${replies.number + 1})}"
+                               aria-label="Next">
+                                <span>&raquo;</span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+</body>
+</html>
