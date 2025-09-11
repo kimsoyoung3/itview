@@ -39,4 +39,7 @@ public interface UserRepository extends JpaRepository<UserEntity, Integer> {
         where u.id = :id
             """)
     UserResponseDTO findUserResponseById(@Param("id") Integer id);
+
+    @Query("SELECT u FROM UserEntity u WHERE u.nickname LIKE %:keyword% OR u.email LIKE %:keyword%")
+    Page<UserEntity> findByKeyword(@Param("keyword") String keyword, Pageable pageable);
 }

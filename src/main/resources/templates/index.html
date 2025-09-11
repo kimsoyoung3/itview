@@ -1,17 +1,18 @@
 <!DOCTYPE html>
-<html lang="kr"
-    xmlns:th="http://www.thymeleaf.org"
-    xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-    layout:decorate="~{layouts/mainlayout}">
+<html lang="ko"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/mainlayout}">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>관리자 대시보드</title>
 </head>
 <body>
-    <main layout:fragment="content">
-        <h1>Welcome to the Dashboard</h1>
-        <p>This is your main content area.</p>
-    </main>
+<main layout:fragment="content">
+    <div class="container-fluid d-flex flex-column justify-content-center align-items-center" style="height: 85vh;">
+        <h1 class="text-center">it view 관리자 페이지</h1>
+        <p class="text-center">환영합니다! 이곳은 주요 관리 콘텐츠 영역입니다.</p>
+    </div>
+</main>
 </body>
 </html>

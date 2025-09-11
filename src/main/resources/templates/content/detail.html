@@ -8,7 +8,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>콘텐츠 조회</title>
 </head>
-<body>
+<body class="overflow-hidden">
 <main layout:fragment="content">
     <div class="row mt-3 mb-3">
         <div class="col-12 mx-auto" style="max-width: 600px;">
@@ -58,8 +58,8 @@
             </div>
 
             <div class="text-end mt-4">
-                <a th:href="@{/content/{id}/delete(id=${contentDTO.id})}" class="btn btn-primary">삭제</a>
                 <a th:href="@{/content/{id}/update(id=${contentDTO.id})}" class="btn btn-primary">수정</a>
+                <a th:href="@{/content/{id}/delete(id=${contentDTO.id})}" class="btn btn-primary">삭제</a>
                 <a th:href="@{/content/list}" class="btn btn-primary">목록</a>
             </div>
         </div>
