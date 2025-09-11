@@ -3,7 +3,18 @@ package com.example.itview_spring.Service;
 import com.example.itview_spring.Config.CustomUserDetails;
 import com.example.itview_spring.Constant.ContentType;
 import com.example.itview_spring.Constant.Role;
-import com.example.itview_spring.DTO.*;
+import com.example.itview_spring.DTO.CommentAndContentDTO;
+import com.example.itview_spring.DTO.ContentResponseDTO;
+import com.example.itview_spring.DTO.EmailDTO;
+import com.example.itview_spring.DTO.EmailVerificationDTO;
+import com.example.itview_spring.DTO.NewPasswordDTO;
+import com.example.itview_spring.DTO.PersonDTO;
+import com.example.itview_spring.DTO.RatingDTO;
+import com.example.itview_spring.DTO.RegisterDTO;
+import com.example.itview_spring.DTO.UserContentCountDTO;
+import com.example.itview_spring.DTO.UserProfileUpdateDTO;
+import com.example.itview_spring.DTO.UserRatingCountDTO;
+import com.example.itview_spring.DTO.UserResponseDTO;
 import com.example.itview_spring.Entity.EmailVerificationEntity;
 import com.example.itview_spring.Entity.UserEntity;
 import com.example.itview_spring.Repository.*;
@@ -14,8 +25,9 @@ import lombok.RequiredArgsConstructor;
 import net.coobird.thumbnailator.tasks.UnsupportedFormatException;
 
 import org.modelmapper.ModelMapper;
-import org.springframework.data.domain.*;
-import org.springframework.data.jpa.domain.Specification;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -41,6 +53,7 @@ public class UserService implements UserDetailsService {
     private final UserRepository userRepository;
     private final CommentRepository commentRepository;
     private final RatingRepository ratingRepository;
+    private final PersonRepository personRepository;
     private final EmailVerificationRepository emailVerificationRepository;
     private final ModelMapper modelMapper;
     private final PasswordEncoder passwordEncoder;
@@ -225,6 +238,24 @@ public class UserService implements UserDetailsService {
         }
         Pageable pageable = PageRequest.of(page - 1, 1);
         return commentRepository.findCommentAndContentByUserId(loginUserId, userId, contentType, pageable, order);
+    }
+
+    // 유저가 좋아요한 인물 조회
+    public Page<PersonDTO> getPersonUserLike(Integer userId, Integer page) {
+        if (!userRepository.existsById(userId)) {
+            throw new NoSuchElementException("존재하지 않는 유저입니다.");
+        }
+        Pageable pageable = PageRequest.of(page - 1, 12);
+        return personRepository.findPersonUserLike(userId, pageable);
+    }
+
+    // 유저가 좋아요한 코멘트 조회
+    public Page<CommentAndContentDTO> getCommentUserLike(Integer loginUserId, Integer userId, Integer page) {
+        if (!userRepository.existsById(userId)) {
+            throw new NoSuchElementException("존재하지 않는 유저입니다.");
+        }
+        Pageable pageable = PageRequest.of(page - 1, 1);
+        return commentRepository.findCommentAndContentUserLike(loginUserId, userId, pageable);
     }
 
     // 관리자 페이지 - 유저 목록 조회

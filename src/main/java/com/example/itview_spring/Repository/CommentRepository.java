@@ -191,4 +191,46 @@ public interface CommentRepository extends JpaRepository<CommentEntity, Integer>
                 CASE WHEN :order = 'new' THEN c.content.releaseDate END DESC
             """)
     Page<CommentAndContentDTO> findCommentAndContentByUserId(@Param("loginUserId") Integer loginUserId, @Param("userId") Integer userId, @Param("contentType") ContentType contentType, Pageable pageable, @Param("order") String order);
+
+    // 유저가 좋아요한 코멘트 조회
+    @Query("""
+            select new com.example.itview_spring.DTO.CommentAndContentDTO(
+                new com.example.itview_spring.DTO.CommentDTO(
+                    c.id,
+                    c.createdAt,
+                    case when (exists (
+                        select 1 from LikeEntity l2
+                        where l2.targetId = c.id and l2.targetType = 'COMMENT' and l2.user.id = :loginUserId
+                    )) then true else false end,
+                    (select count(l) from LikeEntity l where l.targetId = c.id and l.targetType = 'COMMENT'),
+                    (select count(r) from ReplyEntity r where r.targetId = c.id and r.targetType = 'COMMENT'),
+                    c.text,
+                    new com.example.itview_spring.DTO.UserProfileDTO(
+                        c.user.id,
+                        c.user.nickname,
+                        c.user.introduction,
+                        c.user.profile
+                    ),
+                    (select r.score from RatingEntity r where r.user.id = c.user.id and r.content.id = c.content.id)
+                ),
+                new com.example.itview_spring.DTO.ContentResponseDTO(
+                    c.content.id,
+                    c.content.title,
+                    c.content.contentType,
+                    c.content.creatorName,
+                    c.content.nation,
+                    c.content.description,
+                    c.content.releaseDate,
+                    c.content.poster,
+                    c.content.age,
+                    c.content.duration,
+                    (select AVG(r2.score) from RatingEntity r2 where r2.content.id = c.content.id)
+                )
+            )
+            from LikeEntity l
+            join CommentEntity c on l.targetId = c.id and l.targetType = 'COMMENT'
+            where l.user.id = :userId and l.targetType = 'COMMENT'
+            order by l.id desc
+            """)
+    Page<CommentAndContentDTO> findCommentAndContentUserLike(@Param("loginUserId") Integer loginUserId, @Param("userId") Integer userId, Pageable pageable);
 }
