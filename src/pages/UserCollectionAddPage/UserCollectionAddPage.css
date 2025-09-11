@@ -1,0 +1,91 @@
+.user-collection-add-page {
+    margin-top: 114px;
+    max-width: 700px;
+}
+
+.user-collection-add-page-wrap>h1 {
+    font-size: 1.5rem;
+    font-weight: bold;
+    margin-bottom: 30px;
+}
+
+.user-collection-add-btn-box {
+    text-align: right;
+    margin-bottom: 20px;
+}
+
+.user-collection-add-btn {
+    border: 1px solid #d9d9d9;
+    background: none;
+    color: #888888;
+    padding: 4px 8px;
+    font-size: 0.9rem;
+    border-radius: 4px;
+    font-weight: 500;
+}
+
+.user-collection-add-form {
+    width: 100%;
+    font-size: 0.9rem;
+}
+
+.user-collection-add-title {
+    width: 100%;
+    border: none;
+    border-bottom: 1px solid #d9d9d9;
+    padding-bottom: 10px;
+    margin-bottom: 20px;
+}
+
+.user-collection-add-title:focus {
+    outline: none;
+}
+
+.user-collection-add-text {
+    width: 100%;
+    border: none;
+    border-bottom: 1px solid #d9d9d9;
+    padding-bottom: 10px;
+    margin-bottom: 20px;
+    resize: none;
+}
+
+.user-collection-add-text:focus {
+    outline: none;
+}
+
+.user-collection-add-image-wrap {
+    width: 100%;
+}
+
+.user-collection-add-image-wrap>p {
+    font-size: 1.1rem;
+    font-weight: bold;
+}
+
+.user-collection-add-image-box {
+    background: #f6f6f6;
+    width: 100px;
+    height: 130px;
+    position: relative;
+}
+
+.user-collection-add-image-btn {
+    width: 100%;
+    height: 100%;
+    border: none;
+    background: none;
+}
+
+.user-collection-add-image-btn>i {
+    font-size: 2rem;
+    color: #888888;
+}
+
+.user-collection-add-image-btn>p {
+    font-size: 0.8rem;
+    margin-bottom: 0;
+    color: #888888;
+    font-weight: 600;
+}
+

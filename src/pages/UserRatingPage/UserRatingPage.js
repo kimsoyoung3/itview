@@ -3,6 +3,7 @@ import {NavLink, useParams} from 'react-router-dom';
 import { getUserRatingCount } from '../../API/UserApi';
 import NotFound from '../NotFound/NotFound';
 import "./UserRatingPage.css"
+import CollectionCard from "../../components/CollectionCard/CollectionCard";
 
 function NavKink() {
     return null;
@@ -43,6 +44,7 @@ function UserRatingPage({ userInfo, openLogin }) {
                     <li><NavLink to={`/user/${id}/content/record/rating`}>음반 <span>{userRatingCount?.record}</span></NavLink></li>
                 </ul>
             </div>
+            <CollectionCard/>
         </div>
     )
 }
