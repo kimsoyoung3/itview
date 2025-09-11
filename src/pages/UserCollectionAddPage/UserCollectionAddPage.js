@@ -1,8 +1,10 @@
 import {React, use, useEffect, useRef, useState} from 'react';
 import "./UserCollectionAddPage.css"
+import 'bootstrap/dist/css/bootstrap.min.css';
 import { toast } from 'react-toastify';
 import { CollectionCreate } from '../../API/CollectionApi';
 import { searchContent } from '../../API/ContentApi';
+import ContentEach from "../../components/ContentEach/ContentEach";
 
 const UserCollectionAddPage = () => {
     const [collectionAddModal, setCollectionAddModal] = useState()
@@ -71,6 +73,14 @@ const UserCollectionAddPage = () => {
         }
     }
 
+    const domainNameMap = {
+        "MOVIE" : "영화" ,
+        "SERIES" : "시리즈",
+        "BOOK" : "책",
+        "WEBTOON" : "웹툰",
+        "RECORD" : "음반"
+    }
+
     return (
         <div className="user-collection-add-page container">
             <div className="user-collection-add-page-wrap">
@@ -91,9 +101,6 @@ const UserCollectionAddPage = () => {
                             <i className="bi bi-plus-lg"></i>
                             <p>작품추가</p>
                         </button>
-                        {/*<label htmlFor="user-collection-add-image-input">
-                                <input id="user-collection-add-image-input" type="file"/>
-                            </label>*/}
                     </div>
                 </div>
             </div>
@@ -110,6 +117,7 @@ const UserCollectionAddPage = () => {
                             <p className="collection-add-modal-title">작품 추가</p>
                             <button className="collection-add-modal-content-btn">추가</button>
                         </div>
+
                         <div className="collection-add-modal-content-middle">
                             <div className="collection-add-modal-search-bar">
                                 <button className="collection-add-modal-search-button"><i className="bi bi-search"/></button>
@@ -121,6 +129,25 @@ const UserCollectionAddPage = () => {
                                     value={keyword}
                                 />
                             </div>
+                        </div>
+
+                        <div className="collection-add-modal-content-bottom">
+                            {searchResults?.content?.map(item =>
+                                <div className="form-check">
+                                    <input className="form-check-input" type="checkbox" value="" id="checkDefault"/>
+                                    <label className="form-check-label" htmlFor="checkDefault">
+                                        <div className="collection-add-modal-search-results">
+                                            <div className="collection-add-modal-search-results-img">
+                                                <img src={item.poster ? item.poster : "/basic-bg.jpg"} alt=""/>
+                                            </div>
+                                            <div className="collection-add-modal-search-results-info">
+                                                <p className="collection-add-modal-search-results-info-top">{item.title}</p>
+                                                <p className="collection-add-modal-search-results-info-bottom"><span>{domainNameMap[item.contentType]} &middot; </span><span>{(new Date(item.releaseDate).getFullYear())}</span></p>
+                                            </div>
+                                        </div>
+                                    </label>
+                                </div>
+                            )}
                         </div>
                     </div>
                 </div>
