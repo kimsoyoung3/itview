@@ -71,7 +71,9 @@
     margin: 0;
 }
 
-.user-collection-add-image-title>span {
+.user-collection-add-image-title>button {
+    border: none;
+    background: none;
     font-size: 0.9rem;
     color: #22c55e;
 }
@@ -124,6 +126,9 @@
 .user-collection-add-image-map {
     margin: 0;
     padding: 0;
+    width: 100%;
+    height: 100%;
+    position: relative;
 }
 
 .user-collection-add-image {

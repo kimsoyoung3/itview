@@ -147,7 +147,7 @@ const UserCollectionAddPage = () => {
                     <div className="user-collection-add-image-title">
                         <p>작품들</p>
                         {selectedItems?.length > 0 &&(
-                            <span onClick={handleEditItems}>수정하기</span>
+                            <button onClick={handleEditItems}>수정하기</button>
                         )}
                     </div>
 
@@ -162,10 +162,13 @@ const UserCollectionAddPage = () => {
 
                         {selectedItems?.length > 0 && (selectedItems?.map((item, index) =>
                             <div className="form-check user-collection-add-image-map">
+                                {edit &&(
+                                    <input className="form-check-input add-image-input " type="checkbox" value="" id={`add-image-input-${index}`}/>
+                                )}
+
                                 <label className="form-check-label user-collection-add-image" htmlFor={`add-image-input-${index}`}>
                                     <img src={item.poster} alt=""/>
                                     <p>{item.title}</p>
-                                    <input className="form-check-input add-image-input " type="checkbox" value="" id={`add-image-input-${index}`}/>
                                     {/*<button hidden={!edit} onClick={() => handleDeleteItems(item)}>test</button>*/}
                                 </label>
                             </div>
