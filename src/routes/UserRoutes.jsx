@@ -7,6 +7,7 @@ import UserContentRatingPage from '../pages/UserContentRatingPage/UserContentRat
 import UserContentWishPage from '../pages/UserContentWishPage/UserContentWishPage';
 import UserCommentPage from '../pages/UserCommentPage/UserCommentPage';
 import UserLikePage from '../pages/UserLilkePage/UserLilkePage';
+import UserCollectionPage from '../pages/UserCollectionPage/UserCollectionPage';
 
 function UserRoutes({ userInfo, openLogin }) {
   return (
@@ -18,6 +19,7 @@ function UserRoutes({ userInfo, openLogin }) {
         <Route path=":id/content/:contentType/wish" element={<UserContentWishPage userInfo={userInfo} openLogin={openLogin} />} />
         <Route path=":id/comment" element={<UserCommentPage userInfo={userInfo} openLogin={openLogin} />} />
         <Route path=":id/like" element={<UserLikePage userInfo={userInfo} openLogin={openLogin} />} />
+        <Route path=":id/collection" element={<UserCollectionPage userInfo={userInfo} openLogin={openLogin} />} />
     </Routes>
   )
 }
