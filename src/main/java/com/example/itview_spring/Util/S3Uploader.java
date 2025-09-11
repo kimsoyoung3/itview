@@ -77,13 +77,13 @@ public class S3Uploader {
     }
 
     public String extractKeyFromUrl(String fileUrl) {
-        if (fileUrl == null || fileUrl.isEmpty()) {
-            throw new IllegalArgumentException("fileUrl이 비어있습니다.");
-        }
         return fileUrl.substring(fileUrl.lastIndexOf("/") + 1);
     }
 
     public void deleteFile(String Url) {
+        if (Url == null || Url.isEmpty()) {
+            return;
+        }
         DeleteObjectRequest deleteObjectRequest = DeleteObjectRequest.builder()
                 .bucket(bucketName)
                 .key(extractKeyFromUrl(Url))
