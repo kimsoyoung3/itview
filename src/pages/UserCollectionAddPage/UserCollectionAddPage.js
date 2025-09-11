@@ -152,7 +152,7 @@ const UserCollectionAddPage = () => {
                             )}
 
                             {selectedItems?.length > 0 &&(
-                                <button onClick={handleEditItems}>수정하기</button>
+                                <button onClick={handleEditItems}>{edit ? `${tempItems.length}개 삭제` : "수정하기"}</button>
                             )}
                         </div>
                     </div>
