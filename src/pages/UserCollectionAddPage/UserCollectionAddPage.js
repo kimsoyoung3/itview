@@ -146,9 +146,15 @@ const UserCollectionAddPage = () => {
                 <div className="user-collection-add-image-wrap">
                     <div className="user-collection-add-image-title">
                         <p>작품들</p>
-                        {selectedItems?.length > 0 &&(
-                            <button onClick={handleEditItems}>수정하기</button>
-                        )}
+                        <div className="user-collection-add-image-title-btn">
+                            {edit &&(
+                                <button className="user-collection-add-image-title-prev-btn">취소</button>
+                            )}
+
+                            {selectedItems?.length > 0 &&(
+                                <button onClick={handleEditItems}>수정하기</button>
+                            )}
+                        </div>
                     </div>
 
                     <div className="user-collection-add-image-list">
