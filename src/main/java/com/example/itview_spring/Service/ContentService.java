@@ -190,6 +190,14 @@ public class ContentService {
         return contentRepository.findTitleById(contentId);
     }
 
+    // 컨텐츠 제목 검색
+    public Page<ContentDTO> searchContentByTitle(String title, int page) {
+        Pageable pageable = PageRequest.of(page - 1, 10);
+
+        Page<ContentEntity> contentPage = contentRepository.findByTitleContainingOrderByReleaseDateDesc(title, pageable);
+        return contentPage.map(content -> modelMapper.map(content, ContentDTO.class));
+    }
+
     // 컨텐츠 상세 정보 조회
     @Transactional
     public ContentDetailDTO getContentDetail(Integer contentId, Integer userId) {
