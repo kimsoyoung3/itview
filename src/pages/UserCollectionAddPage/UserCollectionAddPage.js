@@ -35,21 +35,48 @@ const UserCollectionAddPage = () => {
                 try {
                     const res = await searchContent(debounceQuery, 1);
                     setSearchResults(res.data);
-                    toast("작품 검색에 성공했습니다.");
                 } catch (error) {
                     toast("작품 검색에 실패했습니다.");
                     return;
                 }
+            } else {
+                setSearchResults({});
             }
         }
         fetchSearchResults();
     }, [debounceQuery]);
 
     useEffect(() => {
-        if (searchResults?.content?.length > 0) {
-            console.log(searchResults);
-        }
+        console.log(searchResults);
     }, [searchResults]);
+
+    const [selectedItems, setSelectedItems] = useState([]);
+
+    useEffect(() => {
+        console.log(selectedItems);
+    }, [selectedItems]);
+
+    const [tempItems, setTempItems] = useState([]);
+
+    useEffect(() => {
+        console.log(tempItems);
+    }, [tempItems]);
+
+    const handleCheck = async (item) => {
+        if (tempItems.some(i => i.id === item.id)) {
+            setTempItems(tempItems.filter(i => i.id !== item.id));
+        } else {
+            setTempItems([...tempItems, item]);
+        }
+    };
+
+    const handleAddItems = async () => {
+        setSelectedItems([...selectedItems, ...tempItems.filter(item => !selectedItems.some(i => i.id === item.id))]);
+        setTempItems([]);
+        closeCollectionAddModal();
+        setKeyword("");
+        setSearchResults({});
+    }
 
     const handleCreateCollection = async () => {
         if(title.current.value === ""){
@@ -115,7 +142,7 @@ const UserCollectionAddPage = () => {
 
                         <div className="collection-add-modal-content-top">
                             <p className="collection-add-modal-title">작품 추가</p>
-                            <button className="collection-add-modal-content-btn">추가</button>
+                            <button className="collection-add-modal-content-btn" onClick={handleAddItems}>추가</button>
                         </div>
 
                         <div className="collection-add-modal-content-middle">
@@ -132,10 +159,10 @@ const UserCollectionAddPage = () => {
                         </div>
 
                         <div className="collection-add-modal-content-bottom">
-                            {searchResults?.content?.map(item =>
-                                <div className="form-check">
-                                    <input className="form-check-input" type="checkbox" value="" id="checkDefault"/>
-                                    <label className="form-check-label" htmlFor="checkDefault">
+                            {searchResults?.content?.map((item, index) =>
+                                <div className="form-check" key={index}>
+                                    <input className="form-check-input" type="checkbox" value="" id={`checkDefault-${index}`} onChange={() => handleCheck(item)} checked={tempItems.some(i => i.id === item.id)} disabled={selectedItems.some(i => i.id === item.id)}/>
+                                    <label className="form-check-label" htmlFor={`checkDefault-${index}`}>
                                         <div className="collection-add-modal-search-results">
                                             <div className="collection-add-modal-search-results-img">
                                                 <img src={item.poster ? item.poster : "/basic-bg.jpg"} alt=""/>
