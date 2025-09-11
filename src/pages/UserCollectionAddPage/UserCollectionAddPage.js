@@ -148,7 +148,7 @@ const UserCollectionAddPage = () => {
                         <p>작품들</p>
                         <div className="user-collection-add-image-title-btn">
                             {edit &&(
-                                <button className="user-collection-add-image-title-prev-btn">취소</button>
+                                <button className="user-collection-add-image-title-prev-btn" onClick={handleEditCancel}>취소</button>
                             )}
 
                             {selectedItems?.length > 0 &&(
