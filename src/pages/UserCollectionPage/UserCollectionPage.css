@@ -1,0 +1,26 @@
+.user-collection-page {
+    margin-top: 114px;
+    max-width: 800px;
+}
+
+.user-collection-page-wrap-title {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.user-collection-page-wrap-title>h1 {
+    font-size: 1.5rem;
+    font-weight: bold;
+    margin-bottom: 30px;
+}
+
+.user-collection-page-wrap-title>button {
+    border: none;
+    background: none;
+    font-size: 0.9rem;
+    color: #22C55E;
+}
+
+
+

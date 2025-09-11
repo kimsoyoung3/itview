@@ -5,6 +5,7 @@ import "./UserLilkePage.css"
 import CommentCard from "../../components/CommentCard/CommentCard";
 import CreditOrPersonCard from "../../components/CreditOrPersonCard/CreditOrPersonCard";
 import { toast } from 'react-toastify';
+import NotFound from "../NotFound/NotFound";
 
 function UserLikePage({userInfo, openLogin, onDelete}) {
     const [notFound, setNotFound] = useState(false);
@@ -69,7 +70,7 @@ function UserLikePage({userInfo, openLogin, onDelete}) {
         }
     };
 
-    return (
+    return ( notFound ? <NotFound /> :
         <>
             <div className="user-like-page container">{/*유저가 좋아요한 {contentType} 페이지 - 준비중*/}
                 <div className="user-like-page-wrap">
