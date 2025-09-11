@@ -5,7 +5,7 @@
       layout:decorate="~{layouts/mainlayout}">
 <head>
     <meta charset="UTF-8">
-    <title>인물 목록</title>
+    <title>유저 목록</title>
     <style>
         /* 테이블 레이아웃을 고정하고, 전체 너비를 100%로 설정 */
         .table-custom-layout {
@@ -34,46 +34,43 @@
 <body>
 <main layout:fragment="content">
     <div class="container mt-3 mb-3">
-        <h1 class="mt-3">인물 목록</h1>
+        <h1 class="mt-3">유저 목록</h1>
 
         <div class="d-flex justify-content-between align-items-center mb-3">
-            <form th:action="@{/search/person}" method="get">
+            <form th:action="@{/user/list}" method="get">
                 <div class="input-group">
-                    <input class="form-control" type="text" name="keyword" th:value="${keyword}" placeholder="인물 이름 검색" aria-label="인물 이름 검색" aria-describedby="btnPersonSearch" />
-                    <button class="btn btn-primary" id="btnPersonSearch" type="submit">
+                    <input class="form-control" type="text" name="keyword" th:value="${keyword}" placeholder="유저 검색" aria-label="유저 검색" aria-describedby="btnUserSearch" />
+                    <button class="btn btn-primary" id="btnUserSearch" type="submit">
                         <i class="fas fa-search"></i>
                     </button>
                 </div>
             </form>
-
-            <a th:href="@{/person/register}" class="btn btn-primary">등록</a>
         </div>
-        <p>현재 등록한 인물 목록입니다:</p>
-
+        <p th:text="${(keyword == null or #strings.isEmpty(keyword)) ? '현재 등록한 유저 목록입니다:' : keyword + '에 대한 검색 결과입니다.'}">
         <table class="table table-hover table-custom-layout">
             <thead>
             <tr>
-                <th style="width:60%;">이름</th>
-                <th style="width:20%;">직업</th>
+                <th style="width:60%;">이메일</th>
+                <th style="width:20%;">닉네임</th>
                 <th style="width:20%;">작업</th>
             </tr>
             </thead>
             <tbody>
-            <tr th:if="${#lists.isEmpty(personList)}">
+            <tr th:if="${userPage.content.isEmpty()}">
                 <td colspan="4" class="text-center">데이터가 없습니다.</td>
             </tr>
 
-            <tr th:each="person : ${personList}"
+            <tr th:each="user : ${userPage}"
                 class="clickable-row"
-                th:onclick="|window.location.href='@{/person/{id}(id=${person.id})}'|">
-                <td class="text-start" th:text="${person.name}">이름</td>
-                <td th:text="${person.job}">직업</td>
+                th:onclick="|window.location.href='@{/user/{id}(id=${user.id})}'|">
+                <td class="text-start" th:text="${user.email}"></td>
+                <td th:text="${user.nickname}"></td>
                 <td>
-                    <a th:href="@{/person/{id}/update(id=${person.id})}"
+                    <a th:href="@{/user/{id}/update(id=${user.id})}"
                        class="btn btn-primary"
                        onclick="event.stopPropagation();">수정</a>
 
-                    <form th:action="@{/person/{id}(id=${person.id})}"
+                    <form th:action="@{/user/{id}(id=${user.id})}"
                           method="post"
                           style="display:inline;"
                           onsubmit="return confirm('정말 삭제하시겠습니까?');"
@@ -88,28 +85,28 @@
             </tbody>
         </table>
 
-        <div class="d-flex justify-content-center mt-3" th:if="${page != null and page.totalPages > 1}">
+        <div class="d-flex justify-content-center mt-3">
             <ul class="pagination">
-                <li class="page-item" th:classappend="${page.first}? 'disabled'">
+                <li class="page-item" th:classappend="${userPage.first}? 'disabled'">
                     <a class="page-link"
-                       th:href="@{${baseUrl}(page=${page.number - 1}, size=${page.size}, keyword=${keyword})}">
-                        <span>이전</span>
+                       th:href="@{/user/list(page=${userPage.number - 1}, size=${userPage.size}, keyword=${keyword})}">
+                        <span>&laquo;</span>
                     </a>
                 </li>
 
                 <li class="page-item"
-                    th:each="i : ${#numbers.sequence(0, page.totalPages - 1)}"
-                    th:classappend="${i == page.number}? 'active'">
+                    th:each="i : ${#numbers.sequence(startPage, endPage)}"
+                    th:classappend="${i == userPage.number + 1}? 'active'">
                     <a class="page-link"
-                       th:text="${i + 1}"
-                       th:href="@{${baseUrl}(page=${i}, size=${page.size}, keyword=${keyword})}">
+                       th:text="${i}"
+                       th:href="@{/user/list(page=${i - 1}, size=${userPage.size}, keyword=${keyword})}">
                     </a>
                 </li>
 
-                <li class="page-item" th:classappend="${page.last}? 'disabled'">
+                <li class="page-item" th:classappend="${userPage.last}? 'disabled'">
                     <a class="page-link"
-                       th:href="@{${baseUrl}(page=${page.number + 1}, size=${page.size}, keyword=${keyword})}">
-                        <span>다음</span>
+                       th:href="@{/user/list(page=${userPage.number + 1}, size=${userPage.size}, keyword=${keyword})}">
+                        <span>&raquo;</span>
                     </a>
                 </li>
             </ul>

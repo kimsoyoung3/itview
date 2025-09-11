@@ -3,17 +3,7 @@ package com.example.itview_spring.Service;
 import com.example.itview_spring.Config.CustomUserDetails;
 import com.example.itview_spring.Constant.ContentType;
 import com.example.itview_spring.Constant.Role;
-import com.example.itview_spring.DTO.CommentAndContentDTO;
-import com.example.itview_spring.DTO.ContentResponseDTO;
-import com.example.itview_spring.DTO.EmailDTO;
-import com.example.itview_spring.DTO.EmailVerificationDTO;
-import com.example.itview_spring.DTO.NewPasswordDTO;
-import com.example.itview_spring.DTO.RatingDTO;
-import com.example.itview_spring.DTO.RegisterDTO;
-import com.example.itview_spring.DTO.UserContentCountDTO;
-import com.example.itview_spring.DTO.UserProfileUpdateDTO;
-import com.example.itview_spring.DTO.UserRatingCountDTO;
-import com.example.itview_spring.DTO.UserResponseDTO;
+import com.example.itview_spring.DTO.*;
 import com.example.itview_spring.Entity.EmailVerificationEntity;
 import com.example.itview_spring.Entity.UserEntity;
 import com.example.itview_spring.Repository.*;
@@ -24,9 +14,8 @@ import lombok.RequiredArgsConstructor;
 import net.coobird.thumbnailator.tasks.UnsupportedFormatException;
 
 import org.modelmapper.ModelMapper;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.*;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -36,6 +25,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 
 import java.io.IOException;
 import java.util.List;
@@ -235,5 +225,29 @@ public class UserService implements UserDetailsService {
         }
         Pageable pageable = PageRequest.of(page - 1, 1);
         return commentRepository.findCommentAndContentByUserId(loginUserId, userId, contentType, pageable, order);
+    }
+
+    // 관리자 페이지 - 유저 목록 조회
+    public Page<AdminUserDTO> list(Pageable pageable, String keyword) {
+        Page<UserEntity> userEntities;
+
+        if (StringUtils.hasText(keyword)) {
+            // 새로 추가한 레포지토리 메서드를 호출하여 검색
+            userEntities = userRepository.findByKeyword(keyword, pageable);
+        } else {
+            // 키워드가 없으면 전체 목록 조회
+            userEntities = userRepository.findAll(pageable);
+        }
+
+        // UserEntity Page를 AdminUserDTO Page로 변환
+        return userEntities.map(userEntity -> {
+            AdminUserDTO dto = new AdminUserDTO();
+            dto.setId(userEntity.getId());
+            dto.setNickname(userEntity.getNickname());
+            dto.setIntroduce(userEntity.getIntroduction());
+            dto.setProfile(userEntity.getProfile());
+            dto.setEmail(userEntity.getEmail());
+            return dto;
+        });
     }
 }

@@ -3,6 +3,8 @@ package com.example.itview_spring.Repository;
 import com.example.itview_spring.DTO.UserProfileDTO;
 import com.example.itview_spring.DTO.UserResponseDTO;
 import com.example.itview_spring.Entity.UserEntity;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -35,4 +37,7 @@ public interface UserRepository extends JpaRepository<UserEntity, Integer> {
         where u.id = :id
             """)
     UserResponseDTO findUserResponseById(@Param("id") Integer id);
+
+    @Query("SELECT u FROM UserEntity u WHERE u.nickname LIKE %:keyword% OR u.email LIKE %:keyword%")
+    Page<UserEntity> findByKeyword(@Param("keyword") String keyword, Pageable pageable);
 }
