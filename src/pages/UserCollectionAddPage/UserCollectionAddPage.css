@@ -121,6 +121,11 @@
     font-weight: 600;
 }
 
+.user-collection-add-image-map {
+    margin: 0;
+    padding: 0;
+}
+
 .user-collection-add-image {
     width: 100%;
     height: 100%;
@@ -129,6 +134,7 @@
     align-items: center;
     justify-content: center;
     gap: 5px;
+    position: relative;
 }
 
 .user-collection-add-image>img {
@@ -144,6 +150,16 @@
     text-overflow: ellipsis;
     white-space: nowrap;
     overflow: hidden;
+}
+
+.add-image-input {
+    position: absolute !important;
+    top: -10px;
+    left: 15px;
+    z-index: 10;
+    margin: 0;
+    width: 20px;
+    height: 20px;
 }
 
 /*컬렉션 이미지 추가 모달창*/

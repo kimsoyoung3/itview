@@ -159,11 +159,15 @@ const UserCollectionAddPage = () => {
                             </button>
                             <p>아무것도 없음</p>
                         </div>
-                        {selectedItems?.length > 0 && (selectedItems?.map(item =>
-                            <div className="user-collection-add-image">
-                                <img src={item.poster} alt=""/>
-                                <p>{item.title}</p>
-                                <button hidden={!edit} onClick={() => handleDeleteItems(item)}>test</button>
+
+                        {selectedItems?.length > 0 && (selectedItems?.map((item, index) =>
+                            <div className="form-check user-collection-add-image-map">
+                                <label className="form-check-label user-collection-add-image" htmlFor={`add-image-input-${index}`}>
+                                    <img src={item.poster} alt=""/>
+                                    <p>{item.title}</p>
+                                    <input className="form-check-input add-image-input " type="checkbox" value="" id={`add-image-input-${index}`}/>
+                                    {/*<button hidden={!edit} onClick={() => handleDeleteItems(item)}>test</button>*/}
+                                </label>
                             </div>
                         ))}
                     </div>
