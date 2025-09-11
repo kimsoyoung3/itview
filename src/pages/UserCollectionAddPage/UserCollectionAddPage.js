@@ -78,6 +78,28 @@ const UserCollectionAddPage = () => {
         setSearchResults({});
     }
 
+    const [edit, setEdit] = useState(false);
+
+    const handleEditItems = async () => {
+        if (!edit) {
+            setEdit(true);
+            setTempItems([]);
+        } else {
+            setEdit(false);
+            setSelectedItems(prev => prev.filter(item => !tempItems.some(i => i.id === item.id)));
+            setTempItems([]);
+        }
+    }
+
+    const handleDeleteItems = async (item) => {
+        setTempItems(prev => ([...prev,  item]));
+    }
+
+    const handleEditCancel = async () => {
+        setEdit(false);
+        setTempItems([]);
+    }
+
     const handleCreateCollection = async () => {
         if(title.current.value === ""){
             toast("컬렉션 제목을 입력해주세요");
@@ -125,7 +147,7 @@ const UserCollectionAddPage = () => {
                     <div className="user-collection-add-image-title">
                         <p>작품들</p>
                         {selectedItems?.length > 0 &&(
-                            <span>수정하기</span>
+                            <span onClick={handleEditItems}>수정하기</span>
                         )}
                     </div>
 
@@ -141,6 +163,7 @@ const UserCollectionAddPage = () => {
                             <div className="user-collection-add-image">
                                 <img src={item.poster} alt=""/>
                                 <p>{item.title}</p>
+                                <button hidden={!edit} onClick={() => handleDeleteItems(item)}>test</button>
                             </div>
                         ))}
                     </div>
