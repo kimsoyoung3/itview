@@ -1,5 +1,5 @@
 import React, {useEffect, useRef, useState} from "react";
-import { useParams } from "react-router-dom";
+import { NavLink, useParams } from "react-router-dom";
 import { deleteCollection, getCollectionDetail, getCollectionItems, getCollectionReplies, insertReply, likeCollection, unlikeCollection } from "../../API/CollectionApi";
 import NotFound from "../NotFound/NotFound";
 import "./UserCollectionDetailPage.css"
@@ -74,17 +74,30 @@ const UserCollectionDetailPage = ({userInfo, openLogin}) => {
             try {
                 await likeCollection(id);
                 setCollection(prev => ({...prev, liked: true, likeCount: prev.likeCount + 1}));
-                toast("좋아요!");
             } catch (e) {
-                toast("좋아요 실패!");
+                toast("좋아요 등록에 실패했습니다.");
             }
         } else {
             try {
                 await unlikeCollection(id);
                 setCollection(prev => ({...prev, liked: false, likeCount: prev.likeCount - 1}));
-                toast("좋아요 취소!");
             } catch (e) {
-                toast("좋아요 취소 실패!");
+                toast("좋아요 취소에 실패했습니다.");
+            }
+        }
+    }
+
+    const handleLoadMoreItem = async () => {
+        if (items.page.number < items.page.totalPages - 1) {
+            try {
+                const res = await getCollectionItems(id, items.page.number + 2);
+                setItems(prev => ({
+                    ...res.data,
+                    content: [...prev.content, ...res.data.content],
+                    page: res.data.page
+                }));
+            } catch (e) {
+                toast("작품을 불러오는데 실패했습니다.");
             }
         }
     }
@@ -125,7 +138,7 @@ const UserCollectionDetailPage = ({userInfo, openLogin}) => {
                     <div className="user-collection-detail-bg-shadow"></div>
 
                     {/* 사용자 프로필 */}
-                    <div className="user-collection-detail-profile">
+                    <NavLink to={`/user/${collection?.user?.id}`} className="user-collection-detail-profile">
                         <div className="user-collection-detail-profile-image">
                             <img
                                 src={collection?.user?.profile ? collection.user.profile : '/user.png'}
@@ -133,7 +146,7 @@ const UserCollectionDetailPage = ({userInfo, openLogin}) => {
                             />
                         </div>
                         <p>{collection?.user?.nickname}</p>
-                    </div>
+                    </NavLink>
 
                     {/*수정&삭제 버튼*/}
                     <div className="user-collection-detail-edit-box" ref={menuRef}>
@@ -220,7 +233,7 @@ const UserCollectionDetailPage = ({userInfo, openLogin}) => {
                         </div>
 
                         <div className="user-collection-detail-content-list-btn-box">
-                            <button className="user-collection-detail-content-list-btn">더보기</button>
+                            <button className="user-collection-detail-content-list-btn" onClick={handleLoadMoreItem} hidden={items?.page?.number + 2 > items?.page?.totalPages}>더보기</button>
                         </div>
 
                     </div>

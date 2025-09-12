@@ -2,7 +2,7 @@ import React, {useEffect, useState} from "react";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import "./CommentDetailPage.css";
 import {getCommentAndContent, getCommentRepliesPaged} from "../../API/CommentApi";
-import {useParams} from "react-router-dom";
+import {useNavigate, useParams} from "react-router-dom";
 import CommentCard from "../../components/CommentCard/CommentCard";
 import ReplyCard from "../../components/ReplyCard/ReplyCard";
 import NotFound from "../NotFound/NotFound";
@@ -10,6 +10,8 @@ import NotFound from "../NotFound/NotFound";
 
 const CommentDetailPage = ({userInfo, openLogin}) => {
     const [notFound, setNotFound] = useState(false);
+
+    const navigate = useNavigate();
 
     const [comment, setComment] = useState({});
     const [replies, setReplies] = useState([]);
@@ -43,7 +45,7 @@ const CommentDetailPage = ({userInfo, openLogin}) => {
     }, [replies]);
 
     const onDelete = async () => {
-        window.location.href = `/content/${comment.content.id}`;
+        navigate(`/content/${comment.content.id}`);
     }
 
     const newReply = (data) => {
