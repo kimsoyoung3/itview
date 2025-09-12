@@ -255,7 +255,6 @@ public class UserService implements UserDetailsService {
             List<String> posters = collectionService.getCollectionPosters(dto.getId());
             dto.setPoster(posters);
         }
-        System.out.println(res);
         return res;
     }
 

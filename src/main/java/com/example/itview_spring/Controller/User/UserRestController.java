@@ -64,7 +64,7 @@ public class UserRestController {
         try {
             registerService.createUser(registerDTO);
         } catch (IllegalStateException e) {
-            return ResponseEntity.badRequest().build(); // 이미 가입한 회원인 경우
+            return ResponseEntity.badRequest().build();
         }
         return ResponseEntity.ok().build();
     }
@@ -197,7 +197,7 @@ public class UserRestController {
     public ResponseEntity<UserResponseDTO> updateUserProfile(@AuthenticationPrincipal CustomUserDetails user,
                                   @ModelAttribute UserProfileUpdateDTO userProfileUpdateDTO) {
         if (user.getId() != userProfileUpdateDTO.getId()) {
-            throw new IllegalStateException("본인의 프로필만 수정할 수 있습니다.");
+            throw new SecurityException("본인의 프로필만 수정할 수 있습니다.");
         }
         userService.updateUserProfile(userProfileUpdateDTO);
         return ResponseEntity.ok(userService.getUserProfile(userProfileUpdateDTO.getId()));
@@ -309,8 +309,8 @@ public class UserRestController {
         return ResponseEntity.status(404).body(ex.getMessage());
     }
 
-    @ExceptionHandler(IllegalStateException.class)
-    public ResponseEntity<String> handleIllegalStateException(IllegalStateException ex) {
-        return ResponseEntity.status(400).body(ex.getMessage());
+    @ExceptionHandler(SecurityException.class)
+    public ResponseEntity<String> handleSecurityException(SecurityException ex) {
+        return ResponseEntity.status(403).body(ex.getMessage());
     }
 }

@@ -26,20 +26,27 @@ public class ReplyService {
     private final ModelMapper modelMapper;
 
     // 댓글 수정
-    public Boolean modifyReply(Integer replyId, String newText) {
+    public Boolean modifyReply(Integer userId, Integer replyId, String newText) {
         if (!replyRepository.existsById(replyId)) {
             throw new NoSuchElementException("존재하지 않는 댓글입니다");
         }
         ReplyEntity reply = replyRepository.findById(replyId).get();
+        if (!reply.getUser().getId().equals(userId)) {
+            throw new SecurityException("권한이 없습니다");
+        }
         reply.setText(newText);
         replyRepository.save(reply);
         return true;
     }
 
     // 댓글 삭제
-    public Boolean deleteReply(Integer replyId) {
+    public Boolean deleteReply(Integer userId, Integer replyId) {
         if (!replyRepository.existsById(replyId)) {
             throw new NoSuchElementException("존재하지 않는 댓글입니다");
+        }
+        ReplyEntity reply = replyRepository.findById(replyId).get();
+        if (!reply.getUser().getId().equals(userId)) {
+            throw new SecurityException("권한이 없습니다");
         }
         // 댓글에 달린 좋아요 먼저 삭제
         likeRepository.deleteByTargetIdAndTargetType(replyId, Replyable.REPLY);
