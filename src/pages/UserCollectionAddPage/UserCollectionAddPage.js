@@ -10,14 +10,14 @@ const UserCollectionAddPage = () => {
     const [collectionAddModal, setCollectionAddModal] = useState()
 
     const openCollectionAddModal = () => setCollectionAddModal(true)
-    const closeCollectionAddModal = () => setCollectionAddModal(false)
+    const closeCollectionAddModal = () => {setCollectionAddModal(false); setKeyword("")}
 
     const title = useRef();
     const description = useRef();
 
     const [keyword, setKeyword] = useState("");
     const [debounceQuery, setDebounceQuery] = useState(keyword);
-    const [searchResults, setSearchResults] = useState({});
+    const [searchResults, setSearchResults] = useState(null);
 
     // 디바운스
     useEffect(() => {
@@ -42,7 +42,7 @@ const UserCollectionAddPage = () => {
                     return;
                 }
             } else {
-                setSearchResults({});
+                setSearchResults(null);
             }
         }
         fetchSearchResults();
@@ -82,7 +82,7 @@ const UserCollectionAddPage = () => {
         setTempItems([]);
         closeCollectionAddModal();
         setKeyword("");
-        setSearchResults({});
+        setSearchResults(null);
     }
 
     // 아이템 수정상태 변수
@@ -109,13 +109,29 @@ const UserCollectionAddPage = () => {
     // 더보기
     const loadMoreRef = useRef();
 
+    const loadMore = async () => {
+        if (searchResults && searchResults.page.number + 1 < searchResults.page.totalPages) {
+            try {
+                const res = await searchContent(debounceQuery, searchResults.page.number + 2);
+                setSearchResults({
+                    ...searchResults,
+                    content: [...searchResults.content, ...res.data.content],
+                    page: res.data.page
+                });
+            } catch (error) {
+                toast("정보를 불러오는데 실패했습니다.");
+                return;
+            }
+        }
+    }
+
     useEffect(() => {
         const observer = new IntersectionObserver((entries) => {
             if (entries[0].isIntersecting) {
-                console.log('Load more data');
+                loadMore();
             }
         }, {
-            threshold: 1.0
+            threshold: 0.1
         });
         if (loadMoreRef.current) {
             observer.observe(loadMoreRef.current);
@@ -125,15 +141,11 @@ const UserCollectionAddPage = () => {
                 observer.unobserve(loadMoreRef.current);
             }
         };
-    }, [loadMoreRef]);
+    }, [collectionAddModal, searchResults]);
 
     const handleCreateCollection = async () => {
         if(title.current.value === ""){
             toast("컬렉션 제목을 입력해주세요");
-            return;
-        }
-        if(description.current.value === ""){
-            toast("컬렉션 설명을 입력해주세요");
             return;
         }
         const data = {
@@ -142,8 +154,9 @@ const UserCollectionAddPage = () => {
             contents: selectedItems
         }
         try {
-            await CollectionCreate(data);
+            const res = await CollectionCreate(data);
             toast("컬렉션이 생성되었습니다.");
+            window.location.replace(`/collection/${res.data}`);
         } catch (error) {
             toast("컬렉션 생성에 실패했습니다.");
             return;
@@ -195,7 +208,7 @@ const UserCollectionAddPage = () => {
                         </div>
 
                         {selectedItems?.length > 0 && (selectedItems?.map((item, index) =>
-                            <div className="form-check user-collection-add-image-map">
+                            <div key={item.id} className="form-check user-collection-add-image-map">
                                 {edit &&(
                                     <input className="form-check-input add-image-input " type="checkbox" value="" id={`add-image-input-${index}`} onChange={() => handleCheck(item)} checked={tempItems.some(i => i.id === item.id)}/>
                                 )}
@@ -257,7 +270,7 @@ const UserCollectionAddPage = () => {
                                     </label>
                                 </div>
                             )}
-                            <div ref={loadMoreRef}>더보기</div>
+                            <div ref={loadMoreRef} hidden={searchResults === null || searchResults.page.number + 2 > searchResults.page.totalPages}></div>
                         </div>
                     </div>
                 </div>

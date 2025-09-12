@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { getCollectionDetail, getCollectionItems, likeCollection, unlikeCollection } from "../../API/CollectionApi";
+import { deleteCollection, getCollectionDetail, getCollectionItems, likeCollection, unlikeCollection } from "../../API/CollectionApi";
 import NotFound from "../NotFound/NotFound";
 import "./UserCollectionDetailPage.css"
 import {toast} from "react-toastify";
@@ -35,6 +35,15 @@ const UserCollectionDetailPage = () => {
     useEffect(() => {
         console.log(items);
     }, [items]);
+
+    const handleCollectionDelete = async () => {
+        try {
+            await deleteCollection(id);
+            toast("컬렉션이 삭제되었습니다.");
+        } catch (e) {
+            toast("컬렉션 삭제에 실패했습니다.");
+        }
+    }
 
     const handleLike = async () => {
         if (!collection.liked) {
@@ -93,7 +102,7 @@ const UserCollectionDetailPage = () => {
                         {edit && (
                             <div>
                                 <button>수정</button>
-                                <button>삭제</button>
+                                <button onClick={handleCollectionDelete}>삭제</button>
                             </div>
                         )}
 
@@ -131,7 +140,10 @@ const UserCollectionDetailPage = () => {
                             </button>
                         </div>
                         <div className="user-collection-detail-btn-list-content">
-                            <button>
+                            <button onClick={() => {
+                                navigator.clipboard.writeText(window.location.href);
+                                toast("URL이 복사되었습니다!");
+                            }}>
                                 <i className="bi bi-share"/>
                                 <span>공유</span>
                             </button>
