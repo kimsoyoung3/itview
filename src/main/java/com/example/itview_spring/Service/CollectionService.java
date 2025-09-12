@@ -18,8 +18,10 @@ import com.example.itview_spring.Entity.CollectionEntity;
 import com.example.itview_spring.Entity.CollectionItemEntity;
 import com.example.itview_spring.Entity.ContentEntity;
 import com.example.itview_spring.Entity.LikeEntity;
+import com.example.itview_spring.Entity.ReplyEntity;
 import com.example.itview_spring.Repository.CollectionRepository;
 import com.example.itview_spring.Repository.LikeRepository;
+import com.example.itview_spring.Repository.ReplyRepository;
 import com.example.itview_spring.Repository.UserRepository;
 
 import lombok.RequiredArgsConstructor;
@@ -32,10 +34,11 @@ public class CollectionService {
     private final CollectionRepository collectionRepository;
     private final UserRepository userRepository;
     private final LikeRepository likeRepository;
+    private final ReplyRepository replyRepository;
     private final ModelMapper modelMapper;
 
     // 컬렉션 생성
-    public void createCollection(Integer userId, CollectionCreateDTO dto) {
+    public Integer createCollection(Integer userId, CollectionCreateDTO dto) {
         CollectionEntity collection = new CollectionEntity();
         collection.setUser(userRepository.findById(userId).get());
         collection.setTitle(dto.getTitle());
@@ -49,6 +52,7 @@ public class CollectionService {
         }
         
         collectionRepository.save(collection);
+        return collection.getId();
     }
 
     // 컬렉션 상세 조회
@@ -68,6 +72,21 @@ public class CollectionService {
         }
         Pageable pageable = PageRequest.of(page - 1, 12);
         return collectionRepository.findCollectionItemsById(id, pageable);
+    }
+
+    // 컬렉션 삭제
+    public void deleteCollection(Integer userId, Integer id) {
+        CollectionEntity collection = collectionRepository.findById(id).orElseThrow(() -> new NoSuchElementException("존재하지 않는 컬렉션입니다."));
+        if (!collection.getUser().getId().equals(userId)) {
+            throw new SecurityException("본인의 컬렉션만 삭제할 수 있습니다.");
+        }
+        likeRepository.deleteByTargetIdAndTargetType(id, Replyable.COLLECTION);
+        List<Integer> replyIds = replyRepository.findAllByCollectionId(id);
+        for (Integer replyId : replyIds) {
+            likeRepository.deleteByTargetIdAndTargetType(replyId, Replyable.REPLY);
+        }
+        replyRepository.deleteByTargetIdAndTargetType(id, Replyable.COLLECTION);
+        collectionRepository.deleteById(id);
     }
 
     // 컬렉션에 좋아요 추가
