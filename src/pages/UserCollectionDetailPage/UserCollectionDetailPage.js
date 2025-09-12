@@ -4,6 +4,7 @@ import { getCollectionDetail, getCollectionItems, likeCollection, unlikeCollecti
 import NotFound from "../NotFound/NotFound";
 import "./UserCollectionDetailPage.css"
 import {toast} from "react-toastify";
+import ContentEach from "../../components/ContentEach/ContentEach";
 
 const UserCollectionDetailPage = () => {
     const { id } = useParams();
@@ -114,6 +115,7 @@ const UserCollectionDetailPage = () => {
                     </p>
                 </section>
 
+                {/*좋아요&댓글&공유 버튼*/}
                 <section className="user-collection-detail-btn-list">
                     <div className="user-collection-detail-btn-list-wrap">
                         <div className="user-collection-detail-btn-list-content">
@@ -137,12 +139,40 @@ const UserCollectionDetailPage = () => {
                     </div>
                 </section>
 
+                {/*작품컨텐츠 리스트*/}
                 <section className="user-collection-detail-content">
+
                     <div className="user-collection-detail-content-wrap">
                         <h1>작품들 <span>{collection?.contentCount}</span></h1>
 
                         <div className="user-collection-detail-content-list">
+                            {items?.content?.length > 0 ? (
+                                items?.content.map(item =>
+                                    <ContentEach key={item.id} ratingData={{content : item}} ratingType={'avg'} clamp={true}/>
+                                )
+                            ) : (
+                                <p className="empty-message">작품이 없습니다 :)</p>
+                            )}
+                        </div>
 
+                        <div className="user-collection-detail-content-list-btn-box">
+                            <button className="user-collection-detail-content-list-btn">더보기</button>
+                        </div>
+
+                    </div>
+                </section>
+
+                {/*댓글*/}
+                <section className="user-collection-detail-reply">
+                    <div className="user-collection-detail-reply-wrap">
+                        <h1>댓글</h1>
+                        <div className="user-collection-detail-reply-content">
+                            댓글이 있으면 달리는 영역
+                        </div>
+
+                        <div className="user-collection-detail-reply-input">
+                            <input type="text" maxLength={200} placeholder="댓글을 입력해주세요."/>
+                            <button>등록</button>
                         </div>
 
                     </div>

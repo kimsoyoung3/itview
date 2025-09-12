@@ -1,6 +1,7 @@
 .user-collection-detail-page {
     margin-top: 114px;
     max-width: 650px;
+    margin-bottom: 50px;
 }
 
 .user-collection-detail-page-wrap {
@@ -63,7 +64,7 @@
 
 .user-collection-detail-profile-image>img {
     width: 100%;
-    height: auto;
+    height: 100%;
     object-fit: cover;
     border-radius: 50%;
 }
@@ -201,7 +202,7 @@
 
 .user-collection-detail-content {
     width: 100%;
-    margin-top: 30px;
+    margin: 30px 0;
 }
 
 .user-collection-detail-content-wrap {
@@ -211,10 +212,90 @@
 .user-collection-detail-content-wrap>h1 {
     font-size: 1.3rem;
     font-weight: bold;
+    margin-bottom: 25px;
 }
 
 .user-collection-detail-content-wrap>h1>span {
     color: #22c55e;
     font-weight: 600;
+}
+
+.user-collection-detail-content-list {
+    text-align: center;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 10px;
+}
+
+.user-collection-detail-content-list-btn-box {
+    text-align: center;
+}
+
+.user-collection-detail-content-list-btn {
+    border: 1px solid #888888;
+    background: none;
+    color: #555555;
+    padding: 5px 20px;
+    border-radius: 5px;
+    font-weight: 600;
+}
+
+.user-collection-detail-content-list-btn:hover {
+    background: #d9d9d9;
+}
+
+.user-collection-detail-reply {
+    width: 100%;
+    padding: 0 20px;
+}
+
+.user-collection-detail-reply-wrap {
+    border-top: 1px solid #eeeeee;
+    padding: 10px 0;
+}
+
+.user-collection-detail-reply-wrap>h1 {
+    font-size: 1.1rem;
+    font-weight: 600;
+}
+
+.user-collection-detail-reply-content {
+    border-bottom: 1px solid #eeeeee;
+    padding: 15px 0;
+}
+
+.user-collection-detail-reply-input {
+    padding: 15px 0;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.user-collection-detail-reply-input>input {
+    width: 100%;
+    padding: 12px;
+    border: none;
+    background: #f6f6f6;
+    border-radius: 4px;
+    color: #555555;
+    font-size: 0.9rem;
+}
+
+.user-collection-detail-reply-input>input:focus {
+    outline: none;
+}
+
+.user-collection-detail-reply-input>button {
+    width: max-content;
+    white-space: nowrap;
+    padding: 10px 15px;
+    border: none;
+    color: #22c55e;
+    background: #e6f5eb;
+    border-radius: 4px;
+}
+
+.user-collection-detail-reply-input>button:hover {
+    background: #b7e8c7;
 }
 

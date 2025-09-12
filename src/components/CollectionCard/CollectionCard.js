@@ -3,9 +3,11 @@ import "./CollectionCard.css";
 import {NavLink} from "react-router-dom";
 
 const CollectionCard = ({ collectionData, userInfo, openLogin }) => {
+
+
     return (
         <div className="collection-card">
-            <NavLink to={`/collection/${collectionData.id}`} className="collection-card-wrap">
+            <NavLink to={`/collection/${collectionData?.id}`} className="collection-card-wrap">
 
                 {/* 배경 이미지와 그림자 */}
                 <div className="collection-card-bg">

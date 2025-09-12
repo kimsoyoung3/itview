@@ -39,7 +39,7 @@ const UserCollectionPage = ({userInfo}) => {
                 {collections?.content?.length > 0 ? (
                     <div className="user-collection-list">
                         {collections?.content.map(item =>
-                            <CollectionCard collectionData={item}/>
+                            <CollectionCard key={item.id} collectionData={item}/>
                         )}
                     </div>
                 ) : (

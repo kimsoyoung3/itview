@@ -3,7 +3,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import "./ContentEach.css";
 import { NavLink } from "react-router-dom";
 
-const ContentEach = ({ ratingData, ratingType }) => {
+const ContentEach = ({ ratingData, ratingType, clamp }) => {
 
     return (
         <div className="content-each">
@@ -33,6 +33,7 @@ const ContentEach = ({ ratingData, ratingType }) => {
                         : (ratingData?.content.ratingAvg / 2).toFixed(1)
                     }
                 </p>
+                <p className={clamp ? "content-each-content-type" : "content-each-content-type-none"}>{ratingData?.content.contentType}</p>
             </div>
 
         </div>

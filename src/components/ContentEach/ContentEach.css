@@ -38,12 +38,35 @@
     overflow: hidden;
 }
 
+/*유저컬렉션 디테일페이지안에서 컨텐츠 스타일*/
+.user-collection-detail-content-list .content-each-info-title {
+    margin: 0 auto;
+    width: 120px;
+}
+
+.user-collection-detail-content-list .content-each-rating-text {
+    justify-content: center;
+}
+
+.user-collection-detail-content-list .content-each-rating-text-avg {
+    color: #22c55e;
+}
+
+.content-each-content-type-none {
+    display: none;
+}
+
+.content-each-content-type {
+    font-size: 0.7rem;
+    color: #555555;
+}
+
 .content-each-rating-text {
     font-size: 0.7rem;
     font-weight: 600;
     display: flex;
     align-items: center;
-    gap: 2px;
+    gap: 3px;
     margin: 0;
 }
 
