@@ -141,7 +141,7 @@ const UserCollectionDetailPage = () => {
                         </button>
                     </div>
 
-                    {/* 코멘트 삭제 확인 모달 */}
+                    {/* 댓글 삭제 확인 모달 */}
                     {deleteCollectionModal && (
                         <div className="confirm-modal-overlay" onClick={closeDeleteCollectionModal}>
                             <div className="confirm-modal-content" onClick={e => e.stopPropagation()}>
