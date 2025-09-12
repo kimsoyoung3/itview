@@ -5,7 +5,7 @@ import { NavLink, useParams } from "react-router-dom";
 import { getUserCollection } from "../../API/UserApi";
 import CollectionCard from "../../components/CollectionCard/CollectionCard";
 
-const UserCollectionPage = () => {
+const UserCollectionPage = ({userInfo}) => {
     const [notFound, setNotFound] = useState(false);
 
     const { id } = useParams();
@@ -33,7 +33,7 @@ const UserCollectionPage = () => {
             <div className="user-collection-page-wrap">
                 <div className="user-collection-page-wrap-title">
                     <h1>컬렉션</h1>
-                    <NavLink to="/collection/new">새 컬렉션</NavLink>
+                    <NavLink to="/collection/new" hidden={(Number(userInfo) !== Number(id))}>새 컬렉션</NavLink>
                 </div>
 
                 {collections?.content?.length > 0 ? (
