@@ -82,6 +82,18 @@ public class CollectionRestController {
         return ResponseEntity.ok().build();
     }
 
+    // 댓글 페이징 조회
+    @GetMapping("/{id}/reply")
+    public ResponseEntity<Page<ReplyDTO>> getCollectionReplies(@PathVariable Integer id, @PageableDefault(page=1) Pageable pageable) {
+        var auth = SecurityContextHolder.getContext().getAuthentication();
+        Integer userId = 0;
+        if (auth.getPrincipal() != "anonymousUser") {
+            userId = ((CustomUserDetails) auth.getPrincipal()).getId();
+        }
+        Page<ReplyDTO> replies = collectionService.getCollectionReplies(userId, id, pageable.getPageNumber());
+        return ResponseEntity.ok(replies);
+    }
+
     // 댓글 작성
     @PostMapping("/{id}/reply")
     public ResponseEntity<ReplyDTO> insertReply(@AuthenticationPrincipal CustomUserDetails user, @PathVariable Integer id, @RequestBody TextDTO text) {

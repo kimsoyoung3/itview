@@ -109,14 +109,23 @@ public class CollectionService {
         likeRepository.unlikeTarget(userId, id, Replyable.COLLECTION);
     }
 
+    // 컬렉션 댓글 페이징 조회
+    public Page<ReplyDTO> getCollectionReplies(Integer userId, Integer id, Integer page) {
+        if (!collectionRepository.existsById(id)) {
+            throw new NoSuchElementException("존재하지 않는 컬렉션입니다.");
+        }
+        Pageable pageable = PageRequest.of(page - 1, 10);
+        return replyRepository.findRepliesByTargetId(userId, id, Replyable.COLLECTION, pageable);
+    }
+
     // 컬렉션에 댓글 작성
-    public ReplyDTO insertReply(Integer userId, Integer collectionId, String text) {
-        if (!collectionRepository.existsById(collectionId)) {
+    public ReplyDTO insertReply(Integer userId, Integer id, String text) {
+        if (!collectionRepository.existsById(id)) {
             throw new NoSuchElementException("존재하지 않는 컬렉션입니다.");
         }
         ReplyEntity reply = new ReplyEntity();
         reply.setUser(userRepository.findById(userId).orElseThrow(() -> new RuntimeException("User not found")));
-        reply.setTargetId(collectionId);
+        reply.setTargetId(id);
         reply.setTargetType(Replyable.COLLECTION);
         reply.setText(text);
         replyRepository.save(reply);
