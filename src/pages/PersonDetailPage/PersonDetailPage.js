@@ -136,6 +136,7 @@ const PersonDetailPage = ({userInfo, openLogin}) => {
 
     return(notFound ? <NotFound /> :
         <div className="person-detail-page container">
+            {/*인물 프로필 섹션*/}
              <section className="person-detail-page-profile">
                 <div className="person-detail-page-profile-img">
                     <img src={personInfo?.profile ? personInfo?.profile : "/user.png" } alt=""/>
@@ -149,6 +150,7 @@ const PersonDetailPage = ({userInfo, openLogin}) => {
                  </div>
             </section>
 
+            {/*컨텐츠 섹션*/}
             <section className="person-detail-page-content">
 
                 <div>
@@ -199,7 +201,7 @@ const PersonDetailPage = ({userInfo, openLogin}) => {
                     ))}
                 </div>
 
-
+                {/*탭영역 섹션*/}
                 <div className="person-detail-page-content-tab">
                     <ul>
                         {workInfo && Object.entries(workInfo).map(([contentType, departments]) => (
