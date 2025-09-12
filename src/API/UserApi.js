@@ -18,6 +18,7 @@ export const getUserContentRating = (userId, contentType, page, order) => axios.
 export const getUserContentRatingScore = (userId, contentType, page, score) => axios.get(`${process.env.REACT_APP_API_URL}/user/${userId}/content/${contentType}/rating/${score}?page=${page}`, {withCredentials: true});
 export const getUserWishlist = (userId, contentType, page, order) => axios.get(`${process.env.REACT_APP_API_URL}/user/${userId}/content/${contentType}/wish?order=${order}&page=${page}`, {withCredentials: true});
 export const getUserComment = (userId, contentType, page, order) => axios.get(`${process.env.REACT_APP_API_URL}/user/${userId}/comment/${contentType}?page=${page}&order=${order}`, {withCredentials: true});
+export const getUserCollection = (userId, page) => axios.get(`${process.env.REACT_APP_API_URL}/user/${userId}/collection?page=${page}`, {withCredentials: true});
 export const getUserLikePerson = (userId, page) => axios.get(`${process.env.REACT_APP_API_URL}/user/${userId}/like/person?page=${page}`, {withCredentials: true});
 export const getUserLikeCollection = (userId, page) => axios.get(`${process.env.REACT_APP_API_URL}/user/${userId}/like/collection?page=${page}`, {withCredentials: true});
 export const getUserLikeComment = (userId, page) => axios.get(`${process.env.REACT_APP_API_URL}/user/${userId}/like/comment?page=${page}`, {withCredentials: true});

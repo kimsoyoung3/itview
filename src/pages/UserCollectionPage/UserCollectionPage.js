@@ -1,10 +1,31 @@
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import "./UserCollectionPage.css"
 import NotFound from "../NotFound/NotFound";
-import { NavLink } from "react-router-dom";
+import { NavLink, useParams } from "react-router-dom";
+import { getUserCollection } from "../../API/UserApi";
 
 const UserCollectionPage = () => {
     const [notFound, setNotFound] = useState(false);
+
+    const { id } = useParams();
+
+    const [collections, setCollections] = useState({});
+
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                const res = await getUserCollection(id, 1);
+                setCollections(res.data);
+            } catch (e) {
+                setNotFound(true);
+            }
+        };
+        fetchData();
+    }, [id]);
+
+    useEffect(() => {
+        console.log(collections);
+    }, [collections]);
 
     return( notFound ? <NotFound /> :
         <div className="user-collection-page container">
