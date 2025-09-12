@@ -1,6 +1,11 @@
 package com.example.itview_spring.Service;
 
+import java.util.List;
+import java.util.NoSuchElementException;
+
 import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -37,5 +42,10 @@ public class CollectionService {
         }
         
         collectionRepository.save(collection);
+    }
+
+    // 컬렉션 썸네일용 포스터 이미지 조회
+    public List<String> getCollectionPosters(Integer id) {
+        return collectionRepository.findCollectionPosters(id);
     }
 }

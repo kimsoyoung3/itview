@@ -2,6 +2,7 @@ package com.example.itview_spring.Controller.User;
 
 import com.example.itview_spring.Config.CustomUserDetails;
 import com.example.itview_spring.Constant.ContentType;
+import com.example.itview_spring.DTO.CollectionResponseDTO;
 import com.example.itview_spring.DTO.CommentAndContentDTO;
 import com.example.itview_spring.DTO.ContentResponseDTO;
 import com.example.itview_spring.DTO.EmailDTO;
@@ -270,6 +271,18 @@ public class UserRestController {
             loginUserId = ((CustomUserDetails) auth.getPrincipal()).getId();
         }
         return ResponseEntity.ok(userService.getUserComment(loginUserId, userId, ContentType.valueOf(contentTypeStr.toUpperCase()), pageable.getPageNumber(), order));
+    }
+
+    // 유저의 컬렉션 조회
+    @GetMapping("/{id}/collection")
+    public ResponseEntity<Page<CollectionResponseDTO>> getUserCollection(@PathVariable("id") Integer userId,
+                                                                         @PageableDefault(page=1) Pageable pageable) {
+        var auth = SecurityContextHolder.getContext().getAuthentication();
+        Integer loginUserId = 0;
+        if (auth.getPrincipal() != "anonymousUser") {
+            loginUserId = ((CustomUserDetails) auth.getPrincipal()).getId();
+        }
+        return ResponseEntity.ok(userService.getUserCollections(loginUserId, userId, pageable.getPageNumber()));
     }
 
     // 유저의 좋아요한 인물 조회

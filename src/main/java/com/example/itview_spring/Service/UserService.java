@@ -16,6 +16,7 @@ import com.example.itview_spring.DTO.UserProfileUpdateDTO;
 import com.example.itview_spring.DTO.UserRatingCountDTO;
 import com.example.itview_spring.DTO.UserResponseDTO;
 import com.example.itview_spring.DTO.AdminUserDTO;
+import com.example.itview_spring.DTO.CollectionResponseDTO;
 import com.example.itview_spring.Entity.EmailVerificationEntity;
 import com.example.itview_spring.Entity.UserEntity;
 import com.example.itview_spring.Repository.*;
@@ -55,7 +56,9 @@ public class UserService implements UserDetailsService {
     private final CommentRepository commentRepository;
     private final RatingRepository ratingRepository;
     private final PersonRepository personRepository;
+    private final CollectionRepository collectionRepository;
     private final EmailVerificationRepository emailVerificationRepository;
+    private final CollectionService collectionService;
     private final ModelMapper modelMapper;
     private final PasswordEncoder passwordEncoder;
     private final JavaMailSender mailSender;
@@ -239,6 +242,21 @@ public class UserService implements UserDetailsService {
         }
         Pageable pageable = PageRequest.of(page - 1, 1);
         return commentRepository.findCommentAndContentByUserId(loginUserId, userId, contentType, pageable, order);
+    }
+
+    // 유저 컬렉션 목록 조회
+    public Page<CollectionResponseDTO> getUserCollections(Integer loginUserId, Integer userId, Integer page) {
+        if (!userRepository.existsById(userId)) {
+            throw new NoSuchElementException("존재하지 않는 유저입니다");
+        }
+        Pageable pageable = PageRequest.of(page - 1, 10);
+        Page<CollectionResponseDTO> res = collectionRepository.findUserCollections(loginUserId, userId, pageable);
+        for (CollectionResponseDTO dto : res) {
+            List<String> posters = collectionService.getCollectionPosters(dto.getId());
+            dto.setPoster(posters);
+        }
+        System.out.println(res);
+        return res;
     }
 
     // 유저가 좋아요한 인물 조회
