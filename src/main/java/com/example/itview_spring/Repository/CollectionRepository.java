@@ -98,7 +98,7 @@ public interface CollectionRepository extends JpaRepository<CollectionEntity, In
             c.content.poster,
             c.content.age,
             c.content.duration,
-            (SELECT AVG(r.score) FROM RatingEntity r WHERE r.content.id = c.id)
+            (SELECT AVG(r.score) FROM RatingEntity r WHERE r.content.id = c.content.id)
         )
         FROM CollectionItemEntity c
         WHERE c.collection.id = :id

@@ -14,6 +14,7 @@ import com.example.itview_spring.Constant.Replyable;
 import com.example.itview_spring.DTO.CollectionCreateDTO;
 import com.example.itview_spring.DTO.CollectionResponseDTO;
 import com.example.itview_spring.DTO.ContentResponseDTO;
+import com.example.itview_spring.DTO.ReplyDTO;
 import com.example.itview_spring.Entity.CollectionEntity;
 import com.example.itview_spring.Entity.CollectionItemEntity;
 import com.example.itview_spring.Entity.ContentEntity;
@@ -106,6 +107,24 @@ public class CollectionService {
             throw new NoSuchElementException("존재하지 않는 컬렉션입니다.");
         }
         likeRepository.unlikeTarget(userId, id, Replyable.COLLECTION);
+    }
+
+    // 컬렉션에 댓글 작성
+    public ReplyDTO insertReply(Integer userId, Integer collectionId, String text) {
+        if (!collectionRepository.existsById(collectionId)) {
+            throw new NoSuchElementException("존재하지 않는 컬렉션입니다.");
+        }
+        ReplyEntity reply = new ReplyEntity();
+        reply.setUser(userRepository.findById(userId).orElseThrow(() -> new RuntimeException("User not found")));
+        reply.setTargetId(collectionId);
+        reply.setTargetType(Replyable.COLLECTION);
+        reply.setText(text);
+        replyRepository.save(reply);
+        ReplyDTO newReply = replyRepository.findReplyDTOById(userId, reply.getId());
+        if (newReply == null) {
+            throw new RuntimeException("Failed to create reply");
+        }
+        return newReply;
     }
 
     // 컬렉션 썸네일용 포스터 이미지 조회

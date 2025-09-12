@@ -20,7 +20,7 @@ public interface ReplyRepository extends JpaRepository<ReplyEntity, Integer> {
     @Modifying
     @Query("DELETE FROM ReplyEntity r WHERE r.targetId = :targetId AND r.targetType = :targetType")
     void deleteByTargetIdAndTargetType(@Param("targetId") Integer targetId, @Param("targetType") Replyable targetType);
-
+    
     // 댓글 Id로 조회
     @Query("""
             SELECT new com.example.itview_spring.DTO.ReplyDTO(

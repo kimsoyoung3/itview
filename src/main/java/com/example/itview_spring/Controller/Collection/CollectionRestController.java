@@ -22,6 +22,8 @@ import com.example.itview_spring.Config.CustomUserDetails;
 import com.example.itview_spring.DTO.CollectionCreateDTO;
 import com.example.itview_spring.DTO.CollectionResponseDTO;
 import com.example.itview_spring.DTO.ContentResponseDTO;
+import com.example.itview_spring.DTO.ReplyDTO;
+import com.example.itview_spring.DTO.TextDTO;
 import com.example.itview_spring.Service.CollectionService;
 
 import lombok.RequiredArgsConstructor;
@@ -78,6 +80,13 @@ public class CollectionRestController {
     public ResponseEntity<Void> unlikeCollection(@AuthenticationPrincipal CustomUserDetails user, @PathVariable Integer id) {
         collectionService.removeLike(user.getId(), id);
         return ResponseEntity.ok().build();
+    }
+
+    // 댓글 작성
+    @PostMapping("/{id}/reply")
+    public ResponseEntity<ReplyDTO> insertReply(@AuthenticationPrincipal CustomUserDetails user, @PathVariable Integer id, @RequestBody TextDTO text) {
+        ReplyDTO newReply = collectionService.insertReply(user.getId(), id, text.getText());
+        return ResponseEntity.ok(newReply);
     }
 
     @ExceptionHandler(NoSuchElementException.class)
