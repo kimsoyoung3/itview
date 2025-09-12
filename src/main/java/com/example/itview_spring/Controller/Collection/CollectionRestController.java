@@ -35,9 +35,8 @@ public class CollectionRestController {
 
     // 컬렉션 생성
     @PostMapping
-    public ResponseEntity<Void> createCollection(@AuthenticationPrincipal CustomUserDetails user, @RequestBody CollectionCreateDTO dto) {
-        collectionService.createCollection(user.getId(), dto);
-        return ResponseEntity.ok().build();
+    public ResponseEntity<Integer> createCollection(@AuthenticationPrincipal CustomUserDetails user, @RequestBody CollectionCreateDTO dto) {
+        return ResponseEntity.ok(collectionService.createCollection(user.getId(), dto));
     }
 
     // 컬렉션 상세 조회
@@ -60,12 +59,20 @@ public class CollectionRestController {
         return ResponseEntity.ok(collections);
     }
 
+    // 컬렉션 삭제
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteCollection(@AuthenticationPrincipal CustomUserDetails user, @PathVariable Integer id) {
+        collectionService.deleteCollection(user.getId(), id);
+        return ResponseEntity.ok().build();
+    }
+
     // 컬렉션 좋아요
     @PostMapping("/{id}/like")
     public ResponseEntity<Void> likeCollection(@AuthenticationPrincipal CustomUserDetails user, @PathVariable Integer id) {
         collectionService.addLike(user.getId(), id);
         return ResponseEntity.ok().build();
     }
+    
     // 컬렉션 좋아요 취소
     @DeleteMapping("/{id}/like")
     public ResponseEntity<Void> unlikeCollection(@AuthenticationPrincipal CustomUserDetails user, @PathVariable Integer id) {

@@ -61,17 +61,28 @@ public class CommentService {
     }
     
     // 코멘트 수정
-    public void updateComment(Integer commentId, String newText) {
-        CommentEntity comment = commentRepository.findById(commentId)
-                .orElseThrow(() -> new NoSuchElementException("존재하지 않는 코멘트입니다"));
+    public void updateComment(Integer userId, Integer commentId, String newText) {
+        if (!commentRepository.existsById(commentId)) {
+            throw new NoSuchElementException("존재하지 않는 코멘트입니다");
+        }
+        CommentEntity comment = commentRepository.findById(commentId).get();
+        if (!comment.getUser().getId().equals(userId)) {
+            throw new SecurityException("권한이 없습니다");
+        }
         comment.setText(newText);
         commentRepository.save(comment);
     }
 
     // 코멘트 삭제
-    public boolean deleteComment(Integer commentId) {
-        var commentOpt = commentRepository.findById(commentId).orElseThrow(() -> new NoSuchElementException("존재하지 않는 코멘트입니다"));
-        commentRepository.delete(commentOpt);
+    public boolean deleteComment(Integer userId, Integer commentId) {
+        if (!commentRepository.existsById(commentId)) {
+            throw new NoSuchElementException("존재하지 않는 코멘트입니다");
+        }
+        CommentEntity comment = commentRepository.findById(commentId).get();
+        if (!comment.getUser().getId().equals(userId)) {
+            throw new SecurityException("권한이 없습니다");
+        }
+        commentRepository.delete(comment);
         likeRepository.deleteByTargetIdAndTargetType(commentId, Replyable.COMMENT);
         replyRepository.deleteByTargetIdAndTargetType(commentId, Replyable.COMMENT);
         return true;
