@@ -1,22 +1,25 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { getCollectionDetail } from "../../API/CollectionApi";
+import { getCollectionDetail, getCollectionItems, likeCollection, unlikeCollection } from "../../API/CollectionApi";
 import NotFound from "../NotFound/NotFound";
 import "./UserCollectionDetailPage.css"
 import {toast} from "react-toastify";
 
 const UserCollectionDetailPage = () => {
     const { id } = useParams();
-    const [collection, setCollection] = useState({});
     const [notFound, setNotFound] = useState(false);
-
     const [edit, setEdit] = useState(false);
+
+    const [collection, setCollection] = useState({});
+    const [items, setItems] = useState({});
 
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const res = await getCollectionDetail(id);
-                setCollection(res.data);
+                const detailRes = await getCollectionDetail(id);
+                setCollection(detailRes.data);
+                const itemsRes = await getCollectionItems(id, 1);
+                setItems(itemsRes.data);
             } catch (e) {
                 setNotFound(true);
             }
@@ -27,6 +30,30 @@ const UserCollectionDetailPage = () => {
     useEffect(() => {
         console.log(collection);
     }, [collection]);
+
+    useEffect(() => {
+        console.log(items);
+    }, [items]);
+
+    const handleLike = async () => {
+        if (!collection.liked) {
+            try {
+                await likeCollection(id);
+                setCollection(prev => ({...prev, liked: true, likeCount: prev.likeCount + 1}));
+                toast("좋아요!");
+            } catch (e) {
+                toast("좋아요 실패!");
+            }
+        } else {
+            try {
+                await unlikeCollection(id);
+                setCollection(prev => ({...prev, liked: false, likeCount: prev.likeCount - 1}));
+                toast("좋아요 취소!");
+            } catch (e) {
+                toast("좋아요 취소 실패!");
+            }
+        }
+    }
 
     return(notFound ? <NotFound /> :
         <div className="user-collection-detail-page container">
@@ -90,8 +117,8 @@ const UserCollectionDetailPage = () => {
                 <section className="user-collection-detail-btn-list">
                     <div className="user-collection-detail-btn-list-wrap">
                         <div className="user-collection-detail-btn-list-content">
-                            <button>
-                                <i className="bi bi-heart"/>
+                            <button onClick={handleLike}>
+                                <i className={`bi ${collection.liked ? 'bi-heart-fill' : 'bi-heart'}`}/>
                                 <span>좋아요</span>
                             </button>
                         </div>
