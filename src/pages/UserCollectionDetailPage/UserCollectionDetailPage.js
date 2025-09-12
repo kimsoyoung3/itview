@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useParams } from "react-router-dom";
-import { deleteCollection, getCollectionDetail, getCollectionItems, likeCollection, unlikeCollection } from "../../API/CollectionApi";
+import { deleteCollection, getCollectionDetail, getCollectionItems, insertReply, likeCollection, unlikeCollection } from "../../API/CollectionApi";
 import NotFound from "../NotFound/NotFound";
 import "./UserCollectionDetailPage.css"
 import {toast} from "react-toastify";
@@ -64,6 +64,20 @@ const UserCollectionDetailPage = () => {
             }
         }
     }
+
+    const replyRef = useRef();
+    const handleReplySubmit = async () => {
+        if (replyRef.current.value.trim() !== "") {
+            try {
+                const res = await insertReply(id, {text: replyRef.current.value});
+                replyRef.current.value = "";
+                toast("댓글이 등록되었습니다.");
+                console.log(res.data);
+            } catch (e) {
+                toast("댓글 등록에 실패했습니다.");
+            }
+        }
+    }        
 
     return(notFound ? <NotFound /> :
         <div className="user-collection-detail-page container">
@@ -183,8 +197,8 @@ const UserCollectionDetailPage = () => {
                         </div>
 
                         <div className="user-collection-detail-reply-input">
-                            <input type="text" maxLength={200} placeholder="댓글을 입력해주세요."/>
-                            <button>등록</button>
+                            <input type="text" maxLength={200} placeholder="댓글을 입력해주세요." ref={replyRef}/>
+                            <button onClick={handleReplySubmit}>등록</button>
                         </div>
 
                     </div>
