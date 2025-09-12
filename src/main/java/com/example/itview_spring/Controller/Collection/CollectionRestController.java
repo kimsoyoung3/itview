@@ -9,6 +9,7 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -57,6 +58,19 @@ public class CollectionRestController {
                                                                        @PageableDefault(page=1) Pageable pageable) {
         Page<ContentResponseDTO> collections = collectionService.getCollectionItems(id, pageable.getPageNumber());
         return ResponseEntity.ok(collections);
+    }
+
+    // 컬렉션 좋아요
+    @PostMapping("/{id}/like")
+    public ResponseEntity<Void> likeCollection(@AuthenticationPrincipal CustomUserDetails user, @PathVariable Integer id) {
+        collectionService.addLike(user.getId(), id);
+        return ResponseEntity.ok().build();
+    }
+    // 컬렉션 좋아요 취소
+    @DeleteMapping("/{id}/like")
+    public ResponseEntity<Void> unlikeCollection(@AuthenticationPrincipal CustomUserDetails user, @PathVariable Integer id) {
+        collectionService.removeLike(user.getId(), id);
+        return ResponseEntity.ok().build();
     }
 
     @ExceptionHandler(NoSuchElementException.class)
