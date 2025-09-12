@@ -36,9 +36,16 @@ const UserCollectionPage = () => {
                     <NavLink to="/collection/new">새 컬렉션</NavLink>
                 </div>
 
-                <div>
-                    <CollectionCard/>
-                </div>
+                {collections?.content?.length > 0 ? (
+                    <div className="user-collection-list">
+                        {collections?.content.map(item =>
+                            <CollectionCard collectionData={item}/>
+                        )}
+                    </div>
+                ) : (
+                    <p className="empty-message">컬렉션이 없습니다 :)</p>
+                )}
+
             </div>
         </div>
     )

@@ -8,12 +8,14 @@
 
 .collection-card-wrap {
     width: 100%;
+    display: block;
 }
 
 .collection-card-bg {
     width: 100%;
     height: 300px;
     position: relative;
+    overflow: hidden;
 }
 
 .collection-card-bg-shadow {
@@ -22,26 +24,32 @@
     height: 100%;
     top: 0;
     left: 0;
-    z-index: 1;
+    z-index: 10;
     background-image: linear-gradient(#14141466, #14141499 48%, #141414f2 95%);
 }
 
-.collection-card-bg>img {
+.stacked-poster-wrapper {
+    position: absolute;
+    width: 40%; /* 통일된 포스터 너비 */
+    height: 100%; /* 통일된 포스터 높이 */
+}
+
+.stacked-poster-wrapper img {
     width: 100%;
     height: 100%;
-    display: block;
+    object-fit: cover; /* 크기 통일 + 이미지 잘림 방지 */
+
 }
 
 .collection-card-profile {
     position: relative;
-    margin-top: -50px;
     color: #ffffff;
-    z-index: 2;
+    z-index: 10;
     display: inline-flex; /* inline-flex로 block처럼 쓰면서 flex 가능 */
     align-items: center;
     gap: 10px;
     padding-left: 20px;
-    transform: translateY(-50px);
+    margin-top: 240px;
 }
 
 .collection-card-profile-image {
@@ -66,7 +74,7 @@
     position: absolute;
     top: 85%;
     right: 3%;
-    z-index: 2;
+    z-index: 15;
     width: 25px;
     height: 25px;
     color: #ffffff;
@@ -85,13 +93,13 @@
 }
 
 .collection-card-title {
-    padding: 20px;
+    padding: 15px 20px;
 }
 
 .collection-card-title>h1 {
-    font-size: 1.3rem;
+    font-size: 1.2rem;
     font-weight: bold;
-    border-bottom: 1px solid #888888;
+    border-bottom: 1px solid #d9d9d9;
     padding-bottom: 10px;
 }
 

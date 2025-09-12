@@ -1,15 +1,29 @@
 import React from "react";
 import "./CollectionCard.css";
+import {NavLink} from "react-router-dom";
 
 const CollectionCard = ({ collectionData, userInfo, openLogin }) => {
     return (
         <div className="collection-card">
-            <div className="collection-card-wrap">
+            <NavLink to="" className="collection-card-wrap">
 
                 {/* 배경 이미지와 그림자 */}
                 <div className="collection-card-bg">
+
+                    {collectionData?.poster.slice(0, 5).map((poster, index, arr) => (
+                        <div
+                            key={index}
+                            className="stacked-poster-wrapper"
+                            style={{
+                                left: `${index * 15}%`, // 겹치는 위치 조정
+                                zIndex: arr.length - index,
+                            }}
+                        >
+                            <img src={poster} alt={`포스터 ${index}`} />
+                        </div>
+                    ))}
+
                     <div className="collection-card-bg-shadow"></div>
-                    <img src="/basic-bg.jpg" alt="배경 이미지" />
 
                     {/* 사용자 프로필 */}
                     <div className="collection-card-profile">
@@ -19,23 +33,23 @@ const CollectionCard = ({ collectionData, userInfo, openLogin }) => {
                                 alt="사용자 프로필"
                             />
                         </div>
-                        <p>{collectionData?.user?.name || '이름'}</p>
+                        <p>{collectionData?.user?.nickname}</p>
                     </div>
 
                     {/* 컬렉션 아이템 개수 */}
                     <div className="collection-card-item-count">
-                        {collectionData?.items?.length || 0}
+                        {collectionData?.contentCount}
                     </div>
                 </div>
 
                 {/* 컬렉션 제목 및 통계 */}
                 <div className="collection-card-title">
                     <h1>{collectionData?.title || '제목'}</h1>
-                    <span>좋아요 {collectionData?.likeCount || 0}</span>
-                    <span> 댓글 {collectionData?.commentCount || 0}</span>
+                    <span>좋아요 {collectionData?.likeCount}</span>
+                    <span> 댓글 {collectionData?.replyCount}</span>
                 </div>
 
-            </div>
+            </NavLink>
         </div>
     );
 };
