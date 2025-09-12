@@ -9,6 +9,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import com.example.itview_spring.DTO.CollectionResponseDTO;
+import com.example.itview_spring.DTO.ContentResponseDTO;
 import com.example.itview_spring.Entity.CollectionEntity;
 
 public interface CollectionRepository extends JpaRepository<CollectionEntity, Integer> {
@@ -49,6 +50,7 @@ public interface CollectionRepository extends JpaRepository<CollectionEntity, In
             """)
     Page<CollectionResponseDTO> findUserCollections(@Param("loginUserId") Integer loginUserId, @Param("userId") Integer userId, Pageable pageable);
 
+    // 컬렉션 상세 조회
     @Query("""
             select new com.example.itview_spring.DTO.CollectionResponseDTO(
                 c.id,
@@ -82,6 +84,27 @@ public interface CollectionRepository extends JpaRepository<CollectionEntity, In
             where c.id = :id
             """)
     CollectionResponseDTO findCollectionById(@Param("loginUserId") Integer loginUserId, @Param("id") Integer id);
+
+    // 컬렉션 아이템 페이징 조회
+    @Query("""
+        SELECT new com.example.itview_spring.DTO.ContentResponseDTO(
+            c.content.id,
+            c.content.title,
+            c.content.contentType,
+            c.content.creatorName,
+            c.content.nation,
+            c.content.description,
+            c.content.releaseDate,
+            c.content.poster,
+            c.content.age,
+            c.content.duration,
+            (SELECT AVG(r.score) FROM RatingEntity r WHERE r.content.id = c.id)
+        )
+        FROM CollectionItemEntity c
+        WHERE c.collection.id = :id
+        order by c.id desc
+    """)
+    Page<ContentResponseDTO> findCollectionItemsById(@Param("id") Integer id, Pageable pageable);
 
     // 컬렉션 썸네일 조회
     @Query("""
