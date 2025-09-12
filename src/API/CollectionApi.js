@@ -5,3 +5,4 @@ export const getCollectionDetail = (id) => axios.get(`${process.env.REACT_APP_AP
 export const getCollectionItems = (id, page) => axios.get(`${process.env.REACT_APP_API_URL}/collection/${id}/items?page=${page}`, {withCredentials: true});
 export const likeCollection = (id) => axios.post(`${process.env.REACT_APP_API_URL}/collection/${id}/like`, {}, {withCredentials: true});
 export const unlikeCollection = (id) => axios.delete(`${process.env.REACT_APP_API_URL}/collection/${id}/like`, {withCredentials: true});
+export const deleteCollection = (id) => axios.delete(`${process.env.REACT_APP_API_URL}/collection/${id}`, {withCredentials: true});
