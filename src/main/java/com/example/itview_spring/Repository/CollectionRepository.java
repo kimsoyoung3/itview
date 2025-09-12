@@ -115,4 +115,7 @@ public interface CollectionRepository extends JpaRepository<CollectionEntity, In
             limit 5
             """)
     List<String> findCollectionPosters(@Param("id") Integer id);
+
+    @Query("SELECT c FROM CollectionEntity c JOIN c.user u WHERE c.title LIKE %:keyword% OR u.nickname LIKE %:keyword%")
+    Page<CollectionEntity> findByTitleOrUserNicknameContaining(@Param("keyword") String keyword, Pageable pageable);
 }

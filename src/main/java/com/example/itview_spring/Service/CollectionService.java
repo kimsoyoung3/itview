@@ -3,6 +3,7 @@ package com.example.itview_spring.Service;
 import java.util.List;
 import java.util.NoSuchElementException;
 
+import com.example.itview_spring.DTO.AdminCollectionDTO;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -111,5 +112,26 @@ public class CollectionService {
     // 컬렉션 썸네일용 포스터 이미지 조회
     public List<String> getCollectionPosters(Integer id) {
         return collectionRepository.findCollectionPosters(id);
+    }
+
+    // 관리자 페이지 - 컬렉션 목록 조회
+    public Page<AdminCollectionDTO> list(String keyword, Pageable pageable) {
+        Page<CollectionEntity> collectionsPage;
+
+        if (keyword != null && !keyword.trim().isEmpty()) {
+            // 검색 키워드가 있으면 제목 또는 유저 닉네임으로 검색
+            collectionsPage = collectionRepository.findByTitleOrUserNicknameContaining(keyword, pageable);
+        } else {
+            // 검색 키워드가 없으면 모든 컬렉션 조회
+            collectionsPage = collectionRepository.findAll(pageable);
+        }
+
+        // 엔티티 페이지를 DTO 페이지로 변환
+        return collectionsPage.map(collection -> modelMapper.map(collection, AdminCollectionDTO.class));
+    }
+
+    // 관리자 페이지 - 컬렉션 삭제
+    public void delete(int id) {
+        collectionRepository.deleteById(id);
     }
 }
