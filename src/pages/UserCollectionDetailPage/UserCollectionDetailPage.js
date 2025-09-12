@@ -5,8 +5,9 @@ import NotFound from "../NotFound/NotFound";
 import "./UserCollectionDetailPage.css"
 import {toast} from "react-toastify";
 import ContentEach from "../../components/ContentEach/ContentEach";
+import ReplyCard from "../../components/ReplyCard/ReplyCard";
 
-const UserCollectionDetailPage = () => {
+const UserCollectionDetailPage = ({userInfo, openLogin}) => {
     const { id } = useParams();
     const [notFound, setNotFound] = useState(false);
 
@@ -228,10 +229,15 @@ const UserCollectionDetailPage = () => {
                 {/*댓글*/}
                 <section className="user-collection-detail-reply">
                     <div className="user-collection-detail-reply-wrap">
-                        <h1>댓글</h1>
-                        <div className="user-collection-detail-reply-content">
-                            댓글이 있으면 달리는 영역
-                        </div>
+                        <h1>댓글 <span>{collection?.replyCount}</span></h1>
+
+                        {replies?.content &&(
+                            <div className="user-collection-detail-reply-content-wrap">
+                                {replies?.content.map((reply) => (
+                                    <ReplyCard reply={reply} userInfo={userInfo} openLogin={openLogin}/>
+                                ))}
+                            </div>
+                        )}
 
                         <div className="user-collection-detail-reply-input">
                             <input type="text" maxLength={200} placeholder="댓글을 입력해주세요." ref={replyRef}/>

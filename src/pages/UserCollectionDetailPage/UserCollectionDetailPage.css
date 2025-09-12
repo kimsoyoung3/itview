@@ -280,9 +280,46 @@
     font-weight: 600;
 }
 
-.user-collection-detail-reply-content {
-    border-bottom: 1px solid #eeeeee;
+.user-collection-detail-reply-wrap>h1>span {
+    font-size: 1rem;
+    color: #888888;
+    font-weight: 600;
+}
+
+.user-collection-detail-reply-content-wrap {
     padding: 15px 0;
+}
+
+.user-collection-detail-reply-content-list {
+    margin: 10px 0;
+    padding: 10px 0;
+    box-sizing: border-box;
+    border-bottom: 1px solid #eeeeee;
+}
+
+.user-collection-detail-reply-profile {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.user-collection-detail-reply-profile>div {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+}
+
+.user-collection-detail-reply-profile>div>img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 50%;
+    display: block;
+}
+
+.user-collection-detail-reply-profile>p {
+    margin: 0;
+    font-size: 0.7rem;
 }
 
 .user-collection-detail-reply-input {
