@@ -50,7 +50,9 @@ public class CollectionService {
         if (!collectionRepository.existsById(id)) {
             throw new NoSuchElementException("존재하지 않는 컬렉션입니다.");
         }
-        return collectionRepository.findCollectionById(loginUserId, id);
+        CollectionResponseDTO collection = collectionRepository.findCollectionById(loginUserId, id);
+        collection.setPoster(getCollectionPosters(id));
+        return collection;
     }
 
     // 컬렉션 썸네일용 포스터 이미지 조회
