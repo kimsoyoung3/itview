@@ -19,6 +19,7 @@ const UserCollectionAddPage = () => {
     const [debounceQuery, setDebounceQuery] = useState(keyword);
     const [searchResults, setSearchResults] = useState({});
 
+    // 디바운스
     useEffect(() => {
         const handler = setTimeout(() => {
             setDebounceQuery(keyword);
@@ -29,6 +30,7 @@ const UserCollectionAddPage = () => {
         };
     }, [keyword]);
 
+    // 검색 결과 가져오기
     useEffect(() => {
         const fetchSearchResults = async () => {
             if(debounceQuery){
@@ -46,22 +48,26 @@ const UserCollectionAddPage = () => {
         fetchSearchResults();
     }, [debounceQuery]);
 
+    // 검색 결과 확인
     useEffect(() => {
         console.log(searchResults);
     }, [searchResults]);
 
+    // 선택된 아이템들
     const [selectedItems, setSelectedItems] = useState([]);
-
+    // 선택된 아이템들 확인
     useEffect(() => {
         console.log(selectedItems);
     }, [selectedItems]);
 
+    // 임시 선택된 아이템들
     const [tempItems, setTempItems] = useState([]);
-
+    // 임시 선택된 아이템들 확인
     useEffect(() => {
         console.log(tempItems);
     }, [tempItems]);
 
+    // 체크박스 핸들러
     const handleCheck = async (item) => {
         if (tempItems.some(i => i.id === item.id)) {
             setTempItems(tempItems.filter(i => i.id !== item.id));
@@ -70,6 +76,7 @@ const UserCollectionAddPage = () => {
         }
     };
 
+    // 아이템 추가 핸들러
     const handleAddItems = async () => {
         setSelectedItems([...selectedItems, ...tempItems.filter(item => !selectedItems.some(i => i.id === item.id))]);
         setTempItems([]);
@@ -78,8 +85,10 @@ const UserCollectionAddPage = () => {
         setSearchResults({});
     }
 
+    // 아이템 수정상태 변수
     const [edit, setEdit] = useState(false);
 
+    // 아이템 수정하기 버튼 핸들러
     const handleEditItems = async () => {
         if (!edit) {
             setEdit(true);
@@ -91,14 +100,32 @@ const UserCollectionAddPage = () => {
         }
     }
 
-    const handleDeleteItems = async (item) => {
-        setTempItems(prev => ([...prev,  item]));
-    }
-
+    // 아이템 수정 취소 핸들러
     const handleEditCancel = async () => {
         setEdit(false);
         setTempItems([]);
     }
+
+    // 더보기
+    const loadMoreRef = useRef();
+
+    useEffect(() => {
+        const observer = new IntersectionObserver((entries) => {
+            if (entries[0].isIntersecting) {
+                console.log('Load more data');
+            }
+        }, {
+            threshold: 1.0
+        });
+        if (loadMoreRef.current) {
+            observer.observe(loadMoreRef.current);
+        }
+        return () => {
+            if (loadMoreRef.current) {
+                observer.unobserve(loadMoreRef.current);
+            }
+        };
+    }, [loadMoreRef]);
 
     const handleCreateCollection = async () => {
         if(title.current.value === ""){
@@ -111,7 +138,8 @@ const UserCollectionAddPage = () => {
         }
         const data = {
             title: title.current.value,
-            description: description.current.value
+            description: description.current.value,
+            contents: selectedItems
         }
         try {
             await CollectionCreate(data);
@@ -169,7 +197,7 @@ const UserCollectionAddPage = () => {
                         {selectedItems?.length > 0 && (selectedItems?.map((item, index) =>
                             <div className="form-check user-collection-add-image-map">
                                 {edit &&(
-                                    <input className="form-check-input add-image-input " type="checkbox" value="" id={`add-image-input-${index}`} onChange={() => handleDeleteItems(item)}/>
+                                    <input className="form-check-input add-image-input " type="checkbox" value="" id={`add-image-input-${index}`} onChange={() => handleCheck(item)} checked={tempItems.some(i => i.id === item.id)}/>
                                 )}
 
                                 <label className="form-check-label user-collection-add-image" htmlFor={`add-image-input-${index}`}>
@@ -179,6 +207,7 @@ const UserCollectionAddPage = () => {
                                 </label>
                             </div>
                         ))}
+                        <div></div>
                     </div>
                 </div>
             </div>
@@ -228,6 +257,7 @@ const UserCollectionAddPage = () => {
                                     </label>
                                 </div>
                             )}
+                            <div ref={loadMoreRef}>더보기</div>
                         </div>
                     </div>
                 </div>
