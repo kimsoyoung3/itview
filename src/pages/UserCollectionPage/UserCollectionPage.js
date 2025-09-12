@@ -49,6 +49,5 @@ const UserCollectionPage = ({userInfo}) => {
             </div>
         </div>
     )
-
 };
 export default UserCollectionPage;
