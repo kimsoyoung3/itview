@@ -4,6 +4,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.data.annotation.CreatedDate;
@@ -61,5 +62,5 @@ public class CollectionEntity {
 
     // 컬렉션의 아이템
     @OneToMany(mappedBy = "collection", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<CollectionItemEntity> items;
+    private List<CollectionItemEntity> items = new ArrayList<>();
 }

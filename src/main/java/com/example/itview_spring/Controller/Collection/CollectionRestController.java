@@ -27,7 +27,6 @@ public class CollectionRestController {
     // 컬렉션 생성
     @PostMapping
     public ResponseEntity<Void> createCollection(@AuthenticationPrincipal CustomUserDetails user, @RequestBody CollectionCreateDTO dto) {
-        System.out.println(dto.getTitle() + " " + dto.getDescription());
         collectionService.createCollection(user.getId(), dto);
         return ResponseEntity.ok().build();
     }
