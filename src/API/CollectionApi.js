@@ -6,4 +6,5 @@ export const getCollectionItems = (id, page) => axios.get(`${process.env.REACT_A
 export const deleteCollection = (id) => axios.delete(`${process.env.REACT_APP_API_URL}/collection/${id}`, {withCredentials: true});
 export const likeCollection = (id) => axios.post(`${process.env.REACT_APP_API_URL}/collection/${id}/like`, {}, {withCredentials: true});
 export const unlikeCollection = (id) => axios.delete(`${process.env.REACT_APP_API_URL}/collection/${id}/like`, {withCredentials: true});
+export const getCollectionReplies = (id, page) => axios.get(`${process.env.REACT_APP_API_URL}/collection/${id}/reply?page=${page}`, {withCredentials: true});
 export const insertReply = (id, data) => axios.post(`${process.env.REACT_APP_API_URL}/collection/${id}/reply`, data, {withCredentials: true});
