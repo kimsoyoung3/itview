@@ -2,6 +2,10 @@ package com.example.itview_spring.Service;
 
 import java.util.NoSuchElementException;
 
+import com.example.itview_spring.DTO.AdminReplyDTO;
+import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -19,6 +23,7 @@ public class ReplyService {
 
     private final ReplyRepository replyRepository;
     private final LikeRepository likeRepository;
+    private final ModelMapper modelMapper;
 
     // 댓글 수정
     public Boolean modifyReply(Integer replyId, String newText) {
@@ -72,5 +77,11 @@ public class ReplyService {
             e.printStackTrace();
             return false;
         }
+    }
+
+    // 관리자 페이지 - 댓글 목록
+    public Page<AdminReplyDTO> list(int userId, Pageable pageable) {
+        Page<ReplyEntity> repliesPage = replyRepository.findByUserId(userId, pageable);
+        return repliesPage.map(reply -> modelMapper.map(reply, AdminReplyDTO.class));
     }
 }

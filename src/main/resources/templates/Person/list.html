@@ -34,85 +34,88 @@
 <body>
 <main layout:fragment="content">
     <div class="container mt-3 mb-3">
-        <h1 class="mt-3">인물 목록</h1>
+        <div class="row">
+            <div class="col-12">
+                <h3 class="mt-5">인물 목록</h3>
+                <p class="mt-3">현재 등록한 인물 목록입니다:</p>
 
-        <div class="d-flex justify-content-between align-items-center mb-3">
-            <form th:action="@{/search/person}" method="get">
-                <div class="input-group">
-                    <input class="form-control" type="text" name="keyword" th:value="${keyword}" placeholder="인물 이름 검색" aria-label="인물 이름 검색" aria-describedby="btnPersonSearch" />
-                    <button class="btn btn-primary" id="btnPersonSearch" type="submit">
-                        <i class="fas fa-search"></i>
-                    </button>
-                </div>
-            </form>
-
-            <a th:href="@{/person/register}" class="btn btn-primary">등록</a>
-        </div>
-        <p>현재 등록한 인물 목록입니다:</p>
-
-        <table class="table table-hover table-custom-layout">
-            <thead>
-            <tr>
-                <th style="width:60%;">이름</th>
-                <th style="width:20%;">직업</th>
-                <th style="width:20%;">작업</th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr th:if="${#lists.isEmpty(personList)}">
-                <td colspan="4" class="text-center">데이터가 없습니다.</td>
-            </tr>
-
-            <tr th:each="person : ${personList}"
-                class="clickable-row"
-                th:onclick="|window.location.href='@{/person/{id}(id=${person.id})}'|">
-                <td class="text-start" th:text="${person.name}">이름</td>
-                <td th:text="${person.job}">직업</td>
-                <td>
-                    <a th:href="@{/person/{id}/update(id=${person.id})}"
-                       class="btn btn-primary"
-                       onclick="event.stopPropagation();">수정</a>
-
-                    <form th:action="@{/person/{id}(id=${person.id})}"
-                          method="post"
-                          style="display:inline;"
-                          onsubmit="return confirm('정말 삭제하시겠습니까?');"
-                          onclick="event.stopPropagation();">
-                        <input type="hidden" name="_method" value="DELETE"/>
-                        <input type="hidden" th:if="${_csrf != null}"
-                               th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
-                        <button type="submit" class="btn btn-primary">삭제</button>
+                <div class="d-flex justify-content-end align-items-center mb-3">
+                    <form th:action="@{/search/person}" method="get" class="me-3">
+                        <div class="input-group">
+                            <input class="form-control" type="text" name="keyword" th:value="${keyword}" placeholder="인물 이름 검색" aria-label="인물 이름 검색" aria-describedby="btnPersonSearch" />
+                            <button class="btn btn-primary" id="btnPersonSearch" type="submit">
+                                <i class="fas fa-search"></i>
+                            </button>
+                        </div>
                     </form>
-                </td>
-            </tr>
-            </tbody>
-        </table>
+                    <a th:href="@{/person/register}" class="btn btn-primary">등록</a>
+                </div>
 
-        <div class="d-flex justify-content-center mt-3" th:if="${page != null and page.totalPages > 1}">
-            <ul class="pagination">
-                <li class="page-item" th:classappend="${page.first}? 'disabled'">
-                    <a class="page-link"
-                       th:href="@{${baseUrl}(page=${page.number - 1}, size=${page.size}, keyword=${keyword})}">
-                        <span>이전</span>
-                    </a>
-                </li>
+                <table class="table table-hover table-custom-layout">
+                    <thead>
+                    <tr>
+                        <th style="width:60%;">이름</th>
+                        <th style="width:20%;">직업</th>
+                        <th style="width:20%;">작업</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:if="${#lists.isEmpty(personList)}">
+                        <td colspan="4" class="text-center">데이터가 없습니다.</td>
+                    </tr>
 
-                <li class="page-item"
-                    th:each="i : ${#numbers.sequence(0, page.totalPages - 1)}"
-                    th:classappend="${i == page.number}? 'active'">
-                    <a class="page-link"
-                       th:text="${i + 1}"
-                       th:href="@{${baseUrl}(page=${i}, size=${page.size}, keyword=${keyword})}">
-                    </a>
-                </li>
+                    <tr th:each="person : ${personList}"
+                        class="clickable-row"
+                        th:onclick="|window.location.href='@{/person/{id}(id=${person.id})}'|">
+                        <td class="text-start" th:text="${person.name}">이름</td>
+                        <td th:text="${person.job}">직업</td>
+                        <td>
+                            <a th:href="@{/person/{id}/update(id=${person.id})}"
+                               class="btn btn-primary"
+                               onclick="event.stopPropagation();">수정</a>
 
-                <li class="page-item" th:classappend="${page.last}? 'disabled'">
-                    <a class="page-link"
-                       th:href="@{${baseUrl}(page=${page.number + 1}, size=${page.size}, keyword=${keyword})}">
-                        <span>다음</span>
-                    </a>
-                </li>
-            </ul>
+                            <form th:action="@{/person/{id}(id=${person.id})}"
+                                  method="post"
+                                  style="display:inline;"
+                                  onsubmit="return confirm('정말 삭제하시겠습니까?');"
+                                  onclick="event.stopPropagation();">
+                                <input type="hidden" name="_method" value="DELETE"/>
+                                <input type="hidden" th:if="${_csrf != null}"
+                                       th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+                                <button type="submit" class="btn btn-primary">삭제</button>
+                            </form>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+
+                <div class="d-flex justify-content-center mt-3" th:if="${page != null and page.totalPages > 1}">
+                    <ul class="pagination">
+                        <li class="page-item" th:classappend="${page.first}? 'disabled'">
+                            <a class="page-link"
+                               th:href="@{${baseUrl}(page=${page.number - 1}, size=${page.size}, keyword=${keyword})}">
+                                <span>이전</span>
+                            </a>
+                        </li>
+
+                        <li class="page-item"
+                            th:each="i : ${#numbers.sequence(0, page.totalPages - 1)}"
+                            th:classappend="${i == page.number}? 'active'">
+                            <a class="page-link"
+                               th:text="${i + 1}"
+                               th:href="@{${baseUrl}(page=${i}, size=${page.size}, keyword=${keyword})}">
+                            </a>
+                        </li>
+
+                        <li class="page-item" th:classappend="${page.last}? 'disabled'">
+                            <a class="page-link"
+                               th:href="@{${baseUrl}(page=${page.number + 1}, size=${page.size}, keyword=${keyword})}">
+                                <span>다음</span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
         </div>
     </div>
 </main>

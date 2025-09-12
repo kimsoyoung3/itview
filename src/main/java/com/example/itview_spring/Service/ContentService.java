@@ -54,7 +54,7 @@ public class ContentService {
      */
     @Transactional
     public Page<ContentCreateDTO> getAllContents(Pageable page) {
-        int currentPage = page.getPageNumber() - 1;
+        int currentPage = page.getPageNumber();
         int pageLimits = 10;
 
         Pageable pageable = PageRequest.of(currentPage, pageLimits, Sort.by(Sort.Direction.DESC, "id"));

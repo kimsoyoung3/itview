@@ -34,82 +34,88 @@
 <body>
 <main layout:fragment="content">
     <div class="container mt-3 mb-3">
-        <h1 class="mt-3">유저 목록</h1>
+        <div class="row">
+            <div class="col-12">
+                <h3 class="mt-5">유저 목록</h3>
+                <p class="mt-3" th:text="${(keyword == null or #strings.isEmpty(keyword)) ? '현재 등록한 유저 목록입니다:' : keyword + '에 대한 검색 결과입니다.'}">
+                </p>
 
-        <div class="d-flex justify-content-between align-items-center mb-3">
-            <form th:action="@{/user/list}" method="get">
-                <div class="input-group">
-                    <input class="form-control" type="text" name="keyword" th:value="${keyword}" placeholder="유저 검색" aria-label="유저 검색" aria-describedby="btnUserSearch" />
-                    <button class="btn btn-primary" id="btnUserSearch" type="submit">
-                        <i class="fas fa-search"></i>
-                    </button>
-                </div>
-            </form>
-        </div>
-        <p th:text="${(keyword == null or #strings.isEmpty(keyword)) ? '현재 등록한 유저 목록입니다:' : keyword + '에 대한 검색 결과입니다.'}">
-        <table class="table table-hover table-custom-layout">
-            <thead>
-            <tr>
-                <th style="width:60%;">이메일</th>
-                <th style="width:20%;">닉네임</th>
-                <th style="width:20%;">작업</th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr th:if="${userPage.content.isEmpty()}">
-                <td colspan="4" class="text-center">데이터가 없습니다.</td>
-            </tr>
-
-            <tr th:each="user : ${userPage}"
-                class="clickable-row"
-                th:onclick="|window.location.href='@{/user/{id}(id=${user.id})}'|">
-                <td class="text-start" th:text="${user.email}"></td>
-                <td th:text="${user.nickname}"></td>
-                <td>
-                    <a th:href="@{/user/{id}/update(id=${user.id})}"
-                       class="btn btn-primary"
-                       onclick="event.stopPropagation();">수정</a>
-
-                    <form th:action="@{/user/{id}(id=${user.id})}"
-                          method="post"
-                          style="display:inline;"
-                          onsubmit="return confirm('정말 삭제하시겠습니까?');"
-                          onclick="event.stopPropagation();">
-                        <input type="hidden" name="_method" value="DELETE"/>
-                        <input type="hidden" th:if="${_csrf != null}"
-                               th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
-                        <button type="submit" class="btn btn-primary">삭제</button>
+                <div class="d-flex justify-content-end align-items-center mb-3">
+                    <form th:action="@{/user/list}" method="get">
+                        <div class="input-group">
+                            <input class="form-control" type="text" name="keyword" th:value="${keyword}" placeholder="유저 검색" aria-label="유저 검색" aria-describedby="btnUserSearch" />
+                            <button class="btn btn-primary" id="btnUserSearch" type="submit">
+                                <i class="fas fa-search"></i>
+                            </button>
+                        </div>
                     </form>
-                </td>
-            </tr>
-            </tbody>
-        </table>
+                </div>
 
-        <div class="d-flex justify-content-center mt-3">
-            <ul class="pagination">
-                <li class="page-item" th:classappend="${userPage.first}? 'disabled'">
-                    <a class="page-link"
-                       th:href="@{/user/list(page=${userPage.number - 1}, size=${userPage.size}, keyword=${keyword})}">
-                        <span>&laquo;</span>
-                    </a>
-                </li>
+                <table class="table table-hover table-custom-layout">
+                    <thead>
+                    <tr>
+                        <th style="width:60%;">이메일</th>
+                        <th style="width:20%;">닉네임</th>
+                        <th style="width:20%;">작업</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:if="${userPage.content.isEmpty()}">
+                        <td colspan="4" class="text-center">데이터가 없습니다.</td>
+                    </tr>
 
-                <li class="page-item"
-                    th:each="i : ${#numbers.sequence(startPage, endPage)}"
-                    th:classappend="${i == userPage.number + 1}? 'active'">
-                    <a class="page-link"
-                       th:text="${i}"
-                       th:href="@{/user/list(page=${i - 1}, size=${userPage.size}, keyword=${keyword})}">
-                    </a>
-                </li>
+                    <tr th:each="user : ${userPage.content}"
+                        class="clickable-row"
+                        th:onclick="|window.location.href='@{/user/{id}(id=${user.id})}'|">
+                        <td class="text-start" th:text="${user.email}"></td>
+                        <td th:text="${user.nickname}"></td>
+                        <td>
+                            <a th:href="@{/user/{id}/update(id=${user.id})}"
+                               class="btn btn-primary"
+                               onclick="event.stopPropagation();">수정</a>
 
-                <li class="page-item" th:classappend="${userPage.last}? 'disabled'">
-                    <a class="page-link"
-                       th:href="@{/user/list(page=${userPage.number + 1}, size=${userPage.size}, keyword=${keyword})}">
-                        <span>&raquo;</span>
-                    </a>
-                </li>
-            </ul>
+                            <form th:action="@{/user/{id}(id=${user.id})}"
+                                  method="post"
+                                  style="display:inline;"
+                                  onsubmit="return confirm('정말 삭제하시겠습니까?');"
+                                  onclick="event.stopPropagation();">
+                                <input type="hidden" name="_method" value="DELETE"/>
+                                <input type="hidden" th:if="${_csrf != null}"
+                                       th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+                                <button type="submit" class="btn btn-primary">삭제</button>
+                            </form>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+
+                <div class="d-flex justify-content-center mt-3" th:if="${userPage.totalPages >= 1}">
+                    <ul class="pagination">
+                        <li class="page-item" th:classappend="${userPage.first}? 'disabled'">
+                            <a class="page-link"
+                               th:href="@{/user/list(page=${userPage.number - 1}, size=${userPage.size}, keyword=${keyword})}">
+                                <span>&laquo;</span>
+                            </a>
+                        </li>
+
+                        <li class="page-item"
+                            th:each="i : ${#numbers.sequence(startPage, endPage)}"
+                            th:classappend="${i == userPage.number + 1}? 'active'">
+                            <a class="page-link"
+                               th:text="${i}"
+                               th:href="@{/user/list(page=${i - 1}, size=${userPage.size}, keyword=${keyword})}">
+                            </a>
+                        </li>
+
+                        <li class="page-item" th:classappend="${userPage.last}? 'disabled'">
+                            <a class="page-link"
+                               th:href="@{/user/list(page=${userPage.number + 1}, size=${userPage.size}, keyword=${keyword})}">
+                                <span>&raquo;</span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
         </div>
     </div>
 </main>

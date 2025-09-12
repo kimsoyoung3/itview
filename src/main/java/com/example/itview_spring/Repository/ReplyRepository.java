@@ -12,6 +12,8 @@ import com.example.itview_spring.Constant.Replyable;
 import com.example.itview_spring.DTO.ReplyDTO;
 import com.example.itview_spring.Entity.ReplyEntity;
 
+import java.util.List;
+
 @Repository
 public interface ReplyRepository extends JpaRepository<ReplyEntity, Integer> {
 
@@ -65,4 +67,6 @@ public interface ReplyRepository extends JpaRepository<ReplyEntity, Integer> {
             ORDER BY r.createdAt DESC
             """)
     Page<ReplyDTO> findRepliesByTargetId(@Param("userId") Integer userId, @Param("targetId") Integer targetId, @Param("targetType") Replyable targetType, Pageable pageable);
+
+    Page<ReplyEntity> findByUserId(int userId, Pageable pageable);
 }
