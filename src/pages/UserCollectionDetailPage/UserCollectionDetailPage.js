@@ -1,6 +1,6 @@
 import React, {useEffect, useRef, useState} from "react";
 import { useParams } from "react-router-dom";
-import { deleteCollection, getCollectionDetail, getCollectionItems, insertReply, likeCollection, unlikeCollection } from "../../API/CollectionApi";
+import { deleteCollection, getCollectionDetail, getCollectionItems, getCollectionReplies, insertReply, likeCollection, unlikeCollection } from "../../API/CollectionApi";
 import NotFound from "../NotFound/NotFound";
 import "./UserCollectionDetailPage.css"
 import {toast} from "react-toastify";
@@ -12,6 +12,7 @@ const UserCollectionDetailPage = () => {
 
     const [collection, setCollection] = useState({});
     const [items, setItems] = useState({});
+    const [replies, setReplies] = useState({});
 
     const [deleteCollectionModal, setDeleteCollectionModal] = useState()
 
@@ -37,6 +38,8 @@ const UserCollectionDetailPage = () => {
                 setCollection(detailRes.data);
                 const itemsRes = await getCollectionItems(id, 1);
                 setItems(itemsRes.data);
+                const repliesRes = await getCollectionReplies(id, 1);
+                setReplies(repliesRes.data);
             } catch (e) {
                 setNotFound(true);
             }
@@ -51,6 +54,10 @@ const UserCollectionDetailPage = () => {
     useEffect(() => {
         console.log(items);
     }, [items]);
+
+    useEffect(() => {
+        console.log(replies);
+    }, [replies]);
 
     const handleCollectionDelete = async () => {
         try {
