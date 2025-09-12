@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, {useEffect, useRef, useState} from "react";
 import { useParams } from "react-router-dom";
 import { deleteCollection, getCollectionDetail, getCollectionItems, getCollectionReplies, insertReply, likeCollection, unlikeCollection } from "../../API/CollectionApi";
 import NotFound from "../NotFound/NotFound";
@@ -9,12 +9,28 @@ import ContentEach from "../../components/ContentEach/ContentEach";
 const UserCollectionDetailPage = () => {
     const { id } = useParams();
     const [notFound, setNotFound] = useState(false);
-    const [edit, setEdit] = useState(false);
 
     const [collection, setCollection] = useState({});
     const [items, setItems] = useState({});
     const [replies, setReplies] = useState({});
 
+    const [deleteCollectionModal, setDeleteCollectionModal] = useState()
+
+    const openDeleteCollectionModal = () => setDeleteCollectionModal(true)
+    const closeDeleteCollectionModal = () => setDeleteCollectionModal(false)
+
+    const [edit, setEdit] = useState(false);
+    const menuRef = useRef(null);
+
+    useEffect(() => {
+        const handleClickOutside = (e) => {
+            if (menuRef.current && !menuRef.current.contains(e.target)) {
+                setEdit(false);
+            }
+        };
+        document.addEventListener("mousedown", handleClickOutside);
+        return () => document.removeEventListener("mousedown", handleClickOutside);
+    }, []);
     useEffect(() => {
         const fetchData = async () => {
             try {
@@ -84,7 +100,7 @@ const UserCollectionDetailPage = () => {
                 toast("댓글 등록에 실패했습니다.");
             }
         }
-    }        
+    }
 
     return(notFound ? <NotFound /> :
         <div className="user-collection-detail-page container">
@@ -119,11 +135,11 @@ const UserCollectionDetailPage = () => {
                     </div>
 
                     {/*수정&삭제 버튼*/}
-                    <div className="user-collection-detail-edit-box">
+                    <div className="user-collection-detail-edit-box" ref={menuRef}>
                         {edit && (
                             <div>
                                 <button>수정</button>
-                                <button onClick={handleCollectionDelete}>삭제</button>
+                                <button onClick={openDeleteCollectionModal}>삭제</button>
                             </div>
                         )}
 
@@ -131,6 +147,20 @@ const UserCollectionDetailPage = () => {
                             <i className="bi bi-three-dots"></i>
                         </button>
                     </div>
+
+                    {/* 코멘트 삭제 확인 모달 */}
+                    {deleteCollectionModal && (
+                        <div className="confirm-modal-overlay" onClick={closeDeleteCollectionModal}>
+                            <div className="confirm-modal-content" onClick={e => e.stopPropagation()}>
+                                <p>알림</p>
+                                <p>삭제하시겠습니까?</p>
+                                <div className="confirm-btn-group">
+                                    <button onClick={handleCollectionDelete}>확인</button>
+                                    <button onClick={closeDeleteCollectionModal}>취소</button>
+                                </div>
+                            </div>
+                        </div>
+                    )}
 
                 </section>
 
@@ -140,8 +170,8 @@ const UserCollectionDetailPage = () => {
                     <p>{collection?.description}</p>
                     <p>
                         <span>좋아요 {collection?.likeCount}</span>
-                        <span> &#124; 댓글 {collection?.replyCount}</span>
-                        <span> &#124; {collection?.updatedAt?.substring(0, 10)}</span>
+                        <span id="reply-tab">댓글 {collection?.replyCount}</span>
+                        <span>{collection?.updatedAt?.substring(0, 10)}</span>
                     </p>
                 </section>
 
