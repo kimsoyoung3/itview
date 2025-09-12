@@ -79,6 +79,7 @@ const UserCollectionDetailPage = () => {
                 {/*제목 및 좋아요, 댓글, 업데이트시간*/}
                 <section className="user-collection-detail-info">
                     <h1>{collection?.title}</h1>
+                    <p>{collection?.description}</p>
                     <p>
                         <span>좋아요 {collection?.likeCount}</span>
                         <span> &#124; 댓글 {collection?.replyCount}</span>
@@ -109,6 +110,16 @@ const UserCollectionDetailPage = () => {
                     </div>
                 </section>
 
+                <section className="user-collection-detail-content">
+                    <div className="user-collection-detail-content-wrap">
+                        <h1>작품들 <span>{collection?.contentCount}</span></h1>
+
+                        <div className="user-collection-detail-content-list">
+
+                        </div>
+
+                    </div>
+                </section>
             </div>
         </div>
     )
