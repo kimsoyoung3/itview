@@ -2,12 +2,12 @@ import React, {useEffect, useRef, useState} from "react";
 import { NavLink, useParams } from "react-router-dom";
 import { deleteCollection, getCollectionDetail, getCollectionItems, getCollectionReplies, insertReply, likeCollection, unlikeCollection } from "../../API/CollectionApi";
 import NotFound from "../NotFound/NotFound";
-import "./UserCollectionDetailPage.css"
+import "./CollectionDetailPage.css"
 import {toast} from "react-toastify";
 import ContentEach from "../../components/ContentEach/ContentEach";
 import ReplyCard from "../../components/ReplyCard/ReplyCard";
 
-const UserCollectionDetailPage = ({userInfo, openLogin}) => {
+const CollectionDetailPage = ({userInfo, openLogin}) => {
     const { id } = useParams();
     const [notFound, setNotFound] = useState(false);
 
@@ -264,5 +264,5 @@ const UserCollectionDetailPage = ({userInfo, openLogin}) => {
     )
 
 };
-export default UserCollectionDetailPage;
+export default CollectionDetailPage;
 

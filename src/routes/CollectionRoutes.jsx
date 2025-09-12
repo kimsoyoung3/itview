@@ -1,13 +1,13 @@
 import React from 'react'
 import { Route, Routes } from 'react-router-dom';
-import UserCollectionAddPage from '../pages/UserCollectionAddPage/UserCollectionAddPage';
-import UserCollectionDetailPage from '../pages/UserCollectionDetailPage/UserCollectionDetailPage';
+import CollectionAddPage from '../pages/CollectionAddPage/CollectionAddPage';
+import CollectionDetailPage from '../pages/CollectionDetailPage/CollectionDetailPage';
 
 function CollectionRoutes({ userInfo, openLogin }) {
   return (
     <Routes>
-        <Route path="/new" element={<UserCollectionAddPage userInfo={userInfo} openLogin={openLogin} />} />
-        <Route path=":id" element={<UserCollectionDetailPage userInfo={userInfo} openLogin={openLogin} />} />
+        <Route path="/new" element={<CollectionAddPage userInfo={userInfo} openLogin={openLogin} />} />
+        <Route path=":id" element={<CollectionDetailPage userInfo={userInfo} openLogin={openLogin} />} />
     </Routes>
   )
 }
