@@ -1,9 +1,10 @@
 import React from "react";
 import "./CollectionCard.css";
-import {NavLink} from "react-router-dom";
+import {NavLink, useNavigate} from "react-router-dom";
 
 const CollectionCard = ({ collectionData, userInfo, openLogin }) => {
 
+    const navigate = useNavigate();
 
     return (
         <div className="collection-card">
@@ -28,7 +29,10 @@ const CollectionCard = ({ collectionData, userInfo, openLogin }) => {
                     <div className="collection-card-bg-shadow"></div>
 
                     {/* 사용자 프로필 */}
-                    <div className="collection-card-profile">
+                    <div className="collection-card-profile"
+                         onClick={(e) => {
+                            e.preventDefault(); // 링크 이동 방지
+                            navigate(`/user/${collectionData?.user?.id}`)}}>
                         <div className="collection-card-profile-image">
                             <img
                                 src={collectionData?.user?.profile ? collectionData.user.profile : '/user.png'}
