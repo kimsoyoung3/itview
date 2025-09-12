@@ -31,17 +31,17 @@ public class UserController {
         // 2. 조회된 Page 객체를 모델에 담아 뷰로 전달
         model.addAttribute("userPage", userPage);
 
-        // 3. 페이지네이션 처리를 위한 정보도 모델에 담아 전달
-        int startPage = Math.max(1, userPage.getPageable().getPageNumber() - 4);
-        int endPage = Math.min(userPage.getTotalPages(), userPage.getPageable().getPageNumber() + 4);
+        // 3. 페이지 블록 계산 로직 추가
+        int currentPage = userPage.getNumber();
+        int blockSize = 10; // 페이지 블록의 크기
+        int startPage = (int) (Math.floor(currentPage / blockSize) * blockSize);
+        int endPage = Math.min(startPage + blockSize - 1, userPage.getTotalPages() - 1);
 
+        // 4. 페이지네이션 처리를 위한 정보도 모델에 담아 전달
         model.addAttribute("startPage", startPage);
         model.addAttribute("endPage", endPage);
-
-        // 4. keyword 값을 모델에 추가하여 뷰로 전달하는 핵심 코드
         model.addAttribute("keyword", keyword);
         model.addAttribute("baseUrl", "/user/list");
-
 
         // 5. 뷰의 이름 반환
         return "user/list";

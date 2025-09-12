@@ -89,17 +89,25 @@
                     </tbody>
                 </table>
 
-                <div class="d-flex justify-content-center mt-3" th:if="${page != null and page.totalPages > 1}">
+                <div class="d-flex justify-content-center mt-3" th:if="${page != null and page.totalPages >= 1}">
                     <ul class="pagination">
-                        <li class="page-item" th:classappend="${page.first}? 'disabled'">
+
+                        <li class="page-item" th:classappend="${startPage == 0} ? 'disabled'">
                             <a class="page-link"
-                               th:href="@{${baseUrl}(page=${page.number - 1}, size=${page.size}, keyword=${keyword})}">
-                                <span>이전</span>
+                               th:href="@{${baseUrl}(page=0, size=${page.size}, keyword=${keyword})}">
+                                <span>&laquo;&laquo;</span>
+                            </a>
+                        </li>
+
+                        <li class="page-item" th:classappend="${startPage == 0} ? 'disabled'">
+                            <a class="page-link"
+                               th:href="@{${baseUrl}(page=${startPage - 1}, size=${page.size}, keyword=${keyword})}">
+                                <span>&laquo;</span>
                             </a>
                         </li>
 
                         <li class="page-item"
-                            th:each="i : ${#numbers.sequence(0, page.totalPages - 1)}"
+                            th:each="i : ${#numbers.sequence(startPage, endPage)}"
                             th:classappend="${i == page.number}? 'active'">
                             <a class="page-link"
                                th:text="${i + 1}"
@@ -107,10 +115,17 @@
                             </a>
                         </li>
 
-                        <li class="page-item" th:classappend="${page.last}? 'disabled'">
+                        <li class="page-item" th:classappend="${endPage >= page.totalPages - 1} ? 'disabled'">
                             <a class="page-link"
-                               th:href="@{${baseUrl}(page=${page.number + 1}, size=${page.size}, keyword=${keyword})}">
-                                <span>다음</span>
+                               th:href="@{${baseUrl}(page=${endPage + 1}, size=${page.size}, keyword=${keyword})}">
+                                <span>&raquo;</span>
+                            </a>
+                        </li>
+
+                        <li class="page-item" th:classappend="${endPage >= page.totalPages - 1} ? 'disabled'">
+                            <a class="page-link"
+                               th:href="@{${baseUrl}(page=${page.totalPages - 1}, size=${page.size}, keyword=${keyword})}">
+                                <span>&raquo;&raquo;</span>
                             </a>
                         </li>
                     </ul>

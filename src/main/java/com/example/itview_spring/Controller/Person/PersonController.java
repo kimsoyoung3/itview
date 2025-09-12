@@ -54,10 +54,20 @@ public class PersonController {
         }
 
         Page<PersonDTO> page = personService.list(pageable, null).map(this::toDTO);
+
+        // --- 페이지 블록 계산 로직 추가 ---
+        int currentPage = page.getNumber();
+        int blockSize = 10; // 페이지 블록의 크기
+        int startPage = (int)Math.floor(currentPage / blockSize) * blockSize;
+        int endPage = Math.min(startPage + blockSize - 1, page.getTotalPages() - 1);
+
         model.addAttribute("page", page);
         model.addAttribute("personList", page.getContent());
         model.addAttribute("keyword", null);
-        model.addAttribute("baseUrl", "/person/list"); // 페이지네이션용
+        model.addAttribute("baseUrl", "/person/list");
+        model.addAttribute("startPage", startPage); // 뷰로 startPage 전달
+        model.addAttribute("endPage", endPage);     // 뷰로 endPage 전달
+
         return "Person/list";
     }
 

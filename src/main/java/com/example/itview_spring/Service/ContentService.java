@@ -59,22 +59,7 @@ public class ContentService {
 
         Pageable pageable = PageRequest.of(currentPage, pageLimits, Sort.by(Sort.Direction.DESC, "id"));
         Page<ContentEntity> contentEntities = contentRepository.findAll(pageable);
-        System.out.println("총 페이지 수: " + contentEntities.getTotalPages());
-        System.out.println("총 컨텐츠 수: " + contentEntities.getTotalElements());
-        System.out.println("현재 페이지 번호: " + contentEntities.getNumber());
 
-        for (ContentEntity content : contentEntities.getContent()) {
-            System.out.println("--------------------------------");
-            System.out.println("ID: " + content.getId());
-            System.out.println("Title: " + content.getTitle());
-            System.out.println("Type: " + content.getContentType());
-            System.out.println("Release Date: " + content.getReleaseDate());
-            System.out.println("Poster: " + content.getPoster());
-            System.out.println("Nation: " + content.getNation());
-            System.out.println("Channel: " + content.getChannelName());
-            System.out.println("Genres: " + content.getGenres());
-            System.out.println("외부 서비스: " + content.getVideos());
-        }
         Page<ContentCreateDTO> contentDTOS = contentEntities.map(data -> modelMapper.map(
                 data, ContentCreateDTO.class));
         return contentDTOS;

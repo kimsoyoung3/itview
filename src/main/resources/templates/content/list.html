@@ -72,7 +72,13 @@
 
                 <div class="d-flex justify-content-center mt-3" th:if="${contentDTOS.totalPages >= 1}">
                     <ul class="pagination">
-                        <li class="page-item" th:if="${startPage > 0}">
+                        <li class="page-item" th:classappend="${startPage == 0} ? 'disabled'">
+                            <a class="page-link" th:href="@{/content/list(page=0)}" aria-label="First">
+                                <span>&laquo;&laquo;</span>
+                            </a>
+                        </li>
+
+                        <li class="page-item" th:classappend="${startPage == 0} ? 'disabled'">
                             <a class="page-link" th:href="@{/content/list(page=${startPage - 1})}" aria-label="Previous">
                                 <span>&laquo;</span>
                             </a>
@@ -87,9 +93,15 @@
                             </a>
                         </li>
 
-                        <li class="page-item" th:if="${endPage < contentDTOS.totalPages - 1}">
+                        <li class="page-item" th:classappend="${endPage >= contentDTOS.totalPages - 1} ? 'disabled'">
                             <a class="page-link" th:href="@{/content/list(page=${endPage + 1})}" aria-label="Next">
                                 <span>&raquo;</span>
+                            </a>
+                        </li>
+
+                        <li class="page-item" th:classappend="${endPage >= contentDTOS.totalPages - 1} ? 'disabled'">
+                            <a class="page-link" th:href="@{/content/list(page=${contentDTOS.totalPages - 1})}" aria-label="Last">
+                                <span>&raquo;&raquo;</span>
                             </a>
                         </li>
                     </ul>

@@ -91,26 +91,40 @@
 
                 <div class="d-flex justify-content-center mt-3" th:if="${userPage.totalPages >= 1}">
                     <ul class="pagination">
-                        <li class="page-item" th:classappend="${userPage.first}? 'disabled'">
+                        <li class="page-item" th:classappend="${startPage == 0} ? 'disabled'">
                             <a class="page-link"
-                               th:href="@{/user/list(page=${userPage.number - 1}, size=${userPage.size}, keyword=${keyword})}">
+                               th:href="@{/user/list(page=0, size=${userPage.size}, keyword=${keyword})}">
+                                <span>&laquo;&laquo;</span>
+                            </a>
+                        </li>
+
+                        <li class="page-item" th:classappend="${startPage == 0} ? 'disabled'">
+                            <a class="page-link"
+                               th:href="@{/user/list(page=${startPage - 1}, size=${userPage.size}, keyword=${keyword})}">
                                 <span>&laquo;</span>
                             </a>
                         </li>
 
                         <li class="page-item"
                             th:each="i : ${#numbers.sequence(startPage, endPage)}"
-                            th:classappend="${i == userPage.number + 1}? 'active'">
+                            th:classappend="${i == userPage.number}? 'active'">
                             <a class="page-link"
-                               th:text="${i}"
-                               th:href="@{/user/list(page=${i - 1}, size=${userPage.size}, keyword=${keyword})}">
+                               th:text="${i + 1}"
+                               th:href="@{/user/list(page=${i}, size=${userPage.size}, keyword=${keyword})}">
                             </a>
                         </li>
 
-                        <li class="page-item" th:classappend="${userPage.last}? 'disabled'">
+                        <li class="page-item" th:classappend="${endPage >= userPage.totalPages - 1} ? 'disabled'">
                             <a class="page-link"
-                               th:href="@{/user/list(page=${userPage.number + 1}, size=${userPage.size}, keyword=${keyword})}">
+                               th:href="@{/user/list(page=${endPage + 1}, size=${userPage.size}, keyword=${keyword})}">
                                 <span>&raquo;</span>
+                            </a>
+                        </li>
+
+                        <li class="page-item" th:classappend="${endPage >= userPage.totalPages - 1} ? 'disabled'">
+                            <a class="page-link"
+                               th:href="@{/user/list(page=${userPage.totalPages - 1}, size=${userPage.size}, keyword=${keyword})}">
+                                <span>&raquo;&raquo;</span>
                             </a>
                         </li>
                     </ul>

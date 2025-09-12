@@ -19,7 +19,7 @@
         .table-custom-layout td {
             text-align: center;
             word-wrap: break-word;
-            vertical-align: middle; /* 세로 가운데 정렬 추가 */
+            vertical-align: middle;
         }
 
         /* 제목 항목만 왼쪽 정렬하는 클래스 */
@@ -38,11 +38,11 @@
 
                 <div class="d-flex align-items-center mb-4">
                     <img th:if="${user.profile}" th:src="${user.profile}" alt="프로필"
-                         class="rounded-circle border border-2 me-3"
+                         class="me-3"
                          style="width: 80px; height: 80px; object-fit: cover;">
                     <div th:unless="${user.profile}"
-                         class="rounded-circle border border-2 me-3 bg-light d-flex justify-content-center align-items-center"
-                         style="width: 80px; height: 80px;">
+                         class="me-3 d-flex justify-content-center align-items-center"
+                         style="width: 80px; height: 80px; background-color: #f8f9fa;">
                         <span class="text-muted">No Profile</span>
                     </div>
                     <div>
@@ -53,18 +53,17 @@
 
                 <ul class="nav nav-tabs mb-3">
                     <li class="nav-item">
-                        <a class="nav-link active" aria-current="page" href="#">코멘트</a>
+                        <a class="nav-link active" th:href="@{/reply/{id}/comment(id=${user.id})}">코멘트</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">컬렉션</a>
+                        <a class="nav-link" th:href="@{/reply/{id}/collection(id=${user.id})}">컬렉션</a>
                     </li>
                 </ul>
 
                 <table class="table table-hover table-custom-layout">
                     <thead>
                     <tr>
-                        <th class="text-start" style="width:40%;">내용</th>
-                        <th style="width:20%;">타입</th>
+                        <th style="width:60%;">내용</th>
                         <th style="width:20%;">작성 시각</th>
                         <th style="width:20%;">작업</th>
                     </tr>
@@ -75,44 +74,61 @@
                     </tr>
                     <tr th:each="reply : ${replies.content}">
                         <td class="text-start" th:text="${reply.text}"></td>
-                        <td th:text="${reply.targetType}"></td>
                         <td th:text="${#temporals.format(reply.createdAt, 'yyyy-MM-dd HH:mm')}"></td>
                         <td>
-                            <a th:href="@{/admin/reply/move/{id}(id=${reply.id})}" class="btn btn-primary">이동</a>
-                            <form th:action="@{/admin/reply/{id}(id=${reply.id})}"
+                            <a th:href="@{http://localhost:3000/comment/{id}(id=${reply.targetId})}"
+                               class="btn btn-primary"
+                               target="_blank"
+                               rel="noopener noreferrer">이동</a>
+                            <form th:action="@{/reply/{id}(id=${reply.id})}"
                                   method="post"
                                   style="display:inline;"
                                   onsubmit="return confirm('정말 삭제하시겠습니까?');">
                                 <input type="hidden" name="_method" value="DELETE"/>
+                                <input type="hidden" name="userId" th:value="${user.id}"/>
+                                <input type="hidden" name="targetType" value="COMMENT"/>
                                 <button type="submit" class="btn btn-primary">삭제</button>
                             </form>
                         </td>
                     </tr>
                     </tbody>
                 </table>
-
                 <div class="d-flex justify-content-center mt-3" th:if="${replies.totalPages >= 1}">
                     <ul class="pagination">
-                        <li class="page-item" th:classappend="${replies.first} ? 'disabled'">
+                        <li class="page-item" th:classappend="${startPage == 0} ? 'disabled'">
                             <a class="page-link"
-                               th:href="@{/user/{id}(id=${user.id}, page=${replies.number - 1})}"
+                               th:href="@{/reply/{id}/comment(id=${user.id}, page=0)}"
+                               aria-label="First">
+                                <span>&laquo;&laquo;</span>
+                            </a>
+                        </li>
+                        <li class="page-item" th:classappend="${startPage == 0} ? 'disabled'">
+                            <a class="page-link"
+                               th:href="@{/reply/{id}/comment(id=${user.id}, page=${startPage - 1})}"
                                aria-label="Previous">
                                 <span>&laquo;</span>
                             </a>
                         </li>
                         <li class="page-item"
-                            th:each="page : ${#numbers.sequence(0, replies.totalPages - 1)}"
-                            th:classappend="${page eq replies.number} ? 'active'">
+                            th:each="i : ${#numbers.sequence(startPage, endPage)}"
+                            th:classappend="${i eq replies.number} ? 'active'">
                             <a class="page-link"
-                               th:text="${page + 1}"
-                               th:href="@{/reply/{id}/comment(id=${user.id}, page=${page})}">
+                               th:text="${i + 1}"
+                               th:href="@{/reply/{id}/comment(id=${user.id}, page=${i})}">
                             </a>
                         </li>
-                        <li class="page-item" th:classappend="${replies.last} ? 'disabled'">
+                        <li class="page-item" th:classappend="${endPage >= replies.totalPages - 1} ? 'disabled'">
                             <a class="page-link"
-                               th:href="@{/user/{id}(id=${user.id}, page=${replies.number + 1})}"
+                               th:href="@{/reply/{id}/comment(id=${user.id}, page=${endPage + 1})}"
                                aria-label="Next">
                                 <span>&raquo;</span>
+                            </a>
+                        </li>
+                        <li class="page-item" th:classappend="${endPage >= replies.totalPages - 1} ? 'disabled'">
+                            <a class="page-link"
+                               th:href="@{/reply/{id}/comment(id=${user.id}, page=${replies.totalPages - 1})}"
+                               aria-label="Last">
+                                <span>&raquo;&raquo;</span>
                             </a>
                         </li>
                     </ul>

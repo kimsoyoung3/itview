@@ -68,5 +68,5 @@ public interface ReplyRepository extends JpaRepository<ReplyEntity, Integer> {
             """)
     Page<ReplyDTO> findRepliesByTargetId(@Param("userId") Integer userId, @Param("targetId") Integer targetId, @Param("targetType") Replyable targetType, Pageable pageable);
 
-    Page<ReplyEntity> findByUserId(int userId, Pageable pageable);
+    Page<ReplyEntity> findByUserIdAndTargetType(int userId, Replyable targetType, Pageable pageable);
 }

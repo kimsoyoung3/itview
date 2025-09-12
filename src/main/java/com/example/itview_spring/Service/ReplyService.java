@@ -80,8 +80,14 @@ public class ReplyService {
     }
 
     // 관리자 페이지 - 댓글 목록
-    public Page<AdminReplyDTO> list(int userId, Pageable pageable) {
-        Page<ReplyEntity> repliesPage = replyRepository.findByUserId(userId, pageable);
+    public Page<AdminReplyDTO> list(int userId, Pageable pageable, Replyable targetType) {
+        // 이제 targetType을 사용해 레포지토리를 호출합니다.
+        Page<ReplyEntity> repliesPage = replyRepository.findByUserIdAndTargetType(userId, targetType, pageable);
         return repliesPage.map(reply -> modelMapper.map(reply, AdminReplyDTO.class));
+    }
+
+    // 관리자 페이지 - 댓글 삭제
+    public void delete(int id) {
+        replyRepository.deleteById(id);
     }
 }
