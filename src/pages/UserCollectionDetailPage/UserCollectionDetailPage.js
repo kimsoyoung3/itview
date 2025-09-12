@@ -86,6 +86,21 @@ const UserCollectionDetailPage = () => {
         }
     }
 
+    const handleLoadMoreItem = async () => {
+        if (items.page.number < items.page.totalPages - 1) {
+            try {
+                const res = await getCollectionItems(id, items.page.number + 2);
+                setItems(prev => ({
+                    ...res.data,
+                    content: [...prev.content, ...res.data.content],
+                    page: res.data.page
+                }));
+            } catch (e) {
+                toast("작품을 불러오는데 실패했습니다.");
+            }
+        }
+    }
+
     const replyRef = useRef();
     const handleReplySubmit = async () => {
         if (replyRef.current.value.trim() !== "") {
@@ -217,7 +232,7 @@ const UserCollectionDetailPage = () => {
                         </div>
 
                         <div className="user-collection-detail-content-list-btn-box">
-                            <button className="user-collection-detail-content-list-btn">더보기</button>
+                            <button className="user-collection-detail-content-list-btn" onClick={handleLoadMoreItem} hidden={items?.page?.number + 2 > items?.page?.totalPages}>더보기</button>
                         </div>
 
                     </div>
