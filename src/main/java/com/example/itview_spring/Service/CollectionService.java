@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.example.itview_spring.DTO.CollectionCreateDTO;
+import com.example.itview_spring.DTO.CollectionResponseDTO;
 import com.example.itview_spring.Entity.CollectionEntity;
 import com.example.itview_spring.Entity.CollectionItemEntity;
 import com.example.itview_spring.Entity.ContentEntity;
@@ -42,6 +43,14 @@ public class CollectionService {
         }
         
         collectionRepository.save(collection);
+    }
+
+    // 컬렉션 상세 조회
+    public CollectionResponseDTO getCollectionDetail(Integer loginUserId, Integer id) {
+        if (!collectionRepository.existsById(id)) {
+            throw new NoSuchElementException("존재하지 않는 컬렉션입니다.");
+        }
+        return collectionRepository.findCollectionById(loginUserId, id);
     }
 
     // 컬렉션 썸네일용 포스터 이미지 조회
