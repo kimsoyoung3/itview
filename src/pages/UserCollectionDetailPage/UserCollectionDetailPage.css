@@ -80,7 +80,7 @@
     right: 15px;
     z-index: 15;
     display: flex;
-    gap: 10px;
+    gap: 2px;
 }
 
 .user-collection-detail-edit-box>div {
@@ -140,6 +140,27 @@
 .user-collection-detail-info>p>span {
     color: #9d9d9d;
     font-size: 0.8rem;
+    padding-right: 10px;
+    position: relative;
+}
+
+.user-collection-detail-info>p>span:last-child {
+    padding-right: 0;
+}
+
+.user-collection-detail-info>p>span::after {
+    content: "";
+    width: 1px;
+    height: 9px;
+    background: #d9d9d9;
+    position: absolute;
+    top: 50%;
+    right: 4px;
+    transform: translateY(-50%);
+}
+
+.user-collection-detail-info>p>span:last-child::after {
+    display: none;
 }
 
 .user-collection-detail-btn-list {
