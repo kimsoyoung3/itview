@@ -22,6 +22,8 @@ import com.example.itview_spring.Config.CustomUserDetails;
 import com.example.itview_spring.DTO.CollectionCreateDTO;
 import com.example.itview_spring.DTO.CollectionResponseDTO;
 import com.example.itview_spring.DTO.ContentResponseDTO;
+import com.example.itview_spring.DTO.ReplyDTO;
+import com.example.itview_spring.DTO.TextDTO;
 import com.example.itview_spring.Service.CollectionService;
 
 import lombok.RequiredArgsConstructor;
@@ -78,6 +80,25 @@ public class CollectionRestController {
     public ResponseEntity<Void> unlikeCollection(@AuthenticationPrincipal CustomUserDetails user, @PathVariable Integer id) {
         collectionService.removeLike(user.getId(), id);
         return ResponseEntity.ok().build();
+    }
+
+    // 댓글 페이징 조회
+    @GetMapping("/{id}/reply")
+    public ResponseEntity<Page<ReplyDTO>> getCollectionReplies(@PathVariable Integer id, @PageableDefault(page=1) Pageable pageable) {
+        var auth = SecurityContextHolder.getContext().getAuthentication();
+        Integer userId = 0;
+        if (auth.getPrincipal() != "anonymousUser") {
+            userId = ((CustomUserDetails) auth.getPrincipal()).getId();
+        }
+        Page<ReplyDTO> replies = collectionService.getCollectionReplies(userId, id, pageable.getPageNumber());
+        return ResponseEntity.ok(replies);
+    }
+
+    // 댓글 작성
+    @PostMapping("/{id}/reply")
+    public ResponseEntity<ReplyDTO> insertReply(@AuthenticationPrincipal CustomUserDetails user, @PathVariable Integer id, @RequestBody TextDTO text) {
+        ReplyDTO newReply = collectionService.insertReply(user.getId(), id, text.getText());
+        return ResponseEntity.ok(newReply);
     }
 
     @ExceptionHandler(NoSuchElementException.class)
