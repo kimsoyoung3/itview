@@ -72,19 +72,23 @@
 }
 
 .search-bar {
-    display: flex;
-    align-items: center;
     background-color: #eee;
     width: 250px;
+    padding: 10px;
+}
+
+.search-bar>form {
+    width: 100%;
+    display: flex;
+    align-items: center;
     gap: 10px;
-    padding: 10px ;
 }
 
 .search-input {
     border: none;
+    width: 100%;
     background: transparent;
     outline: none;
-    flex: 1;
     font-size: 0.9rem;
 }
 
@@ -98,6 +102,7 @@
     font-size: 1rem;
     cursor: pointer;
     color: #888;
+    flex-shrink: 0;
 }
 
 .user-menu {
