@@ -139,6 +139,43 @@ public interface CollectionRepository extends JpaRepository<CollectionEntity, In
             """)
     List<String> findCollectionPosters(@Param("id") Integer id);
 
+    // 특정 유저가 좋아요한 컬렉션 조회
+    @Query("""
+            select new com.example.itview_spring.DTO.CollectionResponseDTO(
+                c.id,
+                c.title,
+                size(c.items),
+                c.updatedAt,
+                (case when exists (
+                    select 1 from LikeEntity l 
+                    where l.targetId = c.id and 
+                        l.targetType = Replyable.COLLECTION and 
+                        l.user.id = :loginUserId
+                    ) then true else false end
+                ),
+                (select count(l2) from LikeEntity l2 
+                    where l2.targetId = c.id and 
+                        l2.targetType = Replyable.COLLECTION
+                ),
+                (select count(r) from ReplyEntity r 
+                    where r.targetId = c.id and 
+                        r.targetType = Replyable.COLLECTION
+                ),
+                c.description,
+                new com.example.itview_spring.DTO.UserProfileDTO(
+                    c.user.id,
+                    c.user.nickname,
+                    c.user.introduction,
+                    c.user.profile
+                )
+            )
+            from LikeEntity l
+            join CollectionEntity c on l.targetId = c.id
+            where l.user.id = :userId and l.targetType = 'COLLECTION'
+           """)
+    Page<CollectionResponseDTO> findCollectionUserLike(@Param("loginUserId") Integer loginUserId, @Param("userId") Integer userId, Pageable pageable);
+
+
     @Query("SELECT c FROM CollectionEntity c JOIN c.user u WHERE c.title LIKE %:keyword% OR u.nickname LIKE %:keyword%")
     Page<CollectionEntity> findByTitleOrUserNicknameContaining(@Param("keyword") String keyword, Pageable pageable);
 
