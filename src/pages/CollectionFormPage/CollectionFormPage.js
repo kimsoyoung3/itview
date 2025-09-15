@@ -2,8 +2,9 @@ import {useEffect, useRef, useState} from 'react';
 import "./CollectionFormPage.css"
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { toast } from 'react-toastify';
-import { CollectionCreate } from '../../API/CollectionApi';
+import { CollectionCreate, getCollectionDetail } from '../../API/CollectionApi';
 import { searchContent } from '../../API/ContentApi';
+import { useParams } from 'react-router-dom';
 
 const CollectionFormPage = ({action}) => {
     const [collectionAddModal, setCollectionAddModal] = useState()
@@ -17,6 +18,24 @@ const CollectionFormPage = ({action}) => {
     const [keyword, setKeyword] = useState("");
     const [debounceQuery, setDebounceQuery] = useState(keyword);
     const [searchResults, setSearchResults] = useState(null);
+
+    const {id} = useParams();
+
+    useEffect(() => {
+        const fetchCollectionDetail = async () => {
+            try {
+                const res = await getCollectionDetail(id);
+                console.log(res.data);
+                title.current.value = res.data.title;
+                description.current.value = res.data.description;
+            } catch (error) {
+                toast("컬렉션 정보를 불러오는데 실패했습니다.");
+            }
+        };
+        if(action === "edit" && id) {
+            fetchCollectionDetail();
+        }
+    }, [action, id]);
 
     // 디바운스
     useEffect(() => {
@@ -150,8 +169,8 @@ const CollectionFormPage = ({action}) => {
         const data = {
             title: title.current.value,
             description: description.current.value,
-            contents: selectedItems
-        }
+            contentId: selectedItems.map(item => item.id)
+        };
         try {
             const res = await CollectionCreate(data);
             toast("컬렉션이 생성되었습니다.");
