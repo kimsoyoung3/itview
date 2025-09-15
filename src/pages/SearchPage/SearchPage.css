@@ -1,0 +1,19 @@
+.search-page {
+    margin-top: 94px;
+}
+
+.search-result {
+    background: #eeeeee;
+}
+
+.search-result>p {
+    margin-bottom: 0;
+    color: #888888;
+}
+
+.search-page-tab-title-wrap {
+    display: flex;
+    align-items: center;
+    border-bottom: 1px solid #d9d9d9;
+    padding: ;
+}
