@@ -2,7 +2,7 @@ import {useEffect, useRef, useState} from 'react';
 import "./CollectionFormPage.css"
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { toast } from 'react-toastify';
-import { CollectionCreate, getCollectionDetail } from '../../API/CollectionApi';
+import { CollectionCreate, editCollection, getCollectionDetail, getCollectionForm, getCollectionItems } from '../../API/CollectionApi';
 import { searchContent } from '../../API/ContentApi';
 import { useParams } from 'react-router-dom';
 
@@ -20,14 +20,28 @@ const CollectionFormPage = ({action}) => {
     const [searchResults, setSearchResults] = useState(null);
 
     const {id} = useParams();
+    
+    // 컬렉션 아이템 ID 리스트
+    const [collectionItemIds, setCollectionItemIds] = useState([]);
+    
+    // 컬렉션 아이템 페이지 정보
+    const [collectionItemsPage, setCollectionItemsPage] = useState({});
+
+    useEffect(() => {
+        console.log(collectionItemIds);
+    }, [collectionItemIds]);
 
     useEffect(() => {
         const fetchCollectionDetail = async () => {
             try {
-                const res = await getCollectionDetail(id);
+                const res = await getCollectionForm(id);
                 console.log(res.data);
                 title.current.value = res.data.title;
                 description.current.value = res.data.description;
+                setCollectionItemIds(res.data.contentId);
+                const contentRes = await getCollectionItems(id, 1);
+                setSelectedItems(contentRes.data.content);
+                setCollectionItemsPage(contentRes.data.page);
             } catch (error) {
                 toast("컬렉션 정보를 불러오는데 실패했습니다.");
             }
@@ -85,6 +99,40 @@ const CollectionFormPage = ({action}) => {
         console.log(tempItems);
     }, [tempItems]);
 
+    // 아이템 더보기
+    const LoadMoreItemRef = useRef();
+
+    const loadMoreItems = async () => {
+        if (collectionItemsPage && collectionItemsPage.number + 1 < collectionItemsPage.totalPages) {
+            try {
+                const res = await getCollectionItems(id, collectionItemsPage.number + 2);
+                setSelectedItems([...selectedItems, ...res.data.content]);
+                setCollectionItemsPage(res.data.page);
+            } catch (error) {
+                toast("아이템을 불러오는데 실패했습니다.");
+                return;
+            }
+        }
+    };
+
+    useEffect(() => {
+        const observer = new IntersectionObserver((entries) => {
+            if (entries[0].isIntersecting) {
+                loadMoreItems();
+            }
+        }, {
+            threshold: 0.1
+        });
+        if (LoadMoreItemRef.current) {
+            observer.observe(LoadMoreItemRef.current);
+        }
+        return () => {
+            if (LoadMoreItemRef.current) {
+                observer.unobserve(LoadMoreItemRef.current);
+            }
+        };
+    }, [collectionAddModal, selectedItems]);
+
     // 체크박스 핸들러
     const handleCheck = async (item) => {
         if (tempItems.some(i => i.id === item.id)) {
@@ -96,7 +144,8 @@ const CollectionFormPage = ({action}) => {
 
     // 아이템 추가 핸들러
     const handleAddItems = async () => {
-        setSelectedItems([...selectedItems, ...tempItems.filter(item => !selectedItems.some(i => i.id === item.id))]);
+        setSelectedItems([...tempItems.filter(item => !selectedItems.some(i => i.id === item.id)), ...selectedItems]);
+        setCollectionItemIds([...tempItems.map(item => item.id), ...collectionItemIds]);
         setTempItems([]);
         closeCollectionAddModal();
         setKeyword("");
@@ -114,6 +163,7 @@ const CollectionFormPage = ({action}) => {
         } else {
             setEdit(false);
             setSelectedItems(prev => prev.filter(item => !tempItems.some(i => i.id === item.id)));
+            setCollectionItemIds(prev => prev.filter(id => !tempItems.some(i => i.id === id)));
             setTempItems([]);
         }
     }
@@ -125,7 +175,7 @@ const CollectionFormPage = ({action}) => {
     }
 
     // 더보기
-    const loadMoreRef = useRef();
+    const loadMoreSearchRef = useRef();
 
     const loadMore = async () => {
         if (searchResults && searchResults.page.number + 1 < searchResults.page.totalPages) {
@@ -151,17 +201,17 @@ const CollectionFormPage = ({action}) => {
         }, {
             threshold: 0.1
         });
-        if (loadMoreRef.current) {
-            observer.observe(loadMoreRef.current);
+        if (loadMoreSearchRef.current) {
+            observer.observe(loadMoreSearchRef.current);
         }
         return () => {
-            if (loadMoreRef.current) {
-                observer.unobserve(loadMoreRef.current);
+            if (loadMoreSearchRef.current) {
+                observer.unobserve(loadMoreSearchRef.current);
             }
         };
     }, [collectionAddModal, searchResults]);
 
-    const handleCreateCollection = async () => {
+    const handleSubmitCollection = async () => {
         if(title.current.value === ""){
             toast("컬렉션 제목을 입력해주세요");
             return;
@@ -171,13 +221,24 @@ const CollectionFormPage = ({action}) => {
             description: description.current.value,
             contentId: selectedItems.map(item => item.id)
         };
-        try {
-            const res = await CollectionCreate(data);
-            toast("컬렉션이 생성되었습니다.");
-            window.location.replace(`/collection/${res.data}`);
-        } catch (error) {
-            toast("컬렉션 생성에 실패했습니다.");
-            return;
+        if (action === "new") {
+            try {
+                const res = await CollectionCreate(data);
+                toast("컬렉션이 생성되었습니다.");
+                window.location.replace(`/collection/${res.data}`);
+            } catch (error) {
+                toast("컬렉션 생성에 실패했습니다.");
+                return;
+            }
+        } else if (action === "edit") {
+            try {
+                await editCollection(id, data);
+                toast("컬렉션이 수정되었습니다.");
+                window.location.replace(`/collection/${id}`);
+            } catch (error) {
+                toast("컬렉션 수정에 실패했습니다.");
+                return;
+            }
         }
     }
 
@@ -195,7 +256,7 @@ const CollectionFormPage = ({action}) => {
                 <h1>{action === "new" ? "새 컬렉션" : "컬렉션 수정"}</h1>
 
                 <div className="user-collection-add-btn-box">
-                    <button className="user-collection-add-btn" onClick={handleCreateCollection}>{action === "new" ? "만들기" : "수정하기"}</button>
+                    <button className="user-collection-add-btn" onClick={handleSubmitCollection}>{action === "new" ? "만들기" : "수정하기"}</button>
                 </div>
 
                 <input type="text" placeholder="컬렉션 제목을 입력해주세요" className="user-collection-add-title" maxLength={50} ref={title}/>
@@ -234,11 +295,10 @@ const CollectionFormPage = ({action}) => {
                                 <label className="form-check-label user-collection-add-image" htmlFor={`add-image-input-${index}`}>
                                     <img src={item.poster} alt=""/>
                                     <p>{item.title}</p>
-                                    {/*<button hidden={!edit} onClick={() => handleDeleteItems(item)}>test</button>*/}
                                 </label>
                             </div>
                         ))}
-                        <div></div>
+                        <div ref={LoadMoreItemRef} hidden={action === "new" || (collectionItemsPage && collectionItemsPage.number + 2 > collectionItemsPage.totalPages)}>더보기</div>
                     </div>
                 </div>
             </div>
@@ -274,7 +334,7 @@ const CollectionFormPage = ({action}) => {
                         <div className="collection-add-modal-content-bottom">
                             {searchResults?.content?.map((item, index) =>
                                 <div className="form-check" key={index}>
-                                    <input className="form-check-input" type="checkbox" value="" id={`checkDefault-${index}`} onChange={() => handleCheck(item)} checked={tempItems.some(i => i.id === item.id)} disabled={selectedItems.some(i => i.id === item.id)}/>
+                                    <input className="form-check-input" type="checkbox" value="" id={`checkDefault-${index}`} onChange={() => handleCheck(item)} checked={tempItems.some(i => i.id === item.id) || collectionItemIds.some(i => i === item.id)} disabled={collectionItemIds.some(i => i === item.id)}/>
                                     <label className="form-check-label" htmlFor={`checkDefault-${index}`}>
                                         <div className="collection-add-modal-search-results">
                                             <div className="collection-add-modal-search-results-img">
@@ -288,7 +348,7 @@ const CollectionFormPage = ({action}) => {
                                     </label>
                                 </div>
                             )}
-                            <div ref={loadMoreRef} hidden={searchResults === null || searchResults.page.number + 2 > searchResults.page.totalPages}></div>
+                            <div ref={loadMoreSearchRef} hidden={searchResults === null || searchResults.page.number + 2 > searchResults.page.totalPages}></div>
                         </div>
                     </div>
                 </div>
