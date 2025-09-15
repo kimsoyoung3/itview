@@ -119,8 +119,11 @@ const CollectionDetailPage = ({userInfo, openLogin}) => {
         }
     }
 
+    /*댓글 탭*/
+    const replySectionRef = useRef(null);
+
     const scrollToReply= () => {
-        replyRef.current?.scrollIntoView({ behavior: "smooth" });
+        replySectionRef.current?.scrollIntoView({ behavior: "smooth" });
     };
 
     return(notFound ? <NotFound /> :
@@ -247,17 +250,18 @@ const CollectionDetailPage = ({userInfo, openLogin}) => {
                 </section>
 
                 {/*댓글*/}
-                <section className="user-collection-detail-reply">
-                    <div className="user-collection-detail-reply-wrap" ref={replyRef}>
+                <section className="user-collection-detail-reply" ref={replySectionRef}>
+                    <div className="user-collection-detail-reply-wrap">
                         <h1>댓글 <span>{collection?.replyCount}</span></h1>
 
-                        {replies?.content &&(
+                        {replies?.content?.length > 0 && (
                             <div className="user-collection-detail-reply-content-wrap">
                                 {replies?.content.map((reply) => (
                                     <ReplyCard reply={reply} userInfo={userInfo} openLogin={openLogin}/>
                                 ))}
                             </div>
                         )}
+
 
                         <div className="user-collection-detail-reply-input">
                             <input type="text" maxLength={200} placeholder="댓글을 입력해주세요." ref={replyRef}/>

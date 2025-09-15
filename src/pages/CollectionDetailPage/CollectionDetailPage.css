@@ -91,7 +91,7 @@
     border-radius: 8px;
 }
 
-.user-collection-detail-edit-box>div>button {
+.user-collection-detail-edit-box>div>button, .user-collection-detail-edit-box>div>a {
     background: none;
     width: 100%;
     border: none;
