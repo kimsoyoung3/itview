@@ -35,12 +35,12 @@ public class CreditService {
 
     private final CreditRepository creditRepository;
     private final ContentRepository contentRepository;
-    private final ExternalServiceRepository externalServiceRepository;
     private final PersonRepository personRepository;
+    private final ExternalServiceRepository externalServiceRepository;
 
     private final ModelMapper modelMapper;
 
-    //    itview-spring/
+//    itview-spring/
 //            ├─src/main/java/com/example/itview_spring/
 //            │  ├─Controller/
 //            │  │   └─Content/
@@ -76,16 +76,16 @@ public class CreditService {
     /**
      * 전체 조회
      */
-//    @Transactional(readOnly = true)
-//    public List<CreditDTO> getCreditsByContentId(Integer contentId) {
-//        if (!contentRepository.existsById(contentId)) {
-//            throw new NoSuchElementException("존재하지 않는 콘텐츠입니다: " + contentId);
-//        }
-//        return creditRepository.findByContentId(contentId)
-//                .stream()
-//                .map(this::mapToDTO)
-//                .collect(Collectors.toList());
-//    }
+    @Transactional(readOnly = true)
+    public List<CreditDTO> getCreditsByContentId(Integer contentId) {
+        if (!contentRepository.existsById(contentId)) {
+            throw new NoSuchElementException("존재하지 않는 콘텐츠입니다: " + contentId);
+        }
+        return creditRepository.findByContentId(contentId)
+                .stream()
+                .map(this::mapToDTO)
+                .collect(Collectors.toList());
+    }
     // ✅ 콘텐츠 ID로 페이징 조회
     @Transactional(readOnly = true)
     public Page<CreditDTO> getCreditByContentId(Pageable pageable, Integer contentId) {
@@ -102,11 +102,9 @@ public class CreditService {
      */
     @Transactional(readOnly = true)
     public CreditDTO getCreditById(Integer creditId) {
-        CreditDTO creditDTO = creditRepository.findCreditById(creditId); // 단일 CreditDTO 조회
-        if (creditDTO == null) {
-            throw new NoSuchElementException("존재하지 않는 크레딧 ID: " + creditId); // 엔티티가 없으면 예외를 던짐
-        }
-        return creditDTO;
+        CreditEntity entity = creditRepository.findById(creditId)
+                .orElseThrow(() -> new NoSuchElementException("존재하지 않는 크레딧 ID: " + creditId));
+        return mapToDTO(entity);
     }
     // 4. 입력 (Create)
     /**
@@ -117,15 +115,27 @@ public class CreditService {
         // 콘텐츠 존재 여부 확인
         ContentEntity content = contentRepository.findById(contentId)
                 .orElseThrow(() -> new NoSuchElementException("존재하지 않는 콘텐츠 ID: " + contentId));
-
-        // 인물 존재 여부 확인
-        PersonEntity person = personRepository.findById(creditDTO.getPerson().getId())
-                .orElseThrow(() -> new NoSuchElementException("존재하지 않는 인물 ID: " + creditDTO.getPerson().getId()));
-
-        // 중복된 크레딧 존재 여부 확인 (Content와 Person이 동일한 경우)
-        if (creditRepository.existsByContentAndPerson(content, person)) {
-            throw new IllegalArgumentException("이 콘텐츠와 인물에 대한 크레딧이 이미 존재합니다.");
+        // 인물 존재 여부 확인 (없으면 새로 생성)
+        PersonEntity person;
+        if (creditDTO.getPerson() != null && creditDTO.getPerson().getId() != null) {
+            // 기존 인물 사용
+            person = personRepository.findById(creditDTO.getPerson().getId())
+                    .orElseThrow(() -> new NoSuchElementException(
+                            "존재하지 않는 인물 ID: " + creditDTO.getPerson().getId()));
+        } else if (creditDTO.getPerson() != null && creditDTO.getPerson().getName() != null) {
+            // 이름으로 신규 생성 또는 기존 인물 가져오기
+            person = getOrCreatePersonByName(creditDTO.getPerson().getName());
+        } else {
+            throw new IllegalArgumentException("인물 정보가 필요합니다.");
         }
+//        // 인물 존재 여부 확인
+//        PersonEntity person = personRepository.findById(creditDTO.getPerson().getId())
+//                .orElseThrow(() -> new NoSuchElementException("존재하지 않는 인물 ID: " + creditDTO.getPerson().getId()));
+//
+//        // 중복된 크레딧 존재 여부 확인 (Content와 Person이 동일한 경우)
+//        if (creditRepository.existsByContentAndPerson(content, person)) {
+//            throw new IllegalArgumentException("이 콘텐츠와 인물에 대한 크레딧이 이미 존재합니다.");
+//        }
 
         // 새로운 크레딧 엔티티 생성 및 저장
         CreditEntity entity = new CreditEntity();
@@ -140,6 +150,17 @@ public class CreditService {
         return mapToDTO(entity);
     }
 
+//    PersonEntity person;
+//if (creditDTO.getPerson().getId() != null) {
+//        person = personRepository.findById(creditDTO.getPerson().getId())
+//                .orElseThrow(() -> new NoSuchElementException("존재하지 않는 인물 ID: " + creditDTO.getPerson().getId()));
+//    } else if (creditDTO.getPerson().getName() != null) {
+//        person = getOrCreatePersonByName(creditDTO.getPerson().getName());
+//    } else {
+//        throw new IllegalArgumentException("인물 정보가 없습니다.");
+//    }
+
+
     // 5. 수정 (Update)
     /**
      * 수정
@@ -150,19 +171,33 @@ public class CreditService {
         CreditEntity entity = creditRepository.findById(creditId)
                 .orElseThrow(() -> new NoSuchElementException("존재하지 않는 크레딧 ID: " + creditId));
 
-        // 수정된 부분 반영
-        if (creditDTO.getDepartment() != null) {
+        boolean updated = false;
+        // 기존 값과 비교 후 변경 시만 반영
+        if (creditDTO.getDepartment() != null && !creditDTO.getDepartment().equals(entity.getDepartment())) {
             entity.setDepartment(creditDTO.getDepartment());
+            updated = true;
         }
-        if (creditDTO.getRole() != null) {
+        if (creditDTO.getRole() != null && !creditDTO.getRole().equals(entity.getRole())) {
             entity.setRole(creditDTO.getRole());
+            updated = true;
         }
-        if (creditDTO.getCharacterName() != null) {
+        if (creditDTO.getCharacterName() != null && !creditDTO.getCharacterName().equals(entity.getCharacterName())) {
             entity.setCharacterName(creditDTO.getCharacterName());
+            updated = true;
         }
 
-        // 수정된 엔티티 저장
-        creditRepository.save(entity);
+        // Person 정보 수정
+        if (creditDTO.getPerson() != null && creditDTO.getPerson().getId() != null
+                && !creditDTO.getPerson().getId().equals(entity.getPerson().getId())) {
+            PersonEntity person = personRepository.findById(creditDTO.getPerson().getId())
+                    .orElseThrow(() -> new NoSuchElementException("존재하지 않는 인물 ID: " + creditDTO.getPerson().getId()));
+            entity.setPerson(person);
+            updated = true;
+        }
+
+        if (updated) {
+            creditRepository.save(entity);
+        }
 
         return mapToDTO(entity);
     }
@@ -180,9 +215,32 @@ public class CreditService {
         // 크레딧 삭제
         creditRepository.deleteById(creditId);
     }
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    ////0911 인물검색하여 처리하는 것 추가////////////////////////////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    // 🔹 인물 이름 검색 (부분 일치)
+    @Transactional(readOnly = true)
+    public List<PersonDTO> searchPersons(String keyword) {
+
+        if(keyword == null || keyword.trim().isEmpty()) {
+            return List.of(); // 빈 리스트 반환
+        }
+
+        return personRepository.findByNameContainingIgnoreCase(keyword)
+                .stream()
+                .map(p -> new PersonDTO(
+                        p.getId(),
+                        p.getName(),
+                        p.getProfile(),
+                        p.getJob()
+                ))
+                .collect(Collectors.toList());
+    }
+
     // ==========================
     // 🔹 Person 조회 / 생성
     // ==========================
+    @Transactional(readOnly = true)
     public PersonEntity getOrCreatePersonByName(String name) {
         // 이름이 null일 경우 예외 처리
         if (name == null || name.trim().isEmpty()) {
@@ -216,31 +274,7 @@ public class CreditService {
                 creditEntity.getRole()
         );
     }
-    ///////////////////////////////////////////////////////////////////////////////////////////////
-    ////0911 인물검색하여 처리하는 것 추가////////////////////////////////////////////////////////////
-    ///////////////////////////////////////////////////////////////////////////////////////////////
-    // 🔹 인물 이름 검색 (부분 일치)
-    @Transactional(readOnly = true)
-    public List<PersonDTO> searchPersons(String keyword) {
-        return personRepository.findByNameContainingIgnoreCase(keyword)
-                .stream()
-                .map(p -> new PersonDTO(
-                        p.getId(),
-                        p.getName(),
-                        p.getProfile(),
-                        p.getJob()
-                ))
-                .collect(Collectors.toList());
-    }
 
-    // 기존 코드 (생략 가능) 위에 holding 처리함
-    @Transactional(readOnly = true)
-    public List<CreditDTO> getCreditsByContentId(Integer contentId) {
-        return creditRepository.findByContentId(contentId)
-                .stream()
-                .map(this::mapToDTO)
-                .collect(Collectors.toList());
-    }
     ////0911 인물검색하여 처리하는 것 추가 끝 //////////////////////////////////////////////////////////////
 
 

@@ -3,11 +3,13 @@ package com.example.itview_spring.Controller.Content;
 import java.util.List;
 import java.util.NoSuchElementException;
 
+import com.example.itview_spring.Entity.CreditEntity;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -75,9 +77,9 @@ public class CreditController {
 //   5. 저장 버튼 클릭 시 선택된 인물 ID와 함께 크레딧 저장
 
 
-        ///////////////////////////////////////////////////////////////
+    ///////////////////////////////////////////////////////////////
 
-        // 2) 크레딧 개별 조회
+    // 2) 크레딧 개별 조회
     @GetMapping("/credit/{creditId}")
     public ResponseEntity<CreditDTO> getCreditById(@PathVariable Integer creditId) {
         try {
@@ -102,27 +104,10 @@ public class CreditController {
                 : new CreditDTO();
         // 1️⃣ 단일 CreditDTO 조회 (수정 모드)
 
-//        if (creditId != null) {
-//            // 수정 모드: 기존 크레딧 조회
-//            creditDTO = creditService.getCreditById(creditId); // 단일 크레딧 조회 메소드 사용
-//            System.out.println("📌 contentId: " + contentId);
-//            System.out.println("📌 creditDTO.id: " + creditDTO.getId());
-//
-//            if (creditDTO.getPerson() == null) {
-//                creditDTO.setPerson(new PersonDTO()); // 안전하게 PersonDTO 초기화
-//                System.out.println("📌 person.id: " + creditDTO.getPerson().getId());
-//                System.out.println("📌 person.name: " + creditDTO.getPerson().getName());
-//            }
-//        } else {
-//            System.out.println("⚠️ person 정보 없음");
-//            // 신규 등록 모드: 빈 CreditDTO + PersonDTO 포함
-//            creditDTO = new CreditDTO();
-//            creditDTO.setPerson(new PersonDTO());
-//        }
+        if (creditDTO.getPerson() == null) creditDTO.setPerson(new PersonDTO());
 
         // 2️⃣ ContentId도 모델에 전달
         model.addAttribute("contentId", contentId);
-
         model.addAttribute("creditDTO", creditDTO);
 
         // 3️⃣ 전체 CreditDTO 리스트 조회 (목록)
@@ -141,42 +126,44 @@ public class CreditController {
             @ModelAttribute CreditDTO creditDTO,
             RedirectAttributes redirectAttributes) {
 
-//        try {
-//            // Person 정보 처리
-//            creditDTO.setPerson(ensurePerson(creditDTO, redirectAttributes));
-//
-//            if (creditDTO.getId() == null) {
-//                // 신규 크레딧 등록
-//                creditService.addCredit(contentId, creditDTO);
-//                redirectAttributes.addFlashAttribute("message", "크레딧이 등록되었습니다.");
-//            } else {
-//                // 기존 크레딧 수정
-//                CreditDTO updatedCredit = creditService.updateCredit(creditDTO.getId(), creditDTO);
-//                if (updatedCredit == null) {
-//                    redirectAttributes.addFlashAttribute("error", "크레딧 수정에 실패했습니다.");
-//                    return "redirect:/content/" + contentId + "/credit";
-//                }
-//                redirectAttributes.addFlashAttribute("message", "크레딧이 수정되었습니다.");
-//            }
-//
-//        } catch (NoSuchElementException e) {
-//            redirectAttributes.addFlashAttribute("error", "존재하지 않는 인물 또는 콘텐츠입니다.");
-//        } catch (IllegalArgumentException e) {
-//            redirectAttributes.addFlashAttribute("error", e.getMessage());
-//        }
         try {
-            if (creditDTO.getId() == null) {
-                creditService.addCredit(contentId, creditDTO);
-                redirectAttributes.addFlashAttribute("message", "크레딧 등록 완료");
-            } else {
+            if (creditDTO.getId() != null) {
+                // 1️⃣ ID가 있으면 수정 모드
                 creditService.updateCredit(creditDTO.getId(), creditDTO);
                 redirectAttributes.addFlashAttribute("message", "크레딧 수정 완료");
+            } else {
+                // 🔹 신규 등록 모드: 항상 새로 생성
+                // ✅ 신규 생성: 선택된 인물이 있어도 항상 신규 생성
+                //   creditDTO.id가 null이면 항상 신규 생성이 수행됩니다.
+                //  선택된 인물이 있어도 신규 생성, 없으면 이름으로 생성 후 등록
+
+                CreditDTO newCredit = creditService.addCredit(contentId, creditDTO);
+                redirectAttributes.addFlashAttribute("message", "크레딧 신규 등록 완료");
+//                try {
+//                    creditService.addCredit(contentId, creditDTO);
+//                    redirectAttributes.addFlashAttribute("message", "크레딧 등록 완료");
+//                } catch (IllegalArgumentException e) {
+//                    // 3️⃣ 이미 존재하면 → 기존 ID 찾아서 수정
+//                    List<CreditDTO> credits = creditService.getCreditsByContentId(contentId);
+//                    CreditDTO existing = credits.stream()
+//                            .filter(c -> c.getPerson().getId().equals(creditDTO.getPerson().getId()))
+//                            .findFirst()
+//                            .orElseThrow(() -> new IllegalArgumentException("기존 크레딧을 찾을 수 없습니다."));
+//                    // 중복허용하기위해 신규생성 0915 추가
+//                    creditService.addCredit(contentId, creditDTO);
+//                    redirectAttributes.addFlashAttribute("message", "크레딧 등록 완료");
+//
+////                    creditService.updateCredit(existing.getId(), creditDTO);
+////                    redirectAttributes.addFlashAttribute("message", "기존 크레딧이 수정되었습니다.");
+//                }
             }
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute("error", e.getMessage());
         }
         return "redirect:/content/" + contentId + "/credit";
     }
+
+
     /**
      * 크레딧 삭제 처리
      */
@@ -201,10 +188,14 @@ public class CreditController {
     // 🔹 인물 검색 (AJAX: JSON 반환)
     @GetMapping("/content/{contentId}/credit/search-person")
     @ResponseBody
-    public List<PersonDTO> searchPerson(@PathVariable Integer contentId,
-                                        @RequestParam String keyword) {
+    public List<PersonDTO> searchPerson(@RequestParam String keyword) {
         return creditService.searchPersons(keyword);
     }
+
+//    public List<PersonDTO> searchPerson(@PathVariable Integer contentId,
+//                                        @RequestParam String keyword) {
+//        return creditService.searchPersons(keyword);
+//    }
 
     private PersonDTO ensurePerson(CreditDTO creditDTO, RedirectAttributes redirectAttributes) {
         if (creditDTO.getPerson() == null || creditDTO.getPerson().getId() == null) {
