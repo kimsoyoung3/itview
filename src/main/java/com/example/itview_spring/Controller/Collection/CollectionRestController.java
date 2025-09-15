@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -59,6 +60,20 @@ public class CollectionRestController {
                                                                        @PageableDefault(page=1) Pageable pageable) {
         Page<ContentResponseDTO> collections = collectionService.getCollectionItems(id, pageable.getPageNumber());
         return ResponseEntity.ok(collections);
+    }
+
+    // 컬렉션 수정 조회
+    @GetMapping("/{id}/edit")
+    public ResponseEntity<CollectionFormDTO> getCollectionForEdit(@AuthenticationPrincipal CustomUserDetails user, @PathVariable Integer id) {
+        CollectionFormDTO collection = collectionService.getCollectionForm(user.getId(), id);
+        return ResponseEntity.ok(collection);
+    }
+
+    // 컬렉션 수정
+    @PutMapping("/{id}")
+    public ResponseEntity<Void> editCollection(@AuthenticationPrincipal CustomUserDetails user, @PathVariable Integer id, @RequestBody CollectionFormDTO dto) {
+        collectionService.editCollection(user.getId(), id, dto);
+        return ResponseEntity.ok().build();
     }
 
     // 컬렉션 삭제

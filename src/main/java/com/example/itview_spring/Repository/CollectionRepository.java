@@ -8,6 +8,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import com.example.itview_spring.DTO.CollectionFormDTO;
 import com.example.itview_spring.DTO.CollectionResponseDTO;
 import com.example.itview_spring.DTO.ContentResponseDTO;
 import com.example.itview_spring.Entity.CollectionEntity;
@@ -84,6 +85,26 @@ public interface CollectionRepository extends JpaRepository<CollectionEntity, In
             where c.id = :id
             """)
     CollectionResponseDTO findCollectionById(@Param("loginUserId") Integer loginUserId, @Param("id") Integer id);
+
+    // 컬렉션 폼 조회 (수정폼)
+    @Query("""
+            select new com.example.itview_spring.DTO.CollectionFormDTO(
+                c.title,
+                c.description
+            )
+            from CollectionEntity c
+            where c.id = :id
+            """)
+    CollectionFormDTO findCollectionFormById(@Param("id") Integer id);
+
+    // 컬렉션 아이템 ID 전체 조회
+    @Query("""
+            select ci.content.id
+            from CollectionItemEntity ci
+            where ci.collection.id = :id
+            order by ci.id desc
+            """)
+    List<Integer> findCollectionItemIdsById(@Param("id") Integer id);
 
     // 컬렉션 아이템 페이징 조회
     @Query("""

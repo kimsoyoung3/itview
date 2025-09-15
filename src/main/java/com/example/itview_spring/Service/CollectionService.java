@@ -47,8 +47,8 @@ public class CollectionService {
         collection.setTitle(dto.getTitle());
         collection.setDescription(dto.getDescription());
 
-        for (Integer contentId : dto.getContentId()) {
-            ContentEntity content = contentRepository.findById(contentId).orElseThrow(() -> new NoSuchElementException("존재하지 않는 컨텐츠입니다."));
+        for (int i = dto.getContentId().size() - 1; i >= 0; i--) {
+            ContentEntity content = contentRepository.findById(dto.getContentId().get(i)).orElseThrow(() -> new NoSuchElementException("존재하지 않는 컨텐츠입니다."));
             CollectionItemEntity item = new CollectionItemEntity();
             item.setCollection(collection);
             item.setContent(content);
@@ -76,6 +76,41 @@ public class CollectionService {
         }
         Pageable pageable = PageRequest.of(page - 1, 12);
         return collectionRepository.findCollectionItemsById(id, pageable);
+    }
+
+    // 컬렉션 수정 조회
+    public CollectionFormDTO getCollectionForm(Integer userId, Integer id) {
+        CollectionEntity collection = collectionRepository.findById(id).orElseThrow(() -> new NoSuchElementException("존재하지 않는 컬렉션입니다."));
+        if (!collection.getUser().getId().equals(userId)) {
+            throw new SecurityException("본인의 컬렉션만 수정할 수 있습니다.");
+        }
+        CollectionFormDTO form = collectionRepository.findCollectionFormById(id);
+        form.setContentId(collectionRepository.findCollectionItemIdsById(id));
+        return form;
+    }
+
+    // 컬렉션 수정
+    public void editCollection(Integer userId, Integer id, CollectionFormDTO dto) {
+        CollectionEntity collection = collectionRepository.findById(id).orElseThrow(() -> new NoSuchElementException("존재하지 않는 컬렉션입니다."));
+        if (!collection.getUser().getId().equals(userId)) {
+            throw new SecurityException("본인의 컬렉션만 수정할 수 있습니다.");
+        }
+        collection.setTitle(dto.getTitle());
+        collection.setDescription(dto.getDescription());
+
+        // 기존 아이템 삭제
+        collection.getItems().clear();
+
+        // 아이템 덮어쓰기
+        for (int i = dto.getContentId().size() - 1; i >= 0; i--) {
+            ContentEntity content = contentRepository.findById(dto.getContentId().get(i)).orElseThrow(() -> new NoSuchElementException("존재하지 않는 컨텐츠입니다."));
+            CollectionItemEntity item = new CollectionItemEntity();
+            item.setCollection(collection);
+            item.setContent(content);
+            collection.getItems().add(item);
+        }
+        
+        collectionRepository.save(collection);
     }
 
     // 컬렉션 삭제
