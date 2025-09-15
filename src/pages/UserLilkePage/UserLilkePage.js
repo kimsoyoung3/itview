@@ -45,12 +45,26 @@ function UserLikePage({userInfo, openLogin, onDelete}) {
     useEffect(() => {
         console.log(commentLikes);
     }, [commentLikes]);
-    
+
     const handlePersonLoadMore = async () => {
         try {
             const nextPage = personLikes.page.number + 2;
             const res = await getUserLikePerson(id, nextPage);
             setPersonLikes(prevState => ({
+                ...res.data,
+                content: [...prevState.content, ...res.data.content],
+                page: res.data.page
+            }));
+        } catch (error) {
+            toast("정보를 불러오지 못했습니다.");
+        }
+    };
+
+    const handleCollectionLoadMore = async () => {
+        try {
+            const nextPage = collectionLikes.page.number + 2;
+            const res = await getUserLikeCollection(id, nextPage);
+            setCollectionLikes(prevState => ({
                 ...res.data,
                 content: [...prevState.content, ...res.data.content],
                 page: res.data.page
