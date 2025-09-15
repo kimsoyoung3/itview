@@ -119,6 +119,10 @@ const CollectionDetailPage = ({userInfo, openLogin}) => {
         }
     }
 
+    const scrollToReply= () => {
+        replyRef.current?.scrollIntoView({ behavior: "smooth" });
+    };
+
     return(notFound ? <NotFound /> :
         <div className="user-collection-detail-page container">
             <div className="user-collection-detail-page-wrap">
@@ -202,7 +206,7 @@ const CollectionDetailPage = ({userInfo, openLogin}) => {
                             </button>
                         </div>
                         <div className="user-collection-detail-btn-list-content">
-                            <button>
+                            <button onClick={scrollToReply}>
                                 <i className="bi bi-chat-square"/>
                                 <span>댓글</span>
                             </button>
@@ -244,7 +248,7 @@ const CollectionDetailPage = ({userInfo, openLogin}) => {
 
                 {/*댓글*/}
                 <section className="user-collection-detail-reply">
-                    <div className="user-collection-detail-reply-wrap">
+                    <div className="user-collection-detail-reply-wrap" ref={replyRef}>
                         <h1>댓글 <span>{collection?.replyCount}</span></h1>
 
                         {replies?.content &&(
