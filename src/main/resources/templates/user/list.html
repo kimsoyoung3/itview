@@ -36,11 +36,11 @@
     <div class="container mt-3 mb-3">
         <div class="row">
             <div class="col-12">
-                <h3 class="mt-5">유저 목록</h3>
-                <p class="mt-3" th:text="${(keyword == null or #strings.isEmpty(keyword)) ? '현재 등록한 유저 목록입니다:' : keyword + '에 대한 검색 결과입니다.'}">
+                <h3 class="mt-4">유저 목록</h3>
+                <p class="mt-4" th:text="${(keyword == null or #strings.isEmpty(keyword)) ? '현재 등록한 유저 목록입니다:' : keyword + '에 대한 검색 결과입니다.'}">
                 </p>
 
-                <div class="d-flex justify-content-end align-items-center mb-3">
+                <div class="d-flex justify-content-end align-items-center mb-4">
                     <form th:action="@{/user/list}" method="get">
                         <div class="input-group">
                             <input class="form-control" type="text" name="keyword" th:value="${keyword}" placeholder="유저 검색" aria-label="유저 검색" aria-describedby="btnUserSearch" />
