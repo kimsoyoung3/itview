@@ -298,7 +298,7 @@ const CollectionFormPage = ({action}) => {
                                 </label>
                             </div>
                         ))}
-                        <div ref={LoadMoreItemRef} hidden={action === "new" || (collectionItemsPage && collectionItemsPage.number + 2 > collectionItemsPage.totalPages)}>더보기</div>
+                        <div ref={LoadMoreItemRef} hidden={action === "new" || (collectionItemsPage && collectionItemsPage.number + 2 > collectionItemsPage.totalPages)}></div>
                     </div>
                 </div>
             </div>
