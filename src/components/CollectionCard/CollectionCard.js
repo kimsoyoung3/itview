@@ -1,8 +1,8 @@
-import React from "react";
+import React, {useEffect} from "react";
 import "./CollectionCard.css";
 import {NavLink, useNavigate} from "react-router-dom";
 
-const CollectionCard = ({ collectionData, userInfo, openLogin }) => {
+const CollectionCard = ({collectionData}) => {
 
     const navigate = useNavigate();
 
@@ -12,8 +12,7 @@ const CollectionCard = ({ collectionData, userInfo, openLogin }) => {
 
                 {/* 배경 이미지와 그림자 */}
                 <div className="collection-card-bg">
-
-                    {collectionData?.poster.slice(0, 5).map((poster, index, arr) => (
+                    {collectionData?.poster?.slice(0, 5).map((poster, index, arr) => (
                         <div
                             key={index}
                             className="stacked-poster-wrapper"

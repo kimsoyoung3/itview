@@ -6,6 +6,7 @@ import CommentCard from "../../components/CommentCard/CommentCard";
 import CreditOrPersonCard from "../../components/CreditOrPersonCard/CreditOrPersonCard";
 import { toast } from 'react-toastify';
 import NotFound from "../NotFound/NotFound";
+import CollectionCard from "../../components/CollectionCard/CollectionCard";
 
 function UserLikePage({userInfo, openLogin, onDelete}) {
     const [notFound, setNotFound] = useState(false);
@@ -117,7 +118,12 @@ function UserLikePage({userInfo, openLogin, onDelete}) {
 
                         {contentType === "collection" && <div className="like-page-tab2">
                             {collectionLikes?.content?.length > 0 ? (
-                                <div className="like-page-content">
+                                <div className="like-page-person-content-wrap">
+                                    <div className="like-page-content">
+                                        {collectionLikes?.content.map(item =>
+                                            <CollectionCard key={item.id} collectionData={item}/>
+                                        )}
+                                    </div>
 
                                 </div>
                             ) : (
