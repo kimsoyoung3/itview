@@ -12,8 +12,8 @@ import lombok.NoArgsConstructor;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class CollectionCreateDTO {
+public class CollectionFormDTO {
     private String title; // 컬렉션 제목
     private String description; // 컬렉션 설명
-    private List<ContentDTO> contents; // 컬렉션에 포함된 컨텐츠 목록
+    private List<Integer> contentId; // 컬렉션에 포함된 컨텐츠 ID 목록
 }

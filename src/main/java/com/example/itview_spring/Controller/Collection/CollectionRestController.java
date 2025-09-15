@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.itview_spring.Config.CustomUserDetails;
-import com.example.itview_spring.DTO.CollectionCreateDTO;
+import com.example.itview_spring.DTO.CollectionFormDTO;
 import com.example.itview_spring.DTO.CollectionResponseDTO;
 import com.example.itview_spring.DTO.ContentResponseDTO;
 import com.example.itview_spring.DTO.ReplyDTO;
@@ -37,7 +37,7 @@ public class CollectionRestController {
 
     // 컬렉션 생성
     @PostMapping
-    public ResponseEntity<Integer> createCollection(@AuthenticationPrincipal CustomUserDetails user, @RequestBody CollectionCreateDTO dto) {
+    public ResponseEntity<Integer> createCollection(@AuthenticationPrincipal CustomUserDetails user, @RequestBody CollectionFormDTO dto) {
         return ResponseEntity.ok(collectionService.createCollection(user.getId(), dto));
     }
 

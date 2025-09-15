@@ -3,7 +3,6 @@ package com.example.itview_spring.Service;
 import java.util.List;
 import java.util.NoSuchElementException;
 
-import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -11,16 +10,16 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.example.itview_spring.Constant.Replyable;
-import com.example.itview_spring.DTO.CollectionCreateDTO;
+import com.example.itview_spring.DTO.CollectionFormDTO;
 import com.example.itview_spring.DTO.CollectionResponseDTO;
 import com.example.itview_spring.DTO.ContentResponseDTO;
 import com.example.itview_spring.DTO.ReplyDTO;
 import com.example.itview_spring.Entity.CollectionEntity;
 import com.example.itview_spring.Entity.CollectionItemEntity;
 import com.example.itview_spring.Entity.ContentEntity;
-import com.example.itview_spring.Entity.LikeEntity;
 import com.example.itview_spring.Entity.ReplyEntity;
 import com.example.itview_spring.Repository.CollectionRepository;
+import com.example.itview_spring.Repository.ContentRepository;
 import com.example.itview_spring.Repository.LikeRepository;
 import com.example.itview_spring.Repository.ReplyRepository;
 import com.example.itview_spring.Repository.UserRepository;
@@ -36,19 +35,20 @@ public class CollectionService {
     private final UserRepository userRepository;
     private final LikeRepository likeRepository;
     private final ReplyRepository replyRepository;
-    private final ModelMapper modelMapper;
+    private final ContentRepository contentRepository;
 
     // 컬렉션 생성
-    public Integer createCollection(Integer userId, CollectionCreateDTO dto) {
+    public Integer createCollection(Integer userId, CollectionFormDTO dto) {
         CollectionEntity collection = new CollectionEntity();
         collection.setUser(userRepository.findById(userId).get());
         collection.setTitle(dto.getTitle());
         collection.setDescription(dto.getDescription());
-        
-        for (var content : dto.getContents()) {
+
+        for (Integer contentId : dto.getContentId()) {
+            ContentEntity content = contentRepository.findById(contentId).orElseThrow(() -> new NoSuchElementException("존재하지 않는 컨텐츠입니다."));
             CollectionItemEntity item = new CollectionItemEntity();
             item.setCollection(collection);
-            item.setContent(modelMapper.map(content, ContentEntity.class));
+            item.setContent(content);
             collection.getItems().add(item);
         }
         
