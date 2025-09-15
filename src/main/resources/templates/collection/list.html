@@ -5,23 +5,21 @@
       layout:decorate="~{layouts/mainlayout}">
 <head>
     <meta charset="UTF-8">
-    <title>유저 목록</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>컬렉션 관리</title>
     <style>
-        /* 테이블 레이아웃을 고정하고, 전체 너비를 100%로 설정 */
         .table-custom-layout {
             table-layout: fixed;
             width: 100%;
         }
 
-        /* 모든 th와 td는 기본적으로 가운데 정렬 */
         .table-custom-layout th,
         .table-custom-layout td {
             text-align: center;
             word-wrap: break-word;
-            vertical-align: middle; /* 세로 가운데 정렬 추가 */
+            vertical-align: middle;
         }
 
-        /* 제목 항목만 왼쪽 정렬하는 클래스 */
         .text-start {
             text-align: left;
         }
@@ -36,15 +34,16 @@
     <div class="container mt-3 mb-3">
         <div class="row">
             <div class="col-12">
-                <h3 class="mt-4">유저 목록</h3>
-                <p class="mt-4" th:text="${(keyword == null or #strings.isEmpty(keyword)) ? '현재 등록한 유저 목록입니다:' : keyword + '에 대한 검색 결과입니다.'}">
-                </p>
+                <h3 class="mt-4">컬렉션 관리</h3>
+                <p class="mt-4">현재 등록된 컬렉션 목록입니다:</p>
 
                 <div class="d-flex justify-content-end align-items-center mb-4">
-                    <form th:action="@{/user/list}" method="get">
+                    <form th:action="@{/collection/list}" method="get">
                         <div class="input-group">
-                            <input class="form-control" type="text" name="keyword" th:value="${keyword}" placeholder="유저 검색" aria-label="유저 검색" aria-describedby="btnUserSearch" />
-                            <button class="btn btn-primary" id="btnUserSearch" type="submit">
+                            <input class="form-control" type="text" name="keyword" th:value="${keyword}"
+                                   placeholder="컬렉션/유저 검색" aria-label="컬렉션/유저 검색"
+                                   aria-describedby="btnCollectionSearch"/>
+                            <button class="btn btn-primary" id="btnCollectionSearch" type="submit">
                                 <i class="fas fa-search"></i>
                             </button>
                         </div>
@@ -54,76 +53,73 @@
                 <table class="table table-hover table-custom-layout">
                     <thead>
                     <tr>
-                        <th style="width:60%;">이메일</th>
-                        <th style="width:20%;">닉네임</th>
+                        <th style="width:60%;">컬렉션 제목</th>
+                        <th style="width:20%;">유저</th>
                         <th style="width:20%;">작업</th>
                     </tr>
                     </thead>
                     <tbody>
-                    <tr th:if="${userPage.content.isEmpty()}">
-                        <td colspan="4" class="text-center">데이터가 없습니다.</td>
+                    <tr th:if="${#lists.isEmpty(collections.content)}">
+                        <td colspan="3" class="text-center">컬렉션이 없습니다.</td>
                     </tr>
-
-                    <tr th:each="user : ${userPage.content}"
+                    <tr th:each="collection : ${collections.content}"
                         class="clickable-row"
-                        th:onclick="|window.location.href='@{/user/{id}(id=${user.id})}'|">
-                        <td class="text-start" th:text="${user.email}"></td>
-                        <td th:text="${user.nickname}"></td>
+                        th:onclick="|window.location.href='@{/collection/{id}(id=${collection.id})}'|">
+                        <td class="text-start" th:text="${collection.title}">컬렉션 제목</td>
+                        <td th:text="${collection.user.nickname}">유저이름</td>
                         <td>
-                            <a th:href="@{/user/{id}/update(id=${user.id})}"
+                            <a th:href="@{/collections/{id}/edit(id=${collection.id})}"
                                class="btn btn-primary"
                                onclick="event.stopPropagation();">수정</a>
-
-                            <form th:action="@{/user/{id}(id=${user.id})}"
+                            <form th:action="@{/collections/{id}(id=${collection.id})}"
                                   method="post"
                                   style="display:inline;"
-                                  onsubmit="return confirm('정말 삭제하시겠습니까?');"
-                                  onclick="event.stopPropagation();">
+                                  onsubmit="return confirm('정말 삭제하시겠습니까?');">
                                 <input type="hidden" name="_method" value="DELETE"/>
-                                <input type="hidden" th:if="${_csrf != null}"
-                                       th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
-                                <button type="submit" class="btn btn-primary">삭제</button>
+                                <button type="submit" class="btn btn-primary" onclick="event.stopPropagation();">삭제</button>
                             </form>
                         </td>
                     </tr>
                     </tbody>
                 </table>
 
-                <div class="d-flex justify-content-center mt-3" th:if="${userPage.totalPages >= 1}">
+                <div class="d-flex justify-content-center mt-3" th:if="${collections.totalPages > 0}">
                     <ul class="pagination">
                         <li class="page-item" th:classappend="${startPage == 0} ? 'disabled'">
                             <a class="page-link"
-                               th:href="@{/user/list(page=0, size=${userPage.size}, keyword=${keyword})}">
+                               th:href="@{/collection/list(page=0, keyword=${keyword})}"
+                               aria-label="First">
                                 <span>&laquo;&laquo;</span>
                             </a>
                         </li>
-
                         <li class="page-item" th:classappend="${startPage == 0} ? 'disabled'">
                             <a class="page-link"
-                               th:href="@{/user/list(page=${startPage - 1}, size=${userPage.size}, keyword=${keyword})}">
+                               th:href="@{/collection/list(page=${startPage - 1}, keyword=${keyword})}"
+                               aria-label="Previous">
                                 <span>&laquo;</span>
                             </a>
                         </li>
 
                         <li class="page-item"
                             th:each="i : ${#numbers.sequence(startPage, endPage)}"
-                            th:classappend="${i == userPage.number}? 'active'">
+                            th:classappend="${i eq collections.number} ? 'active'">
                             <a class="page-link"
                                th:text="${i + 1}"
-                               th:href="@{/user/list(page=${i}, size=${userPage.size}, keyword=${keyword})}">
+                               th:href="@{/collection/list(page=${i}, keyword=${keyword})}">
                             </a>
                         </li>
 
-                        <li class="page-item" th:classappend="${endPage >= userPage.totalPages - 1} ? 'disabled'">
+                        <li class="page-item" th:classappend="${endPage >= collections.totalPages - 1} ? 'disabled'">
                             <a class="page-link"
-                               th:href="@{/user/list(page=${endPage + 1}, size=${userPage.size}, keyword=${keyword})}">
+                               th:href="@{/collection/list(page=${endPage + 1}, keyword=${keyword})}"
+                               aria-label="Next">
                                 <span>&raquo;</span>
                             </a>
                         </li>
-
-                        <li class="page-item" th:classappend="${endPage >= userPage.totalPages - 1} ? 'disabled'">
+                        <li class="page-item" th:classappend="${endPage >= collections.totalPages - 1} ? 'disabled'">
                             <a class="page-link"
-                               th:href="@{/user/list(page=${userPage.totalPages - 1}, size=${userPage.size}, keyword=${keyword})}">
+                               th:href="@{/collection/list(page=${collections.totalPages - 1}, keyword=${keyword})}"
+                               aria-label="Last">
                                 <span>&raquo;&raquo;</span>
                             </a>
                         </li>

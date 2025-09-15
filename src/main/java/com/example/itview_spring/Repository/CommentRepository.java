@@ -233,4 +233,6 @@ public interface CommentRepository extends JpaRepository<CommentEntity, Integer>
             order by l.id desc
             """)
     Page<CommentAndContentDTO> findCommentAndContentUserLike(@Param("loginUserId") Integer loginUserId, @Param("userId") Integer userId, Pageable pageable);
+
+    Page<CommentEntity> findByUserId(Integer userId, Pageable pageable);
 }

@@ -2,6 +2,7 @@ package com.example.itview_spring.Controller.User;
 
 import com.example.itview_spring.Config.CustomUserDetails;
 import com.example.itview_spring.Constant.ContentType;
+import com.example.itview_spring.DTO.CollectionResponseDTO;
 import com.example.itview_spring.DTO.CommentAndContentDTO;
 import com.example.itview_spring.DTO.ContentResponseDTO;
 import com.example.itview_spring.DTO.EmailDTO;
@@ -63,7 +64,7 @@ public class UserRestController {
         try {
             registerService.createUser(registerDTO);
         } catch (IllegalStateException e) {
-            return ResponseEntity.badRequest().build(); // 이미 가입한 회원인 경우
+            return ResponseEntity.badRequest().build();
         }
         return ResponseEntity.ok().build();
     }
@@ -196,7 +197,7 @@ public class UserRestController {
     public ResponseEntity<UserResponseDTO> updateUserProfile(@AuthenticationPrincipal CustomUserDetails user,
                                   @ModelAttribute UserProfileUpdateDTO userProfileUpdateDTO) {
         if (user.getId() != userProfileUpdateDTO.getId()) {
-            throw new IllegalStateException("본인의 프로필만 수정할 수 있습니다.");
+            throw new SecurityException("본인의 프로필만 수정할 수 있습니다.");
         }
         userService.updateUserProfile(userProfileUpdateDTO);
         return ResponseEntity.ok(userService.getUserProfile(userProfileUpdateDTO.getId()));
@@ -272,11 +273,35 @@ public class UserRestController {
         return ResponseEntity.ok(userService.getUserComment(loginUserId, userId, ContentType.valueOf(contentTypeStr.toUpperCase()), pageable.getPageNumber(), order));
     }
 
+    // 유저의 컬렉션 조회
+    @GetMapping("/{id}/collection")
+    public ResponseEntity<Page<CollectionResponseDTO>> getUserCollection(@PathVariable("id") Integer userId,
+                                                                         @PageableDefault(page=1) Pageable pageable) {
+        var auth = SecurityContextHolder.getContext().getAuthentication();
+        Integer loginUserId = 0;
+        if (auth.getPrincipal() != "anonymousUser") {
+            loginUserId = ((CustomUserDetails) auth.getPrincipal()).getId();
+        }
+        return ResponseEntity.ok(userService.getUserCollections(loginUserId, userId, pageable.getPageNumber()));
+    }
+
     // 유저의 좋아요한 인물 조회
     @GetMapping("/{id}/like/person")
     public ResponseEntity<Page<PersonDTO>> getUserLike(@PathVariable("id") Integer userId,
                                                        @PageableDefault(page=1) Pageable pageable) {
         return ResponseEntity.ok(userService.getPersonUserLike(userId, pageable.getPageNumber()));
+    }
+
+    // 유저의 좋아요한 컬렉션 조회
+    @GetMapping("/{id}/like/collection")
+    public ResponseEntity<Page<CollectionResponseDTO>> getUserLikeCollection(@PathVariable("id") Integer userId,
+                                                                             @PageableDefault(page=1) Pageable pageable) {
+        var auth = SecurityContextHolder.getContext().getAuthentication();
+        Integer loginUserId = 0;
+        if (auth.getPrincipal() != "anonymousUser") {
+            loginUserId = ((CustomUserDetails) auth.getPrincipal()).getId();
+        }
+        return ResponseEntity.ok(userService.getCollectionUserLike(loginUserId, userId, pageable.getPageNumber()));
     }
 
     // 유저의 좋아요한 코멘트 조회
@@ -296,8 +321,8 @@ public class UserRestController {
         return ResponseEntity.status(404).body(ex.getMessage());
     }
 
-    @ExceptionHandler(IllegalStateException.class)
-    public ResponseEntity<String> handleIllegalStateException(IllegalStateException ex) {
-        return ResponseEntity.status(400).body(ex.getMessage());
+    @ExceptionHandler(SecurityException.class)
+    public ResponseEntity<String> handleSecurityException(SecurityException ex) {
+        return ResponseEntity.status(403).body(ex.getMessage());
     }
 }

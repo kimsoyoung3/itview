@@ -38,7 +38,7 @@ public class CommentRestController {
     public ResponseEntity<Void> putContentComment(@PathVariable("Id") Integer commentId,
                                                   @AuthenticationPrincipal CustomUserDetails userDetails,
                                                   @RequestBody TextDTO textDTO) {
-        commentService.updateComment(commentId, textDTO.getText());
+        commentService.updateComment(userDetails.getId(), commentId, textDTO.getText());
         return ResponseEntity.ok().build();
     }
 
@@ -46,7 +46,7 @@ public class CommentRestController {
     @DeleteMapping("/{Id}")
     public ResponseEntity<Void> deleteContentComment(@PathVariable("Id") Integer commentId,
                                                      @AuthenticationPrincipal CustomUserDetails userDetails) {
-        commentService.deleteComment(commentId);
+        commentService.deleteComment(userDetails.getId(), commentId);
         return ResponseEntity.ok().build();
     }
 
@@ -98,5 +98,10 @@ public class CommentRestController {
     @ExceptionHandler(NoSuchElementException.class)
     public ResponseEntity<String> handleNoSuchElementException(NoSuchElementException ex) {
         return ResponseEntity.status(404).body(ex.getMessage());
+    }
+
+    @ExceptionHandler(SecurityException.class)
+    public ResponseEntity<String> handleSecurityException(SecurityException ex) {
+        return ResponseEntity.status(403).body(ex.getMessage());
     }
 }

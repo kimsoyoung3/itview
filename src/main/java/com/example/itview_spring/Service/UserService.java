@@ -16,6 +16,7 @@ import com.example.itview_spring.DTO.UserProfileUpdateDTO;
 import com.example.itview_spring.DTO.UserRatingCountDTO;
 import com.example.itview_spring.DTO.UserResponseDTO;
 import com.example.itview_spring.DTO.AdminUserDTO;
+import com.example.itview_spring.DTO.CollectionResponseDTO;
 import com.example.itview_spring.Entity.EmailVerificationEntity;
 import com.example.itview_spring.Entity.UserEntity;
 import com.example.itview_spring.Repository.*;
@@ -55,7 +56,9 @@ public class UserService implements UserDetailsService {
     private final CommentRepository commentRepository;
     private final RatingRepository ratingRepository;
     private final PersonRepository personRepository;
+    private final CollectionRepository collectionRepository;
     private final EmailVerificationRepository emailVerificationRepository;
+    private final CollectionService collectionService;
     private final ModelMapper modelMapper;
     private final PasswordEncoder passwordEncoder;
     private final JavaMailSender mailSender;
@@ -241,6 +244,20 @@ public class UserService implements UserDetailsService {
         return commentRepository.findCommentAndContentByUserId(loginUserId, userId, contentType, pageable, order);
     }
 
+    // 유저 컬렉션 목록 조회
+    public Page<CollectionResponseDTO> getUserCollections(Integer loginUserId, Integer userId, Integer page) {
+        if (!userRepository.existsById(userId)) {
+            throw new NoSuchElementException("존재하지 않는 유저입니다");
+        }
+        Pageable pageable = PageRequest.of(page - 1, 10);
+        Page<CollectionResponseDTO> res = collectionRepository.findUserCollections(loginUserId, userId, pageable);
+        for (CollectionResponseDTO dto : res) {
+            List<String> posters = collectionService.getCollectionPosters(dto.getId());
+            dto.setPoster(posters);
+        }
+        return res;
+    }
+
     // 유저가 좋아요한 인물 조회
     public Page<PersonDTO> getPersonUserLike(Integer userId, Integer page) {
         if (!userRepository.existsById(userId)) {
@@ -248,6 +265,20 @@ public class UserService implements UserDetailsService {
         }
         Pageable pageable = PageRequest.of(page - 1, 12);
         return personRepository.findPersonUserLike(userId, pageable);
+    }
+
+    // 유저가 좋아요한 컬렉션 조회
+    public Page<CollectionResponseDTO> getCollectionUserLike(Integer loginUserId, Integer userId, Integer page) {
+        if (!userRepository.existsById(userId)) {
+            throw new NoSuchElementException("존재하지 않는 유저입니다.");
+        }
+        Pageable pageable = PageRequest.of(page - 1, 1);
+        Page<CollectionResponseDTO> res = collectionRepository.findCollectionUserLike(loginUserId, userId, pageable);
+        for (CollectionResponseDTO dto : res) {
+            List<String> posters = collectionService.getCollectionPosters(dto.getId());
+            dto.setPoster(posters);
+        }
+        return res;
     }
 
     // 유저가 좋아요한 코멘트 조회
@@ -276,10 +307,53 @@ public class UserService implements UserDetailsService {
             AdminUserDTO dto = new AdminUserDTO();
             dto.setId(userEntity.getId());
             dto.setNickname(userEntity.getNickname());
-            dto.setIntroduce(userEntity.getIntroduction());
+            dto.setIntroduction(userEntity.getIntroduction());
             dto.setProfile(userEntity.getProfile());
             dto.setEmail(userEntity.getEmail());
             return dto;
         });
+    }
+
+    // 관리자 페이지 - 유저 상세 조회
+    public AdminUserDTO read(int userId) {
+        UserEntity userEntity = userRepository.findById(userId)
+                .orElseThrow(() -> new IllegalArgumentException("해당 유저를 찾을 수 없습니다. ID: " + userId));
+
+        return modelMapper.map(userEntity, AdminUserDTO.class);
+    }
+
+    // 관리자 페이지 - 유저 정보 수정
+    public void update(int id, AdminUserDTO adminUserDTO) {
+        Optional<UserEntity> optionalUser = userRepository.findById(id);
+        if (optionalUser.isPresent()) {
+            UserEntity userEntity = optionalUser.get();
+
+            // 닉네임 업데이트
+            userEntity.setNickname(adminUserDTO.getNickname());
+
+            // 자기소개 업데이트 (빈 문자열이 들어오면 null로 처리)
+            if (adminUserDTO.getIntroduction() != null && adminUserDTO.getIntroduction().isEmpty()) {
+                userEntity.setIntroduction(null);
+            } else {
+                userEntity.setIntroduction(adminUserDTO.getIntroduction());
+            }
+
+            // 프로필 사진 삭제 로직
+            // 폼에서 빈 문자열이 오고, DB에 기존 프로필이 있을 경우 S3 파일 삭제
+            if (adminUserDTO.getProfile() != null && adminUserDTO.getProfile().isEmpty() && userEntity.getProfile() != null) {
+                s3Uploader.deleteFile(userEntity.getProfile());
+                userEntity.setProfile(null);
+            } else {
+                // 기존 프로필이 null이 아니고, 폼에서도 빈 문자열이 아니면 프로필 업데이트
+                userEntity.setProfile(adminUserDTO.getProfile());
+            }
+
+            userRepository.save(userEntity);
+        }
+    }
+
+    // 관리자 페이지 - 유저 정보 삭제
+    public void delete(int id) {
+        userRepository.deleteById(id);
     }
 }

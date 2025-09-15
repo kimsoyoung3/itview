@@ -43,8 +43,8 @@ public class ReplyRestController {
 
     // 댓글 수정
     @PutMapping("/{id}")
-    public ResponseEntity<Void> modifyReply(@PathVariable("id") Integer id, @RequestBody TextDTO newText) {
-        Boolean success = replyService.modifyReply(id, newText.getText());
+    public ResponseEntity<Void> modifyReply(@AuthenticationPrincipal CustomUserDetails userDetails, @PathVariable("id") Integer id, @RequestBody TextDTO newText) {
+        Boolean success = replyService.modifyReply(userDetails.getId(), id, newText.getText());
         if (success) {
             return ResponseEntity.ok().build();
         } else {
@@ -52,9 +52,10 @@ public class ReplyRestController {
         }
     }
 
+    // 댓글 삭제
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteReply(@PathVariable("id") Integer id) {
-        Boolean success = replyService.deleteReply(id);
+    public ResponseEntity<Void> deleteReply(@AuthenticationPrincipal CustomUserDetails userDetails, @PathVariable("id") Integer id) {
+        Boolean success = replyService.deleteReply(userDetails.getId(), id);
         if (success) {
             return ResponseEntity.ok().build();
         } else {
@@ -65,5 +66,10 @@ public class ReplyRestController {
     @ExceptionHandler(NoSuchElementException.class)
     public ResponseEntity<String> handleNoSuchElementException(NoSuchElementException ex) {
         return ResponseEntity.status(404).body(ex.getMessage());
+    }
+
+    @ExceptionHandler(SecurityException.class)
+    public ResponseEntity<String> handleSecurityException(SecurityException ex) {
+        return ResponseEntity.status(403).body(ex.getMessage());
     }
 }

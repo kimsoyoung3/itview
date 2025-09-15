@@ -1,6 +1,7 @@
 package com.example.itview_spring.Service;
 
 import com.example.itview_spring.Constant.Replyable;
+import com.example.itview_spring.DTO.AdminCommentDTO;
 import com.example.itview_spring.DTO.CommentAndContentDTO;
 import com.example.itview_spring.DTO.CommentDTO;
 import com.example.itview_spring.DTO.ReplyDTO;
@@ -8,6 +9,7 @@ import com.example.itview_spring.Entity.CommentEntity;
 import com.example.itview_spring.Entity.ReplyEntity;
 import com.example.itview_spring.Repository.*;
 import lombok.RequiredArgsConstructor;
+import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -26,6 +28,7 @@ public class CommentService {
     private final ContentRepository contentRepository;
     private final ReplyRepository replyRepository;
     private final LikeRepository likeRepository;
+    private final ModelMapper modelMapper;
 
     // 코멘트 추가
     public void addComment(Integer userId, Integer contentId, String text) {
@@ -58,17 +61,28 @@ public class CommentService {
     }
     
     // 코멘트 수정
-    public void updateComment(Integer commentId, String newText) {
-        CommentEntity comment = commentRepository.findById(commentId)
-                .orElseThrow(() -> new NoSuchElementException("존재하지 않는 코멘트입니다"));
+    public void updateComment(Integer userId, Integer commentId, String newText) {
+        if (!commentRepository.existsById(commentId)) {
+            throw new NoSuchElementException("존재하지 않는 코멘트입니다");
+        }
+        CommentEntity comment = commentRepository.findById(commentId).get();
+        if (!comment.getUser().getId().equals(userId)) {
+            throw new SecurityException("권한이 없습니다");
+        }
         comment.setText(newText);
         commentRepository.save(comment);
     }
 
     // 코멘트 삭제
-    public boolean deleteComment(Integer commentId) {
-        var commentOpt = commentRepository.findById(commentId).orElseThrow(() -> new NoSuchElementException("존재하지 않는 코멘트입니다"));
-        commentRepository.delete(commentOpt);
+    public boolean deleteComment(Integer userId, Integer commentId) {
+        if (!commentRepository.existsById(commentId)) {
+            throw new NoSuchElementException("존재하지 않는 코멘트입니다");
+        }
+        CommentEntity comment = commentRepository.findById(commentId).get();
+        if (!comment.getUser().getId().equals(userId)) {
+            throw new SecurityException("권한이 없습니다");
+        }
+        commentRepository.delete(comment);
         likeRepository.deleteByTargetIdAndTargetType(commentId, Replyable.COMMENT);
         replyRepository.deleteByTargetIdAndTargetType(commentId, Replyable.COMMENT);
         return true;
@@ -119,5 +133,19 @@ public class CommentService {
         Pageable pageable = PageRequest.of(page - 1, 10);
         Page<ReplyDTO> replies = replyRepository.findRepliesByTargetId(userId, commentId, Replyable.COMMENT, pageable);
         return replies;
+    }
+
+    // 관리자 페이지 - 코멘트 조회
+    public Page<AdminCommentDTO> list(int userId, Pageable pageable) {
+        // 1. 레포지토리를 통해 특정 사용자의 코멘트 엔티티 목록을 조회합니다.
+        Page<CommentEntity> commentsPage = commentRepository.findByUserId(userId, pageable);
+
+        // 2. 조회된 엔티티 페이지를 AdminCommentDTO 페이지로 변환하여 반환합니다.
+        return commentsPage.map(comment -> modelMapper.map(comment, AdminCommentDTO.class));
+    }
+
+    // 관리자 페이지 - 코멘트 삭제
+    public void delete(int id) {
+        commentRepository.deleteById(id);
     }
 }
