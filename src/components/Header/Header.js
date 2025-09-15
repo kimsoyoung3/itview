@@ -165,25 +165,11 @@ const Header = ({ userInfo, handleLogin, handleLogout, isLoginOpen, openLogin, c
                             <div className="user-menu">
                                 <Link to={`/user/${userInfo}`} className="login-button">마이페이지</Link>
                                 <button onClick={handleLogout} className="login-button">로그아웃</button>
-                                {/* 소셜 로그인 */}
-                                <a href="http://localhost:8080/oauth2/authorization/google"
-                                   onClick={() => link({redirectURL: window.location.href})}>구글 로그인</a>
-                                <a href="http://localhost:8080/oauth2/authorization/kakao"
-                                   onClick={() => link({redirectURL: window.location.href})}>카카오 로그인</a>
-                                <a href="http://localhost:8080/oauth2/authorization/naver"
-                                   onClick={() => link({redirectURL: window.location.href})}>네이버 로그인</a>
                             </div>
                         ) : (
                             <div className="user-menu">
                                 <button onClick={openLogin} className="login-button">로그인</button>
                                 <button onClick={openSignup} className="signUp-button">회원가입</button>
-                                {/* 소셜 로그인 */}
-                                <a href="http://localhost:8080/oauth2/authorization/google"
-                                   onClick={() => link({redirectURL: window.location.href})}>구글 로그인</a>
-                                <a href="http://localhost:8080/oauth2/authorization/kakao"
-                                   onClick={() => link({redirectURL: window.location.href})}>카카오 로그인</a>
-                                <a href="http://localhost:8080/oauth2/authorization/naver"
-                                   onClick={() => link({redirectURL: window.location.href})}>네이버 로그인</a>
                             </div>
                         )}
                     </div>

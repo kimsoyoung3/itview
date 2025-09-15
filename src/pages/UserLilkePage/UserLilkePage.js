@@ -1,6 +1,6 @@
 import { React, useEffect, useState } from 'react';
 import { useParams, useSearchParams } from 'react-router-dom';
-import { getUserLikeComment, getUserLikePerson } from '../../API/UserApi';
+import { getUserLikeCollection, getUserLikeComment, getUserLikePerson } from '../../API/UserApi';
 import "./UserLilkePage.css"
 import CommentCard from "../../components/CommentCard/CommentCard";
 import CreditOrPersonCard from "../../components/CreditOrPersonCard/CreditOrPersonCard";
@@ -23,8 +23,8 @@ function UserLikePage({userInfo, openLogin, onDelete}) {
             const fetchData = async () => {
                 const personRes = await getUserLikePerson(id, 1);
                 setPersonLikes(personRes.data);
-                // const collectionRes = await getUserLikeCollection(id, 1);
-                // setCollectionLikes(collectionRes.data);
+                const collectionRes = await getUserLikeCollection(id, 1);
+                setCollectionLikes(collectionRes.data);
                 const commentRes = await getUserLikeComment(id, 1);
                 setCommentLikes(commentRes.data);
             }
@@ -38,6 +38,14 @@ function UserLikePage({userInfo, openLogin, onDelete}) {
         console.log(personLikes);
     }, [personLikes]);
 
+    useEffect(() => {
+        console.log(collectionLikes);
+    }, [collectionLikes]);
+
+    useEffect(() => {
+        console.log(commentLikes);
+    }, [commentLikes]);
+    
     const handlePersonLoadMore = async () => {
         try {
             const nextPage = personLikes.page.number + 2;
@@ -51,10 +59,6 @@ function UserLikePage({userInfo, openLogin, onDelete}) {
             toast("정보를 불러오지 못했습니다.");
         }
     };
-
-    useEffect(() => {
-        console.log(commentLikes);
-    }, [commentLikes]);
 
     const handleCommentLoadMore = async () => {
         try {
