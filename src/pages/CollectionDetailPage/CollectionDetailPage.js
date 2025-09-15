@@ -64,6 +64,7 @@ const CollectionDetailPage = ({userInfo, openLogin}) => {
         try {
             await deleteCollection(id);
             toast("컬렉션이 삭제되었습니다.");
+            window.location.replace(`/user/${userInfo}/collection`);
         } catch (e) {
             toast("컬렉션 삭제에 실패했습니다.");
         }
@@ -159,7 +160,7 @@ const CollectionDetailPage = ({userInfo, openLogin}) => {
                     </NavLink>
 
                     {/*수정&삭제 버튼*/}
-                    <div className="user-collection-detail-edit-box" ref={menuRef}>
+                    <div className="user-collection-detail-edit-box" ref={menuRef} hidden={userInfo !== collection?.user?.id}>
                         {edit && (
                             <div>
                                 <NavLink to={`/collection/${collection.id}/edit`}>수정</NavLink>
