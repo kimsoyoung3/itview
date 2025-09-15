@@ -155,7 +155,7 @@ const CollectionDetailPage = ({userInfo, openLogin}) => {
                     <div className="user-collection-detail-edit-box" ref={menuRef}>
                         {edit && (
                             <div>
-                                <button>수정</button>
+                                <NavLink to={`/collection/${collection.id}/edit`}>수정</NavLink>
                                 <button onClick={openDeleteCollectionModal}>삭제</button>
                             </div>
                         )}

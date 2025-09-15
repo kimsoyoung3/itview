@@ -1,11 +1,11 @@
 import {useEffect, useRef, useState} from 'react';
-import "./CollectionAddPage.css"
+import "./CollectionFormPage.css"
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { toast } from 'react-toastify';
 import { CollectionCreate } from '../../API/CollectionApi';
 import { searchContent } from '../../API/ContentApi';
 
-const CollectionFormPage = () => {
+const CollectionFormPage = ({action}) => {
     const [collectionAddModal, setCollectionAddModal] = useState()
 
     const openCollectionAddModal = () => setCollectionAddModal(true)
@@ -173,10 +173,10 @@ const CollectionFormPage = () => {
     return (
         <div className="user-collection-add-page container">
             <div className="user-collection-add-page-wrap">
-                <h1>새 컬렉션</h1>
+                <h1>{action === "new" ? "새 컬렉션" : "컬렉션 수정"}</h1>
 
                 <div className="user-collection-add-btn-box">
-                    <button className="user-collection-add-btn" onClick={handleCreateCollection}>만들기</button>
+                    <button className="user-collection-add-btn" onClick={handleCreateCollection}>{action === "new" ? "만들기" : "수정하기"}</button>
                 </div>
 
                 <input type="text" placeholder="컬렉션 제목을 입력해주세요" className="user-collection-add-title" maxLength={50} ref={title}/>
