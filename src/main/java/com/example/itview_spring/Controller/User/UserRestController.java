@@ -292,6 +292,18 @@ public class UserRestController {
         return ResponseEntity.ok(userService.getPersonUserLike(userId, pageable.getPageNumber()));
     }
 
+    // 유저의 좋아요한 컬렉션 조회
+    @GetMapping("/{id}/like/collection")
+    public ResponseEntity<Page<CollectionResponseDTO>> getUserLikeCollection(@PathVariable("id") Integer userId,
+                                                                             @PageableDefault(page=1) Pageable pageable) {
+        var auth = SecurityContextHolder.getContext().getAuthentication();
+        Integer loginUserId = 0;
+        if (auth.getPrincipal() != "anonymousUser") {
+            loginUserId = ((CustomUserDetails) auth.getPrincipal()).getId();
+        }
+        return ResponseEntity.ok(userService.getCollectionUserLike(loginUserId, userId, pageable.getPageNumber()));
+    }
+
     // 유저의 좋아요한 코멘트 조회
     @GetMapping("/{id}/like/comment")
     public ResponseEntity<Page<CommentAndContentDTO>> getUserLikeComment(@PathVariable("id") Integer userId,
