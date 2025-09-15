@@ -38,6 +38,7 @@ public class CollectionService {
     private final LikeRepository likeRepository;
     private final ReplyRepository replyRepository;
     private final ContentRepository contentRepository;
+    private final ModelMapper modelMapper;
 
     // 컬렉션 생성
     public Integer createCollection(Integer userId, CollectionFormDTO dto) {
