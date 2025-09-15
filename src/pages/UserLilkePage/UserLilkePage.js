@@ -138,7 +138,10 @@ function UserLikePage({userInfo, openLogin, onDelete}) {
                                             <CollectionCard key={item.id} collectionData={item}/>
                                         )}
                                     </div>
-
+                                    
+                                    <div className="like-page-content-btn">
+                                        <button style={{display: collectionLikes?.page?.number + 1 === collectionLikes?.page?.totalPages ? "none" : ""}} onClick={handleCollectionLoadMore}>더보기</button>
+                                    </div>
                                 </div>
                             ) : (
                                 <p className="empty-message">좋아요한 컬렉션이 없습니다 :)</p>
