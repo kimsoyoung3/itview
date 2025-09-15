@@ -1,12 +1,11 @@
-import {React, use, useEffect, useRef, useState} from 'react';
+import {useEffect, useRef, useState} from 'react';
 import "./CollectionAddPage.css"
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { toast } from 'react-toastify';
 import { CollectionCreate } from '../../API/CollectionApi';
 import { searchContent } from '../../API/ContentApi';
-import ContentEach from "../../components/ContentEach/ContentEach";
 
-const CollectionAddPage = () => {
+const CollectionFormPage = () => {
     const [collectionAddModal, setCollectionAddModal] = useState()
 
     const openCollectionAddModal = () => setCollectionAddModal(true)
@@ -279,4 +278,4 @@ const CollectionAddPage = () => {
     );
 };
 
-export default CollectionAddPage;
+export default CollectionFormPage;
