@@ -69,7 +69,7 @@ public class SecurityConfig {
         return (request, response, authentication) -> {
             var session = request.getSession(false);
             var isLinkFlow = session != null && Boolean.TRUE.equals(session.getAttribute("LINK_FLOW"));
-            String redirectURL = "http://localhost:3000/"; // 기본 리다이렉트 URL
+            String redirectURL = "http://192.168.100.43:3000/"; // 기본 리다이렉트 URL
             for (Cookie cookie : request.getCookies()) {
                 if ("REDIRECT_URL".equals(cookie.getName())) {
                     redirectURL = cookie.getValue(); // 세션에 저장된 리다이렉트 URL 사용
