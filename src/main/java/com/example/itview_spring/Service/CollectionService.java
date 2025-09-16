@@ -63,6 +63,37 @@ public class CollectionService {
         return collection;
     }
 
+    // 컬렉션에 추가 조회
+    public Page<CollectionToAddDTO> getCollectionsToAdd(Integer userId, Integer contentId, Integer page) {
+        if (!userRepository.existsById(userId)) {
+            throw new NoSuchElementException("존재하지 않는 유저입니다.");
+        }
+        if (!contentRepository.existsById(contentId)) {
+            throw new NoSuchElementException("존재하지 않는 컨텐츠입니다.");
+        }
+        Pageable pageable = PageRequest.of(page - 1, 12);
+        return collectionRepository.findCollectionsToAdd(userId, contentId, pageable);
+    }
+
+    // 컬렉션에 추가
+    public void addContentToCollection(Integer userId, Integer contentId, List<Integer> collectionIds) {
+        if (!userRepository.existsById(userId)) {
+            throw new NoSuchElementException("존재하지 않는 유저입니다.");
+        }
+        ContentEntity content = contentRepository.findById(contentId).orElseThrow(() -> new NoSuchElementException("존재하지 않는 컨텐츠입니다."));
+        List<CollectionEntity> collections = collectionRepository.findAllById(collectionIds);
+        for (CollectionEntity collection : collections) {
+            if (!collection.getUser().getId().equals(userId)) {
+                throw new SecurityException("본인의 컬렉션에만 추가할 수 있습니다.");
+            }
+            CollectionItemEntity item = new CollectionItemEntity();
+            item.setCollection(collection);
+            item.setContent(content);
+            collection.getItems().add(item);
+            collectionRepository.save(collection);
+        }
+    }
+
     // 컬렉션 아이템 페이징 조회
     public Page<ContentResponseDTO> getCollectionItems(Integer id, Integer page) {
         if (!collectionRepository.existsById(id)) {
