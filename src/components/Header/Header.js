@@ -156,8 +156,10 @@ const Header = ({ userInfo, handleLogin, handleLogout, isLoginOpen, openLogin, c
 
                         {/* 검색바 */}
                         <div className="search-bar">
-                            <button className="search-button"><i className="bi bi-search"/></button>
-                            <input type="text" placeholder="검색어를 입력해주세요" className="search-input"/>
+                            <form action="">
+                                <button className="search-button"><i className="bi bi-search"/></button>
+                                <input type="text" placeholder="검색어를 입력해주세요" className="search-input"/>
+                            </form>
                         </div>
 
                         {/* 로그인/회원정보 */}
