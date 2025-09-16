@@ -34,14 +34,8 @@
 </head>
 <body>
 <main layout:fragment="content">
-  <!--  <h1>Welcome to the Dashboard</h1>  -->
-  <!--  <p>This is your main content area.</p>  -->
-
-    <!--전체 내용을 보는 페이지(일반적으로 표(카드)로 구현-->
     <div class="container mt-3 mb-3">
         <h1 class="mt-3">콘텐츠 목록</h1>
-        <!--삽입버튼 추가(Controller로 지시하는 태그는 a, button)-->
-        <!--부트스트랩5 클래스구조(모양 색상(글자) 색상(배경) 세부조정)-->
         <div class="d-flex justify-content-end mb-3">
             <a th:href="@{/content/register}" type="button" class="btn btn-primary"><i class="bi bi-trash"></i>등록</a>
         </div>
@@ -56,10 +50,10 @@
             </tr>
             </thead>
             <tbody>
-            <tr th:each="data:${contentDTOS}"
-                class="clickable-row"
-                th:onclick="|window.location.href='@{/content/detail(id=${data.id})}'|">
-                <td class="text-start" th:text="${data.title}">영화</td>
+            <tr th:each="data:${contentDTOS}">
+                <td class="text-start">
+                    <a th:href="@{/content/detail(id=${data.id})}" th:text="${data.title}">영화</a>
+                </td>
                 <td class="text-start" th:text="${data.contentType.getDescription()}">타입</td>
                 <td>
                     <a th:href="@{/content/{id}/update(id=${data.id})}"
@@ -67,67 +61,37 @@
                        onclick="event.stopPropagation();">수정</a>
 
                     <a th:href="@{/content/delete(id=${data.id})}"
-                       type="button" class="btn btn-primary"
+                       type="button" class="btn btn-danger"
                        onclick="event.stopPropagation();">삭제</a>
                 </td>
             </tr>
             </tbody>
-<!-- 추후 체크후 변경할 사항 0909 -->
-<!--            <tr th:each="data:${contentDTOS}" class="clickable-row">-->
-<!--                <td class="text-start">-->
-<!--                    <a th:href="@{/content/detail(id=${data.id})}" th:text="${data.title}">영화</a>-->
-<!--                </td>-->
-<!--                <td class="text-start" th:text="${data.contentType.getDescription()}">타입</td>-->
-<!--                <td>-->
-<!--                    <a th:href="@{/content/{id}/update(id=${data.id})}"-->
-<!--                       type="button" class="btn btn-primary"-->
-<!--                       onclick="event.stopPropagation();">수정</a>-->
-
-<!--                    <a th:href="@{/content/delete(id=${data.id})}"-->
-<!--                       type="button" class="btn btn-danger"-->
-<!--                       onclick="event.stopPropagation();">삭제</a>-->
-<!--                </td>-->
-<!--            </tr>-->
-<!--            -->
-
-
-<!--            <tr th:each="data:${contentDTOS}"-->
-<!--                class="clickable-row">-->
-<!--                <td class="text-start">-->
-<!--                    <a th:href="@{/content/detail(id=${data.id})}" th:text="${data.title}">영화</a>-->
-<!--                </td>-->
-<!--         이렇게 하면, 제목을 클릭했을 때 페이지가 이동하도록 할 수 있습니   -->
-
-
         </table>
 
-        <!--표 밑에 추가-->
-        <div class="d-flex justify-content-center mt-3" th:if="${pageInfoDTO.start > 0}">
+        <div class="d-flex justify-content-center mt-3" th:if="${contentDTOS.totalPages > 1}">
             <ul class="pagination">
-                <li class="page-item" th:classappend="${pageInfoDTO.current == 1} ? ' disabled' : ''">
-                    <a class="page-link" th:href="@{'?page='+${pageInfoDTO.prev}}">
+                <li class="page-item" th:classappend="${contentDTOS.number == 0} ? ' disabled' : ''">
+                    <a class="page-link" th:href="@{'/content/list'(page=${contentDTOS.number - 1})}">
                         <span>이전</span>
                     </a>
                 </li>
 
                 <li class="page-item"
-                    th:classappend="${pageNum == pageInfoDTO.current} ? ' active'"
-                    th:each="pageNum : ${#numbers.sequence(pageInfoDTO.start, pageInfoDTO.end)}">
+                    th:classappend="${pageNum == contentDTOS.number} ? ' active'"
+                    th:each="pageNum : ${#numbers.sequence(startPage, endPage)}">
                     <a class="page-link"
-                       th:href="@{'?page='+${pageNum}}"
+                       th:href="@{'/content/list'(page=${pageNum})}"
                        th:text="${pageNum}"></a>
                 </li>
 
-                <li class="page-item" th:classappend="${pageInfoDTO.current == pageInfoDTO.last} ? ' disabled' : ''">
-                    <a class="page-link" th:href="@{'?page='+${pageInfoDTO.next}}">
+                <li class="page-item" th:classappend="${contentDTOS.last} ? ' disabled' : ''">
+                    <a class="page-link" th:href="@{'/content/list'(page=${contentDTOS.number + 1})}">
                         <span>다음</span>
                     </a>
                 </li>
             </ul>
         </div>
-
     </div>
-
 </main>
 </body>
 </html>
