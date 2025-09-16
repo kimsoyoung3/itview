@@ -4,10 +4,12 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import { toast } from 'react-toastify';
 import { CollectionCreate, editCollection, getCollectionDetail, getCollectionForm, getCollectionItems } from '../../API/CollectionApi';
 import { searchContent } from '../../API/ContentApi';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 
 const CollectionFormPage = ({action}) => {
     const [collectionAddModal, setCollectionAddModal] = useState()
+
+    const navigation = useNavigate();
 
     const openCollectionAddModal = () => setCollectionAddModal(true)
     const closeCollectionAddModal = () => {setCollectionAddModal(false); setKeyword("")}
@@ -225,7 +227,7 @@ const CollectionFormPage = ({action}) => {
             try {
                 const res = await CollectionCreate(data);
                 toast("컬렉션이 생성되었습니다.");
-                window.location.replace(`/collection/${res.data}`);
+                navigation(`/collection/${res.data}`);
             } catch (error) {
                 toast("컬렉션 생성에 실패했습니다.");
                 return;
@@ -234,7 +236,7 @@ const CollectionFormPage = ({action}) => {
             try {
                 await editCollection(id, data);
                 toast("컬렉션이 수정되었습니다.");
-                window.location.replace(`/collection/${id}`);
+                navigation(`/collection/${id}`);
             } catch (error) {
                 toast("컬렉션 수정에 실패했습니다.");
                 return;
@@ -338,7 +340,7 @@ const CollectionFormPage = ({action}) => {
                                     <label className="form-check-label" htmlFor={`checkDefault-${index}`}>
                                         <div className="collection-add-modal-search-results">
                                             <div className="collection-add-modal-search-results-img">
-                                                <img src={item.poster ? item.poster : "/basic-bg.jpg"} alt=""/>
+                                                <img src={item.poster ? item.poster : `${process.env.PUBLIC_URL}/basic-bg.jpg`} alt=""/>
                                             </div>
                                             <div className="collection-add-modal-search-results-info">
                                                 <p className="collection-add-modal-search-results-info-top">{item.title}</p>

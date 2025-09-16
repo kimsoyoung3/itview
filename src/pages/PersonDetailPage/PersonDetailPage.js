@@ -117,21 +117,21 @@ const PersonDetailPage = ({userInfo, openLogin}) => {
 
     /*외부서비스 로고*/
     const serviceLogos = {
-        NETFLIX: '/externalLogo/netflix.png',
-        DISNEY_PLUS: '/externalLogo/disney.png',
-        WAVVE: '/externalLogo/wavve.png',
-        WATCHA: '/externalLogo/watcha.png',
-        TVING: '/externalLogo/tving.png',
-        TVN: '/externalLogo/tvn.png',
-        APPLE_TV_PLUS: '/externalLogo/apple-tv-plus.png',
-        COUPANG_PLAY: '/externalLogo/coupang-play.png',
+        NETFLIX: `${process.env.PUBLIC_URL}/externalLogo/netflix.png`,
+        DISNEY_PLUS: `${process.env.PUBLIC_URL}/externalLogo/disney.png`,
+        WAVVE: `${process.env.PUBLIC_URL}/externalLogo/wavve.png`,
+        WATCHA: `${process.env.PUBLIC_URL}/externalLogo/watcha.png`,
+        TVING: `${process.env.PUBLIC_URL}/externalLogo/tving.png`,
+        TVN: `${process.env.PUBLIC_URL}/externalLogo/tvn.png`,
+        APPLE_TV_PLUS: `${process.env.PUBLIC_URL}/externalLogo/apple-tv-plus.png`,
+        COUPANG_PLAY: `${process.env.PUBLIC_URL}/externalLogo/coupang-play.png`,
 
-        ALADIN: '/externalLogo/aladin.png',
-        YES24: '/externalLogo/yes24.png',
-        KYOBO: '/externalLogo/kyobo.png',
+        ALADIN: `${process.env.PUBLIC_URL}/externalLogo/aladin.png`,
+        YES24: `${process.env.PUBLIC_URL}/externalLogo/yes24.png`,
+        KYOBO: `${process.env.PUBLIC_URL}/externalLogo/kyobo.png`,
 
-        NAVER: '/externalLogo/naverWebtoon.png',
-        KAKAO: '/externalLogo/kakaoWebtoon.png',
+        NAVER: `${process.env.PUBLIC_URL}/externalLogo/naverWebtoon.png`,
+        KAKAO: `${process.env.PUBLIC_URL}/externalLogo/kakaoWebtoon.png`,
     };
 
     return(notFound ? <NotFound /> :
@@ -139,7 +139,7 @@ const PersonDetailPage = ({userInfo, openLogin}) => {
             {/*인물 프로필 섹션*/}
              <section className="person-detail-page-profile">
                 <div className="person-detail-page-profile-img">
-                    <img src={personInfo?.profile ? personInfo?.profile : "/user.png" } alt=""/>
+                    <img src={personInfo?.profile ? personInfo?.profile : `${process.env.PUBLIC_URL}/user.png`} alt=""/>
                 </div>
                 <div className="person-detail-page-profile-info">
                     <h4>{personInfo?.name}</h4>
@@ -186,7 +186,7 @@ const PersonDetailPage = ({userInfo, openLogin}) => {
                                                 <div className="domain-list-externalService">
                                                     {item.externalServices?.map(service => (
                                                         <div key={service.id} onClick={(e) => {e.preventDefault(); window.open(service.href)}} target="_blank" rel="noopener noreferrer">
-                                                            <img src={serviceLogos[service.type] || '/images/default-logo.png'} alt={service.type}/>
+                                                            <img src={serviceLogos[service.type] || `${process.env.PUBLIC_URL}/images/default-logo.png`} alt={service.type}/>
                                                         </div>
                                                     ))}
                                                 </div>

@@ -11,13 +11,13 @@ import SearchPage from '../pages/SearchPage/SearchPage';
 function AppRoutes({ userInfo, openLogin }) {
   return (
     <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/content/*" element={<ContentRoutes userInfo={userInfo} openLogin={openLogin} />} />
-        <Route path="/comment/*" element={<CommentRoutes userInfo={userInfo} openLogin={openLogin} />} />
-        <Route path="/person/*" element={<PersonRoutes userInfo={userInfo} openLogin={openLogin} />} />
-        <Route path="/user/*" element={<UserRoutes userInfo={userInfo} openLogin={openLogin} />} />
-        <Route path="/collection/*" element={<CollectionRoutes userInfo={userInfo} openLogin={openLogin} />} />
-        <Route path="/search" element={<SearchPage />} />
+      <Route path="/" element={<Home />} />
+      <Route path="/content/*" element={<ContentRoutes userInfo={userInfo} openLogin={openLogin} />} />
+      <Route path="/comment/*" element={<CommentRoutes userInfo={userInfo} openLogin={openLogin} />} />
+      <Route path="/person/*" element={<PersonRoutes userInfo={userInfo} openLogin={openLogin} />} />
+      <Route path="/user/*" element={<UserRoutes userInfo={userInfo} openLogin={openLogin} />} />
+      <Route path="/collection/*" element={<CollectionRoutes userInfo={userInfo} openLogin={openLogin} />} />
+      <Route path="/search" element={<SearchPage />} />
     </Routes>
   )
 }

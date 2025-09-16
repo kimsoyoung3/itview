@@ -9,7 +9,7 @@ const Home = () => {
         <div className="container home">
             {/*배너*/}
             <div className="banner">
-                <img src="/banner.jpg" alt=""/>
+                <img src={`${process.env.PUBLIC_URL}/banner.jpg`} alt=""/>
             </div>
 
             {/*광고라인*/}

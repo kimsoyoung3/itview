@@ -15,7 +15,7 @@ const CreditOrPersonCard = ({ data, type }) => {
 
                 {/* 프로필 이미지 */}
                 <div className="credit-card-image">
-                    <img src={person.profile ? person.profile : "/user.png"} alt="프로필"/>
+                    <img src={person.profile ? person.profile : `${process.env.PUBLIC_URL}/user.png`} alt="프로필"/>
                 </div>
 
                 {/* 크레딧인지 일반 인물인지 구분 */}

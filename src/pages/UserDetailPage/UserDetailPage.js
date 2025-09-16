@@ -96,7 +96,7 @@ const UserDetailPage = ({ userInfo, openLogin }) => {
             <div className="user-detail-page-wrap">
                 <div className="user-detail-info">
                     <div className="user-detail-info-profile">
-                        <img src={userDetail?.userProfile.profile ? userDetail?.userProfile.profile : "/user.png" } alt=""/>
+                        <img src={userDetail?.userProfile.profile ? userDetail?.userProfile.profile : `${process.env.PUBLIC_URL}/user.png`} alt=""/>
                     </div>
                     <h5 className="user-detail-info-name">{userDetail?.userProfile.nickname}</h5>
                     <p className="user-detail-info-intro">{userDetail?.userProfile.introduction}</p>
@@ -152,8 +152,8 @@ const UserDetailPage = ({ userInfo, openLogin }) => {
                                 <div className="my-profile-edit-image-wrap">
                                     <div className="my-profile-edit-image">
                                         <label htmlFor="image-input">
-                                            <img src={userDetail?.userProfile.profile ? userDetail?.userProfile.profile : "/user.png"} alt=""/>
-                                            <div className="image-input-btn-box"><img src="/icon/camera.svg" className="image-input-btn" alt=""/></div>
+                                            <img src={userDetail?.userProfile.profile ? userDetail?.userProfile.profile : `${process.env.PUBLIC_URL}/user.png`} alt=""/>
+                                            <div className="image-input-btn-box"><img src={`${process.env.PUBLIC_URL}/icon/camera.svg`} className="image-input-btn" alt=""/></div>
                                         </label>
                                         <input id="image-input" type="file" onChange={handleImageChange}/>
                                     </div>
