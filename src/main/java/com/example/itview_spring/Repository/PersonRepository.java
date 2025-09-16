@@ -10,6 +10,9 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import java.util.Collection;
+import java.util.List;
+
 public interface PersonRepository extends JpaRepository <PersonEntity, Integer> {
 
     @Query("""
@@ -28,8 +31,6 @@ public interface PersonRepository extends JpaRepository <PersonEntity, Integer> 
             WHERE p.id = :personId
             """)
     PersonResponseDTO findPersonResponseDTO(@Param("userId") Integer userId, @Param("personId") Integer personId);
-
-    PersonEntity findByName(String name);
 
     @Query("""
             select new com.example.itview_spring.DTO.PersonDTO(
@@ -58,4 +59,8 @@ public interface PersonRepository extends JpaRepository <PersonEntity, Integer> 
         ORDER BY (SELECT COUNT(l) FROM LikeEntity l where l.targetId = p.id and l.targetType = 'PERSON') DESC
     """)
     Page<PersonDTO> searchPersons(@Param("keyword") String keyword, Pageable pageable);
+
+    PersonEntity findByName(String name);
+    // 🔍 이름 부분 검색
+    List<PersonEntity> findByNameContainingIgnoreCase(String keyword); //0911생성 joo
 }

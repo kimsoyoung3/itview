@@ -1,6 +1,7 @@
 package com.example.itview_spring.Controller.Collection;
 
 import com.example.itview_spring.DTO.AdminCollectionDTO;
+import com.example.itview_spring.DTO.AdminContentDTO;
 import com.example.itview_spring.Service.CollectionService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -49,5 +50,29 @@ public class CollectionController {
         redirectAttributes.addFlashAttribute("message", "컬렉션이 성공적으로 삭제되었습니다.");
 
         return "redirect:/collections/list";
+    }
+
+    @GetMapping("/collection/{collectionId}")
+    public String read(@PathVariable("collectionId") Integer collectionId,
+                       @PageableDefault(size = 10) Pageable pageable,
+                       Model model) {
+
+        // 1. 컬렉션 상세 정보 조회
+        AdminCollectionDTO collectionDetail = collectionService.getCollectionDetail(collectionId);
+
+        // 2. 컬렉션에 속한 콘텐츠 목록 조회 (페이징 정보도 포함)
+        Page<AdminContentDTO> contentsPage = collectionService.getContentsByCollectionId(collectionId, pageable);
+
+        // 3. 페이징 UI에 필요한 startPage와 endPage 계산
+        int startPage = Math.max(0, contentsPage.getNumber() - 2);
+        int endPage = Math.min(contentsPage.getTotalPages() - 1, contentsPage.getNumber() + 2);
+
+        // 4. 모델에 데이터 추가
+        model.addAttribute("collection", collectionDetail);
+        model.addAttribute("contents", contentsPage);
+        model.addAttribute("startPage", startPage);
+        model.addAttribute("endPage", endPage);
+
+        return "collection/detail";
     }
 }

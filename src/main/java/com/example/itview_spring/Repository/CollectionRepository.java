@@ -1,7 +1,9 @@
 package com.example.itview_spring.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
+import com.example.itview_spring.Entity.ContentEntity;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -205,4 +207,9 @@ public interface CollectionRepository extends JpaRepository<CollectionEntity, In
 
     @Query("SELECT c FROM CollectionEntity c JOIN c.user u WHERE c.title LIKE %:keyword% OR u.nickname LIKE %:keyword%")
     Page<CollectionEntity> findByTitleOrUserNicknameContaining(@Param("keyword") String keyword, Pageable pageable);
+
+    Optional<CollectionEntity> findById(Integer id);
+
+    @Query("SELECT c.content FROM CollectionEntity co JOIN co.items c WHERE co.id = :collectionId")
+    Page<ContentEntity> findContentsByCollectionId(@Param("collectionId") Integer collectionId, Pageable pageable);
 }

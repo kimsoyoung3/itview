@@ -15,9 +15,8 @@
 
     <div class="container mt-5">
         <h2>콘텐츠 장르 등록/수정</h2>
-
-        <!--        <form th:action="@{|/content/${contentId}/genre|}" method="post">-->
         <form th:action="@{/content/{contentId}/genre(contentId=${contentDTO.id})}" method="post">
+
             <!-- 숨김 ID 필드 -->
             <!-- ✅ CSRF 토큰 추가 (Spring Security 사용하는 경우 필수) -->
             <!--            <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>-->
@@ -46,8 +45,10 @@
         <!-- 영상 등록 버튼은 a 태그로 분리 -->
 <!--         <a th:href="@{/content/{contentId}/credit(contentId=${contentDTO.id})}"-->
 <!--           class="btn btn-success mt-3">📹 크레딧 등록/수정</a>-->
-         <a th:href="@{'/content/' + ${contentId} + '/credit'}"
-           class="btn btn-success mt-3">📂 크레딧 등록/수정</a>
+            <a th:href="@{'/content/' + ${contentId} + '/credit'}"
+               class="btn btn-success mt-3">📂 크레딧 등록/수정</a>
+<!--        <a th:href="@{/person/list}" class="btn btn-success mt-3">📂 인물 목록</a>-->
+
         <!-- 수정된 후 데이터 보기 -->
         <!-- 선택된 장르를 단순 리스트로 표현 -->
 
