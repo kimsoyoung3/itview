@@ -173,6 +173,35 @@ public interface CollectionRepository extends JpaRepository<CollectionEntity, In
            """)
     Page<CollectionResponseDTO> findCollectionUserLike(@Param("loginUserId") Integer loginUserId, @Param("userId") Integer userId, Pageable pageable);
 
+    // 컬렉션 검색
+        @Query("""
+            select new com.example.itview_spring.DTO.CollectionResponseDTO(
+                c.id,
+                c.title,
+                size(c.items),
+                c.updatedAt,
+                false,
+                (select count(l2) from LikeEntity l2 
+                    where l2.targetId = c.id and 
+                        l2.targetType = Replyable.COLLECTION
+                ),
+                (select count(r) from ReplyEntity r 
+                    where r.targetId = c.id and 
+                        r.targetType = Replyable.COLLECTION
+                ),
+                c.description,
+                new com.example.itview_spring.DTO.UserProfileDTO(
+                    c.user.id,
+                    c.user.nickname,
+                    c.user.introduction,
+                    c.user.profile
+                )
+            )
+            from CollectionEntity c
+            where c.title LIKE %:keyword%
+            order by c.updatedAt desc
+            """)
+    Page<CollectionResponseDTO> searchCollections(@Param("keyword") String keyword, Pageable pageable);
 
     @Query("SELECT c FROM CollectionEntity c JOIN c.user u WHERE c.title LIKE %:keyword% OR u.nickname LIKE %:keyword%")
     Page<CollectionEntity> findByTitleOrUserNicknameContaining(@Param("keyword") String keyword, Pageable pageable);

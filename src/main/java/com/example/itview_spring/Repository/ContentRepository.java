@@ -1,5 +1,7 @@
 package com.example.itview_spring.Repository;
 
+import com.example.itview_spring.Constant.ContentType;
+import com.example.itview_spring.DTO.ContentDTO;
 import com.example.itview_spring.DTO.ContentResponseDTO;
 import com.example.itview_spring.Entity.ContentEntity;
 
@@ -37,7 +39,27 @@ public interface ContentRepository extends JpaRepository<ContentEntity, Integer>
     @Query("SELECT c.title FROM ContentEntity c WHERE c.id = :id")
     String findTitleById(@Param("id") Integer id);
 
-
     // 컨텐츠 제목으로 검색
     Page<ContentEntity> findByTitleContainingOrderByReleaseDateDesc(String title, Pageable pageable);
+
+    // 컨텐츠 분야별 검색
+    @Query("""
+        SELECT new com.example.itview_spring.DTO.ContentDTO(
+            c.id,
+            c.title,
+            c.contentType,
+            c.releaseDate,
+            c.poster,
+            c.nation,
+            c.description,
+            c.duration,
+            c.age,
+            c.creatorName,
+            c.channelName
+        )
+        FROM ContentEntity c
+        WHERE c.title LIKE %:keyword% AND c.contentType = :contentType
+        ORDER BY c.releaseDate DESC
+            """)
+    Page<ContentDTO> searchContents(@Param("keyword") String keyword, @Param("contentType") ContentType contentType, Pageable pageable);
 }

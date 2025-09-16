@@ -40,6 +40,22 @@ public interface UserRepository extends JpaRepository<UserEntity, Integer> {
             """)
     UserResponseDTO findUserResponseById(@Param("id") Integer id);
 
+    // 유저 검색
+    @Query("""
+            select new com.example.itview_spring.DTO.UserResponseDTO(
+                new com.example.itview_spring.DTO.UserProfileDTO(u.id, u.nickname, u.introduction, u.profile),
+                (select count(r.id) from RatingEntity r where r.user.id = u.id),
+                (select count(com.id) from CommentEntity com where com.user.id = u.id),
+                (select count(col.id) from CollectionEntity col where col.user.id = u.id),
+                (select count(l1.id) from LikeEntity l1 where l1.user.id = u.id and l1.targetType = Replyable.PERSON),
+                (select count(l2.id) from LikeEntity l2 where l2.user.id = u.id and l2.targetType = Replyable.COLLECTION),
+                (select count(l3.id) from LikeEntity l3 where l3.user.id = u.id and l3.targetType = Replyable.COMMENT)
+            )
+            from UserEntity u
+            where u.nickname like %:keyword%
+            """)
+    Page<UserResponseDTO> searchUsers(@Param("keyword") String keyword, Pageable pageable);
+
     @Query("SELECT u FROM UserEntity u WHERE u.nickname LIKE %:keyword% OR u.email LIKE %:keyword%")
     Page<UserEntity> findByKeyword(@Param("keyword") String keyword, Pageable pageable);
 }
