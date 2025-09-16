@@ -1,7 +1,14 @@
-import React from "react";
+import React, { useEffect } from "react";
 import "./SearchPage.css"
+import { useParams } from "react-router-dom";
 
 const SearchPage = () => {
+
+    const {keyword} = useParams();
+
+    useEffect(() => {
+        console.log("검색어:", keyword);
+    }, [keyword]);
 
     return (
         <div className="search-page">
