@@ -22,9 +22,23 @@ public interface GalleryRepository extends JpaRepository<GalleryEntity, Integer>
                 """)
     List<ImageDTO> findByContentId(@Param("contentId") Integer contentId);
 
-    List<GalleryDTO> findGallerysByContentId(Integer contentId);
+//    List<GalleryDTO> findGallerysByContentId(Integer contentId);
+//0910 추가수정함
+// 2️⃣ 컨텐츠 ID로 GalleryDTO 리스트 조회
+    @Query("""
+            SELECT new com.example.itview_spring.DTO.GalleryDTO(
+                g.id,
+                g.content.id,
+                g.photo
+            )
+            FROM GalleryEntity g
+            WHERE g.content.id = :contentId
+        """)
+    List<GalleryDTO> findGallerysByContentId(@Param("contentId") Integer contentId);
 
-    void deleteByContentId(Integer contentId);
+    // 3️⃣ 컨텐츠 ID 기준 삭제
+    void deleteByContent_Id(Integer contentId);
 
-    boolean existsByContentIdAndPhoto(Integer contentId, String photo);
+    // 4️⃣ 중복 체크
+    boolean existsByContent_IdAndPhoto(Integer contentId, String photo);
 }

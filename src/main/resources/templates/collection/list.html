@@ -8,7 +8,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>컬렉션 관리</title>
     <style>
-        /* 테이블 레이아웃 고정 */
         .table-custom-layout {
             table-layout: fixed;
             width: 100%;
@@ -24,6 +23,10 @@
         .text-start {
             text-align: left;
         }
+
+        .clickable-row {
+            cursor: pointer;
+        }
     </style>
 </head>
 <body>
@@ -31,10 +34,10 @@
     <div class="container mt-3 mb-3">
         <div class="row">
             <div class="col-12">
-                <h3 class="mt-5">컬렉션 관리</h3>
-                <p class="mt-3">모든 컬렉션 목록입니다.</p>
+                <h3 class="mt-4">컬렉션 관리</h3>
+                <p class="mt-4">현재 등록된 컬렉션 목록입니다:</p>
 
-                <div class="d-flex justify-content-end align-items-center mb-3">
+                <div class="d-flex justify-content-end align-items-center mb-4">
                     <form th:action="@{/collection/list}" method="get">
                         <div class="input-group">
                             <input class="form-control" type="text" name="keyword" th:value="${keyword}"
@@ -50,31 +53,30 @@
                 <table class="table table-hover table-custom-layout">
                     <thead>
                     <tr>
-                        <th style="width:15%;">유저이름</th>
-                        <th style="width:35%;">컬렉션 항목</th>
-                        <th style="width:20%;">수정 시각</th>
-                        <th style="width:15%;">수정</th>
-                        <th style="width:15%;">삭제</th>
+                        <th style="width:60%;">컬렉션 제목</th>
+                        <th style="width:20%;">유저</th>
+                        <th style="width:20%;">작업</th>
                     </tr>
                     </thead>
                     <tbody>
                     <tr th:if="${#lists.isEmpty(collections.content)}">
-                        <td colspan="5" class="text-center">컬렉션이 없습니다.</td>
+                        <td colspan="3" class="text-center">컬렉션이 없습니다.</td>
                     </tr>
-                    <tr th:each="collection : ${collections.content}">
-                        <td th:text="${collection.user.nickname}">유저이름</td>
+                    <tr th:each="collection : ${collections.content}"
+                        class="clickable-row"
+                        th:onclick="|window.location.href='@{/collection/{id}(id=${collection.id})}'|">
                         <td class="text-start" th:text="${collection.title}">컬렉션 제목</td>
-                        <td th:text="${#temporals.format(collection.updatedAt, 'yyyy-MM-dd HH:mm')}">수정 시각</td>
+                        <td th:text="${collection.user.nickname}">유저이름</td>
                         <td>
-                            <a th:href="@{/collections/{id}/edit(id=${collection.id})}" class="btn btn-primary">수정</a>
-                        </td>
-                        <td>
+                            <a th:href="@{/collection/{id}/update(id=${collection.id})}"
+                               class="btn btn-primary"
+                               onclick="event.stopPropagation();">수정</a>
                             <form th:action="@{/collections/{id}(id=${collection.id})}"
                                   method="post"
                                   style="display:inline;"
                                   onsubmit="return confirm('정말 삭제하시겠습니까?');">
                                 <input type="hidden" name="_method" value="DELETE"/>
-                                <button type="submit" class="btn btn-primary">삭제</button>
+                                <button type="submit" class="btn btn-primary" onclick="event.stopPropagation();">삭제</button>
                             </form>
                         </td>
                     </tr>
@@ -83,40 +85,40 @@
 
                 <div class="d-flex justify-content-center mt-3" th:if="${collections.totalPages > 0}">
                     <ul class="pagination">
-                        <li class="page-item" th:classappend="${collections.number == 0} ? 'disabled'">
+                        <li class="page-item" th:classappend="${startPage == 0} ? 'disabled'">
                             <a class="page-link"
-                               th:href="@{/admin/collections(page=0, keyword=${keyword})}"
+                               th:href="@{/collection/list(page=0, keyword=${keyword})}"
                                aria-label="First">
                                 <span>&laquo;&laquo;</span>
                             </a>
                         </li>
-                        <li class="page-item" th:classappend="${collections.number == 0} ? 'disabled'">
+                        <li class="page-item" th:classappend="${startPage == 0} ? 'disabled'">
                             <a class="page-link"
-                               th:href="@{/admin/collections(page=${collections.number - 1}, keyword=${keyword})}"
+                               th:href="@{/collection/list(page=${startPage - 1}, keyword=${keyword})}"
                                aria-label="Previous">
                                 <span>&laquo;</span>
                             </a>
                         </li>
+
                         <li class="page-item"
                             th:each="i : ${#numbers.sequence(startPage, endPage)}"
                             th:classappend="${i eq collections.number} ? 'active'">
                             <a class="page-link"
                                th:text="${i + 1}"
-                               th:href="@{/admin/collections(page=${i}, keyword=${keyword})}">
+                               th:href="@{/collection/list(page=${i}, keyword=${keyword})}">
                             </a>
                         </li>
-                        <li class="page-item"
-                            th:classappend="${collections.number >= collections.totalPages - 1} ? 'disabled'">
+
+                        <li class="page-item" th:classappend="${endPage >= collections.totalPages - 1} ? 'disabled'">
                             <a class="page-link"
-                               th:href="@{/admin/collections(page=${collections.number + 1}, keyword=${keyword})}"
+                               th:href="@{/collection/list(page=${endPage + 1}, keyword=${keyword})}"
                                aria-label="Next">
                                 <span>&raquo;</span>
                             </a>
                         </li>
-                        <li class="page-item"
-                            th:classappend="${collections.number >= collections.totalPages - 1} ? 'disabled'">
+                        <li class="page-item" th:classappend="${endPage >= collections.totalPages - 1} ? 'disabled'">
                             <a class="page-link"
-                               th:href="@{/admin/collections(page=${collections.totalPages - 1}, keyword=${keyword})}"
+                               th:href="@{/collection/list(page=${collections.totalPages - 1}, keyword=${keyword})}"
                                aria-label="Last">
                                 <span>&raquo;&raquo;</span>
                             </a>

@@ -3,6 +3,7 @@ package com.example.itview_spring.Controller.Content;
 import com.example.itview_spring.DTO.*;
 import com.example.itview_spring.Service.ContentService;
 import com.example.itview_spring.Util.PageInfo;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,7 +12,11 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
+import java.util.NoSuchElementException;
 
 @Controller
 @RequiredArgsConstructor
@@ -47,9 +52,10 @@ public class ContentController {
 
     // 등록 처리 후 → 장르 선택 페이지로 이동
     @PostMapping("/content/register")
-    public String newContent(ContentCreateDTO contentDTO) {
+    public String newContent(ContentCreateDTO contentDTO, RedirectAttributes redirectAttributes) {
         //데이터 저장처리 (Service -> Controller
-        ContentCreateDTO savedContent = contentService.create(contentDTO); // 저장 후
+        ContentCreateDTO savedContent = contentService.create(contentDTO);// 저장 후
+        redirectAttributes.addFlashAttribute("message", "콘텐츠가 성공적으로 등록되었습니다.");
 
         System.out.println(" 00 savedContent ==" + savedContent);
         return "redirect:/content/" + savedContent.getId() + "/genre";     // 장르 등록 폼으로 이동
@@ -91,24 +97,22 @@ public class ContentController {
 //    public String detailContent(@PathVariable("id") Integer id, Model model) {
     @GetMapping("/content/detail")
     public String detailContent(Integer id, Model model) {
-        // URL 경로 변수인 {id}를 받으려면 @PathVariable을 써야 합니다.
-        ContentCreateDTO contentDTO = contentService.read(id);
-        model.addAttribute("contentDTO", contentDTO);
-        System.out.println("deteil id         ===>" + id);
-        System.out.println("deteil contentDTO ===>" + contentDTO);
-        return "content/detail"; // 경로가 정확한지 확인 필요
+        //0909 수정처리함
+        try {
+            ContentCreateDTO contentDTO = contentService.read(id);
+            model.addAttribute("contentDTO", contentDTO);
+            return "content/detail"; // Renders content detail page
+        } catch (NoSuchElementException e) {
+            model.addAttribute("error", "해당 콘텐츠를 찾을 수 없습니다.");
+            return "error/404"; // 또는 에러 페이지로 리디렉션
+        }
+//        // URL 경로 변수인 {id}를 받으려면 @PathVariable을 써야 합니다.
+//        ContentCreateDTO contentDTO = contentService.read(id);
+//        model.addAttribute("contentDTO", contentDTO);
+//        System.out.println("deteil id         ===>" + id);
+//        System.out.println("deteil contentDTO ===>" + contentDTO);
+//        return "content/detail"; // 경로가 정확한지 확인 필요
     }
-
-//
-//    @GetMapping("/content/{id:\\d+}")
-//    public String detail(@RequestParam("id") Integer id, Model model) {
-//        ContentDetailDTO detailDTO = contentService.getContentDetail(id);
-//        model.addAttribute("contentDTO", detailDTO.getContentInfo()); // ContentResponseDTO
-//        model.addAttribute("gallery", detailDTO.getGallery());
-//        model.addAttribute("videos", detailDTO.getVideos());
-//        model.addAttribute("externalServices", detailDTO.getExternalServices());
-//        return "content/detail";
-//    }
 
     // 수정 폼 이동
     @GetMapping("/content/{id}/update")
@@ -118,17 +122,33 @@ public class ContentController {
         return "content/update";
     }
 
-    // 수정 처리 (→ 장르 수정 화면으로 리디렉트)
+    // 수정 처리 (→ 장르 수정 화면으로 리디렉트) //0909 수정처리함
     @PostMapping("/content/{id}/update")
-    public String updateContentProc(@PathVariable("id") Integer id, ContentCreateDTO contentDTO) {
-//        contentService.update(id, contentDTO);
-//        return "redirect:/content/list";
-        // Service에서 수정 처리 후 저장된 DTO 반환 받음
-        ContentCreateDTO savedContent = contentService.update(id, contentDTO);
-//        System.out.println(" 22 savedContent ==" + savedContent);
-        // 수정 후 바로 장르 수정 페이지로 이동
-        return "redirect:/content/" + savedContent.getId() + "/genre";     // 장르 수정 폼으로 이동
+    public String updateContentProc(@PathVariable("id") Integer id, ContentCreateDTO contentDTO, RedirectAttributes redirectAttributes) {
+        try {
+            // 콘텐츠 수정 처리
+            ContentCreateDTO savedContent = contentService.update(id, contentDTO);
+
+            // 수정 완료 메시지 추가 (옵션)
+            redirectAttributes.addFlashAttribute("message", "콘텐츠가 성공적으로 수정되었습니다.");
+
+            // 장르 수정 페이지로 리디렉션 (장르 수정 폼으로 이동)
+            return "redirect:/content/" + savedContent.getId() + "/genre";
+        } catch (NoSuchElementException e) {
+            // 콘텐츠가 존재하지 않으면 에러 메시지 추가 후, 오류 페이지로 리디렉션
+            redirectAttributes.addFlashAttribute("error", "콘텐츠를 수정할 수 없습니다.");
+            return "redirect:/error";
+        }
     }
+//    @PostMapping("/content/{id}/update")
+//    public String updateContentProc(@PathVariable("id") Integer id, ContentCreateDTO contentDTO) {
+//
+//        // Service에서 수정 처리 후 저장된 DTO 반환 받음
+//        ContentCreateDTO savedContent = contentService.update(id, contentDTO);
+////        System.out.println(" 22 savedContent ==" + savedContent);
+//        // 수정 후 바로 장르 수정 페이지로 이동
+//        return "redirect:/content/" + savedContent.getId() + "/genre";     // 장르 수정 폼으로 이동
+//    }
 
     // 삭제 처리 (id를 @RequestParam 으로 받음)
     @GetMapping("/content/delete")

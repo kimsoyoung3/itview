@@ -1,5 +1,6 @@
 package com.example.itview_spring.Controller.Collection;
 
+import java.util.List;
 import java.util.NoSuchElementException;
 
 import org.aspectj.apache.bcel.generic.ClassGen;
@@ -22,6 +23,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.example.itview_spring.Config.CustomUserDetails;
 import com.example.itview_spring.DTO.CollectionFormDTO;
 import com.example.itview_spring.DTO.CollectionResponseDTO;
+import com.example.itview_spring.DTO.CollectionToAddDTO;
 import com.example.itview_spring.DTO.ContentResponseDTO;
 import com.example.itview_spring.DTO.ReplyDTO;
 import com.example.itview_spring.DTO.TextDTO;
@@ -52,6 +54,22 @@ public class CollectionRestController {
         }
         CollectionResponseDTO collection = collectionService.getCollectionDetail(loginUserId, id);
         return ResponseEntity.ok(collection);
+    }
+
+    // 컬렉션에 추가 조회
+    @GetMapping("/add/{contentId}")
+    public ResponseEntity<Page<CollectionToAddDTO>> getCollectionAddItems(@PathVariable Integer contentId,
+                                                                          @AuthenticationPrincipal CustomUserDetails user,
+                                                                          @PageableDefault(page=1) Pageable pageable) {
+        Page<CollectionToAddDTO> contents = collectionService.getCollectionsToAdd(user.getId(), contentId, pageable.getPageNumber());
+        return ResponseEntity.ok(contents);
+    }
+
+    // 컬렉션에 추가
+    @PostMapping("/add/{contentId}")
+    public ResponseEntity<Void> addContentToCollection(@AuthenticationPrincipal CustomUserDetails user, @PathVariable Integer contentId, @RequestBody List<Integer> collectionIds) {
+        collectionService.addContentToCollection(user.getId(), contentId, collectionIds);
+        return ResponseEntity.ok().build();
     }
 
     // 컬렉션 아이템 페이징 조회

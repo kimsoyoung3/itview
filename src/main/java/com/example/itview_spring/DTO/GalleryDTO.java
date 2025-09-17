@@ -15,10 +15,8 @@ public class GalleryDTO {
     // 갤러리 ID
     private Integer id;
     // 컨텐츠 id
-    private ContentEntity content;
+    private Integer contentId; // ✅ Entity 대신 ID만 사용 0910 수정
+//    private ContentEntity content;
     // 사진 URL
     private String photo;
-
-    public void setContentId(Integer id) {
-    }
 }

@@ -2,8 +2,10 @@ package com.example.itview_spring.Service;
 
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.stream.Collectors;
 
-import com.example.itview_spring.DTO.AdminCollectionDTO;
+import com.example.itview_spring.DTO.*;
+import com.example.itview_spring.Entity.*;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -12,14 +14,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.example.itview_spring.Constant.Replyable;
-import com.example.itview_spring.DTO.CollectionFormDTO;
-import com.example.itview_spring.DTO.CollectionResponseDTO;
-import com.example.itview_spring.DTO.ContentResponseDTO;
-import com.example.itview_spring.DTO.ReplyDTO;
-import com.example.itview_spring.Entity.CollectionEntity;
-import com.example.itview_spring.Entity.CollectionItemEntity;
-import com.example.itview_spring.Entity.ContentEntity;
-import com.example.itview_spring.Entity.ReplyEntity;
 import com.example.itview_spring.Repository.CollectionRepository;
 import com.example.itview_spring.Repository.ContentRepository;
 import com.example.itview_spring.Repository.LikeRepository;
@@ -67,6 +61,37 @@ public class CollectionService {
         CollectionResponseDTO collection = collectionRepository.findCollectionById(loginUserId, id);
         collection.setPoster(getCollectionPosters(id));
         return collection;
+    }
+
+    // 컬렉션에 추가 조회
+    public Page<CollectionToAddDTO> getCollectionsToAdd(Integer userId, Integer contentId, Integer page) {
+        if (!userRepository.existsById(userId)) {
+            throw new NoSuchElementException("존재하지 않는 유저입니다.");
+        }
+        if (!contentRepository.existsById(contentId)) {
+            throw new NoSuchElementException("존재하지 않는 컨텐츠입니다.");
+        }
+        Pageable pageable = PageRequest.of(page - 1, 12);
+        return collectionRepository.findCollectionsToAdd(userId, contentId, pageable);
+    }
+
+    // 컬렉션에 추가
+    public void addContentToCollection(Integer userId, Integer contentId, List<Integer> collectionIds) {
+        if (!userRepository.existsById(userId)) {
+            throw new NoSuchElementException("존재하지 않는 유저입니다.");
+        }
+        ContentEntity content = contentRepository.findById(contentId).orElseThrow(() -> new NoSuchElementException("존재하지 않는 컨텐츠입니다."));
+        List<CollectionEntity> collections = collectionRepository.findAllById(collectionIds);
+        for (CollectionEntity collection : collections) {
+            if (!collection.getUser().getId().equals(userId)) {
+                throw new SecurityException("본인의 컬렉션에만 추가할 수 있습니다.");
+            }
+            CollectionItemEntity item = new CollectionItemEntity();
+            item.setCollection(collection);
+            item.setContent(content);
+            collection.getItems().add(item);
+            collectionRepository.save(collection);
+        }
     }
 
     // 컬렉션 아이템 페이징 조회
@@ -198,5 +223,59 @@ public class CollectionService {
     // 관리자 페이지 - 컬렉션 삭제
     public void delete(int id) {
         collectionRepository.deleteById(id);
+    }
+
+    // 관리자 페이지 - 컬렉션 상세 조회
+    public AdminCollectionDTO getCollectionDetail(Integer collectionId) {
+        CollectionEntity collection = collectionRepository.findById(collectionId)
+                .orElseThrow(() -> new NoSuchElementException("컬렉션이 존재하지 않습니다."));
+
+        // UserEntity를 UserProfileDTO로 변환하는 로직 수정
+        UserProfileDTO userProfileDTO = null;
+        if (collection.getUser() != null) {
+            userProfileDTO = new UserProfileDTO(
+                    collection.getUser().getId(), // User id
+                    collection.getUser().getNickname(), // 닉네임
+                    collection.getUser().getIntroduction(), // 자기소개
+                    collection.getUser().getProfile() // 프로필 사진 URL
+            );
+        }
+
+        // Entity를 DTO로 변환
+        return new AdminCollectionDTO(
+                collection.getId(),
+                collection.getTitle(),
+                collection.getDescription(),
+                collection.getUpdatedAt(),
+                userProfileDTO
+        );
+    }
+
+    // 관리자 페이지 - 컬렉션에 속한 콘텐츠 목록 조회 (페이지네이션)
+    public Page<AdminContentDTO> getContentsByCollectionId(Integer collectionId, Pageable pageable) {
+        if (!collectionRepository.existsById(collectionId)) {
+            throw new NoSuchElementException("컬렉션이 존재하지 않습니다.");
+        }
+
+        Page<ContentEntity> contentsPage = collectionRepository.findContentsByCollectionId(collectionId, pageable);
+
+        return contentsPage.map(content -> new AdminContentDTO(
+                content.getId(),
+                content.getTitle(),
+                content.getPoster()
+        ));
+    }
+
+    // 관리자 페이지 - 컬렉션 수정
+    public AdminCollectionDTO updateCollection(int id, AdminCollectionDTO dto) {
+        CollectionEntity collectionEntity = collectionRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("해당 컬렉션을 찾을 수 없습니다. id: " + id));
+
+        // DTO -> 엔티티 (변경을 원하는 필드만 매핑)
+        collectionEntity.setTitle(dto.getTitle());
+        collectionEntity.setDescription(dto.getDescription());
+
+        // 엔티티 -> DTO (최종 반환용)
+        return modelMapper.map(collectionEntity, AdminCollectionDTO.class);
     }
 }

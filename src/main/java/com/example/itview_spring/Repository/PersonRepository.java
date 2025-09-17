@@ -10,6 +10,9 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import java.util.Collection;
+import java.util.List;
+
 public interface PersonRepository extends JpaRepository <PersonEntity, Integer> {
 
     @Query("""
@@ -29,8 +32,6 @@ public interface PersonRepository extends JpaRepository <PersonEntity, Integer> 
             """)
     PersonResponseDTO findPersonResponseDTO(@Param("userId") Integer userId, @Param("personId") Integer personId);
 
-    PersonEntity findByName(String name);
-
     @Query("""
             select new com.example.itview_spring.DTO.PersonDTO(
                 p.id,
@@ -44,4 +45,22 @@ public interface PersonRepository extends JpaRepository <PersonEntity, Integer> 
             order by l.id desc
             """)
     Page<PersonDTO> findPersonUserLike(@Param("id") Integer id, Pageable pageable);
+
+    // 인물 검색
+    @Query("""
+        SELECT new com.example.itview_spring.DTO.PersonDTO(
+            p.id,
+            p.name,
+            p.profile,
+            p.job
+        )
+        FROM PersonEntity p
+        WHERE p.name LIKE %:keyword%
+        ORDER BY (SELECT COUNT(l) FROM LikeEntity l where l.targetId = p.id and l.targetType = 'PERSON') DESC
+    """)
+    Page<PersonDTO> searchPersons(@Param("keyword") String keyword, Pageable pageable);
+
+    PersonEntity findByName(String name);
+    // 🔍 이름 부분 검색
+    List<PersonEntity> findByNameContainingIgnoreCase(String keyword); //0911생성 joo
 }

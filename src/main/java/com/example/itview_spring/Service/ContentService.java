@@ -26,7 +26,7 @@ public class ContentService {
     private final WishlistRepository wishlistRepository;
     private final ContentGenreRepository contentGenreRepository;
     private final GalleryRepository galleryRepository;
-    //    @Autowired
+
     private final VideoRepository videoRepository;
     private final ExternalServiceRepository externalServiceRepository;
     private final RatingRepository ratingRepository;
@@ -60,6 +60,22 @@ public class ContentService {
         Pageable pageable = PageRequest.of(currentPage, pageLimits, Sort.by(Sort.Direction.DESC, "id"));
         Page<ContentEntity> contentEntities = contentRepository.findAll(pageable);
 
+        System.out.println("총 페이지 수: " + contentEntities.getTotalPages());
+        System.out.println("총 컨텐츠 수: " + contentEntities.getTotalElements());
+        System.out.println("현재 페이지 번호: " + contentEntities.getNumber());
+
+        for (ContentEntity content : contentEntities.getContent()) {
+//            System.out.println("--------------------------------");
+//            System.out.println("ID: " + content.getId());
+//            System.out.println("Title: " + content.getTitle());
+//            System.out.println("Type: " + content.getContentType());
+//            System.out.println("Release Date: " + content.getReleaseDate());
+//            System.out.println("Poster: " + content.getPoster());
+//            System.out.println("Nation: " + content.getNation());
+//            System.out.println("Channel: " + content.getChannelName());
+//            System.out.println("Genres: " + content.getGenres());
+//            System.out.println("외부 서비스: " + content.getVideos());
+        }
         Page<ContentCreateDTO> contentDTOS = contentEntities.map(data -> modelMapper.map(
                 data, ContentCreateDTO.class));
         return contentDTOS;
@@ -79,24 +95,24 @@ public class ContentService {
     //public ProductDTO 역시 안알려줌(Integer id) {
     //public ProductDTO read(Integer id) {    ex)
     @Transactional
-    public  ContentCreateDTO read(Integer id) {
+    public  ContentCreateDTO read(Integer contentId) {
         //해당내용을 조회
-        if (id == null) {
+        if (contentId == null) {
             throw new IllegalArgumentException("id는 null일 수 없습니다.");
         }
-        Optional<ContentEntity> contentEntity = contentRepository.findById(id);
+        Optional<ContentEntity> contentEntity = contentRepository.findById(contentId);
         if (contentEntity.isEmpty()) {
-            throw new NoSuchElementException("해당 ID에 대한 콘텐츠를 찾을 수 없습니다: " + id);
+            throw new NoSuchElementException("해당 ID에 대한 콘텐츠를 찾을 수 없습니다: " + contentId);
         }
-        ContentCreateDTO adminContentDTO = modelMapper.map(contentEntity.get(), ContentCreateDTO.class);
-        return adminContentDTO;
+        // Entity를 DTO로 변환하여 반환
+        return modelMapper.map(contentEntity, ContentCreateDTO.class);
     }
 
     //등록(저장)
     //DTO를 받아서 저장
     //public void 내맘대로 (ProductDTO productDTO) {
     //public void create (ProductDTO productDTO) {  ex)
-    @Transactional
+
     public ContentCreateDTO create(ContentCreateDTO dto) {
         //DTO가 이있으면 반드시 Entity 변환
 
@@ -104,25 +120,34 @@ public class ContentService {
         System.out.println("service add dto:" + dto);
         System.out.println("service add entity:" + contentEntity);
 
+        // Entity를 DB에 저장
         contentRepository.save(contentEntity);
+
+        // 저장된 Entity를 DTO로 변환하여 반환
         return modelMapper.map(contentEntity, ContentCreateDTO.class);
     }
+
 
     //수정
     //주문번호와 DTO를 받아서, 주문번호로 조회해서 DTO의 내용을 저장
     // public void 수정할까(Integer orderId, ProductDTO productDTO) {
     // public void update(Integer orderId, ProductDTO productDTO) {   ex)
+
+    /**
+     * 콘텐츠 수정 (ID와 수정할 DTO를 받아서 수정)
+     *
+     * @param id  콘텐츠 ID
+     * @param dto 수정할 콘텐츠 정보
+     * @return ContentCreateDTO
+     */
     public ContentCreateDTO update(Integer id, ContentCreateDTO dto) {
         //해당내용찾기
-//        System.out.println("dto:"+dto);
+                System.out.println("11 cnotentservice dto:---->"+dto);
         ContentEntity contentEntity = contentRepository.findById(id)
                 .orElseThrow(() -> new NoSuchElementException("콘텐츠 ID가 유효하지 않습니다: " + id));
 
-        if (contentEntity == null) {
-            return null;
-        }
-//        System.out.println("entity:"+contentEntity);
-//내용을 저장(@Id가 있는 변수는 저장 불가)
+                System.out.println("12 cnotentservice entity:---->"+contentEntity);
+        //내용을 저장(@Id가 있는 변수는 저장 불가)
         contentEntity.setTitle(dto.getTitle());
         contentEntity.setContentType(dto.getContentType());
         contentEntity.setReleaseDate(dto.getReleaseDate());
@@ -134,7 +159,10 @@ public class ContentService {
         contentEntity.setCreatorName(dto.getCreatorName());
         contentEntity.setChannelName(dto.getChannelName());
 
+        // 변경된 엔티티를 DB에 저장
         contentRepository.save(contentEntity);
+
+        // 수정된 Entity를 DTO로 변환하여 반환
         return modelMapper.map(contentEntity, ContentCreateDTO.class);
     }
 
@@ -142,31 +170,28 @@ public class ContentService {
     //주문번호를 받아서 삭제
     //  public void 삭제가될까(Integer id) {
     //  public void delete(Integer id) {
-//    public boolean delete(Integer id) {
-//        // First delete related entries in content_genre_entity
-//        if(contentRepository.existsById(id)) { //데이터가 존재하면
-//            contentGenreRepository.deleteByContentId(id); // Assuming you have a method in repository for this
-//
-//            // Then delete the content entity
-//            contentRepository.deleteById(id); //삭제
-//            return true;
-//        }
-//        return false;
-//    }
-
+    /**
+     * 콘텐츠 삭제 (ID를 받아 해당 콘텐츠 삭제)
+     *
+     * @param id 콘텐츠 ID
+     */
 
     @Transactional
     public void delete(Integer id) {
         ContentEntity content = contentRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("콘텐츠 ID가 유효하지 않습니다. id: " + id));
 
-        // Delete the related genres first
-        contentGenreRepository.deleteByContent(content);
+        // 관련된 콘텐츠 장르 먼저 삭제
+        contentGenreRepository.deleteByContentId(id);
 
-        // Now delete the content entity
+        // 콘텐츠 삭제
         contentRepository.delete(content);
     }
 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    // 0909 아래 holdind함
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     // 컨텐츠 제목 조회
     public String getContentTitle(Integer contentId) {
         if (!contentRepository.existsById(contentId)) {
