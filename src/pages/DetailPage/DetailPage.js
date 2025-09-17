@@ -388,8 +388,8 @@ const DetailPage = ({userInfo, openLogin}) => {
                                     <button onClick={async () => {
                                         userInfo ? handleWish() : openLogin();
                                     }}>
-                                        <img src="/icon/plus.svg" alt=""/>
-                                        <p>{contentDetail?.wishlistCheck ? "취소" : "보고싶어요"}</p>
+                                        <img src={contentDetail?.wishlistCheck ? "/icon/bookmark-plus-fill.svg" : "/icon/plus.svg"} alt=""/>
+                                        <p className={contentDetail?.wishlistCheck ? "wish-btn" : ""}>보고싶어요</p>
                                     </button>
                                 </li>
                                 <li>

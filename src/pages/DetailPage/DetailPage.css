@@ -251,6 +251,10 @@
     color: #888888;
 }
 
+.wish-btn {
+    color: #22c55e !important;
+}
+
 /*코멘트 모달창*/
 .comment-modal-overlay {
     position: fixed;
