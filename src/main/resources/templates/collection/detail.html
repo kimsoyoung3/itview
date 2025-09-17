@@ -10,24 +10,34 @@
     <style>
         .content-item {
             text-align: center;
-            /* 아이템 간의 세로 간격을 없앴습니다. */
             margin-bottom: 0;
-            padding-bottom: 10px; /* 제목과 다음 행 사이의 여백을 줍니다. */
+            padding-bottom: 10px;
         }
         .content-item img {
-            /* 포스터의 최대 높이를 120px로 확실히 줄였습니다. */
-            max-height: 120px;
-            height: auto;
-            width: auto;
+            width: 120px; /* 포스터 너비를 120px로 확장 */
+            height: 120px;
+            object-fit: cover;
             display: block;
-            margin: 0 auto 5px; /* 이미지와 제목 사이의 간격을 줄였습니다. */
+            margin: 0 auto 5px;
         }
 
-        @media (min-width: 992px) {
-            .col-lg-1-5 {
-                flex: 0 0 auto;
-                width: 20%;
-            }
+        .content-item p {
+            width: 120px; /* 제목 너비를 120px로 확장 */
+            margin: 0 auto;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .col-10-1 {
+            flex: 0 0 auto;
+            width: 10%;
+        }
+
+        /* 링크의 기본 스타일을 제거하여 원래 디자인을 유지합니다. */
+        .content-link {
+            text-decoration: none; /* 밑줄 제거 */
+            color: inherit; /* 글자색 상속 */
         }
     </style>
 </head>
@@ -67,10 +77,13 @@
                     <div th:if="${#lists.isEmpty(contents.content)}" class="col-12 text-center">
                         컬렉션에 등록된 작품이 없습니다.
                     </div>
-                    <div th:each="content : ${contents.content}" class="col-6 col-md-4 col-lg-1-5 content-item">
+                    <a th:each="content : ${contents.content}"
+                       th:href="|http://localhost:3000/#/content/${content.id}|"
+                       class="col-10-1 content-item content-link"
+                       target="_blank" rel="noopener noreferrer">
                         <img th:src="${content.poster}" alt="포스터" class="mb-2">
                         <p class="m-0" th:text="${content.title}"></p>
-                    </div>
+                    </a>
                 </div>
 
                 <div class="d-flex justify-content-center mt-3" th:if="${contents.totalPages > 0}">

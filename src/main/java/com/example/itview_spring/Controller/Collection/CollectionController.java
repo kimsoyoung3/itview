@@ -81,7 +81,7 @@ public class CollectionController {
 
         model.addAttribute("adminCollectionDTO", dto);
         model.addAttribute("collectionId", collectionId);
-        return "collection/update"; // collection/update.html 템플릿 반환
+        return "collection/update"; // collection/form.html 템플릿 반환
     }
 
     @PutMapping("/collection/{collectionId}/update")

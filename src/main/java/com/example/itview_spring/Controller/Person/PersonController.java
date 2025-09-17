@@ -4,6 +4,7 @@ package com.example.itview_spring.Controller.Person;
 import com.example.itview_spring.DTO.PersonDTO;
 import com.example.itview_spring.Entity.PersonEntity;
 import com.example.itview_spring.Service.PersonService;
+import com.example.itview_spring.Util.S3Uploader;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -12,12 +13,16 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
 
 @Controller
 @RequiredArgsConstructor
 public class PersonController {
 
     private final PersonService personService;
+    private final S3Uploader s3Uploader;
 
     /* ======= 매핑 유틸 ======= */
     private PersonDTO toDTO(PersonEntity e) {
@@ -98,12 +103,19 @@ public class PersonController {
     @GetMapping("/person/register")
     public String registerForm(Model model) {
         model.addAttribute("personDTO", new PersonDTO());
-        return "Person/register";
+        return "Person/form";
     }
 
     /* ======= 등록 저장 ======= */
     @PostMapping("/person/register")
-    public String register(@ModelAttribute("personDTO") PersonDTO personDTO) {
+    public String register(@ModelAttribute("personDTO") PersonDTO personDTO,
+                           @RequestParam("profileImage") MultipartFile profileImage) throws IOException {
+
+        if (!profileImage.isEmpty()) {
+            String s3Url = s3Uploader.uploadFile(profileImage);
+            personDTO.setProfile(s3Url); // 업로드된 URL을 DTO에 설정
+        }
+
         personService.create(toEntity(personDTO));
         return "redirect:/person/list";
     }
@@ -113,13 +125,35 @@ public class PersonController {
     public String updateForm(@PathVariable Integer id, Model model) {
         var entity = personService.get(id);
         model.addAttribute("personDTO", toDTO(entity));
-        return "Person/update";
+        return "Person/form";
     }
 
     /* ======= 수정 저장 (폼은 POST + _method=PUT) ======= */
     @PutMapping("/person/{id}/update")
-    public String update(@PathVariable Integer id,
-                         @ModelAttribute("personDTO") PersonDTO personDTO) {
+    public String update(@PathVariable("id") Integer id,
+                         @ModelAttribute("personDTO") PersonDTO personDTO,
+                         @RequestParam("profileImage") MultipartFile profileImage) throws IOException {
+
+        personDTO.setId(id);
+
+        // 기존 인물 정보 조회
+        PersonEntity existingPerson = personService.get(id);
+
+        // 새로운 파일이 업로드된 경우
+        if (!profileImage.isEmpty()) {
+            // 기존 S3 파일 삭제
+            if (existingPerson.getProfile() != null && !existingPerson.getProfile().isEmpty()) {
+                s3Uploader.deleteFile(existingPerson.getProfile());
+            }
+
+            // 새 파일 업로드 및 DTO에 URL 설정
+            String s3Url = s3Uploader.uploadFile(profileImage);
+            personDTO.setProfile(s3Url);
+        } else {
+            // 새로운 파일이 없는 경우, 기존 URL 유지
+            personDTO.setProfile(existingPerson.getProfile());
+        }
+
         personService.update(id, toEntity(personDTO));
         return "redirect:/person/list";
     }
