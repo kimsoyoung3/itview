@@ -85,7 +85,7 @@ const SearchPage = () => {
 
                 <div className="search-page-tab-content-wrap">
                     {activeTab === "search-page-tab-btn1" && <div className="search-page-tab search-page-tab1">
-                        {contents?.movie?.length > 0 ? (
+                        {contents?.movie?.length > 0 && (
                             <div className="search-page-tab-content">
                                 <div className="search-page-tab-content-title">
                                     <p>영화</p>
@@ -99,8 +99,6 @@ const SearchPage = () => {
                                     )}
                                 </div>
                             </div>
-                        ) : (
-                            <p className="empty-message">검색 결과가 없습니다 :)</p>
                         )}
 
                         {contents?.series?.length > 0 && (
