@@ -152,7 +152,7 @@ const CollectionDetailPage = ({userInfo, openLogin}) => {
                     <NavLink to={`/user/${collection?.user?.id}`} className="user-collection-detail-profile">
                         <div className="user-collection-detail-profile-image">
                             <img
-                                src={collection?.user?.profile ? collection.user.profile : '/user.png'}
+                                src={collection?.user?.profile ? collection.user.profile : `${process.env.PUBLIC_URL}/user.png`}
                                 alt="사용자 프로필"
                             />
                         </div>

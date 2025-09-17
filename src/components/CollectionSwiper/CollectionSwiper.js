@@ -27,10 +27,10 @@ export default function ContentSwiper() {
 
                 {/* 이미지 그리드 */}
                 <div className="slide-image collection-slide-image">
-                    <div><img src="/image.jpg" alt="이미지1"/></div>
-                    <div><img src="/image.jpg" alt="이미지2"/></div>
-                    <div><img src="/image.jpg" alt="이미지3"/></div>
-                    <div><img src="/image.jpg" alt="이미지4"/></div>
+                    <div><img src={`${process.env.PUBLIC_URL}/image.jpg`} alt="이미지1"/></div>
+                    <div><img src={`${process.env.PUBLIC_URL}/image.jpg`} alt="이미지2"/></div>
+                    <div><img src={`${process.env.PUBLIC_URL}/image.jpg`} alt="이미지3"/></div>
+                    <div><img src={`${process.env.PUBLIC_URL}/image.jpg`} alt="이미지4"/></div>
                 </div>
 
                 {/* 컬렉션 정보 */}

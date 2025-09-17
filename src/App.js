@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { BrowserRouter } from 'react-router-dom';
+import { BrowserRouter, HashRouter } from 'react-router-dom';
 import Header from './components/Header/Header';
 import AppRoutes from './routes/AppRoutes';
 import "./App.css"
@@ -70,7 +70,7 @@ function App() {
     const closeLogin = () => setLoginOpen(false);
 
     return (
-        <BrowserRouter>
+        <HashRouter>
             <Header userInfo={userInfo} handleLogin={handleLogin} handleLogout={handleLogout} isLoginOpen={isLoginOpen} openLogin={openLogin} closeLogin={closeLogin}/>
             <AppRoutes userInfo={userInfo} openLogin={openLogin} />
 
@@ -85,7 +85,7 @@ function App() {
                 draggable              // 드래그로 닫기
                 icon={false}
             />
-        </BrowserRouter>
+        </HashRouter>
     );
 }
 export default App;

@@ -228,8 +228,8 @@ const UserContentRatingPage = ({userInfo}) => {
                                                     ))}
                                                     {scores[10-index - 1].page.number + 1 !== scores[10-index - 1].page.totalPages && <SwiperSlide><div ref={(el) => loadMoreRef.current[10 - index] = el}></div></SwiperSlide>}
                                                 </Swiper>
-                                                <div className="rating-prev" onClick={() => handlePrevClick(10 - index)}><img src="/icon/arrow-left-555.svg" alt=""/></div>
-                                                <div className="rating-next" onClick={() => handleNextClick(10 - index)}><img src="/icon/arrow-right-555.svg" alt=""/></div>
+                                                <div className="rating-prev" onClick={() => handlePrevClick(10 - index)}><img src={`${process.env.PUBLIC_URL}/icon/arrow-left-555.svg`} alt=""/></div>
+                                                <div className="rating-next" onClick={() => handleNextClick(10 - index)}><img src={`${process.env.PUBLIC_URL}/icon/arrow-right-555.svg`} alt=""/></div>
                                             </div>
                                         ) : (
                                             <p className="rating-text">해당 점수 작품이 없습니다 :)</p>

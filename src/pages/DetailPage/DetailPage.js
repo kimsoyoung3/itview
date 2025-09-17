@@ -11,13 +11,15 @@ import {Navigation, Pagination, Grid} from "swiper/modules";
 import {Swiper, SwiperSlide} from "swiper/react";
 import CreditOrPersonCard from "../../components/CreditOrPersonCard/CreditOrPersonCard";
 import CommentCard from "../../components/CommentCard/CommentCard";
-import {NavLink} from "react-router-dom";
+import {NavLink, useParams} from "react-router-dom";
 import { deleteComment, updateComment } from "../../API/CommentApi";
 import {toast} from "react-toastify";
 import NotFound from "../NotFound/NotFound";
 
 const DetailPage = ({userInfo, openLogin}) => {
     const [notFound, setNotFound] = useState(false);
+
+    const { id } = useParams();
 
     const [contentDetail, setContentDetail] = useState(null);
     const [contentCredit, setContentCredit] = useState([]);
@@ -38,9 +40,9 @@ const DetailPage = ({userInfo, openLogin}) => {
     /*코멘트 작성*/
     const handleCommentPost = async () => {
         try {
-            const res = await postContentComment(window.location.pathname.split('/').pop(), { text: textRef.current.value })
+            const res = await postContentComment(id, { text: textRef.current.value })
             closeMyComment();
-            getContentComment(window.location.pathname.split('/').pop()).then(response => {
+            getContentComment(id).then(response => {
                 setContentDetail(prev => ({
                     ...prev,
                     myComment: response.data
@@ -58,7 +60,7 @@ const DetailPage = ({userInfo, openLogin}) => {
             const res = await updateComment(contentDetail?.myComment.id, { text: textRef.current.value })
             if (res.status === 200) {
                 closeMyComment();
-                getContentComment(window.location.pathname.split('/').pop()).then(response => {
+                getContentComment(id).then(response => {
                     setContentDetail(prev => ({
                         ...prev,
                         myComment: response.data
@@ -91,7 +93,7 @@ const DetailPage = ({userInfo, openLogin}) => {
         try {
             await deleteComment(contentDetail?.myComment.id);
             setDeleteConfirmModal(false); // ✅ 모달 닫기만
-            getContentComment(window.location.pathname.split('/').pop()).then(response => {
+            getContentComment(id).then(response => {
                 setContentDetail(prev => ({
                     ...prev,
                     myComment: response.data
@@ -104,7 +106,6 @@ const DetailPage = ({userInfo, openLogin}) => {
 
     /*별점 삭제 로직 구현*/
     const handleScoreDelete = () => {
-        const id = window.location.pathname.split('/').pop();
         deleteRating(id).then(response => {
             console.log('Rating deleted:', response.status);
         });
@@ -141,21 +142,21 @@ const DetailPage = ({userInfo, openLogin}) => {
 
     /*외부서비스 로고*/
     const serviceLogos = {
-        NETFLIX: '/externalLogo/netflix.png',
-        DISNEY_PLUS: '/externalLogo/disney.png',
-        WAVVE: '/externalLogo/wavve.png',
-        WATCHA: '/externalLogo/watcha.png',
-        TVING: '/externalLogo/tving.png',
-        TVN: '/externalLogo/tvn.png',
-        APPLE_TV_PLUS: '/externalLogo/apple-tv-plus.png',
-        COUPANG_PLAY: '/externalLogo/coupang-play.png',
+        NETFLIX: `${process.env.PUBLIC_URL}/externalLogo/netflix.png`,
+        DISNEY_PLUS: `${process.env.PUBLIC_URL}/externalLogo/disney.png`,
+        WAVVE: `${process.env.PUBLIC_URL}/externalLogo/wavve.png`,
+        WATCHA: `${process.env.PUBLIC_URL}/externalLogo/watcha.png`,
+        TVING: `${process.env.PUBLIC_URL}/externalLogo/tving.png`,
+        TVN: `${process.env.PUBLIC_URL}/externalLogo/tvn.png`,
+        APPLE_TV_PLUS: `${process.env.PUBLIC_URL}/externalLogo/apple-tv-plus.png`,
+        COUPANG_PLAY: `${process.env.PUBLIC_URL}/externalLogo/coupang-play.png`,
 
-        ALADIN: '/externalLogo/aladin.png',
-        YES24: '/externalLogo/yes24.png',
-        KYOBO: '/externalLogo/kyobo.png',
+        ALADIN: `${process.env.PUBLIC_URL}/externalLogo/aladin.png`,
+        YES24: `${process.env.PUBLIC_URL}/externalLogo/yes24.png`,
+        KYOBO: `${process.env.PUBLIC_URL}/externalLogo/kyobo.png`,
 
-        NAVER: '/externalLogo/naverWebtoon.png',
-        KAKAO: '/externalLogo/kakaoWebtoon.png',
+        NAVER: `${process.env.PUBLIC_URL}/externalLogo/naverWebtoon.png`,
+        KAKAO: `${process.env.PUBLIC_URL}/externalLogo/kakaoWebtoon.png`,
     };
 
     /*갤러리 모달창*/
@@ -176,7 +177,7 @@ const DetailPage = ({userInfo, openLogin}) => {
     useEffect(() => {
         const fetchContentDetail = async () => {
             try {
-                const response = await getContentDetail(window.location.pathname.split('/').pop());
+                const response = await getContentDetail(id);
                 setContentDetail(response.data);
             } catch (error) {
                 setNotFound(true);
@@ -190,7 +191,6 @@ const DetailPage = ({userInfo, openLogin}) => {
     useEffect(() => {
         const fetchContentCredit = async () => {
             try {
-                const id = window.location.pathname.split('/').pop();
                 const response = await getContentCredit(id, 1);
                 var creditInit = [];
                 creditInit.push(response.data);
@@ -226,7 +226,6 @@ const DetailPage = ({userInfo, openLogin}) => {
             const fetchNextPage = async () => {
                 console.log('마지막 슬라이드 도달, 다음 페이지 로드 시도');
                 try {
-                    const id = window.location.pathname.split('/').pop();
                     const nextPage = swiperRef.current.swiper.activeIndex + 2;
                     const response = await getContentCredit(id, nextPage);
                     console.log(response.data)
@@ -290,7 +289,7 @@ const DetailPage = ({userInfo, openLogin}) => {
             <section className="detail-banner">
                 {/*상세페이지 포스터*/}
                 <div className="banner-post">
-                    <img src={contentDetail?.gallery && contentDetail?.gallery.length > 0 ? contentDetail?.gallery[0].imageUrl : '/basic-bg.jpg' } alt=""/>
+                    <img src={contentDetail?.gallery && contentDetail?.gallery.length > 0 ? contentDetail?.gallery[0].imageUrl : `${process.env.PUBLIC_URL}/basic-bg.jpg`} alt=""/>
                 </div>
 
                 {/*포스터 설명*/}
@@ -388,6 +387,8 @@ const DetailPage = ({userInfo, openLogin}) => {
                                     <button onClick={async () => {
                                         userInfo ? handleWish() : openLogin();
                                     }}>
+                                        <img src={`${process.env.PUBLIC_URL}/icon/plus.svg`} alt=""/>
+                                        <p>{contentDetail?.wishlistCheck ? "취소" : "보고싶어요"}</p>
                                         <img src={contentDetail?.wishlistCheck ? "/icon/bookmark-plus-fill.svg" : "/icon/plus.svg"} alt=""/>
                                         <p className={contentDetail?.wishlistCheck ? "wish-btn" : ""}>보고싶어요</p>
                                     </button>
@@ -396,13 +397,13 @@ const DetailPage = ({userInfo, openLogin}) => {
                                     <button onClick={async () => {
                                         userInfo ? openMyComment() : openLogin();
                                     }}>
-                                        <img src="/icon/pencil.svg" alt=""/>
+                                        <img src={`${process.env.PUBLIC_URL}/icon/pencil.svg`} alt=""/>
                                         <p>코멘트</p>
                                     </button>
                                 </li>
                                 <li>
                                     <button>
-                                        <img src="/icon/plus-square.svg" alt=""/>
+                                        <img src={`${process.env.PUBLIC_URL}/icon/plus-square.svg`} alt=""/>
                                         <p>컬렉션</p>
                                     </button>
                                 </li>
@@ -413,7 +414,7 @@ const DetailPage = ({userInfo, openLogin}) => {
                             <div className="info-middle">
                                 <p className="my-comment-title">내가 쓴 코멘트</p>
                                 <div className="my-comment-content">
-                                    <div className="my-comment-content-image"><img src={contentDetail?.myComment.user.profile || "/user.png"} alt=""/></div>
+                                    <div className="my-comment-content-image"><img src={contentDetail?.myComment.user.profile || `${process.env.PUBLIC_URL}/user.png`} alt=""/></div>
                                     <p>{contentDetail?.myComment.text}</p>
                                     <div className="my-comment-btn">
                                         <button onClick={handleDeleteClick}>
@@ -442,7 +443,7 @@ const DetailPage = ({userInfo, openLogin}) => {
                         <div className="comment-modal-content" onClick={(e) => e.stopPropagation()}>
                             <div className="comment-content-top">
                                 <p className="comment-modal-title">{contentDetail?.contentInfo?.title}</p>
-                                <button className="comment-close-button" onClick={closeMyComment}><img src="/icon/x-lg.svg" alt=""/></button>
+                                <button className="comment-close-button" onClick={closeMyComment}><img src={`${process.env.PUBLIC_URL}/icon/x-lg.svg`} alt=""/></button>
                             </div>
                             <textarea rows="15" placeholder="작품에 대한 코멘트를 남겨주세요." maxLength={1000} ref={textRef}></textarea>
                             <div className="comment-content-bottom">
@@ -476,7 +477,7 @@ const DetailPage = ({userInfo, openLogin}) => {
                         <p className="detail-category">감상 가능한 곳</p>
                         {contentDetail?.externalServices?.map(service => (
                             <a key={service.id} href={service.href} target="_blank" rel="noopener noreferrer">
-                                <img src={serviceLogos[service.type] || '/images/default-logo.png'} alt={service.type}/>
+                                <img src={serviceLogos[service.type] || `${process.env.PUBLIC_URL}/images/default-logo.png`} alt={service.type}/>
                             </a>
                         ))}
                     </div>
@@ -536,8 +537,8 @@ const DetailPage = ({userInfo, openLogin}) => {
                             ))}
                         </Swiper>
 
-                        <div className={`credit-prev ${swiperPage === 1 ? 'disabled' : ''}`} onClick={handlePrev}><img src="/icon/arrow-left.svg" alt=""/></div>
-                        <div className={`credit-next ${swiperPage === contentCredit[0].page.totalPages ? 'disabled' : ''}`} onClick={handleNext}><img src="/icon/arrow-right.svg" alt=""/></div>
+                        <div className={`credit-prev ${swiperPage === 1 ? 'disabled' : ''}`} onClick={handlePrev}><img src={`${process.env.PUBLIC_URL}/icon/arrow-left.svg`} alt=""/></div>
+                        <div className={`credit-next ${swiperPage === contentCredit[0].page.totalPages ? 'disabled' : ''}`} onClick={handleNext}><img src={`${process.env.PUBLIC_URL}/icon/arrow-right.svg`} alt=""/></div>
                     </div>
 
                     ) : (
@@ -575,8 +576,8 @@ const DetailPage = ({userInfo, openLogin}) => {
                                     </SwiperSlide>
                                 ))}
                             </Swiper>
-                            <div className="gallery-prev"><img src="/icon/arrow-left.svg" alt=""/></div>
-                            <div className="gallery-next"><img src="/icon/arrow-right.svg" alt=""/></div>
+                            <div className="gallery-prev"><img src={`${process.env.PUBLIC_URL}/icon/arrow-left.svg`} alt=""/></div>
+                            <div className="gallery-next"><img src={`${process.env.PUBLIC_URL}/icon/arrow-right.svg`} alt=""/></div>
                         </div>
                     </div>
 
@@ -638,8 +639,8 @@ const DetailPage = ({userInfo, openLogin}) => {
                                     </SwiperSlide>
                                 ))}
                             </Swiper>
-                            <div className="video-prev"><img src="/icon/arrow-left.svg" alt=""/></div>
-                            <div className="video-next"><img src="/icon/arrow-right.svg" alt=""/></div>
+                            <div className="video-prev"><img src={`${process.env.PUBLIC_URL}/icon/arrow-left.svg`} alt=""/></div>
+                            <div className="video-next"><img src={`${process.env.PUBLIC_URL}/icon/arrow-right.svg`} alt=""/></div>
                         </div>
                     </div>
                 </section>

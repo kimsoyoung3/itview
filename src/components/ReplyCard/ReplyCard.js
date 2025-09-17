@@ -86,7 +86,7 @@ const ReplyCard = ({ reply, userInfo, openLogin }) => {
                 <div className="reply-card-inner-left">
                     <NavLink to={`/user/${replyData.user?.id}`} className="reply-card-info">
                         <div className="reply-card-info-profile">
-                            <img src={replyData.user?.profile || "/user.png"} alt="프로필"/>
+                            <img src={replyData.user?.profile || `${process.env.PUBLIC_URL}/user.png`} alt="프로필"/>
                         </div>
                         <span>{replyData.user?.nickname}</span>
                         <span>{new Date(replyData.createdAt).toLocaleDateString().slice(0, -1)}</span>
@@ -118,7 +118,7 @@ const ReplyCard = ({ reply, userInfo, openLogin }) => {
                         <div className="comment-content-top">
                             <p className="comment-modal-title">댓글</p>
                             <button className="comment-close-button" onClick={closeUpdateReply}>
-                                <img src="/icon/x-lg.svg" alt="닫기"/>
+                                <img src={`${process.env.PUBLIC_URL}/icon/x-lg.svg`} alt="닫기"/>
                             </button>
                         </div>
                         <textarea

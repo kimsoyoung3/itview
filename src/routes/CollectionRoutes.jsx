@@ -6,9 +6,9 @@ import CollectionDetailPage from '../pages/CollectionDetailPage/CollectionDetail
 function CollectionRoutes({ userInfo, openLogin }) {
   return (
     <Routes>
-        <Route path="/new" element={<CollectionFormPage userInfo={userInfo} openLogin={openLogin} action={"new"} />} />
-        <Route path=":id" element={<CollectionDetailPage userInfo={userInfo} openLogin={openLogin} />} />
-        <Route path=":id/edit" element={<CollectionFormPage userInfo={userInfo} openLogin={openLogin} action={"edit"} />} />
+      <Route path="new" element={<CollectionFormPage userInfo={userInfo} openLogin={openLogin} action={"new"} />} />
+      <Route path=":id" element={<CollectionDetailPage userInfo={userInfo} openLogin={openLogin} />} />
+      <Route path=":id/edit" element={<CollectionFormPage userInfo={userInfo} openLogin={openLogin} action={"edit"} />} />
     </Routes>
   )
 }

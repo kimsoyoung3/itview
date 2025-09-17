@@ -34,7 +34,7 @@ const CollectionCard = ({collectionData}) => {
                             navigate(`/user/${collectionData?.user?.id}`)}}>
                         <div className="collection-card-profile-image">
                             <img
-                                src={collectionData?.user?.profile ? collectionData.user.profile : '/user.png'}
+                                src={collectionData?.user?.profile ? collectionData.user.profile : `${process.env.PUBLIC_URL}/user.png`}
                                 alt="사용자 프로필"
                             />
                         </div>

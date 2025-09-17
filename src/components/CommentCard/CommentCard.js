@@ -115,7 +115,7 @@ const CommentCard = ({ comment, content, userInfo, openLogin, newReply, onDelete
             <NavLink to={`/user/${commentData.user?.id}`} className="comment-card-header">
                 <div className="comment-card-header-left">
                     <div className="comment-card-profile">
-                        <img src={commentData.user?.profile || '/user.png'} alt="프로필"/>
+                        <img src={commentData.user?.profile || `${process.env.PUBLIC_URL}/user.png`} alt="프로필"/>
                     </div>
                     <span className="comment-card-nickname">{commentData.user?.nickname}</span>
                     <span className="comment-card-date">
@@ -188,7 +188,7 @@ const CommentCard = ({ comment, content, userInfo, openLogin, newReply, onDelete
                         <div className="comment-content-top">
                             <p className="comment-modal-title">{content.title}</p>
                             <button className="comment-close-button" onClick={closeComment}>
-                                <img src="/icon/x-lg.svg" alt="닫기"/>
+                                <img src={`${process.env.PUBLIC_URL}/icon/x-lg.svg`} alt="닫기"/>
                             </button>
                         </div>
                         <textarea
@@ -225,7 +225,7 @@ const CommentCard = ({ comment, content, userInfo, openLogin, newReply, onDelete
                         <div className="comment-content-top">
                             <p className="comment-modal-title">댓글</p>
                             <button className="comment-close-button" onClick={closeReply}>
-                                <img src="/icon/x-lg.svg" alt="닫기"/>
+                                <img src={`${process.env.PUBLIC_URL}/icon/x-lg.svg`} alt="닫기"/>
                             </button>
                         </div>
                         <textarea

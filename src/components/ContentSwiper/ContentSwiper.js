@@ -25,7 +25,7 @@ export default function ContentSwiper() {
             {/* 슬라이드 예시 */}
             <SwiperSlide className="swiper-slide">
                 <div className="slide-image">
-                    <img src="/image.jpg" alt="슬라이드 이미지"/>
+                    <img src={`${process.env.PUBLIC_URL}/image.jpg`} alt="슬라이드 이미지"/>
                 </div>
                 <div className="slide-contentType">
                     <p className="title">제목</p>
@@ -37,7 +37,7 @@ export default function ContentSwiper() {
 
             <SwiperSlide className="swiper-slide">
                 <div className="slide-image">
-                    <img src="/image.jpg" alt="슬라이드 이미지"/>
+                    <img src={`${process.env.PUBLIC_URL}/image.jpg`} alt="슬라이드 이미지"/>
                 </div>
                 <div className="slide-contentType">
                     <p className="title">제목</p>

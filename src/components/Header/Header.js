@@ -124,7 +124,7 @@ const Header = ({ userInfo, handleLogin, handleLogout, isLoginOpen, openLogin, c
                     {/* 좌측: 로고 및 메뉴 */}
                     <div className="header_inner header_left">
                         <NavLink to="/" className="logo">
-                            <img src="/itview-logo/mainLogo.svg" alt="로고"/>
+                            <img src={`${process.env.PUBLIC_URL}/itview-logo/mainLogo.svg`} alt="로고"/>
                         </NavLink>
 
                         {/* 메뉴 */}
@@ -182,7 +182,7 @@ const Header = ({ userInfo, handleLogin, handleLogout, isLoginOpen, openLogin, c
             {isLoginOpen && (
                 <div className="modal-overlay" onClick={closeLogin}>
                     <div className="login-modal" onClick={(e) => e.stopPropagation()}>
-                        <h1><img src="/itview-logo/mainLogo.svg" alt="로고"/></h1>
+                        <h1><img src={`${process.env.PUBLIC_URL}/itview-logo/mainLogo.svg`} alt="로고"/></h1>
                         <h2>로그인</h2>
                         <form onSubmit={async (e) => {
                             e.preventDefault();
@@ -208,12 +208,12 @@ const Header = ({ userInfo, handleLogin, handleLogout, isLoginOpen, openLogin, c
                         <div className="login-social">
                             <div className="login-social-border">OR</div>
                             <div className="login-social-logo">
-                                <a href="http://localhost:8080/oauth2/authorization/kakao"
-                                   onClick={() => link({redirectURL: window.location.href})}><img src="/LoginLogo/kakao-logo.svg" alt="카카오"/></a>
-                                <a href="http://localhost:8080/oauth2/authorization/naver"
-                                   onClick={() => link({redirectURL: window.location.href})}><img src="/LoginLogo/naver-logo.svg" alt="네이버"/></a>
-                                <a href="http://localhost:8080/oauth2/authorization/google"
-                                   onClick={() => link({redirectURL: window.location.href})}><img src="/LoginLogo/google-logo.svg" alt="구글"/></a>
+                                <a href={`${process.env.REACT_APP_API_URL}/oauth2/authorization/kakao`}
+                                   onClick={() => link({redirectURL: window.location.href})}><img src={`${process.env.PUBLIC_URL}/LoginLogo/kakao-logo.svg`} alt="카카오"/></a>
+                                <a href={`${process.env.REACT_APP_API_URL}/oauth2/authorization/naver`}
+                                   onClick={() => link({redirectURL: window.location.href})}><img src={`${process.env.PUBLIC_URL}/LoginLogo/naver-logo.svg`} alt="네이버"/></a>
+                                <a href={`${process.env.REACT_APP_API_URL}/oauth2/authorization/google`}
+                                   onClick={() => link({redirectURL: window.location.href})}><img src={`${process.env.PUBLIC_URL}/LoginLogo/google-logo.svg`} alt="구글"/></a>
                             </div>
                         </div>
                     </div>
@@ -224,7 +224,7 @@ const Header = ({ userInfo, handleLogin, handleLogout, isLoginOpen, openLogin, c
             {isSignupOpen && (
                 <div className="modal-overlay" onClick={closeSignup}>
                     <div className="login-modal" onClick={(e) => e.stopPropagation()}>
-                        <h1><img src="/itview-logo/mainLogo.svg" alt="로고"/></h1>
+                        <h1><img src={`${process.env.PUBLIC_URL}/itview-logo/mainLogo.svg`} alt="로고"/></h1>
                         <h2>회원가입</h2>
                         <form onSubmit={(e) => { e.preventDefault(); handleSignup(); }}>
                             <input type="text" placeholder="닉네임" onChange={(e) => setSignupNickname(e.target.value)}/>
@@ -241,11 +241,11 @@ const Header = ({ userInfo, handleLogin, handleLogout, isLoginOpen, openLogin, c
                             <div className="login-social-border">OR</div>
                             <div className="login-social-logo">
                                 <a href="http://localhost:8080/oauth2/authorization/kakao"
-                                   onClick={() => link({redirectURL: window.location.href})}><img src="/LoginLogo/kakao-logo.svg" alt="카카오"/></a>
+                                   onClick={() => link({redirectURL: window.location.href})}><img src={`${process.env.PUBLIC_URL}/LoginLogo/kakao-logo.svg`} alt="카카오"/></a>
                                 <a href="http://localhost:8080/oauth2/authorization/naver"
-                                   onClick={() => link({redirectURL: window.location.href})}><img src="/LoginLogo/naver-logo.svg" alt="네이버"/></a>
+                                   onClick={() => link({redirectURL: window.location.href})}><img src={`${process.env.PUBLIC_URL}/LoginLogo/naver-logo.svg`} alt="네이버"/></a>
                                 <a href="http://localhost:8080/oauth2/authorization/google"
-                                   onClick={() => link({redirectURL: window.location.href})}><img src="/LoginLogo/google-logo.svg" alt="구글"/></a>
+                                   onClick={() => link({redirectURL: window.location.href})}><img src={`${process.env.PUBLIC_URL}/LoginLogo/google-logo.svg`} alt="구글"/></a>
                             </div>
                         </div>
                     </div>

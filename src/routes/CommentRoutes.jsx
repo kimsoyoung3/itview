@@ -5,7 +5,7 @@ import CommentDetailPage from "../pages/CommentDetailPage/CommentDetailPage";
 function CommentRoutes({ userInfo, openLogin }) {
   return (
     <Routes>
-        <Route path=":id" element={<CommentDetailPage userInfo={userInfo} openLogin={openLogin} />} />
+      <Route path=":id" element={<CommentDetailPage userInfo={userInfo} openLogin={openLogin} />} />
     </Routes>
   )
 }
