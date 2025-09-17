@@ -20,8 +20,7 @@ public class WebConfig implements WebMvcConfigurer {
                     "http://192.168.100.43:3000",
                     "https://kdt-teama.github.io"
                 )
-                    "http://192.168.100.43:3000", "http://192.168.100.121:3000"
-                        )
+
                 .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
                 .allowCredentials(true)
                 .allowedHeaders("*");
