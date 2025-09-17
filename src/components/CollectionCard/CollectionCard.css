@@ -13,7 +13,9 @@
 
 .collection-card-bg {
     width: 100%;
-    height: 300px;
+    height: auto; /* 내용에 맞춰 자동 */
+    min-height: 150px;
+    aspect-ratio: 16/9;
     position: relative;
     overflow: hidden;
 }
@@ -36,7 +38,8 @@
 .stacked-poster-wrapper {
     position: absolute;
     width: 40%; /* 통일된 포스터 너비 */
-    height: 100%; /* 통일된 포스터 높이 */
+    top: 0;
+    bottom: 0; /* 부모 높이에 맞춰 늘어나도록 */ /* 통일된 포스터 높이 */
 }
 
 .stacked-poster-wrapper img {
@@ -46,14 +49,14 @@
 }
 
 .collection-card-profile {
-    position: relative;
     color: #ffffff;
     z-index: 10;
     display: inline-flex; /* inline-flex로 block처럼 쓰면서 flex 가능 */
     align-items: center;
     gap: 10px;
-    padding-left: 20px;
-    margin-top: 240px;
+    position: absolute;
+    bottom: 20px;
+    left: 20px;
 }
 
 .collection-card-profile-image {

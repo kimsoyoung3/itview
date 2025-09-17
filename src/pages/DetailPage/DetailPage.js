@@ -7,7 +7,7 @@ import 'swiper/css/pagination';
 import 'swiper/css';
 import 'swiper/css/grid';
 import { getContentCredit, deleteRating, getContentComment, getContentDetail, postContentComment, postContentRating, unwishContent, wishContent } from "../../API/ContentApi";
-import {Navigation, Pagination, Grid} from "swiper/modules";
+import {Navigation, Pagination} from "swiper/modules";
 import {Swiper, SwiperSlide} from "swiper/react";
 import CreditOrPersonCard from "../../components/CreditOrPersonCard/CreditOrPersonCard";
 import CommentCard from "../../components/CommentCard/CommentCard";
@@ -387,9 +387,7 @@ const DetailPage = ({userInfo, openLogin}) => {
                                     <button onClick={async () => {
                                         userInfo ? handleWish() : openLogin();
                                     }}>
-                                        <img src={`${process.env.PUBLIC_URL}/icon/plus.svg`} alt=""/>
-                                        <p>{contentDetail?.wishlistCheck ? "취소" : "보고싶어요"}</p>
-                                        <img src={contentDetail?.wishlistCheck ? "/icon/bookmark-plus-fill.svg" : "/icon/plus.svg"} alt=""/>
+                                        <img src={contentDetail?.wishlistCheck ? `${process.env.PUBLIC_URL}/icon/bookmark-plus-fill.svg` : `${process.env.PUBLIC_URL}/icon/plus.svg`} alt=""/>
                                         <p className={contentDetail?.wishlistCheck ? "wish-btn" : ""}>보고싶어요</p>
                                     </button>
                                 </li>

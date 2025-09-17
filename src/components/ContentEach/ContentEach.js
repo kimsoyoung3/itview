@@ -35,7 +35,6 @@ const ContentEach = ({ ratingData, ratingType, clamp }) => {
                 </p>
                 <p className={clamp ? "content-each-content-type" : "content-each-content-type-none"}>{ratingData?.content.contentType}</p>
             </div>
-
         </div>
     );
 };

@@ -1,0 +1,14 @@
+.search-content-detail-page {
+    margin-top: 74px;
+}
+
+.search-content-detail-page-wrap {
+    margin-top: 30px;
+}
+
+.search-content-detail-page-wrap>p {
+    margin-bottom: 30px;
+    color: #555555;
+    font-weight: bold;
+    font-size: 1.2rem;
+}

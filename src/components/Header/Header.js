@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Link, NavLink, useLocation } from 'react-router-dom';
+import {Link, NavLink, useLocation, useNavigate} from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './Header.css';
 import {
@@ -115,6 +115,20 @@ const Header = ({ userInfo, handleLogin, handleLogout, isLoginOpen, openLogin, c
     const openResetNew = () => setResetNewOpen(true);
     const closeResetNew = () => setResetNewOpen(false);
 
+    const navigate = useNavigate(); // useNavigate 훅 추가
+
+    const [searchKeyword, setSearchKeyword] = useState(""); // 검색어 상태 추가
+
+    // 검색 제출
+    const handleSearchSubmit = (e) => {
+        e.preventDefault();
+        if (!searchKeyword.trim()) return;
+
+        // HashRouter 기준 URL 이동
+        navigate(`/search?keyword=${encodeURIComponent(searchKeyword)}`);
+       /* setSearchKeyword(""); // 검색 후 입력 초기화*/
+    };
+
     return (
         <>
             {/* 헤더 */}
@@ -155,10 +169,19 @@ const Header = ({ userInfo, handleLogin, handleLogout, isLoginOpen, openLogin, c
                     <div className="header_inner">
 
                         {/* 검색바 */}
+                        {/* 검색바 */}
                         <div className="search-bar">
-                            <form action="">
-                                <button className="search-button"><i className="bi bi-search"/></button>
-                                <input type="text" placeholder="검색어를 입력해주세요" className="search-input"/>
+                            <form onSubmit={handleSearchSubmit}>
+                                <button type="submit" className="search-button">
+                                    <i className="bi bi-search" />
+                                </button>
+                                <input
+                                    type="text"
+                                    placeholder="검색어를 입력해주세요"
+                                    className="search-input"
+                                    value={searchKeyword}
+                                    onChange={(e) => setSearchKeyword(e.target.value)}
+                                />
                             </form>
                         </div>
 

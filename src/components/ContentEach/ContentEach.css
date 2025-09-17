@@ -1,8 +1,8 @@
 /*컨텐츠 개별 스타일*/
 .content-each{
     width: 100%;
+    height: 100%;
 }
-
 
 .content-each-post {
     width: 100%;
@@ -16,7 +16,6 @@
     display: block;
     width: 100%;
     height: 100%;
-    border-radius: 4px;
 }
 
 .content-each-post>a>img {
@@ -24,7 +23,6 @@
     width: 100%;
     height: 100%;
     object-fit: cover;
-    border-radius: 4px;
 }
 
 .content-each-info-title {
@@ -36,29 +34,6 @@
     white-space: nowrap;
     text-overflow: ellipsis;
     overflow: hidden;
-}
-
-/*유저컬렉션 디테일페이지안에서 컨텐츠 스타일*/
-.user-collection-detail-content-list .content-each-info-title {
-    margin: 0 auto;
-    width: 120px;
-}
-
-.user-collection-detail-content-list .content-each-rating-text {
-    justify-content: center;
-}
-
-.user-collection-detail-content-list .content-each-rating-text-avg {
-    color: #22c55e;
-}
-
-.content-each-content-type-none {
-    display: none;
-}
-
-.content-each-content-type {
-    font-size: 0.7rem;
-    color: #555555;
 }
 
 .content-each-rating-text {
@@ -87,31 +62,27 @@
     content: none;
 }
 
-.content-post {
-    width: 100%;
-    height: 100%;
+.content-each-content-type-none {
+    display: none;
 }
 
-.content-post>img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
+.content-each-content-type {
+    font-size: 0.7rem;
+    color: #555555;
 }
 
-.content {
-    width: 170px;
+/*유저컬렉션 디테일페이지안에서 컨텐츠 스타일*/
+.user-collection-detail-content-list .content-each-info-title {
+    margin: 0 auto;
+    width: 120px;
 }
 
-.info p {
-    margin-bottom: 0;
+.user-collection-detail-content-list .content-each-rating-text {
+    justify-content: center;
 }
 
-.title {
-    font-size: 1rem;
-    font-weight: 600;
+.user-collection-detail-content-list .content-each-rating-text-avg {
+    color: #22c55e;
 }
 
-.rating {
-    font-size: 0.8rem;
-    font-weight: 400;
-}
+/*유저컬렉션 디테일페이지안에서 컨텐츠 스타일 끝*/
