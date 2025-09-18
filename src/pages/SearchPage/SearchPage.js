@@ -9,6 +9,7 @@ import SearchContentEach from "../../components/SearchContentEach/SearchContentE
 import CreditOrPersonCard from "../../components/CreditOrPersonCard/CreditOrPersonCard";
 import CollectionCard from "../../components/CollectionCard/CollectionCard";
 import NotFound from "../NotFound/NotFound";
+import { toast } from "react-toastify";
 
 const SearchPage = () => {
     const [activeTab, setActiveTab] = useState("search-page-tab-btn1")
@@ -18,19 +19,19 @@ const SearchPage = () => {
     const [searchParams] = useSearchParams();
     const keyword =searchParams.get("keyword")
 
-    const [contents, setContents] = useState([]);
-    const [persons, setPersons] = useState([]);
-    const [collections, setCollections] = useState([]);
-    const [users, setUsers] = useState([]);
+    const [contents, setContents] = useState({});
+    const [persons, setPersons] = useState({});
+    const [collections, setCollections] = useState({});
+    const [users, setUsers] = useState({});
 
     useEffect(() => {
         const fetchData = async () => {
             try {
                 const [contentsRes, personsRes, collectionsRes, usersRes] = await Promise.all([
                     searchContents(keyword),
-                    searchPersons(keyword),
-                    searchCollections(keyword),
-                    searchUsers(keyword),
+                    searchPersons(keyword, 1),
+                    searchCollections(keyword, 1),
+                    searchUsers(keyword, 1),
                 ]);
 
                 setContents(contentsRes.data);
@@ -57,6 +58,44 @@ const SearchPage = () => {
         console.log(users);
     }, [users]);
 
+    const handleMorePersonClick = async () => {
+        try {
+            const response = await searchPersons(keyword, persons.page.number + 2);
+            setPersons(prevData => ({
+                ...prevData,
+                content: [...prevData.content, ...response.data.content],
+                page: response.data.page
+            }));
+        } catch (error) {
+            toast("데이터를 불러오는데 실패했습니다.");
+        }
+    }
+
+    const handleMoreCollectionClick = async () => {
+        try {
+            const response = await searchCollections(keyword, collections.page.number + 2);
+            setCollections(prevData => ({
+                ...prevData,
+                content: [...prevData.content, ...response.data.content],
+                page: response.data.page
+            }));
+        } catch (error) {
+            toast("데이터를 불러오는데 실패했습니다.");
+        }
+    }
+
+    const handleMoreUserClick = async () => {
+        try {
+            const response = await searchUsers(keyword, users.page.number + 2);
+            setUsers(prevData => ({
+                ...prevData,
+                content: [...prevData.content, ...response.data.content],
+                page: response.data.page
+            }));
+        } catch (error) {
+            toast("데이터를 불러오는데 실패했습니다.");
+        }
+    }
 
     return ( notFound ? <NotFound/> :
         <div className="search-page">
@@ -180,7 +219,7 @@ const SearchPage = () => {
 
                                 </div>
 
-                                <div className="search-page-tab-more-btn"><button>더보기</button></div>
+                                <div className="search-page-tab-more-btn"><button onClick={handleMorePersonClick} hidden={persons.page.number + 2 > persons.page.totalPages}>더보기</button></div>
                             </div>
                         ) : (
                             <p className="empty-message">검색 결과가 없습니다 :)</p>
@@ -198,7 +237,7 @@ const SearchPage = () => {
                                     )}
                                 </div>
 
-                                <div className="search-page-tab-more-btn"><button>더보기</button></div>
+                                <div className="search-page-tab-more-btn"><button onClick={handleMoreCollectionClick} hidden={collections.page.number + 2 > collections.page.totalPages}>더보기</button></div>
                             </div>
                         ) : (
                             <p className="empty-message">검색 결과가 없습니다 :)</p>
@@ -210,7 +249,7 @@ const SearchPage = () => {
                             <div>
                                 <div className="search-page-tab-user">
                                     {users?.content?.map(item =>
-                                        <NavLink to={`/user/${item?.userProfile?.id}`} className="search-page-tab-user-profile-wrap">
+                                        <NavLink key={item.userProfile.id} to={`/user/${item?.userProfile?.id}`} className="search-page-tab-user-profile-wrap">
                                             <div className="search-page-tab-user-profile">
                                                 <img src={item.userProfile.profile ? item.userProfile.profile : `${process.env.PUBLIC_URL}/user.png`} alt=""/>
                                             </div>
@@ -233,7 +272,7 @@ const SearchPage = () => {
                                     )}
                                 </div>
 
-                                <div className="search-page-tab-more-btn"><button>더보기</button></div>
+                                <div className="search-page-tab-more-btn"><button onClick={handleMoreUserClick} hidden={users.page.number + 2 > users.page.totalPages}>더보기</button></div>
                             </div>
                         ) : (
                             <p className="empty-message">검색 결과가 없습니다 :)</p>
