@@ -46,23 +46,28 @@ public class SearchService {
     }
 
     public Page<ContentDTO> searchContents(String type, String keyword, int page) {
-        Pageable pageable = PageRequest.of(page - 1, 10);
+        Pageable pageable = PageRequest.of(page - 1, 1);
         return contentRepository.searchContents(keyword, ContentType.valueOf(type.toUpperCase()), pageable);
     }
     
     public Page<PersonDTO> searchPersons(String keyword, int page) {
-        Pageable pageable = PageRequest.of(page - 1, 10);
+        Pageable pageable = PageRequest.of(page - 1, 1);
         Page<PersonDTO> person = personRepository.searchPersons(keyword, pageable);
         return person;
     }
 
     public Page<CollectionResponseDTO> searchCollections(String keyword, int page) {
-        Pageable pageable = PageRequest.of(page - 1, 10);
-        return collectionRepository.searchCollections(keyword, pageable);
+        Pageable pageable = PageRequest.of(page - 1, 1);
+        Page<CollectionResponseDTO> res = collectionRepository.searchCollections(keyword, pageable);
+        for (CollectionResponseDTO collection : res) {
+            List<String> posters = collectionRepository.findCollectionPosters(collection.getId());
+            collection.setPoster(posters);
+        }
+        return res;
     }
 
     public Page<UserResponseDTO> searchUsers(String keyword, int page) {
-        Pageable pageable = PageRequest.of(page - 1, 10);
+        Pageable pageable = PageRequest.of(page - 1, 1);
         return userRepository.searchUsers(keyword, pageable);
     }
 }
