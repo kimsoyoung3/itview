@@ -4,6 +4,7 @@ import { useSearchParams } from "react-router-dom";
 import NotFound from "../NotFound/NotFound";
 import { searchContentsDetail } from "../../API/SearchApi";
 import SearchContentEach from "../../components/SearchContentEach/SearchContentEach";
+import { toast } from "react-toastify";
 
 const SearchContentDetailPage = () => {
     const [notFound, setNotFound] = useState(false);
@@ -17,7 +18,7 @@ const SearchContentDetailPage = () => {
     useEffect(() => {
         try {
             const fetchData = async () => {
-                const response = await searchContentsDetail(type, keyword);
+                const response = await searchContentsDetail(type, keyword, 1);
                 setData(response.data);
             };
             fetchData();
@@ -29,6 +30,19 @@ const SearchContentDetailPage = () => {
     useEffect(() => {
             console.log(data);
     }, [data]);
+
+    const handleMoreClick = async () => {
+        try {
+            const response = await searchContentsDetail(type, keyword, data.page.number + 2);
+            setData(prevData => ({
+                ...response.data,
+                content: [...prevData.content, ...response.data.content],
+                page: response.data.page
+            }));
+        } catch (error) {
+            toast("데이터를 불러오는데 실패했습니다.");
+        }
+    }
 
     const domainNameMap = {
         "movie" : "영화",
@@ -49,13 +63,13 @@ const SearchContentDetailPage = () => {
 
                 <div className="search-content-list-wrap">
                     {data?.content.map(item =>
-                        <div className="search-content-list">
-                            <SearchContentEach key={item.id} searchData={item}/>
+                        <div className="search-content-list" key={item.id}>
+                            <SearchContentEach searchData={item}/>
                         </div>
                     )}
                 </div>
 
-                <div className="search-content-more-btn"><button>더보기</button></div>
+                <div className="search-content-more-btn"><button onClick={handleMoreClick} hidden={data?.page.number + 2 > data?.page.totalPages}>더보기</button></div>
 
             </div>
         </div>
