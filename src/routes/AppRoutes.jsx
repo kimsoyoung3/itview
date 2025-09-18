@@ -8,6 +8,7 @@ import UserRoutes from './UserRoutes';
 import CollectionRoutes from './CollectionRoutes';
 import SearchPage from '../pages/SearchPage/SearchPage';
 import SearchContentDetailPage from "../pages/SearchContentDetailPage/SearchContentDetailPage";
+import SearchRoutes from './SearchRoutes';
 
 function AppRoutes({ userInfo, openLogin }) {
   return (
@@ -18,10 +19,7 @@ function AppRoutes({ userInfo, openLogin }) {
       <Route path="/person/*" element={<PersonRoutes userInfo={userInfo} openLogin={openLogin} />} />
       <Route path="/user/*" element={<UserRoutes userInfo={userInfo} openLogin={openLogin} />} />
       <Route path="/collection/*" element={<CollectionRoutes userInfo={userInfo} openLogin={openLogin} />} />
-      <Route path="/search" element={<SearchPage />} />
-
-        <Route path="/search/content/detail" element={<SearchContentDetailPage/>} />
-
+      <Route path="/search/*" element={<SearchRoutes userInfo={userInfo} openLogin={openLogin} />} />
     </Routes>
   )
 }
