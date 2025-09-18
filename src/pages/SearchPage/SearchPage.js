@@ -8,6 +8,7 @@ import ContentEach from "../../components/ContentEach/ContentEach";
 import SearchContentEach from "../../components/SearchContentEach/SearchContentEach";
 import CreditOrPersonCard from "../../components/CreditOrPersonCard/CreditOrPersonCard";
 import CollectionCard from "../../components/CollectionCard/CollectionCard";
+import NotFound from "../NotFound/NotFound";
 
 const SearchPage = () => {
     const [activeTab, setActiveTab] = useState("search-page-tab-btn1")
@@ -57,7 +58,7 @@ const SearchPage = () => {
     }, [users]);
 
 
-    return (
+    return ( notFound ? <NotFound/> :
         <div className="search-page">
             <div className="search-result">
                 <p className="container">"{keyword}" 검색결과</p>

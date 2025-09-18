@@ -115,6 +115,7 @@ const Header = ({ userInfo, handleLogin, handleLogout, isLoginOpen, openLogin, c
     const openResetNew = () => setResetNewOpen(true);
     const closeResetNew = () => setResetNewOpen(false);
 
+    /*검색 기능*/
     const navigate = useNavigate(); // useNavigate 훅 추가
 
     const [searchKeyword, setSearchKeyword] = useState(""); // 검색어 상태 추가
