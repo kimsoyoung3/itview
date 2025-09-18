@@ -45,34 +45,9 @@ public class SearchService {
         return result;
     }
 
-    public Page<ContentDTO> searchMovies(String keyword, int page) {
+    public Page<ContentDTO> searchContents(String type, String keyword, int page) {
         Pageable pageable = PageRequest.of(page - 1, 10);
-        Page<ContentDTO> movie = contentRepository.searchContents(keyword, ContentType.MOVIE, pageable);
-        return movie;
-    }
-
-    public Page<ContentDTO> searchSeries(String keyword, int page) {
-        Pageable pageable = PageRequest.of(page - 1, 10);
-        Page<ContentDTO> series = contentRepository.searchContents(keyword, ContentType.SERIES, pageable);
-        return series;
-    }
-
-    public Page<ContentDTO> searchWebtoons(String keyword, int page) {
-        Pageable pageable = PageRequest.of(page - 1, 10);
-        Page<ContentDTO> webtoon = contentRepository.searchContents(keyword, ContentType.WEBTOON, pageable);
-        return webtoon;
-    }
-
-    public Page<ContentDTO> searchBooks(String keyword, int page) {
-        Pageable pageable = PageRequest.of(page - 1, 10);
-        Page<ContentDTO> book = contentRepository.searchContents(keyword, ContentType.BOOK, pageable);
-        return book;
-    }
-
-    public Page<ContentDTO> searchRecords(String keyword, int page) {
-        Pageable pageable = PageRequest.of(page - 1, 10);
-        Page<ContentDTO> record = contentRepository.searchContents(keyword, ContentType.RECORD, pageable);
-        return record;
+        return contentRepository.searchContents(keyword, ContentType.valueOf(type.toUpperCase()), pageable);
     }
     
     public Page<PersonDTO> searchPersons(String keyword, int page) {

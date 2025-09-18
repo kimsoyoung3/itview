@@ -31,29 +31,9 @@ public class SearchRestController {
         return ResponseEntity.ok(searchService.searchContents(keyword, page.getPageNumber()));
     }
 
-    @GetMapping("/content/movie")
-    public ResponseEntity<Page<ContentDTO>> searchMovieContents(@RequestParam("keyword") String keyword, @PageableDefault(page = 1) Pageable page) {
-        return ResponseEntity.ok(searchService.searchMovies(keyword, page.getPageNumber()));
-    }
-
-    @GetMapping("/content/series")
-    public ResponseEntity<Page<ContentDTO>> searchSeriesContents(@RequestParam("keyword") String keyword, @PageableDefault(page = 1) Pageable page) {
-        return ResponseEntity.ok(searchService.searchSeries(keyword, page.getPageNumber()));
-    }
-
-    @GetMapping("/content/webtoon")
-    public ResponseEntity<Page<ContentDTO>> searchWebtoonContents(@RequestParam("keyword") String keyword, @PageableDefault(page = 1) Pageable page) {
-        return ResponseEntity.ok(searchService.searchWebtoons(keyword, page.getPageNumber()));
-    }
-
-    @GetMapping("/content/book")
-    public ResponseEntity<Page<ContentDTO>> searchBookContents(@RequestParam("keyword") String keyword, @PageableDefault(page = 1) Pageable page) {
-        return ResponseEntity.ok(searchService.searchBooks(keyword, page.getPageNumber()));
-    }
-
-    @GetMapping("/content/record")
-    public ResponseEntity<Page<ContentDTO>> searchRecordContents(@RequestParam("keyword") String keyword, @PageableDefault(page = 1) Pageable page) {
-        return ResponseEntity.ok(searchService.searchRecords(keyword, page.getPageNumber()));
+    @GetMapping("/content/detail")
+    public ResponseEntity<Page<ContentDTO>> searchContents(@RequestParam("type") String type, @RequestParam("keyword") String keyword, @PageableDefault(page = 1) Pageable page) {
+        return ResponseEntity.ok(searchService.searchContents(type, keyword, page.getPageNumber()));
     }
 
     @GetMapping("/person")
