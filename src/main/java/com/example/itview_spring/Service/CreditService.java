@@ -77,7 +77,7 @@ public class CreditService {
      * 전체 조회
      */
     @Transactional(readOnly = true)
-    public List<CreditDTO> getCreditsByContentId(Integer contentId) {
+    public List<CreditDTO> getCreditByContentId(Integer contentId) {
         if (!contentRepository.existsById(contentId)) {
             throw new NoSuchElementException("존재하지 않는 콘텐츠입니다: " + contentId);
         }
@@ -299,18 +299,18 @@ public class CreditService {
     /// ///////////////////////////////////////////////////////////////////////////////////////
     /// ///////////////////////////////////////////////////////////////////////////////////////
 
-//  0910 holding
-//    public Page<CreditDTO> getCreditByContentId(Pageable page, Integer contentId) {
-//        if (!contentRepository.existsById(contentId)) {
-//            throw new NoSuchElementException("존재하지 않는 컨텐츠입니다");
-//        }
-//        int currentPage = page.getPageNumber() - 1;
-//        int pageSize = 12;
-//
-//        Pageable pageable = PageRequest.of(currentPage, pageSize, Sort.by(Sort.Direction.ASC, "id"));
-//
-//        return creditRepository.findByContentId(pageable, contentId);
-//    }
+    // 콘텐츠 ID로 페이징 조회
+    public Page<CreditDTO> getCreditsByContentId(Pageable page, Integer contentId) {
+        if (!contentRepository.existsById(contentId)) {
+            throw new NoSuchElementException("존재하지 않는 컨텐츠입니다");
+        }
+        int currentPage = page.getPageNumber() - 1;
+        int pageSize = 12;
+
+        Pageable pageable = PageRequest.of(currentPage, pageSize, Sort.by(Sort.Direction.ASC, "id"));
+
+        return creditRepository.findByContentId(pageable, contentId);
+    }
 
     // 인물의 작품 참여 분야 조회
     public List<WorkDomainDTO> getWorkDomainsByPersonId(Integer personId) {

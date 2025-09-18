@@ -72,7 +72,7 @@ public class ContentRestController {
     // 컨텐츠 출연진 및 제작진 정보 조회 (페이징)
     @GetMapping("/{id}/credit")
     public ResponseEntity<Page<CreditDTO>> getContentCredit(@PageableDefault(page=1) Pageable pageable, @PathVariable("id") Integer id) {
-        return ResponseEntity.ok(creditService.getCreditByContentId(pageable, id));
+        return ResponseEntity.ok(creditService.getCreditsByContentId(pageable, id));
     }
 
     // 컨텐츠 별점 등록

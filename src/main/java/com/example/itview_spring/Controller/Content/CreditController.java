@@ -111,7 +111,7 @@ public class CreditController {
         model.addAttribute("creditDTO", creditDTO);
 
         // 3️⃣ 전체 CreditDTO 리스트 조회 (목록)
-        List<CreditDTO> creditList = creditService.getCreditsByContentId(contentId);
+        List<CreditDTO> creditList = creditService.getCreditByContentId(contentId);
         model.addAttribute("creditList", creditList);
 
         return "content/creditForm"; // 템플릿 경로
