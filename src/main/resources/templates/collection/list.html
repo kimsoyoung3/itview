@@ -68,7 +68,7 @@
                         <td class="text-start" th:text="${collection.title}">컬렉션 제목</td>
                         <td th:text="${collection.user.nickname}">유저이름</td>
                         <td>
-                            <a th:href="@{/collections/{id}/edit(id=${collection.id})}"
+                            <a th:href="@{/collection/{id}/update(id=${collection.id})}"
                                class="btn btn-primary"
                                onclick="event.stopPropagation();">수정</a>
                             <form th:action="@{/collections/{id}(id=${collection.id})}"

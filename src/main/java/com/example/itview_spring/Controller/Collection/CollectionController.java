@@ -9,10 +9,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
@@ -74,5 +71,23 @@ public class CollectionController {
         model.addAttribute("endPage", endPage);
 
         return "collection/detail";
+    }
+
+    @GetMapping("/collection/{collectionId}/update")
+    public String showUpdateForm(@PathVariable("collectionId") int collectionId, Model model) {
+        // 기존에 작성하신 getCollectionDetail 서비스 메서드를 직접 호출하여
+        // DTO를 받아서 모델에 담습니다.
+        AdminCollectionDTO dto = collectionService.getCollectionDetail(collectionId);
+
+        model.addAttribute("adminCollectionDTO", dto);
+        model.addAttribute("collectionId", collectionId);
+        return "collection/update"; // collection/form.html 템플릿 반환
+    }
+
+    @PutMapping("/collection/{collectionId}/update")
+    public String updateCollection(@PathVariable("collectionId") int id, @ModelAttribute AdminCollectionDTO dto) {
+        // 서비스 호출로 데이터 업데이트
+        collectionService.updateCollection(id, dto);
+        return "redirect:/collection/" + id; // 수정 후 상세 페이지로 리다이렉트
     }
 }

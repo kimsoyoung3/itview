@@ -265,4 +265,17 @@ public class CollectionService {
                 content.getPoster()
         ));
     }
+
+    // 관리자 페이지 - 컬렉션 수정
+    public AdminCollectionDTO updateCollection(int id, AdminCollectionDTO dto) {
+        CollectionEntity collectionEntity = collectionRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("해당 컬렉션을 찾을 수 없습니다. id: " + id));
+
+        // DTO -> 엔티티 (변경을 원하는 필드만 매핑)
+        collectionEntity.setTitle(dto.getTitle());
+        collectionEntity.setDescription(dto.getDescription());
+
+        // 엔티티 -> DTO (최종 반환용)
+        return modelMapper.map(collectionEntity, AdminCollectionDTO.class);
+    }
 }
