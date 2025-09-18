@@ -89,7 +89,7 @@ const SearchPage = () => {
                             <div className="search-page-tab-content">
                                 <div className="search-page-tab-content-title">
                                     <p>영화</p>
-                                    <NavLink to="/search/content/detail">더보기</NavLink>
+                                    <NavLink to={`/search/content?type=movie&keyword=${keyword}`}>더보기</NavLink>
                                 </div>
                                 <div className="search-page-tab-content-list">
                                     {contents?.movie?.map(item=>
@@ -105,7 +105,7 @@ const SearchPage = () => {
                             <div className="search-page-tab-content">
                                 <div className="search-page-tab-content-title">
                                     <p>시리즈</p>
-                                    <NavLink>더보기</NavLink>
+                                    <NavLink to={`/search/content?type=series&keyword=${keyword}`}>더보기</NavLink>
                                 </div>
                                 <div className="search-page-tab-content-list">
                                     {contents?.series?.map(item=>
@@ -121,7 +121,7 @@ const SearchPage = () => {
                             <div className="search-page-tab-content">
                                 <div className="search-page-tab-content-title">
                                     <p>책</p>
-                                    <NavLink>더보기</NavLink>
+                                    <NavLink to={`/search/content?type=book&keyword=${keyword}`}>더보기</NavLink>
                                 </div>
                                 <div className="search-page-tab-content-list">
                                     {contents?.book?.map(item=>
@@ -137,7 +137,7 @@ const SearchPage = () => {
                             <div className="search-page-tab-content">
                                 <div className="search-page-tab-content-title">
                                     <p>웹툰</p>
-                                    <NavLink>더보기</NavLink>
+                                    <NavLink to={`/search/content?type=webtoon&keyword=${keyword}`}>더보기</NavLink>
                                 </div>
                                 <div className="search-page-tab-content-list">
                                     {contents?.webtoon?.map(item=>
@@ -153,7 +153,7 @@ const SearchPage = () => {
                             <div className="search-page-tab-content">
                                 <div className="search-page-tab-content-title">
                                     <p>음반</p>
-                                    <NavLink>더보기</NavLink>
+                                    <NavLink to={`/search/content?type=record&keyword=${keyword}`}>더보기</NavLink>
                                 </div>
                                 <div className="search-page-tab-content-list">
                                     {contents?.record?.map(item=>
