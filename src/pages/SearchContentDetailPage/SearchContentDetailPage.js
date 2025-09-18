@@ -41,7 +41,7 @@ const SearchContentDetailPage = () => {
     return (notFound ? <NotFound /> :
         <div className="search-content-detail-page">
             <div className="search-result">
-                <p className="container"> 검색결과</p>
+                <p className="container">"{keyword}" 검색결과</p>
             </div>
 
             <div className="search-content-detail-page-wrap container">
