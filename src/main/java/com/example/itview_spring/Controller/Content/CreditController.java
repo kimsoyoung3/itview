@@ -172,8 +172,6 @@ public class CreditController {
                                @RequestParam("creditId") Integer creditId,
                                RedirectAttributes redirectAttributes) {
 
-        System.out.println("🗑️ [Credit 삭제] contentId == " + contentId);
-        System.out.println("🗑️ [Credit 삭제] creditId == " + creditId);
 
         try {
             // 크레딧 삭제

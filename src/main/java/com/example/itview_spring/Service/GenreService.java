@@ -115,7 +115,6 @@ public class GenreService {
         }
 
         contentRepository.save(content); // 명시적 저장
-        System.out.println("✅ [장르 수정 updategenres] contentId  == " + contentId);
     }
 
 }
