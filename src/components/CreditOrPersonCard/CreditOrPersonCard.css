@@ -67,7 +67,7 @@
     height: 1px;
     background-color: #eee;
     /* 이미지 높이만큼 아래로 내리기 */
-    transform: translateY(5px);
+    transform: translateY(10px);
     pointer-events: none;
 }
 
