@@ -18,6 +18,7 @@ public class WebConfig implements WebMvcConfigurer {
                 .allowedOrigins(
                     "http://localhost:3000",
                     "http://192.168.100.43:3000",
+                    "http://54.180.90.99",
                     "https://kdt-teama.github.io"
                 )
 
