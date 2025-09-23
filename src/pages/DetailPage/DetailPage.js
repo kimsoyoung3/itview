@@ -22,7 +22,7 @@ const DetailPage = ({userInfo, openLogin}) => {
     const { id } = useParams();
 
     const [contentDetail, setContentDetail] = useState(null);
-    const [contentCredit, setContentCredit] = useState([]);
+    const [contentCredit, setContentCredit] = useState(null);
 
     const [score, setScore] = useState(0);
     /*마우스 올릴 때 임시 점수*/
@@ -192,13 +192,7 @@ const DetailPage = ({userInfo, openLogin}) => {
         const fetchContentCredit = async () => {
             try {
                 const response = await getContentCredit(id, 1);
-                var creditInit = [];
-                creditInit.push(response.data);
-                if (response.data.page.totalPages > 1) {
-                    const response = await getContentCredit(id, 2);
-                    creditInit.push(response.data);
-                }
-                setContentCredit(creditInit);
+                setContentCredit(response.data);
             } catch (error) {
                 console.error('Error fetching content credit:', error);
             }
@@ -215,22 +209,25 @@ const DetailPage = ({userInfo, openLogin}) => {
     /*이전 버튼 핸들러*/
     const handlePrev = () => {
         swiperRef.current.swiper.slidePrev();
-        setSwiperPage(prev => prev - 1);
     }
 
     /*다음 버튼 핸들러*/
     const handleNext = () => {
         swiperRef.current.swiper.slideNext();
-        setSwiperPage(prev => prev + 1);
-        if (swiperRef.current.swiper.isEnd && swiperRef.current.swiper.activeIndex < contentCredit[0].page.totalPages - 1) {
+    }
+
+    const loadMoreRef = useRef(null);
+
+    const handleNextPage = async () => {
+        if (contentCredit.page.number + 2 <= contentCredit.page.totalPages) {
             const fetchNextPage = async () => {
                 console.log('마지막 슬라이드 도달, 다음 페이지 로드 시도');
                 try {
-                    const nextPage = swiperRef.current.swiper.activeIndex + 2;
+                    const nextPage = contentCredit.page.number + 2;
                     const response = await getContentCredit(id, nextPage);
                     console.log(response.data)
                     if (response.data.content.length > 0) {
-                        setContentCredit(prev => [...prev, response.data]);
+                        setContentCredit(prev => ({content: [...prev.content, ...response.data.content], page: response.data.page}));
                     } else {
                         console.log('더 이상 크레딧이 없습니다.');
                     }
@@ -241,6 +238,22 @@ const DetailPage = ({userInfo, openLogin}) => {
             fetchNextPage();
         }
     }
+
+    useEffect(() => {
+        const observer = new IntersectionObserver((entries) => {
+            if (entries[0].isIntersecting) {
+                handleNextPage();
+            }
+        });
+        if (loadMoreRef.current) {
+            observer.observe(loadMoreRef.current);
+        }
+        return () => {
+            if (loadMoreRef.current) {
+                observer.unobserve(loadMoreRef.current);
+            }
+        };
+    }, [loadMoreRef, contentCredit]);
 
     /*컨텐츠 정보를 가져온 후*/
     useEffect(() => {
@@ -512,31 +525,26 @@ const DetailPage = ({userInfo, openLogin}) => {
                  </p>
 
                  {/*크레딧 정보 리스트*/}
-                 {contentCredit[0]?.content.length > 0 ? (
+                 {contentCredit?.content.length > 0 ? (
                     <div className="credit-list container">
-
                         <Swiper
                             ref={swiperRef}
                             modules={[Navigation]}
                             spaceBetween={20}
-                            allowTouchMove={false}
-                            slidesPerView={1}
-                            className="credit-swiper"
-                            onNavigationNext={() => console.log('next')}>
-                            {contentCredit.map((creditPage, pageIndex) => (
+                            slidesPerView={12}
+                            className="credit-swiper">
+                            {contentCredit?.content.map((credit, pageIndex) => (
                                 <SwiperSlide className="swiper-slide" key={pageIndex}>
                                     <div className="credit-content-list">
-                                        {creditPage.content
-                                            .map(credit => (
-                                            <CreditOrPersonCard key={credit.id} type="credit" data={credit} />
-                                        ))}
+                                        <CreditOrPersonCard key={credit.id} type="credit" data={credit} />
                                     </div>
                                 </SwiperSlide>
                             ))}
+                            {contentCredit.page?.number + 1 !== contentCredit.page?.totalPages && <SwiperSlide><div ref={loadMoreRef}>더보기</div></SwiperSlide>}
                         </Swiper>
 
-                        <div className={`credit-prev ${swiperPage === 1 ? 'disabled' : ''}`} onClick={handlePrev}><img src={`${process.env.PUBLIC_URL}/icon/arrow-left.svg`} alt=""/></div>
-                        <div className={`credit-next ${swiperPage === contentCredit[0].page.totalPages ? 'disabled' : ''}`} onClick={handleNext}><img src={`${process.env.PUBLIC_URL}/icon/arrow-right.svg`} alt=""/></div>
+                        <div className={`credit-prev`} onClick={handlePrev}><img src={`${process.env.PUBLIC_URL}/icon/arrow-left.svg`} alt=""/></div>
+                        <div className={`credit-next`} onClick={handleNext}><img src={`${process.env.PUBLIC_URL}/icon/arrow-right.svg`} alt=""/></div>
                     </div>
 
                     ) : (
