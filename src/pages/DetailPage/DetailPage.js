@@ -7,7 +7,7 @@ import 'swiper/css/pagination';
 import 'swiper/css';
 import 'swiper/css/grid';
 import { getContentCredit, deleteRating, getContentComment, getContentDetail, postContentComment, postContentRating, unwishContent, wishContent } from "../../API/ContentApi";
-import {Navigation, Pagination} from "swiper/modules";
+import {Navigation, Pagination, Grid} from "swiper/modules";
 import {Swiper, SwiperSlide} from "swiper/react";
 import CreditOrPersonCard from "../../components/CreditOrPersonCard/CreditOrPersonCard";
 import CommentCard from "../../components/CommentCard/CommentCard";
@@ -23,6 +23,11 @@ const DetailPage = ({userInfo, openLogin}) => {
 
     const [contentDetail, setContentDetail] = useState(null);
     const [contentCredit, setContentCredit] = useState(null);
+    const [chunkedContentCredit, setChunkedcontentCredit] = useState([]);
+
+    useEffect(() => {
+        console.log(chunkedContentCredit)
+    }, [chunkedContentCredit])
 
     const [score, setScore] = useState(0);
     /*마우스 올릴 때 임시 점수*/
@@ -294,6 +299,11 @@ const DetailPage = ({userInfo, openLogin}) => {
 
     useEffect(() => {
         console.log(contentCredit)
+        const chunked = [];
+        for (let i = 0; i < contentCredit?.content.length; i += 3) {
+            chunked.push(contentCredit.content.slice(i, i+3))
+        }
+        setChunkedcontentCredit(chunked)
     }, [contentCredit]);
 
     return (notFound ? <NotFound /> :
@@ -531,16 +541,32 @@ const DetailPage = ({userInfo, openLogin}) => {
                             ref={swiperRef}
                             modules={[Navigation]}
                             spaceBetween={20}
-                            slidesPerView={12}
-                            className="credit-swiper">
-                            {contentCredit?.content.map((credit, pageIndex) => (
-                                <SwiperSlide className="swiper-slide" key={pageIndex}>
-                                    <div className="credit-content-list">
-                                        <CreditOrPersonCard key={credit.id} type="credit" data={credit} />
-                                    </div>
+                            slidesPerView={4}   // ✅ 슬라이드 하나 안에 그리드 넣기
+                            navigation
+                            className="credit-swiper"
+                        >
+                            {/*{contentCredit?.content.map((credit, pageIndex) => (*/}
+                            {/*    <SwiperSlide key={pageIndex}>*/}
+                            {/*        <div>*/}
+                            {/*            <CreditOrPersonCard key={credit.id} type="credit" data={credit} />*/}
+                            {/*        </div>*/}
+                            {/*    </SwiperSlide>*/}
+                            {/*))}*/}
+
+                            {/*{contentCredit.page?.number + 1 !== contentCredit.page?.totalPages && (*/}
+                            {/*    <SwiperSlide>*/}
+                            {/*        <div ref={loadMoreRef}>더보기</div>*/}
+                            {/*    </SwiperSlide>*/}
+                            {/*)}*/}
+                            {chunkedContentCredit.map(chunkedCredit => (
+                                <SwiperSlide className="credit-grid">
+                                    {chunkedCredit.map(credit => (
+                                        <div>
+                                            <CreditOrPersonCard data={credit} type={"credit"} />
+                                        </div>
+                                    ))}
                                 </SwiperSlide>
                             ))}
-                            {contentCredit.page?.number + 1 !== contentCredit.page?.totalPages && <SwiperSlide><div ref={loadMoreRef}>더보기</div></SwiperSlide>}
                         </Swiper>
 
                         <div className={`credit-prev`} onClick={handlePrev}><img src={`${process.env.PUBLIC_URL}/icon/arrow-left.svg`} alt=""/></div>

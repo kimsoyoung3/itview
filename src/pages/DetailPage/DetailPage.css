@@ -526,12 +526,8 @@
     right: -50px;
 }
 
-.credit-content-list {
-    display: grid;
-    grid-template-rows: repeat(3, auto);  /* 세로 3줄 고정 */
-    grid-template-columns: repeat(4, 1fr); /* 가로 4칸 */
-    grid-auto-flow: column;                /* 세로 채우고 옆으로 */
-    gap: 15px;
+.credit-grid>div {
+    margin-bottom: 20px;
 }
 
 /*코멘트 섹션*/
