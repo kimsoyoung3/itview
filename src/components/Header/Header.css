@@ -400,13 +400,6 @@
         width: 100%;
     }
 
-    /*.header_width {
-        width: 100%;
-        flex-direction: row;
-        justify-content: space-between;
-        align-items: center;
-    }*/
-
     .header_inner {
         width: 100%;
         justify-content: end;
@@ -477,6 +470,7 @@
 
     .header_inner {
         width: 100%;
+        gap: 15px;
     }
 
     .header_left {
@@ -487,16 +481,15 @@
         max-width: 80px;
     }
 
-
     .dropdown {
-        font-size: 0.8rem;
+        font-size: 0.9rem;
         font-weight: 600;
     }
 
     .dropdown-menu {
         min-width: auto !important;
         width: 100px !important;
-
+        margin-top: 11px !important;
     }
 
     .dropdown-menu li {
@@ -506,12 +499,12 @@
     }
 
     .search-bar {
-        width: 120px;
+        width: 150px;
         padding: 5px;
     }
 
     .search-input {
-        font-size: 0.5rem;
+        font-size: 0.7rem;
     }
 
     .search-button {
@@ -523,10 +516,10 @@
     }
 
     .user-menu {
-        font-size: 0.5rem;
+        font-size: 0.7rem;
     }
 
     .user-menu a {
-        font-size: 0.5rem;
+        font-size: 0.7rem;
     }
 }

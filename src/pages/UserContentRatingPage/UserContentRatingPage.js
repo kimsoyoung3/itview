@@ -9,6 +9,7 @@ import "swiper/css/navigation";
 import { Navigation } from 'swiper/modules';
 import { toast } from "react-toastify";
 import ContentEach from "../../components/ContentEach/ContentEach";
+import CustomSelect from "../../components/CustomSelect/CustomSelect";
 
 const UserContentRatingPage = ({userInfo}) => {
     const [notFound, setNotFound] = useState(false);
@@ -18,9 +19,19 @@ const UserContentRatingPage = ({userInfo}) => {
     const [ratings, setRatings] = useState([]);
     const [scores, setScore] = useState([]);
 
+    const [activeId, setActiveId] = useState("rating-page-tab1");
+
     const [order, setOrder] = useState("new");
 
-    const [activeId, setActiveId] = useState("rating-page-tab1");
+    const options = [
+        { value: "new", label: "담은 순" },
+        { value: "old", label: "담은 역순" },
+        { value: "my_score_high", label: Number(userInfo) === Number(id) ? "나의 별점 높은 순" : "이 회원의 별점 높은 순" },
+        { value: "my_score_low", label: Number(userInfo) === Number(id) ? "나의 별점 낮은 순" : "이 회원의 별점 낮은 순" },
+        { value: "avg_score_high", label: "평균 별점 높은 순" },
+        { value: "avg_score_low", label: "평균 별점 낮은 순" }
+    ];
+
 
     useEffect(() => {
         const fetchData = async () => {
@@ -142,6 +153,7 @@ const UserContentRatingPage = ({userInfo}) => {
         };
     }, [loadMoreRef, handleLoadMore]);
 
+
     return (notFound ? <NotFound /> :
         <div className="user-content-rating-page container">
             <div className="user-content-rating-page-wrap">
@@ -169,15 +181,8 @@ const UserContentRatingPage = ({userInfo}) => {
                         {/*평가 페이지 전체순*/}
                         {activeId === "rating-page-tab1" && <div className="rating-page-tab1">
                             {/*셀렉트박스*/}
-                            <div className="user-rating-page-select-box">
-                                <select className="form-select user-rating-page-select" aria-label="Default select example" onChange={(e) => setOrder(e.target.value)} value={order}>
-                                    <option selected value="new">담은 순</option>
-                                    <option value="old">담은 역순</option>
-                                    <option value="my_score_high">{Number(userInfo) === Number(id) ? "나의 별점 높은 순" : "이 회원의 별점 높은 순"}</option>
-                                    <option value="my_score_low">{Number(userInfo) === Number(id) ? "나의 별점 낮은 순" : "이 회원의 별점 낮은 순"}</option>
-                                    <option value="avg_score_high">평균 별점 높은 순</option>
-                                    <option value="avg_score_low">평균 별점 낮은 순</option>
-                                </select>
+                            <div className="user-rating-page-select-wrap">
+                                <CustomSelect value={order} onChange={setOrder} options={options} />
                             </div>
 
                             {/*컨텐츠 리스트*/}

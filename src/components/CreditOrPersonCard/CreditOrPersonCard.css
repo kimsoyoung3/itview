@@ -81,6 +81,7 @@
     font-size: 0.8rem;
     font-weight: 500;
     color: #888888;
+    white-space: nowrap;
 }
 
 /*모바일 사이즈*/

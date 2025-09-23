@@ -12,23 +12,16 @@
 .comment-page-select-wrap {
     display: flex;
     justify-content: end;
-}
-
-.comment-page-select {
-    width: 300px;
-    border-radius: 0;
-    padding: 10px 20px;
-    border-color: #eeeeee;
     margin-top: 20px;
 }
 
-.form-select:focus,
-.form-select:active,
-.form-select:focus-visible {
-    background-color: transparent !important; /* 배경 제거 */
-    box-shadow: none !important; /* 기본 focus 그림자 제거 */
-    outline: none !important; /* outline 제거 */
-    border-color: #eeeeee;
+.comment-page-select-trigger>div {
+    width: 15px;
+}
+
+.comment-page-select-trigger>div>img {
+    display: block;
+    width: 100%;
 }
 
 /* 📱 반응형 스타일 */
@@ -43,4 +36,8 @@
 
 /*모바일 사이즈*/
 @media (max-width: 480px) {
+    .comment-page {
+        margin-top: 84px;
+        max-width: 800px;
+    }
 }

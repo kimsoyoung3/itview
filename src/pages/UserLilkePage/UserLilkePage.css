@@ -67,3 +67,11 @@
 .like-page-content {
     margin-top: 20px;
 }
+
+/*모바일 사이즈*/
+@media (max-width: 480px) {
+    .user-like-page {
+        margin-top: 84px;
+    }
+
+}

@@ -65,7 +65,7 @@
 .search-page-tab-content-list {
     display: flex;
     flex-wrap: wrap;
-    gap: 15px;
+    gap: 20px;
     overflow: hidden;
 }
 
@@ -78,16 +78,16 @@
     display: flex;
     align-items: center;
     flex-wrap: wrap;
-    gap: 15px;
+    gap: 20px;
 }
 
 .search-page-tab-person>div {
-    width: calc(50% - 15px);
+    width: calc(50% - 10px);
 }
 
 .search-page-tab-more-btn {
     text-align: center;
-    margin-top: 20px;
+    margin-top: 30px;
 }
 
 .search-page-tab-more-btn>button {
@@ -118,12 +118,12 @@
 /*유저 탭*/
 .search-page-tab-user {
     display: flex;
-    gap: 15px;
+    gap: 20px;
     flex-wrap: wrap;
 }
 
 .search-page-tab-user-profile-wrap {
-    width: calc(100% / 2 - 15px);
+    width: calc(100% / 2 - 10px);
     display: flex;
     align-items: center;
     gap: 15px;
@@ -171,4 +171,23 @@
     font-weight: 400;
     color: #888888;
     font-size: 0.9rem;
+}
+
+/*모바일 사이즈*/
+@media (max-width: 480px) {
+    .search-page {
+        margin-top: 50px;
+    }
+
+    .search-page-tab-content-list>div {
+        width: 100%;
+    }
+
+    .search-page-tab-person>div {
+        width: 100%;
+    }
+
+    .search-page-tab-user-profile-wrap {
+        width: 100%;
+    }
 }

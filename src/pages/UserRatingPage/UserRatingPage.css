@@ -35,3 +35,9 @@
     color: #888888;
 }
 
+/*모바일 사이즈*/
+@media (max-width: 480px) {
+    .user-rating-page {
+        margin-top: 84px;
+    }
+}

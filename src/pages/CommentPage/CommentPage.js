@@ -5,6 +5,7 @@ import {useParams} from "react-router-dom";
 import CommentCard from "../../components/CommentCard/CommentCard";
 import {getContentCommentsPaged, getContentTitle} from "../../API/ContentApi";
 import NotFound from "../NotFound/NotFound";
+import CustomSelect from "../../components/CustomSelect/CustomSelect";
 
 const CommentPage = ({userInfo, openLogin}) => {
     const [notFound, setNotFound] = useState(false);
@@ -14,7 +15,16 @@ const CommentPage = ({userInfo, openLogin}) => {
     const [title, setTitle] = useState("");
     const [comments, setComments] = useState([]);
     const [page, setPage] = useState({});
+
     const [order, setOrder] = useState("new");
+
+    const options = [
+        { value: "new", label: "최신 순" },
+        { value: "old", label: "오래된 순" },
+        { value: "like", label: "좋아요 순" },
+        { value: "rating", label: "별점 순" },
+        { value: "reply", label: "댓글 많은 순" }
+    ];
 
     /*페이지 로드 시 코멘트 불러오기*/
     useEffect(() => {
@@ -99,13 +109,7 @@ const CommentPage = ({userInfo, openLogin}) => {
         <div className="comment-page container">
             <h1 className="comment-page-title">코멘트</h1>
             <div className="comment-page-select-wrap">
-                <select className="form-select comment-page-select" value={order} onChange={handleOrderChange} aria-label="Default select example">
-                    <option selected value="new">최신 순</option>
-                    <option value="old">오래된 순</option>
-                    <option value="like">좋아요 순</option>
-                    <option value="rating">별점 순</option>
-                    <option value="reply">댓글 많은 순</option>
-                </select>
+                <CustomSelect value={order} onChange={setOrder} options={options} />
             </div>
 
             {comments.length > 0 ? (

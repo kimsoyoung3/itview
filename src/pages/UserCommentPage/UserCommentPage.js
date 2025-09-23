@@ -4,6 +4,7 @@ import { useParams } from "react-router-dom";
 import { getUserComment } from "../../API/UserApi";
 import CommentCard from "../../components/CommentCard/CommentCard";
 import NotFound from "../NotFound/NotFound";
+import CustomSelect from "../../components/CustomSelect/CustomSelect";
 
 function UserCommentPage({ userInfo, openLogin }) {
     const [contentType, setContentType] = useState("movie");
@@ -14,6 +15,14 @@ function UserCommentPage({ userInfo, openLogin }) {
     const [notFound, setNotFound] = useState(false);
 
     const [commentList, setCommentList] = useState({});
+
+    const options = [
+        { value: "recent", label: "작성 순" },
+        { value: "like", label: "좋아요 순" },
+        { value: "reply", label: "댓글 순" },
+        { value: "rating", label: Number(userInfo) === Number(id) ? "나의 별점 낮은 순" : "이 회원의 별점 낮은 순" },
+        { value: "new", label: "신작 순" },
+    ];
 
     useEffect(() => {
         const fetchData = async () => {
@@ -91,13 +100,7 @@ function UserCommentPage({ userInfo, openLogin }) {
                     </div>
 
                     <div className="user-comment-page-select-box">
-                        <select className="form-select user-comment-page-select" aria-label="Default select example" onChange={(e) => setOrder(e.target.value)} value={order}>
-                            <option selected value="recent">작성 순</option>
-                            <option value="like">좋아요 순</option>
-                            <option value="reply">댓글 순</option>
-                            <option value="rating">{Number(userInfo) === Number(id) ? "나의 별점 높은 순" : "이 회원의 별점 높은 순"}</option>
-                            <option value="new">신작 순</option>
-                        </select>
+                        <CustomSelect value={order} onChange={setOrder} options={options}/>
                     </div>
                 </div>
 

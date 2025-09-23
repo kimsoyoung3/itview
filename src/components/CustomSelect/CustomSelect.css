@@ -1,0 +1,62 @@
+.custom-select {
+    width: 300px;
+    border-radius: 0;
+    border-color: #eeeeee;
+    position: relative;
+}
+
+.custom-select-trigger {
+    padding: 10px 15px;
+    background-color: #fff;
+    border: 1px solid #ced4da;
+    border-radius: 0.25rem;
+    cursor: pointer;
+    display: flex;
+    justify-content:space-between;
+}
+
+.custom-select-trigger>div {
+    width: 15px;
+    display: flex;
+    align-items: center;
+}
+
+.custom-select-trigger>div>img {
+    width: 100%;
+    display: block;
+}
+
+.custom-select-options {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    width: 100%;
+    margin: 2px 0 0 0;
+    padding: 0;
+    list-style: none;
+    border: 1px solid #ced4da;
+    border-radius: 0.25rem;
+    background: #fff;
+    max-height: 200px;
+    overflow-y: auto;
+    z-index: 1000;
+    color: #888888;
+}
+
+.custom-select-options li {
+    padding: 10px 15px; /* 옵션 간격 */
+    cursor: pointer;
+}
+
+.custom-select-options li:hover,
+.custom-select-options li.selected {
+    background-color: #eeeeee;
+    color: #000000;
+}
+
+/*모바일 사이즈*/
+@media (max-width: 480px) {
+    .custom-select {
+        width: 250px;
+    }
+}

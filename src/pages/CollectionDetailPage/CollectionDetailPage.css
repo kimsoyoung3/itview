@@ -10,7 +10,6 @@
     overflow: hidden;
 }
 
-
 .user-collection-detail-bg {
     width: 100%;
     height: 300px;
@@ -35,21 +34,21 @@
 
 .user-collection-detail-stacked-poster-wrapper {
     position: absolute;
-    width: 40%; /* 통일된 포스터 너비 */
-    height: 100%; /* 통일된 포스터 높이 */
+    width: 40%;
+    height: 100%;
 }
 
 .user-collection-detail-stacked-poster-wrapper>img {
     width: 100%;
     height: 100%;
-    object-fit: cover; /* 크기 통일 + 이미지 잘림 방지 */
+    object-fit: cover;
 }
 
 .user-collection-detail-profile {
     position: relative;
     color: #ffffff;
     z-index: 10;
-    display: inline-flex; /* inline-flex로 block처럼 쓰면서 flex 가능 */
+    display: inline-flex;
     align-items: center;
     gap: 10px;
     padding-left: 20px;
@@ -283,7 +282,7 @@
 .user-collection-detail-reply-wrap>h1>span {
     font-size: 1rem;
     color: #888888;
-    font-weight: 600;
+    font-weight: 500;
 }
 
 .user-collection-detail-reply-content-wrap {
@@ -357,3 +356,22 @@
     background: #b7e8c7;
 }
 
+
+/*모바일 사이즈*/
+@media (max-width: 480px) {
+    .user-collection-detail-page {
+        margin-top: 50px;
+        margin-bottom: 0;
+        width: 100% !important;
+        padding: 0;
+    }
+
+    .user-collection-detail-page-wrap {
+        border: 0;
+        border-radius: 0;
+    }
+
+    .user-collection-detail-content-list {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
