@@ -513,7 +513,7 @@ const DetailPage = ({userInfo, openLogin}) => {
 
                  {/*크레딧 정보 리스트*/}
                  {contentCredit[0]?.content.length > 0 ? (
-                    <div className="credit-list container">
+                    <div className="credit-list">
 
                         <Swiper
                             ref={swiperRef}
@@ -526,8 +526,7 @@ const DetailPage = ({userInfo, openLogin}) => {
                             {contentCredit.map((creditPage, pageIndex) => (
                                 <SwiperSlide className="swiper-slide" key={pageIndex}>
                                     <div className="credit-content-list">
-                                        {creditPage.content
-                                            .map(credit => (
+                                        {creditPage.content.map(credit => (
                                             <CreditOrPersonCard key={credit.id} type="credit" data={credit} />
                                         ))}
                                     </div>

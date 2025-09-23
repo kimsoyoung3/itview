@@ -36,3 +36,11 @@
     font-size: 0.9rem;
     color: #888888;
 }
+
+/*모바일 사이즈*/
+@media (max-width: 480px) {
+    .user-content-page {
+        margin-top: 84px;
+    }
+
+}

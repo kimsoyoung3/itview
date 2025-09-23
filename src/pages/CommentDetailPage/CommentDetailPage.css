@@ -9,3 +9,11 @@
     font-size: 0.9rem;
     padding: 40px 0;
 }
+
+/*모바일 사이즈*/
+@media (max-width: 480px) {
+    .comment-detail-page {
+        margin-top: 84px;
+    }
+
+}

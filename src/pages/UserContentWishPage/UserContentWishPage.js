@@ -4,6 +4,7 @@ import { getUserWishlist } from "../../API/UserApi";
 import NotFound from "../NotFound/NotFound";
 import "./UserContentWishPage.css"
 import ContentEach from "../../components/ContentEach/ContentEach";
+import CustomSelect from "../../components/CustomSelect/CustomSelect";
 
 function UserContentWishPage({ userInfo, openLogin }) {
     const [notFound, setNotFound] = React.useState(false);
@@ -21,6 +22,13 @@ function UserContentWishPage({ userInfo, openLogin }) {
         "webtoon" : "웹툰",
         "record" : "음반"
     }
+
+    const options = [
+        { value: "new", label: "담은 순" },
+        { value: "old", label: "담은 역순" },
+        { value: "rating_high", label: "평균 별점 높은 순" },
+        { value: "rating_low", label: "평균 별점 낮은 순" }
+    ];
 
     useEffect(() => {
         const fetchWishlist = async () => {
@@ -58,13 +66,7 @@ function UserContentWishPage({ userInfo, openLogin }) {
 
                 {/*셀렉트 박스*/}
                 <div className="user-wish-page-select-box">
-                    <select className="form-select user-wish-page-select" aria-label="Default select example"
-                            onChange={(e) => setOrder(e.target.value)}>
-                        <option selected value="new">담은 순</option>
-                        <option value="old">담은 역순</option>
-                        <option value="rating_high">평균 별점 높은 순</option>
-                        <option value="rating_low">평균 별점 낮은 순</option>
-                    </select>
+                    <CustomSelect value={order} onChange={setOrder} options={options} />
                 </div>
 
                 {/*컨텐츠 리스트*/}

@@ -47,3 +47,15 @@
     padding: 8px 20px;
     border-radius: 5px;
 }
+
+/*모바일 사이즈*/
+@media (max-width: 480px) {
+    .user-content-wish-page {
+        margin-top: 84px;
+    }
+
+    .user-wish-page-content-list {
+        grid-template-columns: repeat(4, 1fr);
+    }
+
+}

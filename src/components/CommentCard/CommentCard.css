@@ -62,9 +62,6 @@
     font-size: 0.8rem;
 }
 
-.comment-card-header-right>i {
-}
-
 .comment-card-content {
     border-top: 1px solid #d9d9d9 ;
     border-bottom: 1px solid #d9d9d9 ;
@@ -164,12 +161,7 @@
 
 /*노트북 사이즈*/
 @media (max-width: 1024px) {
-    .comment-card-nickname {
-        max-width: 40px;
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
-    }
+
 }
 
 /*태블릿 사이즈*/
@@ -179,16 +171,21 @@
 /*모바일 사이즈*/
 @media (max-width: 480px) {
     .comment-card {
-        margin: 15px auto;
+        margin: 20px auto;
         padding: 20px;
     }
 
     .comment-card-header {
-        font-size: 0.8rem;
+        font-size: 0.9rem;
+    }
+
+    .clamp-4 {
+        overflow: visible;
+        width: 100%;
     }
 
     .comment-card-date {
-        font-size: 0.6rem;
+        display: none;
     }
 
     .comment-card-profile {
@@ -197,14 +194,15 @@
     }
 
     .comment-card-content {
-        font-size: 0.7rem;
+        font-size: 0.9rem;
     }
 
     .comment-card-footer {
-        font-size: 0.6rem;
+        font-size: 0.7rem;
     }
 
-    .comment-card-footer-bottom {
-        font-size: 0.8rem;
+    .comment-card-footer-top>p {
+        margin-bottom: 8px;
     }
+
 }

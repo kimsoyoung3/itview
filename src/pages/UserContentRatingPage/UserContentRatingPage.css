@@ -56,17 +56,52 @@
     margin-top: 20px;
 }
 
-.user-rating-page-select-box {
-    width: 100%;
+.user-rating-page-select-wrap {
     display: flex;
-    justify-content: right;
+    justify-content: end;
+    margin-top: 20px;
 }
 
 .user-rating-page-select {
     width: 300px;
     border-radius: 0;
-    padding: 10px;
-    border-color: #d9d9d9;
+    position: relative;
+}
+
+.user-rating-page-select-trigger {
+    padding: 10px 15px;
+    background-color: #fff;
+    border: 1px solid #ced4da;
+    border-radius: 0.25rem;
+    cursor: pointer;
+}
+
+.user-rating-page-select-options {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    width: 100%;
+    margin: 2px 0 0 0;
+    padding: 0;
+    list-style: none;
+    border: 1px solid #ced4da;
+    border-radius: 0.25rem;
+    background: #fff;
+    max-height: 200px;
+    overflow-y: auto;
+    z-index: 1000;
+    color: #888888;
+}
+
+.user-rating-page-select-options li {
+    padding: 10px 15px; /* 옵션 간격 */
+    cursor: pointer;
+}
+
+.user-rating-page-select-options li:hover,
+.user-rating-page-select-options li.selected {
+    background-color: #eeeeee;
+    color: #000000;
 }
 
 .rating-page-content-list {
@@ -151,4 +186,26 @@
     font-size: 0.9rem;
     font-weight: 500;
     color: #888888;
+}
+
+/*모바일 사이즈*/
+@media (max-width: 480px) {
+    .user-content-rating-page {
+        margin-top: 84px;
+    }
+
+    .user-rating-page-select {
+        width: 250px;
+    }
+
+    .rating-page-content-list {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 10px;
+        margin-top: 20px;
+    }
+
+    .rating-prev, .rating-next {
+        display: none;
+    }
 }

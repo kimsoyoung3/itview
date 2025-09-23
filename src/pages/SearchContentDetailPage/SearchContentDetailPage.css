@@ -36,3 +36,14 @@
     border-radius: 5px;
     font-weight: 600;
 }
+
+/*모바일 사이즈*/
+@media (max-width: 480px) {
+    .search-content-detail-page {
+        margin-top: 50px;
+    }
+
+    .search-content-list {
+        width: 100%;
+    }
+}
