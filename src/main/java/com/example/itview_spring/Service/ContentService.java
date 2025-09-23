@@ -1,8 +1,10 @@
 package com.example.itview_spring.Service;
 
+import com.example.itview_spring.Constant.ContentType;
 import com.example.itview_spring.DTO.*;
 import com.example.itview_spring.Entity.*;
 import com.example.itview_spring.Repository.*;
+import com.example.itview_spring.Util.S3Uploader;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
@@ -11,7 +13,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -35,6 +39,8 @@ public class ContentService {
 
     private final ModelMapper modelMapper;
 
+    private final S3Uploader s3Uploader;
+
     //전체조회
     //목록(전체조회)
     //모두 읽어서 list<방금 작성한 DTO> 전달
@@ -46,38 +52,26 @@ public class ContentService {
     // public List<ProductDTO> 안알려줌() {
     // public List<ProductDTO> List() {      ex)
 
-    /**
-     * 전체 목록조회
-     *
-     * @param page 조회할 페이지 번호
-     * @return 결과
-     */
     @Transactional
-    public Page<ContentCreateDTO> getAllContents(Pageable page) {
-        int currentPage = page.getPageNumber();
+    public Page<ContentCreateDTO> getAllContents(String keyword, ContentType contentType, Pageable pageable) {
+        int currentPage = pageable.getPageNumber();
         int pageLimits = 10;
 
-        Pageable pageable = PageRequest.of(currentPage, pageLimits, Sort.by(Sort.Direction.DESC, "id"));
-        Page<ContentEntity> contentEntities = contentRepository.findAll(pageable);
+        Pageable customizedPageable = PageRequest.of(currentPage, pageLimits, Sort.by(Sort.Direction.DESC, "id"));
 
-        System.out.println("총 페이지 수: " + contentEntities.getTotalPages());
-        System.out.println("총 컨텐츠 수: " + contentEntities.getTotalElements());
-        System.out.println("현재 페이지 번호: " + contentEntities.getNumber());
+        Page<ContentEntity> contentEntities;
 
-        for (ContentEntity content : contentEntities.getContent()) {
-//            System.out.println("--------------------------------");
-//            System.out.println("ID: " + content.getId());
-//            System.out.println("Title: " + content.getTitle());
-//            System.out.println("Type: " + content.getContentType());
-//            System.out.println("Release Date: " + content.getReleaseDate());
-//            System.out.println("Poster: " + content.getPoster());
-//            System.out.println("Nation: " + content.getNation());
-//            System.out.println("Channel: " + content.getChannelName());
-//            System.out.println("Genres: " + content.getGenres());
-//            System.out.println("외부 서비스: " + content.getVideos());
+        // 키워드나 타입이 제공되었는지 확인
+        if ((keyword != null && !keyword.isEmpty()) || contentType != null) {
+            // 검색 조건이 있으면 리포지토리의 검색 메소드 호출
+            contentEntities = contentRepository.searchByKeywordAndType(keyword, contentType, customizedPageable);
+        } else {
+            // 검색 조건이 없으면 findAll() 메소드 호출
+            contentEntities = contentRepository.findAll(customizedPageable);
         }
-        Page<ContentCreateDTO> contentDTOS = contentEntities.map(data -> modelMapper.map(
-                data, ContentCreateDTO.class));
+
+        Page<ContentCreateDTO> contentDTOS = contentEntities.map(entity -> modelMapper.map(entity, ContentCreateDTO.class));
+
         return contentDTOS;
     }
 //    public List<ContentCreateDTO> List() {
@@ -108,22 +102,37 @@ public class ContentService {
         return modelMapper.map(contentEntity, ContentCreateDTO.class);
     }
 
+    public ContentEntity findById(Integer id) {
+        return contentRepository.findById(id)
+                .orElseThrow(() -> new NoSuchElementException("콘텐츠를 찾을 수 없습니다."));
+    }
+
     //등록(저장)
     //DTO를 받아서 저장
     //public void 내맘대로 (ProductDTO productDTO) {
     //public void create (ProductDTO productDTO) {  ex)
 
-    public ContentCreateDTO create(ContentCreateDTO dto) {
-        //DTO가 이있으면 반드시 Entity 변환
+    public ContentCreateDTO create(ContentCreateDTO dto) throws IOException {
 
+        // 1. DTO에 파일이 있는지 확인
+        MultipartFile posterFile = dto.getPoster();
+        String posterUrl = null;
+
+        if (posterFile != null && !posterFile.isEmpty()) {
+            // 2. 파일이 있으면 S3에 업로드하고 URL 받기
+            posterUrl = s3Uploader.uploadFile(posterFile);
+        }
+
+        // 3. DTO를 Entity로 변환 (poster 필드는 MultipartFile이므로 변환되지 않음)
         ContentEntity contentEntity = modelMapper.map(dto, ContentEntity.class);
-        System.out.println("service add dto:" + dto);
-        System.out.println("service add entity:" + contentEntity);
 
-        // Entity를 DB에 저장
+        // 4. 업로드된 URL을 Entity의 poster 필드에 직접 저장
+        contentEntity.setPoster(posterUrl);
+
+        // 5. Entity를 DB에 저장
         contentRepository.save(contentEntity);
 
-        // 저장된 Entity를 DTO로 변환하여 반환
+        // 6. 저장된 Entity를 다시 DTO로 변환하여 반환
         return modelMapper.map(contentEntity, ContentCreateDTO.class);
     }
 
@@ -140,18 +149,32 @@ public class ContentService {
      * @param dto 수정할 콘텐츠 정보
      * @return ContentCreateDTO
      */
-    public ContentCreateDTO update(Integer id, ContentCreateDTO dto) {
-        //해당내용찾기
-                System.out.println("11 cnotentservice dto:---->"+dto);
+    public ContentCreateDTO update(Integer id, ContentCreateDTO dto) throws IOException {
+
         ContentEntity contentEntity = contentRepository.findById(id)
                 .orElseThrow(() -> new NoSuchElementException("콘텐츠 ID가 유효하지 않습니다: " + id));
 
-                System.out.println("12 cnotentservice entity:---->"+contentEntity);
-        //내용을 저장(@Id가 있는 변수는 저장 불가)
+        String newPosterUrl = contentEntity.getPoster(); // 기존 URL을 일단 유지
+
+        // DTO에 파일이 존재하고 비어있지 않은 경우에만 S3 로직 실행
+        if (dto.getPoster() != null && !dto.getPoster().isEmpty()) {
+            // 1. 기존 S3 파일 삭제 (기존 포스터 URL이 있다면)
+            if (contentEntity.getPoster() != null && !contentEntity.getPoster().isEmpty()) {
+                s3Uploader.deleteFile(contentEntity.getPoster());
+            }
+
+            // 2. 새로운 파일 S3에 업로드하고 URL 받기
+            newPosterUrl = s3Uploader.uploadFile(dto.getPoster());
+        }
+
+        // DTO의 poster 필드는 MultipartFile 타입이므로,
+        // Entity에 URL을 직접 담기 위해 새 변수를 사용합니다.
+        contentEntity.setPoster(newPosterUrl);
+
+        // 나머지 내용 수정
         contentEntity.setTitle(dto.getTitle());
         contentEntity.setContentType(dto.getContentType());
         contentEntity.setReleaseDate(dto.getReleaseDate());
-        contentEntity.setPoster(dto.getPoster());
         contentEntity.setNation(dto.getNation());
         contentEntity.setDescription(dto.getDescription());
         contentEntity.setDuration(dto.getDuration());
@@ -159,10 +182,8 @@ public class ContentService {
         contentEntity.setCreatorName(dto.getCreatorName());
         contentEntity.setChannelName(dto.getChannelName());
 
-        // 변경된 엔티티를 DB에 저장
         contentRepository.save(contentEntity);
 
-        // 수정된 Entity를 DTO로 변환하여 반환
         return modelMapper.map(contentEntity, ContentCreateDTO.class);
     }
 

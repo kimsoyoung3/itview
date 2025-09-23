@@ -83,8 +83,6 @@ public class ExternalController {
     public String deleteExternalService(@PathVariable Integer contentId,
                                         @RequestParam("externalServiceId") Integer externalServiceId,
                                         RedirectAttributes redirectAttributes) {
-        System.out.println("🗑️ [ExternalService 삭제] contentId == " + contentId);
-        System.out.println("<UNK> [ExternalService <UNK>] externalServiceId == " + externalServiceId);
 
         externalService.deleteExternalService(externalServiceId); //실제 externalServiceId 기반 삭제
         // ✅ 메시지 추가

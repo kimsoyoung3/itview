@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -19,7 +20,7 @@ public class ContentCreateDTO {
     private String title;
     private ContentType contentType;
     private LocalDate releaseDate;
-    private String poster;
+    private MultipartFile poster;
     private String nation;
     private String description;
     private String duration;

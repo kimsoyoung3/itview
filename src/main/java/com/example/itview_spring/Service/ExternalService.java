@@ -56,7 +56,6 @@ public class ExternalService {
         ContentEntity contentEntity = contentRepository.findById(contentId)
                 .orElseThrow(() -> new IllegalArgumentException("해당 외부 서비스가 존재하지 않습니다. ID: " + contentId));
         entity.setContent(contentEntity);
-        System.out.println("createExternalService contentId: " + contentId);
 
         externalServiceRepository.save(entity);
         // ✅ DTO 반환 시 필드 맞춤

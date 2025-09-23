@@ -39,8 +39,17 @@
             <div class="col-12">
                 <h3 class="mt-4">콘텐츠 목록</h3>
                 <p class="mt-4">현재 등록한 콘텐츠 목록입니다:</p>
-                <div class="d-flex justify-content-end mb-4">
-                    <a th:href="@{/content/register}" type="button" class="btn btn-primary"><i class="bi bi-trash"></i>등록</a>
+
+                <div class="d-flex justify-content-end align-items-center mb-4">
+                    <form th:action="@{/content/list}" method="get" class="me-3 d-flex">
+                        <div class="input-group">
+                            <input class="form-control" type="text" name="keyword" th:value="${keyword}" placeholder="제목 또는 설명 검색" aria-label="콘텐츠 제목 검색" aria-describedby="btnSearch" />
+                            <button class="btn btn-primary" id="btnSearch" type="submit">
+                                <i class="fas fa-search"></i>
+                            </button>
+                        </div>
+                    </form>
+                    <a th:href="@{/content/register}" type="button" class="btn btn-primary">등록</a>
                 </div>
 
                 <table class="table table-hover table-custom-layout">
@@ -52,6 +61,10 @@
                     </tr>
                     </thead>
                     <tbody>
+                    <tr th:if="${#lists.isEmpty(contentDTOS)}">
+                        <td colspan="3" class="text-center">데이터가 없습니다.</td>
+                    </tr>
+
                     <tr th:each="data:${contentDTOS}"
                         class="clickable-row"
                         th:onclick="|window.location.href='@{/content/detail(id=${data.id})}'|">
@@ -59,11 +72,11 @@
                         <td th:text="${data.contentType.getDescription()}">타입</td>
                         <td>
                             <a th:href="@{/content/{id}/update(id=${data.id})}"
-                               type="button" class="btn btn-primary"
+                               class="btn btn-primary"
                                onclick="event.stopPropagation();">수정</a>
 
                             <a th:href="@{/content/delete(id=${data.id})}"
-                               type="button" class="btn btn-primary"
+                               class="btn btn-primary"
                                onclick="event.stopPropagation();">삭제</a>
                         </td>
                     </tr>
@@ -73,13 +86,13 @@
                 <div class="d-flex justify-content-center mt-3" th:if="${contentDTOS.totalPages >= 1}">
                     <ul class="pagination">
                         <li class="page-item" th:classappend="${startPage == 0} ? 'disabled'">
-                            <a class="page-link" th:href="@{/content/list(page=0)}" aria-label="First">
+                            <a class="page-link" th:href="@{/content/list(page=0, keyword=${keyword})}">
                                 <span>&laquo;&laquo;</span>
                             </a>
                         </li>
 
                         <li class="page-item" th:classappend="${startPage == 0} ? 'disabled'">
-                            <a class="page-link" th:href="@{/content/list(page=${startPage - 1})}" aria-label="Previous">
+                            <a class="page-link" th:href="@{/content/list(page=${startPage - 1}, keyword=${keyword})}">
                                 <span>&laquo;</span>
                             </a>
                         </li>
@@ -88,19 +101,19 @@
                             th:each="pageNum : ${#numbers.sequence(startPage, endPage)}"
                             th:classappend="${pageNum == contentDTOS.number} ? 'active'">
                             <a class="page-link"
-                               th:href="@{/content/list(page=${pageNum})}"
-                               th:text="${pageNum + 1}">
+                               th:text="${pageNum + 1}"
+                               th:href="@{/content/list(page=${pageNum}, keyword=${keyword})}">
                             </a>
                         </li>
 
                         <li class="page-item" th:classappend="${endPage >= contentDTOS.totalPages - 1} ? 'disabled'">
-                            <a class="page-link" th:href="@{/content/list(page=${endPage + 1})}" aria-label="Next">
+                            <a class="page-link" th:href="@{/content/list(page=${endPage + 1}, keyword=${keyword})}">
                                 <span>&raquo;</span>
                             </a>
                         </li>
 
                         <li class="page-item" th:classappend="${endPage >= contentDTOS.totalPages - 1} ? 'disabled'">
-                            <a class="page-link" th:href="@{/content/list(page=${contentDTOS.totalPages - 1})}" aria-label="Last">
+                            <a class="page-link" th:href="@{/content/list(page=${contentDTOS.totalPages - 1}, keyword=${keyword})}">
                                 <span>&raquo;&raquo;</span>
                             </a>
                         </li>
