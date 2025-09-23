@@ -223,14 +223,13 @@ const DetailPage = ({userInfo, openLogin}) => {
 
     const loadMoreRef = useRef(null);
 
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     const handleNextPage = async () => {
         if (contentCredit.page.number + 2 <= contentCredit.page.totalPages) {
             const fetchNextPage = async () => {
-                console.log('마지막 슬라이드 도달, 다음 페이지 로드 시도');
                 try {
                     const nextPage = contentCredit.page.number + 2;
                     const response = await getContentCredit(id, nextPage);
-                    console.log(response.data)
                     if (response.data.content.length > 0) {
                         setContentCredit(prev => ({content: [...prev.content, ...response.data.content], page: response.data.page}));
                     } else {
@@ -258,7 +257,7 @@ const DetailPage = ({userInfo, openLogin}) => {
                 observer.unobserve(loadMoreRef.current);
             }
         };
-    }, [loadMoreRef, contentCredit]);
+    }, [loadMoreRef, contentCredit, handleNextPage]);
 
     /*컨텐츠 정보를 가져온 후*/
     useEffect(() => {
@@ -545,24 +544,12 @@ const DetailPage = ({userInfo, openLogin}) => {
                             navigation
                             className="credit-swiper"
                         >
-                            {/*{contentCredit?.content.map((credit, pageIndex) => (*/}
-                            {/*    <SwiperSlide key={pageIndex}>*/}
-                            {/*        <div>*/}
-                            {/*            <CreditOrPersonCard key={credit.id} type="credit" data={credit} />*/}
-                            {/*        </div>*/}
-                            {/*    </SwiperSlide>*/}
-                            {/*))}*/}
-
-                            {/*{contentCredit.page?.number + 1 !== contentCredit.page?.totalPages && (*/}
-                            {/*    <SwiperSlide>*/}
-                            {/*        <div ref={loadMoreRef}>더보기</div>*/}
-                            {/*    </SwiperSlide>*/}
-                            {/*)}*/}
-                            {chunkedContentCredit.map(chunkedCredit => (
-                                <SwiperSlide className="credit-grid">
-                                    {chunkedCredit.map(credit => (
-                                        <div>
+                            {chunkedContentCredit.map((chunkedCredit, outerIndex) => (
+                                <SwiperSlide className="credit-grid" key={outerIndex}>
+                                    {chunkedCredit.map((credit, innerIndex) => (
+                                        <div key={credit.id}>
                                             <CreditOrPersonCard data={credit} type={"credit"} />
+                                            {outerIndex === chunkedContentCredit.length -1 && innerIndex === chunkedCredit.length - 1 && contentCredit?.page.number + 1 < contentCredit?.page.totalPages && <div ref={loadMoreRef}></div>}
                                         </div>
                                     ))}
                                 </SwiperSlide>
