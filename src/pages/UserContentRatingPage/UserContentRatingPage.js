@@ -203,16 +203,16 @@ const UserContentRatingPage = ({userInfo}) => {
 
                         {/*별점순*/}
                         {activeId === "rating-page-tab2" && <div className="rating-page-tab2">
-                            {[...scores].reverse().map((items, index) => (
-                                <div key={index} className="rating-page-rating-list">
-                                    <p><i className="bi bi-star-fill"/> {(10 - index) / 2}점</p>
+                            {[...scores].reverse().map((items, outerIndex) => (
+                                <div key={outerIndex} className="rating-page-rating-list">
+                                    <p><i className="bi bi-star-fill"/> {(10 - outerIndex) / 2}점</p>
 
                                     <div className="rating-items">
                                         {items.content.length > 0 ? (
                                             <div className="rating-wrapper">
                                                 <Swiper
                                                     onSwiper={(swiper) => {
-                                                        swiperRef.current[10 - index] = swiper;
+                                                        swiperRef.current[10 - outerIndex] = swiper;
                                                     }}
                                                     modules={Navigation}
                                                     navigation={{
@@ -227,15 +227,15 @@ const UserContentRatingPage = ({userInfo}) => {
                                                         1280: { slidesPerView: 10, slidesPerGroup: 10 },
                                                     }}
                                                 >
-                                                    {items.content.map((item) => (
+                                                    {items.content.map((item, index) => (
                                                         <SwiperSlide key={item.content.id} className="rating-slide-image">
                                                             <ContentEach ratingData={item} ratingType={'avg'}/>
+                                                            {index === items.content.length - 1 && scores[10-outerIndex - 1].page.number + 1 !== scores[10-outerIndex - 1].page.totalPages && <div ref={(el) => loadMoreRef.current[10 - outerIndex] = el}></div>}
                                                         </SwiperSlide>
-                                                    ))}
-                                                    {scores[10-index - 1].page.number + 1 !== scores[10-index - 1].page.totalPages && <SwiperSlide><div ref={(el) => loadMoreRef.current[10 - index] = el}></div></SwiperSlide>}
+                                                    ))} 
                                                 </Swiper>
-                                                <div className="rating-prev" onClick={() => handlePrevClick(10 - index)}><img src={`${process.env.PUBLIC_URL}/icon/arrow-left-555.svg`} alt=""/></div>
-                                                <div className="rating-next" onClick={() => handleNextClick(10 - index)}><img src={`${process.env.PUBLIC_URL}/icon/arrow-right-555.svg`} alt=""/></div>
+                                                <div className="rating-prev" onClick={() => handlePrevClick(10 - outerIndex)}><img src={`${process.env.PUBLIC_URL}/icon/arrow-left-555.svg`} alt=""/></div>
+                                                <div className="rating-next" onClick={() => handleNextClick(10 - outerIndex)}><img src={`${process.env.PUBLIC_URL}/icon/arrow-right-555.svg`} alt=""/></div>
                                             </div>
                                         ) : (
                                             <p className="rating-text">해당 점수 작품이 없습니다 :)</p>
