@@ -264,11 +264,11 @@ const Header = ({ userInfo, handleLogin, handleLogout, isLoginOpen, openLogin, c
                         <div className="login-social">
                             <div className="login-social-border">OR</div>
                             <div className="login-social-logo">
-                                <a href="http://localhost:8080/oauth2/authorization/kakao"
+                                <a href={`${process.env.REACT_APP_API_URL}/oauth2/authorization/kakao`}
                                    onClick={() => link({redirectURL: window.location.href})}><img src={`${process.env.PUBLIC_URL}/LoginLogo/kakao-logo.svg`} alt="카카오"/></a>
-                                <a href="http://localhost:8080/oauth2/authorization/naver"
+                                <a href={`${process.env.REACT_APP_API_URL}/oauth2/authorization/naver`}
                                    onClick={() => link({redirectURL: window.location.href})}><img src={`${process.env.PUBLIC_URL}/LoginLogo/naver-logo.svg`} alt="네이버"/></a>
-                                <a href="http://localhost:8080/oauth2/authorization/google"
+                                <a href={`${process.env.REACT_APP_API_URL}/oauth2/authorization/google`}
                                    onClick={() => link({redirectURL: window.location.href})}><img src={`${process.env.PUBLIC_URL}/LoginLogo/google-logo.svg`} alt="구글"/></a>
                             </div>
                         </div>
