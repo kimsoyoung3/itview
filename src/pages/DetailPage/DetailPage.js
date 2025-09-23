@@ -536,25 +536,35 @@ const DetailPage = ({userInfo, openLogin}) => {
                  {/*크레딧 정보 리스트*/}
                  {contentCredit?.content.length > 0 ? (
                     <div className="credit-list container">
-                        <Swiper
-                            ref={swiperRef}
-                            modules={[Navigation]}
-                            spaceBetween={20}
-                            slidesPerView={4}   // ✅ 슬라이드 하나 안에 그리드 넣기
-                            navigation
-                            className="credit-swiper"
-                        >
-                            {chunkedContentCredit.map((chunkedCredit, outerIndex) => (
-                                <SwiperSlide className="credit-grid" key={outerIndex}>
-                                    {chunkedCredit.map((credit, innerIndex) => (
-                                        <div key={credit.id}>
-                                            <CreditOrPersonCard data={credit} type={"credit"} />
-                                            {outerIndex === chunkedContentCredit.length -1 && innerIndex === chunkedCredit.length - 1 && contentCredit?.page.number + 1 < contentCredit?.page.totalPages && <div ref={loadMoreRef}></div>}
-                                        </div>
-                                    ))}
-                                </SwiperSlide>
-                            ))}
-                        </Swiper>
+                        <div className="credit-wrapper">
+                            <Swiper
+                                ref={swiperRef}
+                                modules={[Navigation]}
+                                spaceBetween={20}
+                                slidesPerView={4}   // ✅ 슬라이드 하나 안에 그리드 넣기
+                                navigation={{
+                                    prevEl: ".credit-prev",
+                                    nextEl: ".credit-next",
+                                }}
+                                breakpoints={{
+                                    480: {slidesPerView: 1},
+                                    768: {slidesPerView: 2},
+                                    1020: {slidesPerView: 3},
+                                }}
+                                className="credit-swiper"
+                            >
+                                {chunkedContentCredit.map((chunkedCredit, outerIndex) => (
+                                    <SwiperSlide className="credit-grid" key={outerIndex}>
+                                        {chunkedCredit.map((credit, innerIndex) => (
+                                            <div key={credit.id}>
+                                                <CreditOrPersonCard data={credit} type={"credit"} />
+                                                {outerIndex === chunkedContentCredit.length -1 && innerIndex === chunkedCredit.length - 1 && contentCredit?.page.number + 1 < contentCredit?.page.totalPages && <div ref={loadMoreRef}></div>}
+                                            </div>
+                                        ))}
+                                    </SwiperSlide>
+                                ))}
+                            </Swiper>
+                        </div>
 
                         <div className={`credit-prev`} onClick={handlePrev}><img src={`${process.env.PUBLIC_URL}/icon/arrow-left.svg`} alt=""/></div>
                         <div className={`credit-next`} onClick={handleNext}><img src={`${process.env.PUBLIC_URL}/icon/arrow-right.svg`} alt=""/></div>

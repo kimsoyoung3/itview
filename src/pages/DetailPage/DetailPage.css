@@ -508,9 +508,9 @@
     cursor: pointer;
 }
 
-.credit-prev.disabled,
-.credit-next.disabled {
-    display: none;
+.credit-prev.swiper-button-disabled,
+.credit-next.swiper-button-disabled {
+    display: none !important;
 }
 
 .credit-prev:hover,
@@ -528,6 +528,11 @@
 
 .credit-grid>div {
     margin-bottom: 20px;
+
+}
+
+.credit-grid>div:last-child {
+    margin-bottom: 0;
 }
 
 /*코멘트 섹션*/
@@ -591,7 +596,6 @@
     border-radius: 50%;
     cursor: pointer;
 }
-
 
 .video-prev,
 .video-next{
@@ -662,12 +666,14 @@
     z-index: 10;
 }
 
-
-
 /*모바일 사이즈*/
 @media (max-width: 480px) {
     .container {
         padding: 0 15px;
+    }
+
+    .detail-content {
+        margin-bottom: 50px;
     }
 
     .detail-content-inner {
@@ -742,13 +748,10 @@
     .gallery-prev,
     .gallery-next,
     .video-prev,
-    .video-next {
+    .video-next,
+    .credit-prev,
+    .credit-next{
         display: none;
     }
 
-    .credit-content-list {
-        grid-template-columns: 1fr;          /* 모바일은 한 열 */
-        grid-template-rows: repeat(3, auto);
-        grid-auto-flow: row;                 /* 그냥 세로로 배치 */
-    }
 }
