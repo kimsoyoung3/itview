@@ -30,8 +30,10 @@ public class HomeRestController {
         return ResponseEntity.ok(homeService.getContentsByContentType(ContentType.valueOf(contentType.toUpperCase()), pageable.getPageNumber()));
     }
 
-    @GetMapping("/movie/domain")
+    @GetMapping("/movie/genre")
     public ResponseEntity<List<Genre>> getMovies() {
         return ResponseEntity.ok(homeService.getMovieGenres());
     }
+
+    
 }
