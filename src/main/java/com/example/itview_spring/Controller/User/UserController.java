@@ -1,7 +1,6 @@
 package com.example.itview_spring.Controller.User;
 
 import com.example.itview_spring.DTO.AdminUserDTO;
-import com.example.itview_spring.DTO.PersonDTO;
 import com.example.itview_spring.Service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -9,7 +8,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 

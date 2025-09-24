@@ -111,7 +111,7 @@
             </div>
 
             <div class="d-flex justify-content-end mt-4">
-                <a th:href="@{/content/{contentId}/gallery(contentId=${contentId})}" class="btn btn-primary">다음/수정</a>
+                <a th:href="@{/content/{contentId}/gallery(contentId=${contentId})}" class="btn btn-primary" th:text="${contentId != null} ? '다음/수정' : '다음'"></a>
             </div>
         </div>
     </div>

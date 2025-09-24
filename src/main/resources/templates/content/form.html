@@ -87,7 +87,7 @@
                         </select>
                     </div>
                     <div class="col-6 mb-3">
-                        <label class="form-label">감독 이름:</label>
+                        <label class="form-label" id="creatorLabel">감독 이름:</label>
                         <input type="text" class="form-control" th:field="*{creatorName}">
                     </div>
                 </div>
@@ -99,7 +99,7 @@
 
                 <div class="mb-3">
                     <label class="form-label">연재처:</label>
-                    <select class="form-select" th:field="*{channelName}" required>
+                    <select class="form-select" th:field="*{channelName}">
                         <option value="">없음</option>
                         <option value="NETFLIX">넷플릭스</option>
                         <option value="DISNEY_PLUS">디즈니+</option>
@@ -116,13 +116,36 @@
                 </div>
 
                 <div class="d-flex justify-content-end">
-                    <button type="submit" class="btn btn-primary me-1" th:text="${contentDTO.id != null} ? '수정' : '등록'"></button>
-                    <button type="reset" class="btn btn-primary me-1">초기화</button>
-                    <a th:href="@{/content/list}" class="btn btn-primary">목록</a>
+                    <button type="submit" class="btn btn-primary" th:text="${contentDTO.id != null} ? '다음/수정' : '다음'"></button>
                 </div>
             </form>
         </div>
     </div>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            const contentTypeRadios = $('input[name="contentType"]');
+            const creatorLabel = $('#creatorLabel');
+
+            function updateLabelText() {
+                const selectedType = $('input[name="contentType"]:checked').val();
+
+                if (selectedType === 'MOVIE' || selectedType === 'SERIES') {
+                    creatorLabel.text('감독 이름:');
+                } else if (selectedType === 'BOOK' || selectedType === 'WEBTOON') {
+                    creatorLabel.text('작가 이름:');
+                } else if (selectedType === 'RECORD') {
+                    creatorLabel.text('아티스트 이름:');
+                }
+            }
+
+            // 페이지 로드 시 라벨 초기화
+            updateLabelText();
+
+            // 라디오 버튼 변경 시 라벨 업데이트
+            contentTypeRadios.on('change', updateLabelText);
+        });
+    </script>
 </main>
 </body>
 </html>

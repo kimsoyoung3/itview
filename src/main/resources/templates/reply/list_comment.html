@@ -76,7 +76,7 @@
                         <td class="text-start" th:text="${reply.text}"></td>
                         <td th:text="${#temporals.format(reply.createdAt, 'yyyy-MM-dd HH:mm')}"></td>
                         <td>
-                            <a th:href="|http://localhost:3000/#/comment/${reply.targetId}|"
+                            <a th:href="@{${userpage} + '/#/comment/' + ${reply.targetId}}"
                                class="btn btn-primary"
                                target="_blank"
                                rel="noopener noreferrer">이동</a>

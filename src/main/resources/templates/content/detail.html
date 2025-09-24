@@ -52,7 +52,11 @@
                     <div class="col" th:text="${contentDTO.channelName?.description}"></div>
                 </div>
                 <div class="row mb-2">
-                    <div class="col-3"><strong>감독 이름</strong></div>
+                    <div class="col-3">
+                        <strong th:if="${contentDTO.contentType?.name() == 'MOVIE' or contentDTO.contentType?.name() == 'SERIES'}">감독 이름</strong>
+                        <strong th:if="${contentDTO.contentType?.name() == 'BOOK' or contentDTO.contentType?.name() == 'WEBTOON'}">작가 이름</strong>
+                        <strong th:if="${contentDTO.contentType?.name() == 'RECORD'}">아티스트 이름</strong>
+                    </div>
                     <div class="col" th:text="${contentDTO.creatorName}"></div>
                 </div>
             </div>

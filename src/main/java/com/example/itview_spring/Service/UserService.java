@@ -354,6 +354,19 @@ public class UserService implements UserDetailsService {
 
     // 관리자 페이지 - 유저 정보 삭제
     public void delete(int id) {
-        userRepository.deleteById(id);
+        // 1. 삭제할 유저의 기존 정보를 가져옵니다.
+        Optional<UserEntity> optionalUser = userRepository.findById(id);
+
+        if (optionalUser.isPresent()) {
+            UserEntity userEntity = optionalUser.get();
+
+            // 2. 프로필 URL이 존재하면 S3에서 파일을 삭제합니다.
+            if (userEntity.getProfile() != null && !userEntity.getProfile().isEmpty()) {
+                s3Uploader.deleteFile(userEntity.getProfile());
+            }
+
+            // 3. 데이터베이스에서 유저 정보를 삭제합니다.
+            userRepository.deleteById(id);
+        }
     }
 }

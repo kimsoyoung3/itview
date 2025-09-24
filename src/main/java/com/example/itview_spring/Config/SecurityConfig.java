@@ -8,6 +8,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import com.example.itview_spring.Constant.Role;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -15,11 +18,14 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
+import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
@@ -45,21 +51,39 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        http.authorizeHttpRequests(auth -> auth
-                .requestMatchers("/", "/api/user/login", "/api/user", "/api/user/logout"
-                        , "/user/login", "/user/register").permitAll()
-                .anyRequest().permitAll()
-        );
-
-        http.headers((headers) -> headers.frameOptions().sameOrigin());
-
         http
-            .csrf(csrf -> csrf.disable())
-            .formLogin(form -> form.disable())
-            .httpBasic(basic -> basic.disable())
-            .oauth2Login(oauth2 -> oauth2
-                .successHandler(linkingSuccessHandler())
-            );
+                .csrf(csrf -> csrf.disable())
+                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.ALWAYS))
+                .authorizeHttpRequests(auth -> auth
+                        .requestMatchers("/assets/**", "/admin/register", "/admin/login").permitAll()
+                        .requestMatchers("/api/**").permitAll()
+                        .requestMatchers("/", "/collection/**", "/comment/**", "/content/**", "/person/**", "/reply/**", "/user/**").hasAnyAuthority(Role.ADMIN.name(), Role.SUPER_ADMIN.name())
+                        .anyRequest().authenticated()
+                )
+                .formLogin(form -> form
+                        .loginPage("/admin/login")
+                        .loginProcessingUrl("/admin/login")
+                        .failureUrl("/admin/login?error")
+                        .defaultSuccessUrl("/", true)
+                        .permitAll()
+                )
+                .logout(logout -> logout
+                        .logoutUrl("/admin/logout")
+                        .logoutSuccessUrl("/admin/login")
+                        .invalidateHttpSession(true)
+                        .deleteCookies("JSESSIONID")
+                )
+                .exceptionHandling(exception -> exception
+                        .authenticationEntryPoint((request, response, authException) -> {
+                            response.sendRedirect(request.getContextPath() + "/admin/login");
+                        })
+                        .accessDeniedHandler((request, response, accessDeniedException) -> {
+                            response.sendRedirect(request.getContextPath() + "/admin/login?access-denied");
+                        })
+                )
+                .oauth2Login(oauth2 -> oauth2
+                        .successHandler(linkingSuccessHandler())
+                );
 
         return http.build();
     }
@@ -107,7 +131,7 @@ public class SecurityConfig {
                     Integer userId = (Integer) session.getAttribute("USER_ID");
                     UserEntity user = userRepository.findById(userId)
                             .orElseThrow(() -> new IllegalStateException("사용자를 찾을 수 없습니다."));
-    
+
                     // 소셜 계정 정보 저장
                     SocialEntity socialEntity = new SocialEntity();
                     socialEntity.setProvider(provider);
@@ -128,13 +152,13 @@ public class SecurityConfig {
                 session.removeAttribute("ORIGINAL_AUTH");
                 session.removeAttribute("LINK_FLOW");
                 session.removeAttribute("USER_ID");
-                
+
                 // 플래시 메시지 설정 및 리다이렉트
                 sendFlashMessageAndRedirect(response,
-                                            existing.isPresent() ? "이미 등록된 소셜 계정입니다." : "소셜 계정이 성공적으로 연동되었습니다.",
-                                            redirectURL
-                                );
-                
+                        existing.isPresent() ? "이미 등록된 소셜 계정입니다." : "소셜 계정이 성공적으로 연동되었습니다.",
+                        redirectURL
+                );
+
                 return;
             }
 
@@ -157,10 +181,10 @@ public class SecurityConfig {
                     } else {
                         throw new IllegalStateException("지원하지 않는 소셜 로그인 제공자입니다.");
                     }
-    
+
                     // 소셜 계정이 등록되어 있는지 확인
                     Optional<SocialEntity> linked = socialRepository.findByProviderAndProviderId(provider, sub);
-                    
+
                     // 소셜 계정이 등록되어 있는 경우
                     if (linked.isPresent()) {
                         // 사용자 정보 가져오기
@@ -169,18 +193,18 @@ public class SecurityConfig {
                         // 사용자 권한 설정
                         List<SimpleGrantedAuthority> authorities = new ArrayList<>();
                         authorities.add(new SimpleGrantedAuthority(user.getRole().name()));
-    
+
                         // CustomUserDetails 생성
                         var customUserDetails = new CustomUserDetails(
-                            user.getId(),
-                            user.getNickname(),
-                            user.getPassword(),
-                            authorities
+                                user.getId(),
+                                user.getNickname(),
+                                user.getPassword(),
+                                authorities
                         );
-    
+
                         // 새로운 인증 객체 생성
                         Authentication userAuth = new UsernamePasswordAuthenticationToken(customUserDetails, null, authorities);
-    
+
                         // 보안 컨텍스트에 인증 객체 설정
                         request.getSession(true);
                         SecurityContextHolder.getContext().setAuthentication(userAuth);
