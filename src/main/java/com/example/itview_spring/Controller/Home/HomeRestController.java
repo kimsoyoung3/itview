@@ -45,4 +45,9 @@ public class HomeRestController {
     public ResponseEntity<List<Channel>> getSeriesChannels() {
         return ResponseEntity.ok(homeService.getSeriesChannels());
     }
+
+    @GetMapping("/book/genre")
+    public ResponseEntity<List<Genre>> getBookGenres() {
+        return ResponseEntity.ok(homeService.getBookGenres());
+    }
 }

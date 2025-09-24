@@ -42,4 +42,9 @@ public class HomeService {
     public List<Channel> getSeriesChannels() {
         return contentRepository.findChannelsByContentType(ContentType.SERIES);
     }
+
+    // 도서 장르 목록 조회
+    public List<Genre> getBookGenres() {
+        return contentRepository.findGenresByContentType(ContentType.BOOK);
+    }
 }
