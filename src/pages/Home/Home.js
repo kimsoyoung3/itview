@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import "../../App.css";
-import "./HomePage.css";
+import "./Home.css";
 import AdCard from "../../components/AdCard/AdCard"; // CSS 따로 관리
 import { getHomeContents } from "../../API/HomeApi";
 

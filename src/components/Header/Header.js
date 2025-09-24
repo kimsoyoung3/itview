@@ -145,11 +145,11 @@ const Header = ({ userInfo, handleLogin, handleLogout, isLoginOpen, openLogin, c
                         {/* 메뉴 */}
                         <ul className="nav">
                             <li><NavLink to="/">홈</NavLink></li>
-                            <li><NavLink to="/movies">영화</NavLink></li>
+                            <li><NavLink to="/movie">영화</NavLink></li>
                             <li><NavLink to="/series">시리즈</NavLink></li>
-                            <li><NavLink to="/books">책</NavLink></li>
-                            <li><NavLink to="/webtoons">웹툰</NavLink></li>
-                            <li><NavLink to="/music">음악</NavLink></li>
+                            <li><NavLink to="/book">책</NavLink></li>
+                            <li><NavLink to="/webtoon">웹툰</NavLink></li>
+                            <li><NavLink to="/record">음악</NavLink></li>
                         </ul>
 
                         {/* 모바일/드롭다운 메뉴 */}
@@ -157,11 +157,11 @@ const Header = ({ userInfo, handleLogin, handleLogout, isLoginOpen, openLogin, c
                             <NavLink to="/" className="nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown"
                                      aria-expanded="false">홈</NavLink>
                             <ul className="dropdown-menu">
-                                <li><NavLink to="/movies">영화</NavLink></li>
+                                <li><NavLink to="/movie">영화</NavLink></li>
                                 <li><NavLink to="/series">시리즈</NavLink></li>
-                                <li><NavLink to="/books">책</NavLink></li>
-                                <li><NavLink to="/webtoons">웹툰</NavLink></li>
-                                <li><NavLink to="/music">음악</NavLink></li>
+                                <li><NavLink to="/book">책</NavLink></li>
+                                <li><NavLink to="/webtoon">웹툰</NavLink></li>
+                                <li><NavLink to="/record">음악</NavLink></li>
                             </ul>
                         </div>
                     </div>
