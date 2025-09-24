@@ -1,17 +1,12 @@
 import React, { useEffect, useState } from "react";
-import { getChannelsByContentType, getGenresByContentType } from "../../../API/HomeApi";
+import { getGenresByContentType } from "../../../API/HomeApi";
 
-const Webtoon = () => {
+const Record = () => {
 
     const [genre, setGenre] = useState(null);
     useEffect(() => {
         console.log(genre);
     }, [genre]);
-
-    const [channel, setChannel] = useState(null);
-    useEffect(() => {
-        console.log(channel);
-    }, [channel]);
 
     const [contents, setContents] = useState(null);
     useEffect(() => {
@@ -21,8 +16,7 @@ const Webtoon = () => {
     useEffect(() => {
         const fetchDomain = async () => {
             try {
-                setGenre(await getGenresByContentType('webtoon').then(res => res.data));
-                setChannel(await getChannelsByContentType('webtoon').then(res => res.data));
+                setGenre(await getGenresByContentType('record').then(res => res.data));
             } catch (error) {
                 console.error('Error fetching home contents:', error);
             }
@@ -32,9 +26,9 @@ const Webtoon = () => {
 
     return (
         <div>
-            webtoon
+            record
         </div>
     );
 }
 
-export default Webtoon;
+export default Record;
