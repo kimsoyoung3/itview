@@ -1,10 +1,34 @@
-import React from "react";
+import React, { useEffect } from "react";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import "../../App.css";
 import "./HomePage.css";
 import AdCard from "../../components/AdCard/AdCard"; // CSS 따로 관리
+import { getHomeContents } from "../../API/HomeApi";
 
 const Home = () => {
+
+    const [contents, setContents] = React.useState(null);
+    useEffect(() => {
+        console.log(contents);
+    }, [contents]);
+
+    useEffect(() => {
+        const fetchContents = async () => {
+            try {
+                let data = {};
+                data['MOVIE'] = await getHomeContents('MOVIE', 1).then(response => response.data);
+                data['SERIES'] = await getHomeContents('SERIES', 1).then(response => response.data);
+                data['BOOK'] = await getHomeContents('BOOK', 1).then(response => response.data);
+                data['WEBTOON'] = await getHomeContents('WEBTOON', 1).then(response => response.data);
+                data['RECORD'] = await getHomeContents('RECORD', 1).then(response => response.data);
+                setContents(data);
+            } catch (error) {
+                console.error('Error fetching home contents:', error);
+            }
+        };
+        fetchContents();
+    }, []);
+
     return (
         <div className="container home">
             {/*배너*/}
