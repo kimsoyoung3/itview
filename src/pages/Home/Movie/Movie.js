@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { getContentsByGenre, getGenresByContentType } from "../../../API/HomeApi";
 import "./Movie.css"
+import { toast } from "react-toastify";
 
 const Movie = () => {
 
@@ -20,7 +21,7 @@ const Movie = () => {
             try {
                 setGenre(await getGenresByContentType('movie').then(res => res.data));
             } catch (error) {
-                console.error('Error fetching home contents:', error);
+                toast("데이터를 불러오지 못했습니다.");
             }
         };
         fetchDomain();
@@ -34,7 +35,7 @@ const Movie = () => {
             try {
                 setContents(await getContentsByGenre('movie', select?.first).then(res => res.data));
             } catch (error) {
-                console.error('Error fetching home contents:', error);
+                toast("데이터를 불러오지 못했습니다.");
             }
         };
         fetchContents();

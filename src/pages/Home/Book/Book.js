@@ -1,12 +1,14 @@
 import React, { useEffect, useState } from "react";
-import { getGenresByContentType } from "../../../API/HomeApi";
+import { getContentsByGenre, getGenresByContentType } from "../../../API/HomeApi";
 import "./Book.css"
+import { toast } from "react-toastify";
 
 const Book = () => {
 
     const [genre, setGenre] = useState(null);
     useEffect(() => {
         console.log(genre);
+        setSelect(genre?.[0]);
     }, [genre]);
 
     const [contents, setContents] = useState(null);
@@ -25,12 +27,26 @@ const Book = () => {
         fetchDomain();
     }, []);
 
+    const [select, setSelect] = useState(null);
+    useEffect(() => {
+        if (!select) return;
+        console.log(select);
+        const fetchContents = async () => {
+            try {
+                setContents(await getContentsByGenre('book', select?.first).then(res => res.data));
+            } catch (error) {
+                toast("데이터를 불러오지 못했습니다.");
+            }
+        };
+        fetchContents();
+    }, [select]);
+
     return (
         <div className="book-page container">
             <div className="book-page-wrap">
                 <div className="book-page-tab-btn">
                     {genre?.map(item =>(
-                        <button key={item.id}>{item.second}</button>
+                        <button onClick={() => setSelect(item)} key={item.id}>{item.second}</button>
                     ))}
                 </div>
             </div>
