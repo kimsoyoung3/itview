@@ -63,6 +63,27 @@ public interface ContentRepository extends JpaRepository<ContentEntity, Integer>
             """)
     Page<ContentDTO> searchContents(@Param("keyword") String keyword, @Param("contentType") ContentType contentType, Pageable pageable);
 
+    // 컨텐츠 타입 별 목록 조회 (메인 화면)
+    @Query("""
+        SELECT new com.example.itview_spring.DTO.ContentDTO(
+            c.id,
+            c.title,
+            c.contentType,
+            c.releaseDate,
+            c.poster,
+            c.nation,
+            c.description,
+            c.duration,
+            c.age,
+            c.creatorName,
+            c.channelName
+        )
+        FROM ContentEntity c
+        WHERE c.contentType = :contentType
+        ORDER BY c.releaseDate DESC
+            """)
+    Page<ContentDTO> findByContentType(@Param("contentType") ContentType contentType, Pageable pageable);
+
     @Query("SELECT c FROM ContentEntity c WHERE (:keyword IS NULL OR c.title LIKE %:keyword% OR c.description LIKE %:keyword%) AND (:contentType IS NULL OR c.contentType = :contentType)")
     Page<ContentEntity> searchByKeywordAndType(
             @Param("keyword") String keyword,
