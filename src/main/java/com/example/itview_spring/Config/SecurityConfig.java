@@ -69,13 +69,16 @@ public class SecurityConfig {
         return (request, response, authentication) -> {
             var session = request.getSession(false);
             var isLinkFlow = session != null && Boolean.TRUE.equals(session.getAttribute("LINK_FLOW"));
-            String redirectURL = "http://192.168.100.43:3000/"; // 기본 리다이렉트 URL
+            String redirectURL = "http://localhost:3000/"; // 기본 리다이렉트 URL
+            // String redirectURL = "https://itview.kro.kr/#"; // 기본 리다이렉트 URL
             for (Cookie cookie : request.getCookies()) {
                 if ("REDIRECT_URL".equals(cookie.getName())) {
                     redirectURL = cookie.getValue(); // 세션에 저장된 리다이렉트 URL 사용
+                    System.out.println("Redirect URL from cookie: " + redirectURL);
                     break;
                 }
             }
+            System.out.println("Redirecting to: " + redirectURL);
             // "연동"인 경우에만 이 블록 수행
             if (isLinkFlow && authentication instanceof OAuth2AuthenticationToken oauth) {
                 var principal = oauth.getPrincipal();
@@ -212,8 +215,8 @@ public class SecurityConfig {
     }
 
     // 리다이렉트와 함께 플래시 메시지를 설정하는 메소드
-    private void sendFlashMessageAndRedirect(HttpServletResponse response, String errorMessage, String redirectURL) throws IOException {
-        String encoded = URLEncoder.encode(errorMessage, StandardCharsets.UTF_8).replace("+", "%20");
+    private void sendFlashMessageAndRedirect(HttpServletResponse response, String message, String redirectURL) throws IOException {
+        String encoded = URLEncoder.encode(message, StandardCharsets.UTF_8).replace("+", "%20");
         Cookie flash = new Cookie("FLASH_ERROR", encoded);
         flash.setHttpOnly(false);
         flash.setPath("/");
