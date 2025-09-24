@@ -4,7 +4,8 @@ import "../../App.css";
 import "./Home.css";
 import AdCard from "../../components/AdCard/AdCard"; // CSS 따로 관리
 import { getHomeContents } from "../../API/HomeApi";
-import Footer from "../../components/Footer/Footer"; // CSS 따로 관리
+import Footer from "../../components/Footer/Footer";
+import ContentSwiper from "../../components/ContentSwiper/ContentSwiper"; // CSS 따로 관리
 
 
 const Home = () => {
@@ -30,6 +31,14 @@ const Home = () => {
         };
         fetchContents();
     }, []);
+
+    const domainNameMap = {
+        "MOVIE" : "영화",
+        "SERIES" : "시리즈",
+        "BOOK" : "책",
+        "WEBTOON" : "웹툰",
+        "RECORD" : "음반"
+    }
 
     return (
         <div className="home">
@@ -70,9 +79,13 @@ const Home = () => {
 
                 {/*컨텐츠 라인*/}
                 <div className="home-content">
-                    <h2 className="home-content-title">
-                        잇뷰 영화
-                    </h2>
+                    {contents &&
+                        Object.entries(contents).map(([category, items]) => (
+                            <div key={category}>
+                                <h2 className="home-content-title">{`잇뷰 최신 TOP 10 ${domainNameMap[category]}`}</h2>
+                                <ContentSwiper data={items.content} />
+                            </div>
+                        ))}
                 </div>
             </div>
             <div>

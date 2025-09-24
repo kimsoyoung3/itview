@@ -1,0 +1,8 @@
+.movie-page {
+    margin-top: 114px;
+}
+
+.movie-page-tab-btn {
+    display: flex;
+    gap: 10px;
+}

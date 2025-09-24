@@ -1,16 +1,17 @@
 import React from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
-import { Navigation, Pagination, Autoplay } from "swiper/modules";
+import { Navigation } from "swiper/modules";
 
 import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
 import "./ContentSwiper.css";
+import {NavLink} from "react-router-dom";
 
-export default function ContentSwiper() {
+export default function ContentSwiper({ data =[] }) {
     return (
         <Swiper
-            modules={[Navigation, Pagination, Autoplay]}
+            modules={[Navigation]}
             spaceBetween={16}
             slidesPerView={2}
             navigation
@@ -21,34 +22,21 @@ export default function ContentSwiper() {
             }}
             className="content-swiper"
         >
-
-            {/* 슬라이드 예시 */}
-            <SwiperSlide className="swiper-slide">
-                <div className="slide-image">
-                    <img src={`${process.env.PUBLIC_URL}/image.jpg`} alt="슬라이드 이미지"/>
-                </div>
-                <div className="slide-contentType">
-                    <p className="title">제목</p>
-                    <span>개봉년도</span>
-                    <span className="ps-2 pe-2">&middot;</span>
-                    <span>국가</span>
-                </div>
-            </SwiperSlide>
-
-            <SwiperSlide className="swiper-slide">
-                <div className="slide-image">
-                    <img src={`${process.env.PUBLIC_URL}/image.jpg`} alt="슬라이드 이미지"/>
-                </div>
-                <div className="slide-contentType">
-                    <p className="title">제목</p>
-                    <span>개봉년도</span>
-                    <span className="ps-2 pe-2">&middot;</span>
-                    <span>국가</span>
-                </div>
-            </SwiperSlide>
-
-            {/* 추가 슬라이드는 SwiperSlide를 반복해서 사용 */}
-
+            {data.map((item, idx) => (
+                <SwiperSlide key={item.id || idx} className="swiper-slide">
+                    <NavLink to={`/content/${item?.id}`}>
+                        <div className="slide-image">
+                            <img src={item.poster ? item.poster : `${process.env.PUBLIC_URL}/basic-bg.jpg`} alt="슬라이드 이미지"/>
+                        </div>
+                        <div className="slide-contentType">
+                            <p className="title">{item.title}</p>
+                            <span>{(new Date(item.releaseDate).getFullYear())}</span>
+                            <span className="ps-2 pe-2">&middot;</span>
+                            <span>{item.nation}</span>
+                        </div>
+                    </NavLink>
+                </SwiperSlide>
+            ))}
         </Swiper>
     );
 }

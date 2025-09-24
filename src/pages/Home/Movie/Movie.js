@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { getGenresByContentType } from "../../../API/HomeApi";
+import "./Movie.css"
 
 const Movie = () => {
 
@@ -25,8 +26,17 @@ const Movie = () => {
     }, []);
 
     return (
-        <div>
-            Movie
+        <div className="movie-page container">
+            <div className="movie-page-wrap">
+                <div className="movie-page-tab-btn">
+                    {genre?.map(item =>(
+                            <div key={item.id}>
+                                <button>{item.second}</button>
+                            </div>
+                    ))}
+
+                </div>
+            </div>
         </div>
     );
 }
