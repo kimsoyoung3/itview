@@ -1,6 +1,12 @@
 import React, { useEffect, useState } from "react";
+import { getGenresByContentType } from "../../../API/HomeApi";
 
 const Movie = () => {
+
+    const [domain, setDomain] = useState(null);
+    useEffect(() => {
+        console.log(domain);
+    }, [domain]);
 
     const [contents, setContents] = useState(null);
     useEffect(() => {
@@ -10,8 +16,7 @@ const Movie = () => {
     useEffect(() => {
         const fetchContents = async () => {
             try {
-                // let data = await getHomeContents('MOVIE', 1).then(response => response.data);
-                // setContents(data);
+                setDomain(await getGenresByContentType('movie').then(res => res.data));
             } catch (error) {
                 console.error('Error fetching home contents:', error);
             }
