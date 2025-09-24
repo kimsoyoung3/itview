@@ -60,4 +60,9 @@ public class HomeRestController {
     public ResponseEntity<List<Channel>> getWebtoonChannels() {
         return ResponseEntity.ok(homeService.getWebtoonChannels());
     }
+
+    @GetMapping("/record/genre")
+    public ResponseEntity<List<Genre>> getRecordGenres() {
+        return ResponseEntity.ok(homeService.getRecordGenres());
+    }
 }

@@ -57,4 +57,9 @@ public class HomeService {
     public List<Channel> getWebtoonChannels() {
         return contentRepository.findChannelsByContentType(ContentType.WEBTOON);
     }
+
+    // 음반 장르 목록 조회
+    public List<Genre> getRecordGenres() {
+        return contentRepository.findGenresByContentType(ContentType.RECORD);
+    }
 }
