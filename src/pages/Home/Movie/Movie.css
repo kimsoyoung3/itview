@@ -18,7 +18,7 @@
 
 .movie-page-tab-btn>button:hover {
     background: #22c55e;
-    border: 0;
+    border-color: #22c55e;
     color: #ffffff;
 }
 
