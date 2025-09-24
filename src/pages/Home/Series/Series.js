@@ -1,12 +1,17 @@
 import React, { useEffect, useState } from "react";
-import { getGenresByContentType } from "../../../API/HomeApi";
+import { getChannelsByContentType, getGenresByContentType } from "../../../API/HomeApi";
 
-const Movie = () => {
+const Series = () => {
 
     const [genre, setGenre] = useState(null);
     useEffect(() => {
         console.log(genre);
     }, [genre]);
+
+    const [channel, setChannel] = useState(null);
+    useEffect(() => {
+        console.log(channel);
+    }, [channel]);
 
     const [contents, setContents] = useState(null);
     useEffect(() => {
@@ -16,7 +21,8 @@ const Movie = () => {
     useEffect(() => {
         const fetchDomain = async () => {
             try {
-                setGenre(await getGenresByContentType('movie').then(res => res.data));
+                setGenre(await getGenresByContentType('series').then(res => res.data));
+                setChannel(await getChannelsByContentType('series').then(res => res.data));
             } catch (error) {
                 console.error('Error fetching home contents:', error);
             }
@@ -31,4 +37,4 @@ const Movie = () => {
     );
 }
 
-export default Movie;
+export default Series;
