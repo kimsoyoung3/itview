@@ -18,6 +18,7 @@ import com.example.itview_spring.Constant.Channel;
 import com.example.itview_spring.Constant.ContentType;
 import com.example.itview_spring.Constant.Genre;
 import com.example.itview_spring.DTO.ContentDTO;
+import com.example.itview_spring.DTO.HomeContentDTO;
 import com.example.itview_spring.Service.HomeService;
 
 import lombok.RequiredArgsConstructor;
@@ -30,8 +31,8 @@ public class HomeRestController {
     private final HomeService homeService;
 
     @GetMapping
-    public ResponseEntity<Page<ContentDTO>> getHomeContent(@PageableDefault(page = 1) Pageable pageable, @RequestParam("contentType") String contentType) {
-        return ResponseEntity.ok(homeService.getContentsByContentType(ContentType.valueOf(contentType.toUpperCase()), pageable.getPageNumber()));
+    public ResponseEntity<HomeContentDTO> getHomeContent() {
+        return ResponseEntity.ok(homeService.getHomeContent());
     }
 
     @GetMapping("/{contentType}/genre")

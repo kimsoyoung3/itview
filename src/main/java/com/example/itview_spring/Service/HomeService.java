@@ -11,6 +11,7 @@ import com.example.itview_spring.Constant.Channel;
 import com.example.itview_spring.Constant.ContentType;
 import com.example.itview_spring.Constant.Genre;
 import com.example.itview_spring.DTO.ContentDTO;
+import com.example.itview_spring.DTO.HomeContentDTO;
 import com.example.itview_spring.Repository.ContentRepository;
 
 import lombok.RequiredArgsConstructor;
@@ -21,11 +22,15 @@ public class HomeService {
     
     private final ContentRepository contentRepository;
 
-    // 컨텐츠 타입 별 목록 조회 (메인 화면)
-    public Page<ContentDTO> getContentsByContentType(ContentType contentType, int page) {
-        Pageable pageable = PageRequest.of(page - 1, 10);
-
-        return contentRepository.findByContentType(contentType, pageable);
+    // 메인 화면 컨텐츠 조회
+    public HomeContentDTO getHomeContent() {
+        HomeContentDTO homeContent = new HomeContentDTO();
+        homeContent.setMovie(contentRepository.findByContentType(ContentType.MOVIE));
+        homeContent.setSeries(contentRepository.findByContentType(ContentType.SERIES));
+        homeContent.setBook(contentRepository.findByContentType(ContentType.BOOK));
+        homeContent.setWebtoon(contentRepository.findByContentType(ContentType.WEBTOON));
+        homeContent.setRecord(contentRepository.findByContentType(ContentType.RECORD));
+        return homeContent;
     }
 
     // 장르 목록 조회

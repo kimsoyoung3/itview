@@ -85,8 +85,9 @@ public interface ContentRepository extends JpaRepository<ContentEntity, Integer>
         FROM ContentEntity c
         WHERE c.contentType = :contentType
         ORDER BY c.releaseDate DESC
+        LIMIT 10
             """)
-    Page<ContentDTO> findByContentType(@Param("contentType") ContentType contentType, Pageable pageable);
+    List<ContentDTO> findByContentType(@Param("contentType") ContentType contentType);
 
     // 컨텐츠 타입 별 장르 목록 조회
     @Query("SELECT DISTINCT cg.genre FROM ContentGenreEntity cg WHERE cg.content.contentType = :contentType")
