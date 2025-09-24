@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.example.itview_spring.Constant.Channel;
 import com.example.itview_spring.Constant.ContentType;
 import com.example.itview_spring.Constant.Genre;
 import com.example.itview_spring.DTO.ContentDTO;
@@ -35,5 +36,13 @@ public class HomeRestController {
         return ResponseEntity.ok(homeService.getMovieGenres());
     }
 
-    
+    @GetMapping("/series/genre")
+    public ResponseEntity<List<Genre>> getSeriesGenres() {
+        return ResponseEntity.ok(homeService.getSeriesGenres());
+    }
+
+    @GetMapping("/series/channel")
+    public ResponseEntity<List<Channel>> getSeriesChannels() {
+        return ResponseEntity.ok(homeService.getSeriesChannels());
+    }
 }

@@ -7,6 +7,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import com.example.itview_spring.Constant.Channel;
 import com.example.itview_spring.Constant.ContentType;
 import com.example.itview_spring.Constant.Genre;
 import com.example.itview_spring.DTO.ContentDTO;
@@ -30,5 +31,15 @@ public class HomeService {
     // 영화 장르 목록 조회
     public List<Genre> getMovieGenres() {
         return contentRepository.findGenresByContentType(ContentType.MOVIE);
+    }
+
+    // 시리즈 장르 목록 조회
+    public List<Genre> getSeriesGenres() {
+        return contentRepository.findGenresByContentType(ContentType.SERIES);
+    }
+
+    // 시리즈 채널 목록 조회
+    public List<Channel> getSeriesChannels() {
+        return contentRepository.findChannelsByContentType(ContentType.SERIES);
     }
 }

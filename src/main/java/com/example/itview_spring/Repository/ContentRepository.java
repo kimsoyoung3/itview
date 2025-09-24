@@ -1,5 +1,6 @@
 package com.example.itview_spring.Repository;
 
+import com.example.itview_spring.Constant.Channel;
 import com.example.itview_spring.Constant.ContentType;
 import com.example.itview_spring.Constant.Genre;
 import com.example.itview_spring.DTO.ContentDTO;
@@ -90,6 +91,10 @@ public interface ContentRepository extends JpaRepository<ContentEntity, Integer>
     // 컨텐츠 타입 별 장르 목록 조회
     @Query("SELECT DISTINCT cg.genre FROM ContentGenreEntity cg WHERE cg.content.contentType = :contentType")
     List<Genre> findGenresByContentType(@Param("contentType") ContentType contentType);
+
+    // 컨텐츠 타입 별 채널 목록 조회
+    @Query("SELECT DISTINCT c.channelName FROM ContentEntity c WHERE c.contentType = :contentType AND c.channelName IS NOT NULL")
+    List<Channel> findChannelsByContentType(@Param("contentType") ContentType contentType);
 
     @Query("SELECT c FROM ContentEntity c WHERE (:keyword IS NULL OR c.title LIKE %:keyword% OR c.description LIKE %:keyword%) AND (:contentType IS NULL OR c.contentType = :contentType)")
     Page<ContentEntity> searchByKeywordAndType(
