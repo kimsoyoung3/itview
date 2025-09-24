@@ -47,4 +47,14 @@ public class HomeService {
     public List<Genre> getBookGenres() {
         return contentRepository.findGenresByContentType(ContentType.BOOK);
     }
+
+    // 웹툰 장르 목록 조회
+    public List<Genre> getWebtoonGenres() {
+        return contentRepository.findGenresByContentType(ContentType.WEBTOON);
+    }
+
+    // 웹툰 채널 목록 조회
+    public List<Channel> getWebtoonChannels() {
+        return contentRepository.findChannelsByContentType(ContentType.WEBTOON);
+    }
 }

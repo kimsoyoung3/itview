@@ -50,4 +50,14 @@ public class HomeRestController {
     public ResponseEntity<List<Genre>> getBookGenres() {
         return ResponseEntity.ok(homeService.getBookGenres());
     }
+
+    @GetMapping("/webtoon/genre")
+    public ResponseEntity<List<Genre>> getWebtoonGenres() {
+        return ResponseEntity.ok(homeService.getWebtoonGenres());
+    }
+
+    @GetMapping("/webtoon/channel")
+    public ResponseEntity<List<Channel>> getWebtoonChannels() {
+        return ResponseEntity.ok(homeService.getWebtoonChannels());
+    }
 }
