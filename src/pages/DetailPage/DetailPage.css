@@ -456,6 +456,7 @@
 
 .my-comment-btn>button>p {
     margin-bottom: 0;
+    white-space: nowrap;
 }
 
 .my-comment-btn>button:nth-of-type(1)::before {
@@ -508,22 +509,17 @@
     cursor: pointer;
 }
 
-.credit-prev.swiper-button-disabled,
-.credit-next.swiper-button-disabled {
-    display: none !important;
-}
-
 .credit-prev:hover,
 .credit-next:hover {
     background: rgba(0,0,0,0.6);
 }
 
 .credit-prev {
-    left: -50px;
+    left: -40px;
 }
 
 .credit-next {
-    right: -50px;
+    right: -40px;
 }
 
 .credit-grid>div {
@@ -666,8 +662,11 @@
     z-index: 10;
 }
 
-/*모바일 사이즈*/
-@media (max-width: 480px) {
+/* 모바일 사이즈 */
+@media (max-width: 768px) {
+    .detail {
+        margin-bottom: 120px;
+    }
     .container {
         padding: 0 15px;
     }
@@ -681,26 +680,37 @@
         align-items: center;
     }
 
-    .detail-content-inner-poster {
-        width: 100%;
-        max-width: 280px;
-    }
-
     .info-top {
         width: 100%;
         flex-direction: column;
         text-align: center;
     }
 
-    .info-top-left, .info-top-center {
+    .info-top-left,
+    .info-top-center {
         width: 100%;
         padding-bottom: 15px;
         margin-bottom: 15px;
         border-bottom: 1px solid #d9d9d9;
     }
 
-    .info-middle {
-        padding: 15px 0;
+    .detail-content-inner-poster {
+        width: 100%;
+        max-width: 280px;
+    }
+
+    .comment-inner {
+        width: 100%;
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .gallery-prev,
+    .gallery-next,
+    .video-prev,
+    .video-next,
+    .credit-prev,
+    .credit-next {
+        display: none;
     }
 
     .my-comment-content {
@@ -713,45 +723,26 @@
         border-radius: 50%;
     }
 
-    .my-comment-content-image>img {
+    .my-comment-content-image > img {
         display: block;
         border-radius: 50%;
         width: 100%;
     }
 
-    .my-comment-content>p {
+    .my-comment-content > p {
         width: 80%;
         margin: 0;
         text-align: center;
     }
+}
+
+/*모바일 사이즈*/
+@media (max-width: 480px) {
+    .info-middle {
+        padding: 15px 0;
+    }
 
     .comment-inner {
-        width: 100%;
-        grid-template-columns: repeat(1, 1fr); /* 4등분 고정 */
+        grid-template-columns: repeat(1, 1fr);
     }
-
-    .credit-prev,
-    .credit-next {
-        top: 100%;
-    }
-
-    .credit-prev {
-        left: 40%;
-        transform: translateX(-50%);
-    }
-
-    .credit-next {
-        right: 40%;
-        transform: translateX(-50%);
-    }
-
-    .gallery-prev,
-    .gallery-next,
-    .video-prev,
-    .video-next,
-    .credit-prev,
-    .credit-next{
-        display: none;
-    }
-
 }

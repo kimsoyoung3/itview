@@ -1,6 +1,7 @@
 .comment-page {
     margin-top: 114px;
     max-width: 800px;
+    height: 100%;
 }
 
 .comment-page-title {
@@ -24,20 +25,21 @@
     width: 100%;
 }
 
-/* 📱 반응형 스타일 */
-
-/*노트북 사이즈*/
-@media (max-width: 1024px) {
-}
-
 /*태블릿 사이즈*/
 @media (max-width: 768px) {
+    .comment-page {
+        height: 100%;
+        margin-top: 24px;
+        margin-bottom: 50px;
+        max-width: 800px;
+    }
 }
 
 /*모바일 사이즈*/
 @media (max-width: 480px) {
     .comment-page {
-        margin-top: 84px;
+        margin-top: 24px;
+        margin-bottom: 50px;
         max-width: 800px;
     }
 }

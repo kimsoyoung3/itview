@@ -71,11 +71,15 @@ function UserContentWishPage({ userInfo, openLogin }) {
 
                 {/*컨텐츠 리스트*/}
                 {wishlist?.content?.length > 0 ? (
-                    <div className="user-wish-page-content-list">
-                        {wishlist.content.map(item => (
-                            <ContentEach key={item.id} ratingData={{content : item}} ratingType={'avg'}/>
-                        ))}
+                    <div>
+                        <div className="user-wish-page-content-list">
+                            {wishlist.content.map(item => (
+                                <ContentEach key={item.id} ratingData={{content : item}} ratingType={'avg'}/>
+                            ))}
+                        </div>
+
                         <div className="wish-page-content-list-btn" style={{display: wishlist?.page?.number + 1 === wishlist?.page?.totalPages ? "none" : ""}}><button onClick={handleMoreClick}>더보기</button></div>
+
                     </div>
                 ) : (
                     <p className="empty-message">보고싶어요한 작품이 없습니다 :)</p>

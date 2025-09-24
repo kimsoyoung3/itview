@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import {Link, NavLink, useLocation, useNavigate} from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './Header.css';
@@ -130,6 +130,23 @@ const Header = ({ userInfo, handleLogin, handleLogout, isLoginOpen, openLogin, c
        /* setSearchKeyword(""); // 검색 후 입력 초기화*/
     };
 
+    // 모바일 드롭업
+    const [menuOpen, setMenuOpen] = useState(false);
+    const menuRef = useRef(null);
+
+    useEffect(() => {
+        const handleClickOutside = (e) => {
+            if (menuRef.current && !menuRef.current.contains(e.target)) {
+                setMenuOpen(false);
+            }
+        };
+        document.addEventListener("mousedown", handleClickOutside);
+        return () => document.removeEventListener("mousedown", handleClickOutside);
+    }, []);
+
+    const toggleMenu = () => setMenuOpen(prev => !prev);
+
+
     return (
         <>
             {/* 헤더 */}
@@ -198,6 +215,99 @@ const Header = ({ userInfo, handleLogin, handleLogout, isLoginOpen, openLogin, c
                                 <button onClick={openSignup} className="signUp-button">회원가입</button>
                             </div>
                         )}
+                    </div>
+                </div>
+            </header>
+
+            <header className="mobile-header">
+                <div className="mobile-header-inner" ref={menuRef}>
+                    {userInfo ? (
+                        <div className="mobile-header-menu-login">
+                            <div className="mobile-header-menu-list" onClick={toggleMenu}>
+                                <div>
+                                    <img className="mobile-menu-icon" src={`${process.env.PUBLIC_URL}/mobile-icon/mobile-menu.svg`} alt=""/>
+                                </div>
+                                <p className="mobile-menu-name">메뉴</p>
+                            </div>
+
+                            <div className="mobile-header-menu-list">
+                                <div>
+                                    <img className="mobile-menu-icon" src={`${process.env.PUBLIC_URL}/mobile-icon/mobile-search.svg`} alt=""/>
+                                </div>
+                                <p className="mobile-menu-name">검색</p>
+                            </div>
+
+                            <div className="mobile-header-menu-list">
+                                <div>
+                                    <NavLink to="/">
+                                        <img className="mobile-menu-icon" src={`${process.env.PUBLIC_URL}/mobile-icon/mobile-home.svg`} alt=""/>
+                                    </NavLink>
+                                </div>
+                                <p className="mobile-menu-name">홈</p>
+                            </div>
+
+                            <div className="mobile-header-menu-list">
+                                <div>
+                                    <Link to={`/user/${userInfo}`} className="login-button">
+                                        <img className="mobile-menu-icon" src={`${process.env.PUBLIC_URL}/mobile-icon/mobile-user-profile.svg`} alt=""/>
+                                    </Link>
+                                </div>
+                                <p className="mobile-menu-name">마이페이지</p>
+                            </div>
+
+                            <div className="mobile-header-menu-list">
+                                <div>
+                                    <button onClick={handleLogout} className="login-button">
+                                        <img className="mobile-menu-icon" src={`${process.env.PUBLIC_URL}/mobile-icon/mobile-logout.svg`} alt=""/>
+                                    </button>
+                                </div>
+                                <p className="mobile-menu-name">로그아웃</p>
+                            </div>
+                        </div>
+                    ) : (
+                        <div className="mobile-header-menu">
+                            <div className="mobile-header-menu-list" onClick={toggleMenu}>
+                                <div>
+                                    <img className="mobile-menu-icon" src={`${process.env.PUBLIC_URL}/mobile-icon/mobile-menu.svg`} alt=""/>
+                                </div>
+                                <p className="mobile-menu-name">메뉴</p>
+                            </div>
+
+                            <div className="mobile-header-menu-list">
+                                <div>
+                                    <img className="mobile-menu-icon" src={`${process.env.PUBLIC_URL}/mobile-icon/mobile-search.svg`} alt=""/>
+                                </div>
+                                <p className="mobile-menu-name">검색</p>
+                            </div>
+
+                            <div className="mobile-header-menu-list">
+                                <div>
+                                    <NavLink to="/">
+                                        <img className="mobile-menu-icon" src={`${process.env.PUBLIC_URL}/mobile-icon/mobile-home.svg`} alt=""/>
+                                    </NavLink>
+                                </div>
+                                <p className="mobile-menu-name">홈</p>
+                            </div>
+
+                            <div className="mobile-header-menu-list">
+                                <div>
+                                    <button onClick={openLogin} className="login-button">
+                                        <img className="mobile-menu-icon" src={`${process.env.PUBLIC_URL}/mobile-icon/mobile-user-profile.svg`} alt=""/>
+                                    </button>
+                                </div>
+                                <p className="mobile-menu-name">로그인</p>
+                            </div>
+                        </div>
+                    )}
+
+                    <div className={`mobile-header-menu-tab-bar ${menuOpen ? "open" : "close"}`}>
+                        <ul className="mobile-header-menu-tab-bar-menu">
+                            <li><NavLink to="/movies">영화</NavLink></li>
+                            <li><NavLink to="/series">시리즈</NavLink></li>
+                            <li><NavLink to="/books">책</NavLink></li>
+                            <li><NavLink to="/webtoons">웹툰</NavLink></li>
+                            <li><NavLink to="/music">음악</NavLink></li>
+                        </ul>
                     </div>
                 </div>
             </header>

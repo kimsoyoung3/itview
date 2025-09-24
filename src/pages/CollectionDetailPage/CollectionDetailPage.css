@@ -258,6 +258,7 @@
     padding: 5px 20px;
     border-radius: 5px;
     font-weight: 600;
+    font-size: 0.9rem;
 }
 
 .user-collection-detail-content-list-btn:hover {
@@ -357,13 +358,23 @@
 }
 
 
+
+/*태블릿 사이즈*/
+@media (max-width: 768px) {
+    .user-collection-detail-page {
+        margin-top: 50px;
+        margin-bottom: 80px;
+        width: 100% !important;
+        padding: 0;
+    }
+}
+
 /*모바일 사이즈*/
 @media (max-width: 480px) {
     .user-collection-detail-page {
-        margin-top: 50px;
-        margin-bottom: 0;
+        margin-top: 0;
+        margin-bottom: 50px;
         width: 100% !important;
-        padding: 0;
     }
 
     .user-collection-detail-page-wrap {

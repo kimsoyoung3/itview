@@ -118,11 +118,17 @@
 }
 
 .rating-page-content-list-btn>button {
-    border: none;
-    background: #d9d9d9;
-    color: #888888;
-    padding: 8px 20px;
+    border: 1px solid #888888;
+    background: none;
+    color: #555555;
+    padding: 5px 20px;
     border-radius: 5px;
+    font-weight: 600;
+    font-size: 0.9rem;
+}
+
+.rating-page-content-list-btn>button:hover {
+    background: #d9d9d9;
 }
 
 .empty-message {

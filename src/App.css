@@ -16,7 +16,9 @@ a {
 
 body {
   font-family: "Pretendard Variable", Pretendard, "Noto Sans KR", "Malgun Gothic", sans-serif;
+  height: 100%;
 }
+
 
 .Toastify__toast {
   width: max-content !important;

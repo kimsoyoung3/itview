@@ -317,3 +317,27 @@
     color: #888888;
 }
 
+/*태블릿 사이즈*/
+@media (max-width: 768px) {
+    .user-collection-add-page {
+        margin-top: 50px;
+        margin-bottom: 80px;
+        width: 100% !important;
+        padding: 0;
+    }
+}
+
+/*모바일 사이즈*/
+@media (max-width: 480px) {
+    .user-collection-add-page {
+        margin-top: 0;
+        width: 100% !important;
+        padding: 20px 15px;
+        margin-bottom: 50px;
+    }
+
+    .user-collection-add-image-list {
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+}
+

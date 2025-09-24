@@ -10,10 +10,36 @@
     padding: 40px 0;
 }
 
+.mobile-text {
+    display: none;
+}
+/*태블릿 사이즈*/
+@media (max-width: 768px) {
+    .comment-detail-page {
+        margin-top: 30px;
+    }
+}
+
 /*모바일 사이즈*/
 @media (max-width: 480px) {
     .comment-detail-page {
-        margin-top: 84px;
+        margin-top: 50px;
+    }
+
+    .mobile-text {
+        display: block;
+        text-align: center;
+        font-size: 1rem;
+        padding: 15px 0;
+        margin-bottom: 0;
+        color: #555555;
+        font-weight: bold;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        background-color: #ffffff;
+        /*box-shadow: 0 0 4px rgba(0,0,0,0.1);*/
     }
 
 }

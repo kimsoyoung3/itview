@@ -209,18 +209,6 @@ const DetailPage = ({userInfo, openLogin}) => {
     /*스와이퍼 레퍼런스*/
     const swiperRef = useRef(null);
 
-    const [swiperPage, setSwiperPage] = useState(1);
-    
-    /*이전 버튼 핸들러*/
-    const handlePrev = () => {
-        swiperRef.current.swiper.slidePrev();
-    }
-
-    /*다음 버튼 핸들러*/
-    const handleNext = () => {
-        swiperRef.current.swiper.slideNext();
-    }
-
     const loadMoreRef = useRef(null);
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -542,14 +530,15 @@ const DetailPage = ({userInfo, openLogin}) => {
                                 modules={[Navigation]}
                                 spaceBetween={20}
                                 slidesPerView={4}   // ✅ 슬라이드 하나 안에 그리드 넣기
+                                slidesPerGroup={4}
                                 navigation={{
                                     prevEl: ".credit-prev",
                                     nextEl: ".credit-next",
                                 }}
                                 breakpoints={{
-                                    480: {slidesPerView: 1},
-                                    768: {slidesPerView: 2},
-                                    1020: {slidesPerView: 3},
+                                    480: {slidesPerView: 1 , slidesPerGroup: 1 },
+                                    768: {slidesPerView: 2,  slidesPerGroup: 2 },
+                                    1020: {slidesPerView: 4,  slidesPerGroup: 4 },
                                 }}
                                 className="credit-swiper"
                             >
@@ -564,10 +553,12 @@ const DetailPage = ({userInfo, openLogin}) => {
                                     </SwiperSlide>
                                 ))}
                             </Swiper>
+
                         </div>
 
-                        <div className={`credit-prev`} onClick={handlePrev}><img src={`${process.env.PUBLIC_URL}/icon/arrow-left.svg`} alt=""/></div>
-                        <div className={`credit-next`} onClick={handleNext}><img src={`${process.env.PUBLIC_URL}/icon/arrow-right.svg`} alt=""/></div>
+                        <div className={`credit-prev`}><img src={`${process.env.PUBLIC_URL}/icon/arrow-left.svg`} alt=""/></div>
+                        <div className={`credit-next`}><img src={`${process.env.PUBLIC_URL}/icon/arrow-right.svg`} alt=""/></div>
+
                     </div>
 
                     ) : (

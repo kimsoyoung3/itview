@@ -109,7 +109,7 @@ const CommentCard = ({ comment, content, userInfo, openLogin, newReply, onDelete
     if (!commentData) return null;
 
     return (
-        <div className="comment-card container">
+        <div className="comment-card">
 
             {/* 헤더 */}
             <NavLink to={`/user/${commentData.user?.id}`} className="comment-card-header">

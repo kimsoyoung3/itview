@@ -83,6 +83,7 @@ const CommentDetailPage = ({userInfo, openLogin}) => {
     return(notFound ? <NotFound /> :
         <div className="comment-detail-page container">
             <div className="comment-detail-page-content">
+                <h1 className="mobile-text">코멘트</h1>
                 <CommentCard comment={comment?.comment} content={comment?.content} userInfo={userInfo} openLogin={openLogin} newReply={newReply} onDelete={onDelete}/>
 
                 {replies.length > 0 ? (

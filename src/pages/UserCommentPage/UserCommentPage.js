@@ -161,8 +161,8 @@ function UserCommentPage({ userInfo, openLogin }) {
 
                     {commentList[contentType]?.content?.length > 0 && (
                         <div className="comment-page-tab-btn-box">
-                        <button className="comment-page-tab-content-btn" onClick={handleClickMore}
-                                style={{display: commentList[contentType]?.page?.number + 1 === commentList[contentType]?.page?.totalPages ? "none" : ""}}>더보기</button>
+                            <button className="comment-page-tab-content-btn" onClick={handleClickMore}
+                                    style={{display: commentList[contentType]?.page?.number + 1 === commentList[contentType]?.page?.totalPages ? "none" : ""}}>더보기</button>
                         </div>
                     )}
 

@@ -79,7 +79,7 @@ const ReplyCard = ({ reply, userInfo, openLogin }) => {
     if (!replyData) return null;
 
     return (
-        <div className="reply-card container">
+        <div className="reply-card">
             <div className="reply-card-wrap">
 
                 {/* 좌측: 댓글 정보 */}

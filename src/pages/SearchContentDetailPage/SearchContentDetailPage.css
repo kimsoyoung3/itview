@@ -35,6 +35,11 @@
     padding: 5px 20px;
     border-radius: 5px;
     font-weight: 600;
+    font-size: 0.9rem;
+}
+
+.search-content-more-btn>button:hover {
+    background: #d9d9d9;
 }
 
 /*모바일 사이즈*/
