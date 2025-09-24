@@ -1,9 +1,11 @@
 package com.example.itview_spring.Controller.Home;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.util.Pair;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -33,8 +35,13 @@ public class HomeRestController {
     }
 
     @GetMapping("/{contentType}/genre")
-    public ResponseEntity<List<Genre>> getGenres(@PathVariable String contentType) {
-        return ResponseEntity.ok(homeService.getGenres(ContentType.valueOf(contentType.toUpperCase())));
+    public ResponseEntity<List<Pair<String, String>>> getGenres(@PathVariable String contentType) {
+        List<Genre> genres = homeService.getGenres(ContentType.valueOf(contentType.toUpperCase()));
+        List<Pair<String, String>> genrePairs = new ArrayList<>();
+        for (Genre genre : genres) {
+            genrePairs.add(Pair.of(genre.name(), genre.getGenreName()));
+        }
+        return ResponseEntity.ok(genrePairs);
     }
 
     @GetMapping("/{contentType}/genre/{genre}")
@@ -43,8 +50,13 @@ public class HomeRestController {
     }
 
     @GetMapping("/{contentType}/channel")
-    public ResponseEntity<List<Channel>> getChannels(@PathVariable String contentType) {
-        return ResponseEntity.ok(homeService.getChannels(ContentType.valueOf(contentType.toUpperCase())));
+    public ResponseEntity<List<Pair<String, String>>> getChannels(@PathVariable String contentType) {
+        List<Channel> channels = homeService.getChannels(ContentType.valueOf(contentType.toUpperCase()));
+        List<Pair<String, String>> channelPairs = new ArrayList<>();
+        for (Channel channel : channels) {
+            channelPairs.add(Pair.of(channel.name(), channel.getDescription()));
+        }
+        return ResponseEntity.ok(channelPairs);
     }
 
     @GetMapping("/{contentType}/channel/{channel}")
