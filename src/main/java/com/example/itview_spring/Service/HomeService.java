@@ -28,38 +28,25 @@ public class HomeService {
         return contentRepository.findByContentType(contentType, pageable);
     }
 
-    // 영화 장르 목록 조회
-    public List<Genre> getMovieGenres() {
-        return contentRepository.findGenresByContentType(ContentType.MOVIE);
+    // 장르 목록 조회
+    public List<Genre> getGenres(ContentType contentType) {
+        return contentRepository.findGenresByContentType(contentType);
     }
 
-    // 시리즈 장르 목록 조회
-    public List<Genre> getSeriesGenres() {
-        return contentRepository.findGenresByContentType(ContentType.SERIES);
+    // 채널 목록 조회
+    public List<Channel> getChannels(ContentType contentType) {
+        return contentRepository.findChannelsByContentType(contentType);
     }
 
-    // 시리즈 채널 목록 조회
-    public List<Channel> getSeriesChannels() {
-        return contentRepository.findChannelsByContentType(ContentType.SERIES);
+    // 장르 별 컨텐츠 조회
+    public Page<ContentDTO> getContentsByGenre(ContentType contentType, Genre genre, int page) {
+        Pageable pageable = PageRequest.of(page - 1, 10);
+        return contentRepository.findByContentTypeAndGenre(contentType, genre, pageable);
     }
 
-    // 도서 장르 목록 조회
-    public List<Genre> getBookGenres() {
-        return contentRepository.findGenresByContentType(ContentType.BOOK);
-    }
-
-    // 웹툰 장르 목록 조회
-    public List<Genre> getWebtoonGenres() {
-        return contentRepository.findGenresByContentType(ContentType.WEBTOON);
-    }
-
-    // 웹툰 채널 목록 조회
-    public List<Channel> getWebtoonChannels() {
-        return contentRepository.findChannelsByContentType(ContentType.WEBTOON);
-    }
-
-    // 음반 장르 목록 조회
-    public List<Genre> getRecordGenres() {
-        return contentRepository.findGenresByContentType(ContentType.RECORD);
+    // 채널 별 컨텐츠 조회
+    public Page<ContentDTO> getContentsByChannel(ContentType contentType, Channel channel, int page) {
+        Pageable pageable = PageRequest.of(page - 1, 10);
+        return contentRepository.findByContentTypeAndChannel(contentType, channel, pageable);
     }
 }

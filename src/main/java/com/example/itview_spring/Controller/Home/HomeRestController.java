@@ -7,6 +7,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -31,38 +32,23 @@ public class HomeRestController {
         return ResponseEntity.ok(homeService.getContentsByContentType(ContentType.valueOf(contentType.toUpperCase()), pageable.getPageNumber()));
     }
 
-    @GetMapping("/movie/genre")
-    public ResponseEntity<List<Genre>> getMovies() {
-        return ResponseEntity.ok(homeService.getMovieGenres());
+    @GetMapping("/{contentType}/genre")
+    public ResponseEntity<List<Genre>> getGenres(@PathVariable String contentType) {
+        return ResponseEntity.ok(homeService.getGenres(ContentType.valueOf(contentType.toUpperCase())));
     }
 
-    @GetMapping("/series/genre")
-    public ResponseEntity<List<Genre>> getSeriesGenres() {
-        return ResponseEntity.ok(homeService.getSeriesGenres());
+    @GetMapping("/{contentType}/genre/{genre}")
+    public ResponseEntity<Page<ContentDTO>> getContentsByGenre(@PathVariable String contentType, @PathVariable String genre, @PageableDefault(page = 1) Pageable pageable) {
+        return ResponseEntity.ok(homeService.getContentsByGenre(ContentType.valueOf(contentType.toUpperCase()), Genre.valueOf(genre.toUpperCase()), pageable.getPageNumber()));
     }
 
-    @GetMapping("/series/channel")
-    public ResponseEntity<List<Channel>> getSeriesChannels() {
-        return ResponseEntity.ok(homeService.getSeriesChannels());
+    @GetMapping("/{contentType}/channel")
+    public ResponseEntity<List<Channel>> getChannels(@PathVariable String contentType) {
+        return ResponseEntity.ok(homeService.getChannels(ContentType.valueOf(contentType.toUpperCase())));
     }
 
-    @GetMapping("/book/genre")
-    public ResponseEntity<List<Genre>> getBookGenres() {
-        return ResponseEntity.ok(homeService.getBookGenres());
-    }
-
-    @GetMapping("/webtoon/genre")
-    public ResponseEntity<List<Genre>> getWebtoonGenres() {
-        return ResponseEntity.ok(homeService.getWebtoonGenres());
-    }
-
-    @GetMapping("/webtoon/channel")
-    public ResponseEntity<List<Channel>> getWebtoonChannels() {
-        return ResponseEntity.ok(homeService.getWebtoonChannels());
-    }
-
-    @GetMapping("/record/genre")
-    public ResponseEntity<List<Genre>> getRecordGenres() {
-        return ResponseEntity.ok(homeService.getRecordGenres());
+    @GetMapping("/{contentType}/channel/{channel}")
+    public ResponseEntity<Page<ContentDTO>> getContentsByChannel(@PathVariable String contentType, @PathVariable String channel, @PageableDefault(page = 1) Pageable pageable) {
+        return ResponseEntity.ok(homeService.getContentsByChannel(ContentType.valueOf(contentType.toUpperCase()), Channel.valueOf(channel.toUpperCase()), pageable.getPageNumber()));
     }
 }

@@ -96,6 +96,49 @@ public interface ContentRepository extends JpaRepository<ContentEntity, Integer>
     @Query("SELECT DISTINCT c.channelName FROM ContentEntity c WHERE c.contentType = :contentType AND c.channelName IS NOT NULL")
     List<Channel> findChannelsByContentType(@Param("contentType") ContentType contentType);
 
+    // 장르 별 컨텐츠 조회
+    @Query("""
+        SELECT new com.example.itview_spring.DTO.ContentDTO(
+            c.id,
+            c.title,
+            c.contentType,
+            c.releaseDate,
+            c.poster,
+            c.nation,
+            c.description,
+            c.duration,
+            c.age,
+            c.creatorName,
+            c.channelName
+        )
+        FROM ContentEntity c
+        JOIN ContentGenreEntity cg ON c.id = cg.content.id
+        WHERE c.contentType = :contentType AND cg.genre = :genre
+        ORDER BY c.releaseDate DESC
+            """)
+    Page<ContentDTO> findByContentTypeAndGenre(@Param("contentType") ContentType contentType, @Param("genre") Genre genre, Pageable pageable);
+
+    // 채널 별 컨텐츠 조회
+    @Query("""
+        SELECT new com.example.itview_spring.DTO.ContentDTO(
+            c.id,
+            c.title,
+            c.contentType,
+            c.releaseDate,
+            c.poster,
+            c.nation,
+            c.description,
+            c.duration,
+            c.age,
+            c.creatorName,
+            c.channelName
+        )
+        FROM ContentEntity c
+        WHERE c.contentType = :contentType AND c.channelName = :channel
+        ORDER BY c.releaseDate DESC
+            """)
+    Page<ContentDTO> findByContentTypeAndChannel(@Param("contentType") ContentType contentType, @Param("channel") Channel channel, Pageable pageable);
+
     @Query("SELECT c FROM ContentEntity c WHERE (:keyword IS NULL OR c.title LIKE %:keyword% OR c.description LIKE %:keyword%) AND (:contentType IS NULL OR c.contentType = :contentType)")
     Page<ContentEntity> searchByKeywordAndType(
             @Param("keyword") String keyword,
