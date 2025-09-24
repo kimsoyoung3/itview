@@ -19,7 +19,6 @@
     "swiper": "^11.2.10",
     "web-vitals": "^2.1.4"
   },
-  "homepage": "https://kdt-teama.github.io/itview_react",
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",

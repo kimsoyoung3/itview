@@ -1,11 +1,36 @@
-import React from "react";
+import React, { useEffect } from "react";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import "../../App.css";
-import "./HomePage.css";
-import AdCard from "../../components/AdCard/AdCard";
+import "./Home.css";
+import AdCard from "../../components/AdCard/AdCard"; // CSS 따로 관리
+import { getHomeContents } from "../../API/HomeApi";
 import Footer from "../../components/Footer/Footer"; // CSS 따로 관리
 
+
 const Home = () => {
+
+    const [contents, setContents] = React.useState(null);
+    useEffect(() => {
+        console.log(contents);
+    }, [contents]);
+
+    useEffect(() => {
+        const fetchContents = async () => {
+            try {
+                let data = {};
+                data['MOVIE'] = await getHomeContents('MOVIE', 1).then(response => response.data);
+                data['SERIES'] = await getHomeContents('SERIES', 1).then(response => response.data);
+                data['BOOK'] = await getHomeContents('BOOK', 1).then(response => response.data);
+                data['WEBTOON'] = await getHomeContents('WEBTOON', 1).then(response => response.data);
+                data['RECORD'] = await getHomeContents('RECORD', 1).then(response => response.data);
+                setContents(data);
+            } catch (error) {
+                console.error('Error fetching home contents:', error);
+            }
+        };
+        fetchContents();
+    }, []);
+
     return (
         <div className="home">
             <div className="home-inner container">
@@ -49,17 +74,11 @@ const Home = () => {
                         잇뷰 영화
                     </h2>
                 </div>
-
             </div>
             <div>
                 <Footer/>
             </div>
-
         </div>
-
-
-
-
     )
 }
 export default Home

@@ -162,11 +162,11 @@ const Header = ({ userInfo, handleLogin, handleLogout, isLoginOpen, openLogin, c
                         {/* 메뉴 */}
                         <ul className="nav">
                             <li><NavLink to="/">홈</NavLink></li>
-                            <li><NavLink to="/movies">영화</NavLink></li>
+                            <li><NavLink to="/movie">영화</NavLink></li>
                             <li><NavLink to="/series">시리즈</NavLink></li>
-                            <li><NavLink to="/books">책</NavLink></li>
-                            <li><NavLink to="/webtoons">웹툰</NavLink></li>
-                            <li><NavLink to="/music">음악</NavLink></li>
+                            <li><NavLink to="/book">책</NavLink></li>
+                            <li><NavLink to="/webtoon">웹툰</NavLink></li>
+                            <li><NavLink to="/record">음악</NavLink></li>
                         </ul>
 
                         {/* 모바일/드롭다운 메뉴 */}
@@ -174,11 +174,11 @@ const Header = ({ userInfo, handleLogin, handleLogout, isLoginOpen, openLogin, c
                             <NavLink to="/" className="nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown"
                                      aria-expanded="false">홈</NavLink>
                             <ul className="dropdown-menu">
-                                <li><NavLink to="/movies">영화</NavLink></li>
+                                <li><NavLink to="/movie">영화</NavLink></li>
                                 <li><NavLink to="/series">시리즈</NavLink></li>
-                                <li><NavLink to="/books">책</NavLink></li>
-                                <li><NavLink to="/webtoons">웹툰</NavLink></li>
-                                <li><NavLink to="/music">음악</NavLink></li>
+                                <li><NavLink to="/book">책</NavLink></li>
+                                <li><NavLink to="/webtoon">웹툰</NavLink></li>
+                                <li><NavLink to="/record">음악</NavLink></li>
                             </ul>
                         </div>
                     </div>
@@ -211,8 +211,8 @@ const Header = ({ userInfo, handleLogin, handleLogout, isLoginOpen, openLogin, c
                             </div>
                         ) : (
                             <div className="user-menu">
-                                <button onClick={openLogin} className="login-button">로그인</button>
-                                <button onClick={openSignup} className="signUp-button">회원가입</button>
+                                <button onClick={() => {openLogin(); closeSignup();}} className="login-button">로그인</button>
+                                <button onClick={() => {closeLogin(); openSignup();}} className="signUp-button">회원가입</button>
                             </div>
                         )}
                     </div>
@@ -370,18 +370,6 @@ const Header = ({ userInfo, handleLogin, handleLogout, isLoginOpen, openLogin, c
                             이미 가입하셨나요?
                             <span onClick={() => {closeSignup();openLogin();}}>로그인</span>
                         </p>
-                        {/* 소셜 로그인 */}
-                        <div className="login-social">
-                            <div className="login-social-border">OR</div>
-                            <div className="login-social-logo">
-                                <a href="http://localhost:8080/oauth2/authorization/kakao"
-                                   onClick={() => link({redirectURL: window.location.href})}><img src={`${process.env.PUBLIC_URL}/LoginLogo/kakao-logo.svg`} alt="카카오"/></a>
-                                <a href="http://localhost:8080/oauth2/authorization/naver"
-                                   onClick={() => link({redirectURL: window.location.href})}><img src={`${process.env.PUBLIC_URL}/LoginLogo/naver-logo.svg`} alt="네이버"/></a>
-                                <a href="http://localhost:8080/oauth2/authorization/google"
-                                   onClick={() => link({redirectURL: window.location.href})}><img src={`${process.env.PUBLIC_URL}/LoginLogo/google-logo.svg`} alt="구글"/></a>
-                            </div>
-                        </div>
                     </div>
                 </div>
             )}

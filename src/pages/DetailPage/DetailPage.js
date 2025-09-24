@@ -368,7 +368,6 @@ const DetailPage = ({userInfo, openLogin}) => {
                                                 if (newScore === 0) {
                                                     await handleScoreDelete();
                                                 } else {
-                                                    const id = window.location.pathname.split('/').pop();
                                                     const data = { score: Number(newScore) };
                                                     await postContentRating(id, data);
                                                 }

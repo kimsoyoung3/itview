@@ -95,23 +95,10 @@ const UserContentRatingPage = ({userInfo}) => {
 
     const handlePrevClick = (score) => {
         swiperRef.current[score].slidePrev();
-        // console.log(swiperRef.current[score].activeIndex);
     }
 
     const handleNextClick = async (score) => {
         swiperRef.current[score].slideNext();
-        // if (swiperRef.current[score].isEnd && scores[score - 1].page.number + 1 !== scores[score - 1].page.totalPages) {
-        //     const response = await getUserContentRatingScore(id, contentType, scores[score - 1].page.number + 2, score);
-        //     setScore((prevScores) => {
-        //         const updatedScores = [...prevScores];
-        //         updatedScores[score - 1] = {
-        //             ...updatedScores[score - 1],
-        //             content: [...updatedScores[score - 1].content, ...response.data.content],
-        //             page: response.data.page
-        //         };
-        //         return updatedScores;
-        //     });
-        // }
     }
 
     const loadMoreRef = useRef([]);
