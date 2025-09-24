@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { getContentsByGenre, getGenresByContentType } from "../../../API/HomeApi";
 import "./Movie.css"
+import {NavLink} from "react-router-dom";
 
 const Movie = () => {
 
@@ -45,8 +46,25 @@ const Movie = () => {
             <div className="movie-page-wrap">
                 <div className="movie-page-tab-btn">
                     {genre?.map(item =>(
-                        <button onClick={() => setSelect(item)}>{item.second}</button>
+                        <button className={select?.first === item.first ? "movie-page-tab-btn-click" : ""} onClick={() => setSelect(item)}>{item.second}</button>
                     ))}
+                </div>
+
+                <div className="movie-page-tab-content">
+                    {contents?.content?.map(item => (
+                        <NavLink to={`/content/${item?.id}`} className="movie-content-card">
+                            <div className="movie-content-card-poster">
+                                <img src={item.poster} alt=""/>
+                            </div>
+                            <p className="movie-content-card-title">{item.title}</p>
+                            <p className="movie-content-card-info"><span>{item.nation}</span> &middot; <span>{(new Date(item.releaseDate).getFullYear())}</span></p>
+                            <p className="movie-content-card-avg"><i className="bi bi-star-fill"/> {(item.ratingAvg / 2).toFixed(1)}</p>
+                        </NavLink>
+                    ))}
+                </div>
+
+                <div className="movie-page-tab-more-btn">
+                    <button>더보기</button>
                 </div>
             </div>
         </div>

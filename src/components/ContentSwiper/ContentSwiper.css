@@ -2,7 +2,7 @@
 /*컨텐츠 스와이퍼 스타일*/
 .content-swiper {
     width: 100%;
-    height: 370px;
+    height: 100%;
     margin-bottom: 50px;
 }
 
@@ -32,13 +32,32 @@
     width: 100%;
 }
 
-.slide-contentType>p {
+.ratingAvg {
+    margin-bottom: 0;
+    color: #22c55e;
+    font-size: 0.8rem;
+}
+
+.ratingAvg .bi {
+    vertical-align: 0;
+}
+
+.title {
     margin-top: 5px;
     margin-bottom: 0;
+    width: 200px;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    color: #000000;
 }
 
 .slide-contentType>span {
     font-size: 0.8rem;
+}
+
+.slide-contentType>span:nth-of-type(2) {
+    padding: 0 5px;
 }
 
 .credit-prev,
@@ -83,7 +102,7 @@
 }
 
 .swiper-button-prev {
-    left: 0px !important;
+    left: 0 !important;
 }
 
 .swiper-button-next:hover,

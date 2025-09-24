@@ -31,8 +31,9 @@ export default function ContentSwiper({ data =[] }) {
                         <div className="slide-contentType">
                             <p className="title">{item.title}</p>
                             <span>{(new Date(item.releaseDate).getFullYear())}</span>
-                            <span className="ps-2 pe-2">&middot;</span>
+                            <span>&middot;</span>
                             <span>{item.nation}</span>
+                            <p className="ratingAvg"><i className="bi bi-star-fill"/> {(item.ratingAvg / 2).toFixed(1)}</p>
                         </div>
                     </NavLink>
                 </SwiperSlide>
