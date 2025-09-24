@@ -1,186 +1,331 @@
 <!DOCTYPE html>
-<html lang="kr"
+<html lang="ko"
       xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorate="~{layouts/mainlayout}">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>콘텐츠 등록/수정</title>
-    <!-- Bootstrap JS -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <title>콘텐츠 크레딧 관리</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <style>
+        .cursor-pointer {
+            cursor: pointer;
+        }
+        .person-item {
+            display: flex;
+            align-items: center;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            position: relative;
+            background-color: #fff;
+            /* 테두리는 선택됐을 때만 보이도록 기본값을 제거 */
+        }
+        .person-photo-container {
+            position: relative;
+            width: 80px;
+            height: 80px;
+            margin-right: 1rem;
+            flex-shrink: 0;
+        }
+        .person-photo {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .person-info {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+        .person-name {
+            font-weight: bold;
+            margin-bottom: 0.25rem;
+        }
+        .person-role {
+            color: #6c757d;
+        }
+        /* 선택된 인물에게만 테두리가 보이도록 클래스 수정 */
+        .selected-person {
+            border: 2px solid #007bff;
+        }
+        /* 모든 버튼을 파란색으로 통일 */
+        .btn-primary, .btn-secondary, .btn-success {
+            background-color: #007bff;
+            border-color: #007bff;
+            color: white;
+        }
+    </style>
 </head>
 <body>
 <main layout:fragment="content">
-    <!--    <h1>Welcome to the Dashboard</h1>-->
-    <!--    <p>This is your main content area.</p>-->
+    <div class="row mt-3 mb-3">
+        <div class="col-12 mx-auto" style="max-width: 800px;">
+            <h3 class="mt-4">콘텐츠 크레딧 관리</h3>
+            <p class="mt-4">콘텐츠에 참여한 인물을 등록합니다:</p>
 
-    <div class="container mt-5">
-        <h2>크레딧 등록/수정</h2>
-
-        <form th:action="@{/content/{contentId}/credit(contentId=${contentId})}" method="post">
-            <!-- 수정할 크레딧 정보 전송 -->
-            <input type="hidden" name="id" th:value="${creditDTO.id}"/>
-            <input type="hidden" name="person.id"
-                   th:value="${creditDTO.person != null ? creditDTO.person.id : ''}"/>
-
-            <div class="mb-3">
-                <label class="form-label">선택된 인물</label>
-                <div class="input-group">
-                    <input type="text" class="form-control" name="person.name"
-                           th:value="${creditDTO.person?.name}" readonly required/>
-                    <button type="button" class="btn btn-outline-primary"
-                            data-bs-toggle="modal" data-bs-target="#personModal">
-                        🔍 인물 검색
-                    </button>
-                </div>
+            <div class="d-flex justify-content-start mt-4">
+                <button id="showFormBtn" class="btn btn-primary me-1">+ 크레딧 추가</button>
             </div>
 
-            <div class="mb-3">
-                <label class="form-label">부서</label>
-                <input type="text" class="form-control" name="department"
-                       th:value="${creditDTO.department}" required/>
-            </div>
+            <div id="creditFormSection" class="mt-4 p-4" style="display:none;">
+                <h5 id="formTitle" class="mb-3">크레딧 등록</h5>
+                <form id="creditForm" action="#" method="post">
+                    <input type="hidden" id="creditId" name="id">
+                    <input type="hidden" id="personId" name="person.id">
 
-            <div class="mb-3">
-                <label class="form-label">역할</label>
-                <input type="text" class="form-control" name="role"
-                       th:value="${creditDTO.role}" required/>
-            </div>
-
-            <div class="mb-3">
-                <label class="form-label">캐릭터 이름</label>
-                <input type="text" class="form-control" name="characterName"
-                       th:value="${creditDTO.characterName}"/>
-            </div>
-
-            <!-- 제출 및 목록 버튼 -->
-            <button type="submit" class="btn btn-primary">저장</button>
-            <a th:href="@{'/content/' + ${contentId} + '/credit'}" class="btn btn-secondary">목록</a>
-            <a th:href="@{'/content/' + ${contentId} + '/gallery'}" class="btn btn-success mt-3">📂 갤러리 등록/수정</a>
-        </form>
-        <!-- form 종료 -->
-
-        <!-- 인물 검색 모달 -->
-        <div class="modal fade" id="personModal" tabindex="-1" aria-hidden="true">
-            <div class="modal-dialog modal-lg">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title">인물 검색</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                    </div>
-                    <div class="modal-body">
-                        <div class="input-group mb-3">
-                            <input type="text" id="personSearchInput" class="form-control" placeholder="인물 이름 입력">
-                            <button class="btn btn-primary" id="personSearchBtn">검색</button>
+                    <div class="search-input-group mb-3">
+                        <label class="form-label">인물 검색</label>
+                        <div class="input-group">
+                            <input type="text" class="form-control" id="personSearchInput" placeholder="이름">
+                            <button class="btn btn-primary" type="button" id="personSearchBtn">검색</button>
                         </div>
-                        <div class="row" id="personResults"></div>
                     </div>
-                </div>
+                    <div id="personSearchResults" class="row mb-3">
+                    </div>
+
+                    <div id="fieldsAfterSearch" style="display:none;">
+                        <div class="mb-3">
+                            <label class="form-label">부서:</label>
+                            <input type="text" class="form-control" id="departmentInput" name="department" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">역할:</label>
+                            <input type="text" class="form-control" id="roleInput" name="role" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">캐릭터 이름:</label>
+                            <input type="text" class="form-control" id="characterNameInput" name="characterName">
+                        </div>
+                    </div>
+
+                    <div class="d-flex justify-content-end mt-4">
+                        <button type="submit" class="btn btn-primary me-1" id="saveCreditBtn">등록</button>
+                        <button type="button" class="btn btn-primary me-1" id="cancelBtn">취소</button>
+                    </div>
+                </form>
+            </div>
+
+            <hr class="mt-4">
+            <h5 class="mb-3">등록된 크레딧 목록</h5>
+            <div id="creditList" class="row">
+            </div>
+
+            <div class="d-flex justify-content-end mt-4">
+                <a th:href="@{/content/{contentId}/gallery(contentId=${contentId})}" class="btn btn-primary">다음/수정</a>
             </div>
         </div>
-
-        <!-- 등록된 크레딧 목록 -->
-        <table class="table table-bordered mt-3">
-            <thead class="table-light">
-            <tr>
-                <th>ID</th>
-                <th>인물 이름</th>
-                <th>부서</th>
-                <th>역할</th>
-                <th>캐릭터 이름</th>
-                <th>작업선택</th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr th:each="credit : ${creditList}">
-                <td th:text="${credit.id}">1</td>
-                <td th:text="${credit.person?.name}">인물</td>
-                <td th:text="${credit.department}">부서</td>
-                <td th:text="${credit.role}">역할</td>
-                <td th:text="${credit.characterName}">캐릭터</td>
-                <td>
-                    <a th:href="@{'/content/' + ${contentId} + '/credit?id=' + ${credit.id}}"
-                       class="btn btn-sm btn-warning">✏ 수정</a>
-                    <form th:action="@{'/content/' + ${contentId} + '/credit/delete'}"
-                          method="post" style="display:inline;">
-                        <input type="hidden" name="creditId" th:value="${credit.id}"/>
-                        <button type="submit" class="btn btn-sm btn-danger">🗑 삭제</button>
-                    </form>
-                </td>
-            </tr>
-            <tr th:if="${#lists.isEmpty(creditList)}">
-                <td colspan="6" class="text-center">등록된 크레딧이 없습니다.</td>
-            </tr>
-            </tbody>
-        </table>
     </div>
 
-    <!-- 모달 선택 JS -->
-    <script>
-        function selectPerson(id, name) {
-            // 부모 폼 input에 값 전달
-            // 인물 선택 시, 신규 등록 모드로 전환
-            document.querySelector('input[name="id"]').value = ""; // 기존 creditId 초기화
-            document.querySelector('input[name="person.id"]').value = id;
-            document.querySelector('input[name="person.name"]').value = name;
+    <script th:inline="javascript">
+        /*<![CDATA[*/
+        const contentId = '[[${contentId}]]';
+        const initialCreditList = /*[[${creditList}]]*/ [];
+        /*]]>*/
 
-            // 2. 모달 닫기 및 완전 종료(dispose)
-            const modalElement = document.getElementById('personModal');
-            const modal = bootstrap.Modal.getInstance(modalElement);
-            if (modal) {
-                modal.hide();
-                modal.dispose(); // 🔹 완전 해제
-            }
+        $(document).ready(function () {
+            const creditFormSection = $('#creditFormSection');
+            const showFormBtn = $('#showFormBtn');
+            const cancelBtn = $('#cancelBtn');
+            const personSearchBtn = $('#personSearchBtn');
+            const personSearchInput = $('#personSearchInput');
+            const personSearchResults = $('#personSearchResults');
+            const creditForm = $('#creditForm');
+            const formTitle = $('#formTitle');
+            const creditIdInput = $('#creditId');
+            const personIdInput = $('#personId');
+            const departmentInput = $('#departmentInput');
+            const roleInput = $('#roleInput');
+            const characterNameInput = $('#characterNameInput');
+            const saveCreditBtn = $('#saveCreditBtn');
+            const creditListContainer = $('#creditList');
+            const searchInputGroup = $('.search-input-group');
 
-            // 3. 혹시 남아있는 backdrop 강제 제거
-            document.querySelectorAll('.modal-backdrop').forEach(el => el.remove());
+            const fieldsAfterSearch = $('#fieldsAfterSearch');
 
-            // 4. 검색창 초기화 (다음 검색 시 깔끔하게)
-            document.getElementById('personSearchInput').value = '';
-            document.getElementById('personResults').innerHTML = '';
+            // 초기 로딩 시 폼 숨기기
+            creditFormSection.hide();
 
-            // 5. 🔹 credit.html 입력란 활성화 (부서에 자동 포커스)
-            setTimeout(() => {
-                const deptInput = document.querySelector('input[name="department"]');
-                if (deptInput) {
-                    deptInput.removeAttribute('disabled'); // 혹시 disabled 걸려있으면 해제
-                    deptInput.focus();
+            renderCreditList(initialCreditList);
+
+            // '크레딧 추가' 버튼 클릭 시
+            showFormBtn.on('click', () => {
+                resetForm();
+                creditFormSection.slideDown(); // ✅ slideDown 애니메이션 적용
+                showFormBtn.hide();
+                personSearchInput.focus();
+            });
+
+            // '취소' 버튼 클릭 시
+            cancelBtn.on('click', () => {
+                resetForm();
+                creditFormSection.slideUp(); // ✅ slideUp 애니메이션 적용
+                showFormBtn.show();
+            });
+
+            personSearchBtn.on('click', () => {
+                searchPersons();
+            });
+
+            personSearchInput.on('keydown', function(event) {
+                if (event.key === 'Enter' || event.keyCode === 13) {
+                    event.preventDefault();
+                    searchPersons();
                 }
-            }, 100);
-        }
+            });
 
-        document.getElementById('personSearchBtn').addEventListener('click', function () {
-                const keyword = document.getElementById('personSearchInput').value.trim();
-                if (!keyword) { alert("검색어를 입력해주세요."); return; }
+            function searchPersons() {
+                const keyword = personSearchInput.val().trim();
+                if (!keyword) {
+                    alert('검색어를 입력해주세요.');
+                    return;
+                }
 
-                const contentId = '[[${contentId}]]'; // 문자열 처리
-                fetch(`/content/${contentId}/credit/search-person?keyword=${encodeURIComponent(keyword)}`)
-                    .then(res => res.json())
-                    .then(data => {
-                        const results = document.getElementById('personResults');
+                $.ajax({
+                    url: `/content/${contentId}/credit/search-person`,
+                    type: 'GET',
+                    data: { keyword: keyword },
+                    dataType: 'json',
+                    success: function(data) {
                         if (data.length === 0) {
-                            results.innerHTML = `<p class="text-muted">검색 결과 없음</p>`;
+                            personSearchResults.html('<div class="col-12"><p class="text-muted text-center">검색 결과가 없습니다.</p></div>');
                             return;
                         }
-                        results.innerHTML = data.map(person => `
-                            <div class="col-md-4">
-                              <div class="card mb-3">
-                                <img src="${person.profile || '/images/default-profile.png'}"
-                                     class="card-img-top" style="height:180px; object-fit:cover;">
-                                <div class="card-body">
-                                  <h5 class="card-title">${person.name}</h5>
-                                  <p class="card-text"><small>${person.job}</small></p>
-                                  <button type="button" class="btn btn-success btn-sm"
-                                          onclick="selectPerson('${person.id}', '${person.name}')">선택</button>
+                        const resultsHtml = data.map(person => `
+                            <div class="col-12 mb-3">
+                                <div class="person-item cursor-pointer" data-person-id="${person.id}" data-person-name="${person.name}" onclick="window.selectPerson(${person.id}, '${person.name}')">
+                                    <div class="person-photo-container">
+                                        <img src="${person.profile || '/images/default-profile.png'}" alt="${person.name}" class="person-photo">
+                                    </div>
+                                    <div class="person-info">
+                                        <span class="person-name">${person.name}</span>
+                                        <span class="person-role">${person.job || '직업 정보 없음'}</span>
+                                    </div>
                                 </div>
-                              </div>
                             </div>`).join('');
+                        personSearchResults.html(resultsHtml);
+                    },
+                    error: function(jqXHR, textStatus, errorThrown) {
+                        console.error('Error fetching search results:', textStatus, errorThrown);
+                        personSearchResults.html('<div class="col-12"><p class="text-danger text-center">검색 중 오류가 발생했습니다. (콘솔을 확인하세요)</p></div>');
+                    }
                 });
+            }
+
+            window.selectPerson = (id, name) => {
+                personIdInput.val(id);
+                fieldsAfterSearch.slideDown(); // ✅ slideDown 애니메이션 적용
+                departmentInput.focus();
+
+                // 검색 결과 목록에서 선택된 아이템만 강조
+                $('#personSearchResults .person-item').removeClass('selected-person');
+                $(`#personSearchResults .person-item[data-person-id="${id}"]`).addClass('selected-person');
+            };
+
+            creditForm.on('submit', function (event) {
+                event.preventDefault();
+
+                const url = `/content/${contentId}/credit`;
+                const formData = $(this).serialize();
+
+                $.ajax({
+                    url: url,
+                    type: 'POST',
+                    data: formData,
+                    success: function() {
+                        window.location.reload();
+                    },
+                    error: function(jqXHR, textStatus, errorThrown) {
+                        console.error('Error saving credit:', textStatus, errorThrown);
+                        alert('크레딧 저장 중 오류가 발생했습니다.');
+                    }
+                });
+            });
+
+            window.deleteCredit = (creditId, event) => {
+                if (!confirm('정말 삭제하시겠습니까?')) return;
+                event.stopPropagation();
+
+                $.ajax({
+                    url: `/content/${contentId}/credit/delete`,
+                    type: 'POST',
+                    data: { creditId: creditId },
+                    success: function() {
+                        window.location.reload();
+                    },
+                    error: function(jqXHR, textStatus, errorThrown) {
+                        console.error('Error deleting credit:', textStatus, errorThrown);
+                        alert('크레딧 삭제 중 오류가 발생했습니다.');
+                    }
+                });
+            };
+
+            window.editCredit = (creditId) => {
+                const creditToEdit = initialCreditList.find(c => c.id == creditId);
+                if (!creditToEdit) return;
+
+                resetForm();
+
+                formTitle.text('크레딧 수정');
+                creditIdInput.val(creditToEdit.id);
+                personIdInput.val(creditToEdit.person.id);
+                departmentInput.val(creditToEdit.department);
+                roleInput.val(creditToEdit.role);
+                characterNameInput.val(creditToEdit.characterName);
+                saveCreditBtn.text('수정');
+
+                // 검색창 및 검색 결과 영역 숨기기
+                searchInputGroup.hide();
+                personSearchResults.hide();
+
+                // 선택된 크레딧에만 테두리를 추가합니다.
+                $(`.person-item[onclick*="editCredit(${creditId})"]`).addClass('selected-person');
+
+                fieldsAfterSearch.show();
+                creditFormSection.slideDown(); // ✅ slideDown 애니메이션 적용
+                showFormBtn.hide();
+                departmentInput.focus();
+            };
+
+            function resetForm() {
+                formTitle.text('크레딧 등록');
+                creditForm[0].reset();
+                creditIdInput.val('');
+                personIdInput.val('');
+                personSearchInput.val('');
+                personSearchResults.empty().show();
+                fieldsAfterSearch.hide();
+                saveCreditBtn.text('등록');
+                $('.person-item').removeClass('selected-person');
+                searchInputGroup.show();
+            }
+
+            function renderCreditList(credits) {
+                if (!credits || credits.length === 0) {
+                    creditListContainer.html('<div class="col-12"><p class="text-center text-muted">등록된 크레딧이 없습니다.</p></div>');
+                    return;
+                }
+                const creditHtml = credits.map(credit => `
+                    <div class="col-md-6 col-lg-4 mb-3">
+                        <div class="person-item cursor-pointer" onclick="window.editCredit(${credit.id})">
+                            <div class="person-photo-container">
+                                <img src="${credit.person?.profile || '/images/default-profile.png'}" alt="${credit.person.name}" class="person-photo">
+                                <button type="button" class="btn btn-sm btn-light position-absolute top-0 end-0 p-0"
+                                        style="width: 24px; height: 24px; line-height: 1; border-radius: 50%; display: flex; align-items: center; justify-content: center; transform: translate(50%, -50%);"
+                                        onclick="window.deleteCredit(${credit.id}, event)">
+                                    <i class="fas fa-times"></i>
+                                </button>
+                            </div>
+                            <div class="person-info">
+                                <span class="person-name">${credit.person.name}</span>
+                                <span class="person-role">${credit.department} - ${credit.role}</span>
+                            </div>
+                        </div>
+                    </div>`).join('');
+
+                creditListContainer.html(creditHtml);
+            }
         });
     </script>
-
 </main>
 </body>
 </html>
-

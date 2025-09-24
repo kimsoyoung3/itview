@@ -7,100 +7,202 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>콘텐츠 갤러리 등록/수정</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <style>
+        /* 버튼 스타일 */
+        .btn-primary {
+            background-color: #007bff;
+            border-color: #007bff;
+            color: white;
+        }
+        .btn-primary:hover {
+            background-color: #0056b3;
+            border-color: #0056b3;
+        }
+
+        /* 갤러리 썸네일 스타일 */
+        .gallery-item {
+            width: 100px;
+            height: 100px;
+            border: 1px solid #ccc;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            margin-right: 10px;
+            margin-bottom: 10px;
+            background-color: #f8f9fa;
+        }
+        .gallery-item img {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+        }
+        .gallery-item .delete-btn {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background-color: rgba(0,0,0,0.6);
+            color: white;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.75rem;
+            cursor: pointer;
+            border: none;
+            padding: 0;
+            line-height: 1;
+        }
+        .add-image-btn {
+            width: 100px;
+            height: 100px;
+            border: 1px dashed #ccc;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            color: #ccc;
+            cursor: pointer;
+            margin-right: 10px;
+            margin-bottom: 10px;
+            background-color: #fff;
+        }
+        .add-image-btn:hover {
+            background-color: #e9ecef;
+        }
+        #fileInput {
+            display: none;
+        }
+        .gallery-container {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: flex-start;
+        }
+    </style>
 </head>
 <body>
 <main layout:fragment="content">
-    <!--    <h1>Welcome to the Dashboard</h1>-->
-    <!--    <p>This is your main content area.</p>-->
-
     <div class="container mt-5">
-        <h2 th:text="${galleryDTO.id != null ? '갤러리 수정' : '갤러리 등록'}"></h2>
-        <!------------------------------------------------------------------------------------------------->
-        <!-- 등록 버튼은 목록 위쪽에 배치 -->
-        <div class="mb-3">
-            <!-- id 있으면 수정, 없으면 등록 -->
-            <!-- 단건 등록/수정 -->
-            <form th:action="@{/content/{contentId}/gallery(contentId=${contentId})}" method="post">
-<!--                <input type="hidden" name="id" th:value="${galleryDTO != null ? galleryDTO.id : ''}"/>-->
-                <input type="hidden" name="id" th:value="${galleryDTO.id}"/>
-                <!-- ✅ contentId 도 hidden 으로 같이 전달 -->
-                <input type="hidden" name="contentId" th:value="${contentId}"/> <!-- contentId 전달 -->
+        <h2 class="mb-4">콘텐츠 등록/수정</h2>
 
-                <div class="mb-3">
-                    <label class="form-label">사진 URL</label>
-                    <input type="text" class="form-control" name="photo"
-                           th:value="${galleryDTO.photo}" required/>
-                </div>
-                <div class="mb-3">
-                    <button type="submit" class="btn btn-primary"
-                            th:text="${galleryDTO.id != null ? '수정' : '등록'}">저장</button>
-                    <a th:href="@{'/content/' + ${contentId} + '/gallery'}" class="btn btn-secondary ms-2">목록</a>
-                </div>
-            </form>
-            <!-- 비디오 관리 버튼 -->
-            <a th:href="@{'/content/' + ${contentId} + '/video'}"
-               class="btn btn-success mt-3">📂비디오(Video) 등록/수정</a>
+        <h4 class="mb-3">갤러리 등록/삭제</h4>
+        <div class="gallery-container">
+            <div th:each="gallery : ${galleryList}" class="gallery-item" th:data-gallery-id="${gallery.id}" th:data-photo-url="${gallery.photo}">
+                <img th:src="${gallery.photo}" alt="갤러리 이미지">
+                <button type="button" class="delete-btn" onclick="deleteGalleryItem(this)">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+
+            <div class="add-image-btn" id="addImageBtn">
+                <i class="fas fa-plus"></i>
+            </div>
+            <input type="file" id="fileInput" accept="image/*" multiple>
         </div>
 
-        <!-- 전체 교체 폼 -->
-        <div class="mb-4">
-            <h4>갤러리 전체 교체</h4>
-            <form th:action="@{/content/{contentId}/gallery/replace(contentId=${contentId})}"
-                  th:object="${galleryDTOs}" method="post">
-                <div th:each="gallery, iterStat : *{galleryDTOs}">
-                    <input type="hidden" th:field="*{galleryDTOs[__${iterStat.index}__].id}" />
-                    <input type="text" th:field="*{galleryDTOs[__${iterStat.index}__].photo}" required />
-                </div>
-<!--                <div th:each="gallery, iterStat : ${galleryList}" class="mb-2">-->
-<!--                    <input type="hidden" th:name="${'galleryDTOs[' + iterStat.index + '].id'}"-->
-<!--                           th:value="${gallery.id}" />-->
-<!--                    <input type="text" th:name="${'galleryDTOs[' + iterStat.index + '].photo'}"-->
-<!--                           th:value="${gallery.photo}" required />-->
-<!--                </div>-->
-                    <button type="submit" class="btn btn-primary">전체 교체 저장</button>
-            </form>
-        </div>
-
-        <!-- 갤러리 목록 테이블 -->
-        <table class="table table-bordered mt-3">
-            <thead class="table-light">
-            <tr>
-                <th>ID</th>
-                <th>Photo</th>
-                <th>작업선택</th>
-            </tr>
-            </thead>
-            <tbody>
-                <tr th:each="gallery : ${galleryList}">
-                    <td th:text="${gallery.id}">1</td>
-                    <td th:text="${gallery.photo}">Photo</td>
-                    <td>
-                        <!-- 수정 버튼 -->
-                        <a th:href="@{'/content/' + ${contentId} + '/gallery?id=' + ${gallery.id}}"
-                           class="btn btn-sm btn-warning">✏ 수정</a>
-
-                        <!-- 삭제 버튼 (폼 방식으로 galleryId 전달) -->
-                        <form th:action="@{'/content/' + ${contentId} + '/gallery/delete'}"
-                              method="post" style="display:inline;">
-                            <input type="hidden" name="galleryId" th:value="${gallery.id}"/>
-                            <button type="submit" class="btn btn-sm btn-danger">🗑 삭제</button>
-                        </form>
-                    </td>
-                </tr>
-                <tr th:if="${galleryList == null or #lists.isEmpty(galleryList)}">
-                    <td colspan="4" class="text-center">등록된 갤러리가 없습니다.</td>
-                </tr>
-            </tbody>
-        </table>
-        <!-- Flash 메시지 출력 -->
-        <div th:if="${message}" class="alert alert-success" role="alert"
-             th:text="${message}">
+        <div class="d-flex justify-content-end mt-5">
+            <a th:href="@{/content/{contentId}/video(contentId=${contentId})}" class="btn btn-primary">다음/수정</a>
         </div>
     </div>
 
-    <!-- Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script th:inline="javascript">
+        /*<![CDATA[*/
+        const contentId = /*[[${contentId}]]*/ null;
+        /*]]>*/
+
+        $(document).ready(function () {
+            const addImageBtn = $('#addImageBtn');
+            const fileInput = $('#fileInput');
+
+            // '+' 버튼 클릭 시 파일 선택창 열기
+            addImageBtn.on('click', () => {
+                fileInput.click();
+            });
+
+            // 파일 선택 시
+            fileInput.on('change', function(event) {
+                const files = event.target.files;
+                if (files.length > 0) {
+                    processAndUploadFiles(files);
+                }
+            });
+
+            // 파일 업로드 및 썸네일 표시
+            function processAndUploadFiles(files) {
+                for (let i = 0; i < files.length; i++) {
+                    const file = files[i];
+                    const formData = new FormData();
+                    formData.append('file', file); // 단일 파일만 보내도록 'file'로 지정
+
+                    // S3에 단일 파일 업로드 요청
+                    $.ajax({
+                        url: `/content/${contentId}/gallery/upload-image`,
+                        type: 'POST',
+                        data: formData,
+                        processData: false,
+                        contentType: false,
+                        success: function(response) {
+                            // response는 업로드된 단일 파일의 GalleryDTO를 기대합니다.
+                            const newGalleryItem = response;
+                            appendGalleryItemToDOM(newGalleryItem);
+                        },
+                        error: function(jqXHR, textStatus, errorThrown) {
+                            console.error('파일 업로드 중 오류 발생:', textStatus, errorThrown);
+                            alert('파일 업로드 중 오류가 발생했습니다.');
+                        }
+                    });
+                }
+                // 파일 인풋 초기화 (같은 파일 재업로드 가능하게)
+                fileInput.val('');
+            }
+
+            // DOM에 갤러리 아이템 추가
+            function appendGalleryItemToDOM(item) {
+                const galleryContainer = $('.gallery-container');
+                const galleryItemHtml = `
+                    <div class="gallery-item" data-gallery-id="${item.id}" data-photo-url="${item.photo}">
+                        <img src="${item.photo}" alt="갤러리 이미지">
+                        <button type="button" class="delete-btn" onclick="deleteGalleryItem(this)">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                `;
+                $(galleryItemHtml).insertBefore(galleryContainer.find('.add-image-btn'));
+            }
+
+            // 갤러리 아이템 삭제 함수
+            window.deleteGalleryItem = function(buttonElement) {
+                const itemDiv = $(buttonElement).closest('.gallery-item');
+                const galleryId = itemDiv.data('gallery-id');
+
+                if (galleryId) {
+                    // DB에 저장된 기존 파일일 경우, DELETE 요청
+                    $.ajax({
+                        url: `/content/${contentId}/gallery/${galleryId}`,
+                        type: 'DELETE',
+                        success: function() {
+                            itemDiv.remove();
+                        },
+                        error: function(jqXHR, textStatus, errorThrown) {
+                            console.error('갤러리 삭제 중 오류 발생:', textStatus, errorThrown);
+                            alert('갤러리 삭제 중 오류가 발생했습니다.');
+                        }
+                    });
+                } else {
+                    // DB에 저장되지 않은 새 파일일 경우
+                    // 🚨 이 경우 S3에서 삭제하는 API가 없으므로 화면에서만 제거됩니다.
+                    // 만약 이 경우에도 S3에서 파일을 삭제하려면 별도 API가 필요합니다.
+                    itemDiv.remove();
+                    alert('저장되지 않은 파일이므로 화면에서만 삭제되었습니다.');
+                }
+            };
+        });
+    </script>
 </main>
 </body>
 </html>
-
