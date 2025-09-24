@@ -229,13 +229,6 @@ public class ContentService {
         return contentPage.map(content -> modelMapper.map(content, ContentDTO.class));
     }
 
-    // 컨텐츠 타입 별 목록 조회 (메인 화면)
-    public Page<ContentDTO> getContentsByContentType(ContentType contentType, int page) {
-        Pageable pageable = PageRequest.of(page - 1, 10);
-
-        return contentRepository.findByContentType(contentType, pageable);
-    }
-
     // 컨텐츠 상세 정보 조회
     @Transactional
     public ContentDetailDTO getContentDetail(Integer contentId, Integer userId) {

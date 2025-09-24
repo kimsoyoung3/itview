@@ -12,8 +12,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.itview_spring.Constant.ContentType;
+import com.example.itview_spring.Constant.Genre;
 import com.example.itview_spring.DTO.ContentDTO;
-import com.example.itview_spring.Service.ContentService;
+import com.example.itview_spring.Service.HomeService;
 
 import lombok.RequiredArgsConstructor;
 
@@ -22,10 +23,15 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class HomeRestController {
 
-    private final ContentService contentService;
+    private final HomeService homeService;
 
     @GetMapping
     public ResponseEntity<Page<ContentDTO>> getHomeContent(@PageableDefault(page = 1) Pageable pageable, @RequestParam("contentType") String contentType) {
-        return ResponseEntity.ok(contentService.getContentsByContentType(ContentType.valueOf(contentType.toUpperCase()), pageable.getPageNumber()));
+        return ResponseEntity.ok(homeService.getContentsByContentType(ContentType.valueOf(contentType.toUpperCase()), pageable.getPageNumber()));
+    }
+
+    @GetMapping("/movie/domain")
+    public ResponseEntity<List<Genre>> getMovies() {
+        return ResponseEntity.ok(homeService.getMovieGenres());
     }
 }
