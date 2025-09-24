@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { getChannelsByContentType, getGenresByContentType } from "../../../API/HomeApi";
+import "./Series.css"
 
 const Series = () => {
 
@@ -31,8 +32,21 @@ const Series = () => {
     }, []);
 
     return (
-        <div>
-            Series
+        <div className="series-page container">
+            <div className="series-page-wrap">
+                <div className="series-page-tab-btn-wrap">
+                    <div className="series-page-tab-btn">
+                        {genre?.map(item =>(
+                            <button key={item.id}>{item.second}</button>
+                        ))}
+                    </div>
+                    <div className="series-page-tab-btn">
+                        {channel?.map(item =>(
+                            <button key={item.id}>{item.second}</button>
+                        ))}
+                    </div>
+                </div>
+            </div>
         </div>
     );
 }

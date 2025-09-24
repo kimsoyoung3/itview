@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { getGenresByContentType } from "../../../API/HomeApi";
+import "./Book.css"
 
 const Book = () => {
 
@@ -25,8 +26,14 @@ const Book = () => {
     }, []);
 
     return (
-        <div>
-            Book
+        <div className="book-page container">
+            <div className="book-page-wrap">
+                <div className="book-page-tab-btn">
+                    {genre?.map(item =>(
+                        <button key={item.id}>{item.second}</button>
+                    ))}
+                </div>
+            </div>
         </div>
     );
 }

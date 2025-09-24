@@ -1,0 +1,23 @@
+.book-page {
+    margin-top: 114px;
+}
+
+.book-page-tab-btn {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.book-page-tab-btn>button {
+    border: 1px solid #555555;
+    background: none;
+    padding: 5px 15px;
+    border-radius: 50px;
+    box-sizing: border-box;
+}
+
+.book-page-tab-btn>button:hover {
+    background: #22c55e;
+    border: 0;
+    color: #ffffff;
+}

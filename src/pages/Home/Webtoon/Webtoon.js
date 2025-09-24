@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { getChannelsByContentType, getGenresByContentType } from "../../../API/HomeApi";
+import "./Webtoon.css"
 
 const Webtoon = () => {
 
@@ -31,8 +32,21 @@ const Webtoon = () => {
     }, []);
 
     return (
-        <div>
-            webtoon
+        <div className="webtoon-page container">
+            <div className="webtoon-page-wrap">
+                <div className="webtoon-page-tab-btn-wrap">
+                    <div className="webtoon-page-tab-btn">
+                        {genre?.map(item =>(
+                            <button key={item.id}>{item.second}</button>
+                        ))}
+                    </div>
+                    <div className="webtoon-page-tab-btn">
+                        {channel?.map(item =>(
+                            <button key={item.id}>{item.second}</button>
+                        ))}
+                    </div>
+                </div>
+            </div>
         </div>
     );
 }

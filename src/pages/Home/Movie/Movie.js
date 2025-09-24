@@ -30,11 +30,8 @@ const Movie = () => {
             <div className="movie-page-wrap">
                 <div className="movie-page-tab-btn">
                     {genre?.map(item =>(
-                            <div key={item.id}>
-                                <button>{item.second}</button>
-                            </div>
+                        <button key={item.id}>{item.second}</button>
                     ))}
-
                 </div>
             </div>
         </div>
