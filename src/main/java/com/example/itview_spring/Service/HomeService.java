@@ -11,6 +11,7 @@ import com.example.itview_spring.Constant.Channel;
 import com.example.itview_spring.Constant.ContentType;
 import com.example.itview_spring.Constant.Genre;
 import com.example.itview_spring.DTO.ContentDTO;
+import com.example.itview_spring.DTO.ContentResponseDTO;
 import com.example.itview_spring.DTO.HomeContentDTO;
 import com.example.itview_spring.Repository.ContentRepository;
 
@@ -44,13 +45,13 @@ public class HomeService {
     }
 
     // 장르 별 컨텐츠 조회
-    public Page<ContentDTO> getContentsByGenre(ContentType contentType, Genre genre, int page) {
+    public Page<ContentResponseDTO> getContentsByGenre(ContentType contentType, Genre genre, int page) {
         Pageable pageable = PageRequest.of(page - 1, 10);
         return contentRepository.findByContentTypeAndGenre(contentType, genre, pageable);
     }
 
     // 채널 별 컨텐츠 조회
-    public Page<ContentDTO> getContentsByChannel(ContentType contentType, Channel channel, int page) {
+    public Page<ContentResponseDTO> getContentsByChannel(ContentType contentType, Channel channel, int page) {
         Pageable pageable = PageRequest.of(page - 1, 10);
         return contentRepository.findByContentTypeAndChannel(contentType, channel, pageable);
     }

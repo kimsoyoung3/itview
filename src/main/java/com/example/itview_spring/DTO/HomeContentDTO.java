@@ -13,9 +13,9 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class HomeContentDTO {
-    private List<ContentDTO> movie;
-    private List<ContentDTO> series;
-    private List<ContentDTO> book;
-    private List<ContentDTO> webtoon;
-    private List<ContentDTO> record;
+    private List<ContentResponseDTO> movie;
+    private List<ContentResponseDTO> series;
+    private List<ContentResponseDTO> book;
+    private List<ContentResponseDTO> webtoon;
+    private List<ContentResponseDTO> record;
 }

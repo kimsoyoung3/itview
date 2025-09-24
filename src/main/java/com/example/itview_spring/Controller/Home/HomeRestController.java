@@ -18,6 +18,7 @@ import com.example.itview_spring.Constant.Channel;
 import com.example.itview_spring.Constant.ContentType;
 import com.example.itview_spring.Constant.Genre;
 import com.example.itview_spring.DTO.ContentDTO;
+import com.example.itview_spring.DTO.ContentResponseDTO;
 import com.example.itview_spring.DTO.HomeContentDTO;
 import com.example.itview_spring.Service.HomeService;
 
@@ -46,7 +47,7 @@ public class HomeRestController {
     }
 
     @GetMapping("/{contentType}/genre/{genre}")
-    public ResponseEntity<Page<ContentDTO>> getContentsByGenre(@PathVariable String contentType, @PathVariable String genre, @PageableDefault(page = 1) Pageable pageable) {
+    public ResponseEntity<Page<ContentResponseDTO>> getContentsByGenre(@PathVariable String contentType, @PathVariable String genre, @PageableDefault(page = 1) Pageable pageable) {
         return ResponseEntity.ok(homeService.getContentsByGenre(ContentType.valueOf(contentType.toUpperCase()), Genre.valueOf(genre.toUpperCase()), pageable.getPageNumber()));
     }
 
@@ -61,7 +62,7 @@ public class HomeRestController {
     }
 
     @GetMapping("/{contentType}/channel/{channel}")
-    public ResponseEntity<Page<ContentDTO>> getContentsByChannel(@PathVariable String contentType, @PathVariable String channel, @PageableDefault(page = 1) Pageable pageable) {
+    public ResponseEntity<Page<ContentResponseDTO>> getContentsByChannel(@PathVariable String contentType, @PathVariable String channel, @PageableDefault(page = 1) Pageable pageable) {
         return ResponseEntity.ok(homeService.getContentsByChannel(ContentType.valueOf(contentType.toUpperCase()), Channel.valueOf(channel.toUpperCase()), pageable.getPageNumber()));
     }
 }

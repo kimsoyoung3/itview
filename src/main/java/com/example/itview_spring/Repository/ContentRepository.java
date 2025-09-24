@@ -69,25 +69,25 @@ public interface ContentRepository extends JpaRepository<ContentEntity, Integer>
 
     // 컨텐츠 타입 별 목록 조회 (메인 화면)
     @Query("""
-        SELECT new com.example.itview_spring.DTO.ContentDTO(
+        SELECT new com.example.itview_spring.DTO.ContentResponseDTO(
             c.id,
             c.title,
             c.contentType,
-            c.releaseDate,
-            c.poster,
+            c.creatorName,
             c.nation,
             c.description,
-            c.duration,
+            c.releaseDate,
+            c.poster,
             c.age,
-            c.creatorName,
-            c.channelName
+            c.duration,
+            (SELECT AVG(r.score) FROM RatingEntity r WHERE r.content.id = c.id)
         )
         FROM ContentEntity c
         WHERE c.contentType = :contentType
         ORDER BY c.releaseDate DESC
         LIMIT 10
             """)
-    List<ContentDTO> findByContentType(@Param("contentType") ContentType contentType);
+    List<ContentResponseDTO> findByContentType(@Param("contentType") ContentType contentType);
 
     // 컨텐츠 타입 별 장르 목록 조회
     @Query("SELECT DISTINCT cg.genre FROM ContentGenreEntity cg WHERE cg.content.contentType = :contentType")
@@ -99,46 +99,46 @@ public interface ContentRepository extends JpaRepository<ContentEntity, Integer>
 
     // 장르 별 컨텐츠 조회
     @Query("""
-        SELECT new com.example.itview_spring.DTO.ContentDTO(
+        SELECT new com.example.itview_spring.DTO.ContentResponseDTO(
             c.id,
             c.title,
             c.contentType,
-            c.releaseDate,
-            c.poster,
+            c.creatorName,
             c.nation,
             c.description,
-            c.duration,
+            c.releaseDate,
+            c.poster,
             c.age,
-            c.creatorName,
-            c.channelName
+            c.duration,
+            (SELECT AVG(r.score) FROM RatingEntity r WHERE r.content.id = c.id)
         )
         FROM ContentEntity c
         JOIN ContentGenreEntity cg ON c.id = cg.content.id
         WHERE c.contentType = :contentType AND cg.genre = :genre
         ORDER BY c.releaseDate DESC
             """)
-    Page<ContentDTO> findByContentTypeAndGenre(@Param("contentType") ContentType contentType, @Param("genre") Genre genre, Pageable pageable);
+    Page<ContentResponseDTO> findByContentTypeAndGenre(@Param("contentType") ContentType contentType, @Param("genre") Genre genre, Pageable pageable);
 
     // 채널 별 컨텐츠 조회
     @Query("""
-        SELECT new com.example.itview_spring.DTO.ContentDTO(
+        SELECT new com.example.itview_spring.DTO.ContentResponseDTO(
             c.id,
             c.title,
             c.contentType,
-            c.releaseDate,
-            c.poster,
+            c.creatorName,
             c.nation,
             c.description,
-            c.duration,
+            c.releaseDate,
+            c.poster,
             c.age,
-            c.creatorName,
-            c.channelName
+            c.duration,
+            (SELECT AVG(r.score) FROM RatingEntity r WHERE r.content.id = c.id)
         )
         FROM ContentEntity c
         WHERE c.contentType = :contentType AND c.channelName = :channel
         ORDER BY c.releaseDate DESC
             """)
-    Page<ContentDTO> findByContentTypeAndChannel(@Param("contentType") ContentType contentType, @Param("channel") Channel channel, Pageable pageable);
+    Page<ContentResponseDTO> findByContentTypeAndChannel(@Param("contentType") ContentType contentType, @Param("channel") Channel channel, Pageable pageable);
 
     @Query("SELECT c FROM ContentEntity c WHERE (:keyword IS NULL OR c.title LIKE %:keyword% OR c.description LIKE %:keyword%) AND (:contentType IS NULL OR c.contentType = :contentType)")
     Page<ContentEntity> searchByKeywordAndType(
