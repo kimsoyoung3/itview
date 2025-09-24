@@ -18,13 +18,7 @@ const Home = () => {
     useEffect(() => {
         const fetchContents = async () => {
             try {
-                let data = {};
-                data['MOVIE'] = await getHomeContents('MOVIE', 1).then(response => response.data);
-                data['SERIES'] = await getHomeContents('SERIES', 1).then(response => response.data);
-                data['BOOK'] = await getHomeContents('BOOK', 1).then(response => response.data);
-                data['WEBTOON'] = await getHomeContents('WEBTOON', 1).then(response => response.data);
-                data['RECORD'] = await getHomeContents('RECORD', 1).then(response => response.data);
-                setContents(data);
+                setContents(await getHomeContents().then(response => response.data));
             } catch (error) {
                 console.error('Error fetching home contents:', error);
             }
@@ -33,11 +27,11 @@ const Home = () => {
     }, []);
 
     const domainNameMap = {
-        "MOVIE" : "영화",
-        "SERIES" : "시리즈",
-        "BOOK" : "책",
-        "WEBTOON" : "웹툰",
-        "RECORD" : "음반"
+        "movie" : "영화",
+        "series" : "시리즈",
+        "book" : "책",
+        "webtoon" : "웹툰",
+        "record" : "음반"
     }
 
     return (
@@ -83,7 +77,7 @@ const Home = () => {
                         Object.entries(contents).map(([category, items]) => (
                             <div key={category}>
                                 <h2 className="home-content-title">{`잇뷰 최신 TOP 10 ${domainNameMap[category]}`}</h2>
-                                <ContentSwiper data={items.content} />
+                                <ContentSwiper data={items} />
                             </div>
                         ))}
                 </div>
