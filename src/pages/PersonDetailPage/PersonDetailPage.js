@@ -106,12 +106,32 @@ const PersonDetailPage = ({userInfo, openLogin}) => {
     const handleTabClick = (contentType, department = null) => {
         const idToScroll = department ? `${contentType}-${department}` : contentType;
         const element = document.getElementById(idToScroll);
+
         if (element) {
-            const top = element.getBoundingClientRect().top + window.pageYOffset - headerHeight;
-            window.scrollTo({ top, behavior: 'smooth' });
+            const windowWidth = document.documentElement.clientWidth;
+            // 태블릿 이하에서는 헤더가 사라지니까 20px만 주자
+            const offset = windowWidth < 769 ? 20 : headerHeight;
+
+            const top =
+                element.getBoundingClientRect().top + window.pageYOffset - offset;
+
+            window.scrollTo({ top, behavior: "smooth" });
             setActiveTab(department ? `${contentType}-${department}` : contentType);
         }
     };
+
+    const handleScrollToContentType = (contentType) => {
+        if (window.innerWidth > 768) return; // 모바일에서만 실행
+
+        const element = document.getElementById(contentType);
+        if (element) {
+            const offset = 20; // 위 여백 만큼 빼기
+            const top = element.getBoundingClientRect().top + window.pageYOffset - offset;
+            window.scrollTo({ top, behavior: 'smooth' });
+        }
+    };
+
+
 
     const [activeTab, setActiveTab] = useState(null);
 
@@ -134,105 +154,169 @@ const PersonDetailPage = ({userInfo, openLogin}) => {
         KAKAO: `${process.env.PUBLIC_URL}/externalLogo/kakaoWebtoon.png`,
     };
 
-    return(notFound ? <NotFound /> :
-        <div className="person-detail-page container">
-            {/*인물 프로필 섹션*/}
-             <section className="person-detail-page-profile">
-                <div className="person-detail-page-profile-img">
-                    <img src={personInfo?.profile ? personInfo?.profile : `${process.env.PUBLIC_URL}/user.png`} alt=""/>
-                </div>
-                <div className="person-detail-page-profile-info">
-                    <h4>{personInfo?.name}</h4>
-                    <p>{personInfo?.job}</p>
-                </div>
-                 <div className="person-detail-page-profile-like">
-                     <div><button onClick={() => userInfo ? handleLikeClick() : openLogin()}><i className={personInfo?.liked ? "bi bi-heart-fill" : "bi bi-heart"}/> 좋아요 {personInfo?.likeCount}명이 이 인물을 좋아합니다.</button></div>
-                 </div>
-            </section>
-
-            {/*컨텐츠 섹션*/}
-            <section className="person-detail-page-content">
-
-                <div>
-                    {workInfo && Object.entries(workInfo).map(([contentType, departments]) => (
-                        <div key={contentType} id={contentType} className="person-detail-page-content-domain">
-                            <h5>{contentType}</h5>
-                            <div className="person-detail-page-content-domain-wrap">
-                                {Object.entries(departments).map(([department, items]) => (
-                                    <div key={department}>
-                                        <p id={`${contentType}-${department}`}>{department}</p>
-                                        <div className="person-detail-page-content-domain-title">
-                                            <div></div>
-                                            <div></div>
-                                            <div>제목</div>
-                                            <div>역할</div>
-                                            <div>평가</div>
-                                            <div>감상서비스</div>
-                                        </div>
-                                        {items.content.map(item =>
-                                            <NavLink key={item.id} to={`/content/${item.id}`} className="person-detail-page-content-domain-list">
-                                                <div className="domain-list-date">{(new Date(item.releaseDate).getFullYear())}</div>
-                                                <div className="domain-list-image"><img src={item.poster} alt=""/></div>
-                                                <div className="domain-list-title">{item.title}</div>
-                                                <div className="domain-list-role">{item.role}</div>
-
-                                                <div className="domain-list-ratingAvg">
-                                                    {item.ratingAvg && (
-                                                        <div>평균 <i className="bi bi-star-fill"/> {(item.ratingAvg / 2).toFixed(1)}</div>
-                                                    )}
-                                                </div>
-
-
-                                                <div className="domain-list-externalService">
-                                                    {item.externalServices?.map(service => (
-                                                        <div key={service.id} onClick={(e) => {e.preventDefault(); window.open(service.href)}} target="_blank" rel="noopener noreferrer">
-                                                            <img src={serviceLogos[service.type] || `${process.env.PUBLIC_URL}/images/default-logo.png`} alt={service.type}/>
-                                                        </div>
-                                                    ))}
-                                                </div>
-
-                                            </NavLink>
-                                        )}
-                                        <div className="person-detail-page-content-domain-btn">{workInfo[contentType][department].page.number+1 < workInfo[contentType][department].page.totalPages ? <button onClick={() => handleMoreClick(contentType, department, workInfo[contentType][department].page.number+2)}>더보기</button> : null} </div>
-                                    </div>
-                                ))}
+    return (notFound ? <NotFound/> :
+            <div className="person-detail-page">
+                <div className="person-detail-page-wrap container">
+                    {/*인물 프로필 섹션*/}
+                    <section className="person-detail-page-profile">
+                        <div className="person-detail-page-profile-img">
+                            <img src={personInfo?.profile ? personInfo?.profile : `${process.env.PUBLIC_URL}/user.png`}
+                                 alt=""/>
+                        </div>
+                        <div className="person-detail-page-profile-info">
+                            <h4>{personInfo?.name}</h4>
+                            <p>{personInfo?.job}</p>
+                        </div>
+                        <div className="person-detail-page-profile-like">
+                            <div>
+                                <button onClick={() => userInfo ? handleLikeClick() : openLogin()}><i
+                                    className={personInfo?.liked ? "bi bi-heart-fill" : "bi bi-heart"}/> 좋아요 {personInfo?.likeCount}명이
+                                    이 인물을 좋아합니다.
+                                </button>
                             </div>
                         </div>
-                    ))}
-                </div>
+                    </section>
 
-                {/*탭영역 섹션*/}
-                <div className="person-detail-page-content-tab">
-                    <ul>
-                        {workInfo && Object.entries(workInfo).map(([contentType, departments]) => (
-                            <li key={contentType}>
+                    {/*컨텐츠 섹션*/}
+                    <section className="person-detail-page-content">
+
+                        <div>
+                            {/*모바일 버전 스크롤 버튼*/}
+                            <div className="mobile-content-type-btn">
                                 <div>
-                                    <button
-                                        className={activeTab === contentType ? 'active' : ''}
-                                        onClick={() => handleTabClick(contentType)}
-                                    >
-                                        {contentType}
-                                    </button>
-                                </div>
-                                <ul>
-                                    {Object.keys(departments).map((department) => (
-                                        <li key={department}>
-                                            <button
-                                                className={activeTab === `${contentType}-${department}` ? 'active' : ''}
-                                                onClick={() => handleTabClick(contentType, department)}
-                                            >
-                                                {department}
-                                            </button>
-                                        </li>
+                                    {workInfo && Object.entries(workInfo).map(([contentType, departments]) =>(
+                                        <h5 key={contentType}
+                                               onClick={() => handleScrollToContentType(contentType)}>{contentType}</h5>
                                     ))}
-                                </ul>
-                            </li>
-                        ))}
-                    </ul>
+                                </div>
+                            </div>
+
+                            <div className="top-btn" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}>
+                                <i className="bi bi-chevron-up"></i>
+                            </div>
+
+                            {workInfo && Object.entries(workInfo).map(([contentType, departments]) => (
+                                <div key={contentType} id={contentType} className="person-detail-page-content-domain">
+                                    <h5>{contentType}</h5>
+                                    <div className="person-detail-page-content-domain-wrap">
+                                        {Object.entries(departments).map(([department, items]) => (
+                                            <div key={department}>
+                                                <p id={`${contentType}-${department}`}>{department}</p>
+                                                <div className="person-detail-page-content-domain-title">
+                                                    <div></div>
+                                                    <div></div>
+                                                    <div>제목</div>
+                                                    <div>역할</div>
+                                                    <div>평가</div>
+                                                    <div>감상서비스</div>
+                                                </div>
+
+                                                {/*pc 버전 컨텐츠*/}
+                                                {items.content.map(item =>
+                                                    <NavLink key={item.id} to={`/content/${item.id}`}
+                                                             className="person-detail-page-content-domain-list">
+                                                        <div
+                                                            className="domain-list-date">{(new Date(item.releaseDate).getFullYear())}</div>
+                                                        <div className="domain-list-image"><img src={item.poster}
+                                                                                                alt=""/></div>
+                                                        <div className="domain-list-title">{item.title}</div>
+                                                        <div className="domain-list-role">{item.role}</div>
+
+                                                        <div className="domain-list-ratingAvg">
+                                                            {item.ratingAvg && (
+                                                                <div>평균 <i
+                                                                    className="bi bi-star-fill"/> {(item.ratingAvg / 2).toFixed(1)}
+                                                                </div>
+                                                            )}
+                                                        </div>
+
+
+                                                        <div className="domain-list-externalService">
+                                                            {item.externalServices?.map(service => (
+                                                                <div key={service.id} onClick={(e) => {
+                                                                    e.preventDefault();
+                                                                    window.open(service.href)
+                                                                }} rel="noopener noreferrer">
+                                                                    <img
+                                                                        src={serviceLogos[service.type] || `${process.env.PUBLIC_URL}/images/default-logo.png`}
+                                                                        alt={service.type}/>
+                                                                </div>
+                                                            ))}
+                                                        </div>
+
+                                                    </NavLink>
+                                                )}
+
+                                                {/*모바일 버전 컨텐츠*/}
+                                                {items.content.map(item =>
+                                                    <NavLink key={item.id} to={`/content/${item.id}`}
+                                                             className="person-detail-page-content-domain-list-mobile">
+                                                        <div
+                                                            className="person-detail-page-content-domain-list-mobile-wrap">
+                                                            <div className="domain-list-image"><img src={item.poster}
+                                                                                                    alt=""/></div>
+                                                            <div className="domain-list-info">
+                                                                <div className="domain-list-title">{item.title}</div>
+                                                                <div className="domain-list-info-flex">
+                                                                    <div className="domain-list-role">{item.role}</div>
+                                                                    <div
+                                                                        className="domain-list-date">{(new Date(item.releaseDate).getFullYear())}</div>
+                                                                </div>
+                                                                <div className="domain-list-ratingAvg">
+                                                                    {item.ratingAvg && (
+                                                                        <div>평균 <i
+                                                                            className="bi bi-star-fill"/> {(item.ratingAvg / 2).toFixed(1)}
+                                                                        </div>
+                                                                    )}
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </NavLink>
+                                                )}
+                                                <div
+                                                    className="person-detail-page-content-domain-btn">{workInfo[contentType][department].page.number + 1 < workInfo[contentType][department].page.totalPages ?
+                                                    <button
+                                                        onClick={() => handleMoreClick(contentType, department, workInfo[contentType][department].page.number + 2)}>더보기</button> : null} </div>
+                                            </div>
+                                        ))}
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+
+                        {/*pc 탭영역 섹션*/}
+                        <div className="person-detail-page-content-tab">
+                            <ul>
+                                {workInfo && Object.entries(workInfo).map(([contentType, departments]) => (
+                                    <li key={contentType}>
+                                        <div>
+                                            <button
+                                                className={activeTab === contentType ? 'active' : ''}
+                                                onClick={() => handleTabClick(contentType)}
+                                            >
+                                                {contentType}
+                                            </button>
+                                        </div>
+                                        <ul>
+                                            {Object.keys(departments).map((department) => (
+                                                <li key={department}>
+                                                    <button
+                                                        className={activeTab === `${contentType}-${department}` ? 'active' : ''}
+                                                        onClick={() => handleTabClick(contentType, department)}
+                                                    >
+                                                        {department}
+                                                    </button>
+                                                </li>
+                                            ))}
+                                        </ul>
+                                    </li>
+                                ))}
+                            </ul>
+                        </div>
+                    </section>
                 </div>
-            </section>
-        </div>
-    )
+            </div>
+    );
 
 
 };

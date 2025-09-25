@@ -1,4 +1,6 @@
-
+.home {
+    margin-top: 94px;
+}
 
 /*배너*/
 .banner {
@@ -6,7 +8,6 @@
     height: 80px;
     border-radius: 8px;
     background: #EAEFE9;
-    margin-top: 94px;
 }
 
 .banner img {
@@ -25,4 +26,19 @@
     font-size: 1.3rem;
     font-weight: bold;
     margin-bottom: 20px;
+}
+
+/*태블릿 사이즈*/
+@media (max-width: 768px) {
+    .home {
+        margin-top: 20px;
+        margin-bottom: 100px;
+    }
+}
+
+/*모바일 사이즈*/
+@media (max-width: 480px) {
+    .home {
+        margin-bottom: 100px;
+    }
 }
