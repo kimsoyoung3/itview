@@ -329,8 +329,8 @@ const Header = ({ userInfo, handleLogin, handleLogout, isLoginOpen, openLogin, c
                                 setErrorModalOpen(true);
                             }
                         }}>
-                            <input type="email" placeholder="이메일" onChange={(e) => setLoginEmail(e.target.value)}/>
-                            <input type="password" placeholder="비밀번호" onChange={(e) => setLoginPassword(e.target.value)}/>
+                            <input required type="email" placeholder="이메일" onChange={(e) => setLoginEmail(e.target.value)}/>
+                            <input required type="password" placeholder="비밀번호" onChange={(e) => setLoginPassword(e.target.value)}/>
                             <button type="submit" className="login-submit">로그인</button>
                         </form>
                         <p onClick={openReset} className="login-text-top">비밀번호를 잊으셨나요?</p>
@@ -361,9 +361,9 @@ const Header = ({ userInfo, handleLogin, handleLogout, isLoginOpen, openLogin, c
                         <h1><img src={`${process.env.PUBLIC_URL}/itview-logo/mainLogo.svg`} alt="로고"/></h1>
                         <h2>회원가입</h2>
                         <form onSubmit={(e) => { e.preventDefault(); handleSignup(); }}>
-                            <input type="text" placeholder="닉네임" onChange={(e) => setSignupNickname(e.target.value)}/>
-                            <input type="email" placeholder="이메일" onChange={(e) => setSignupEmail(e.target.value)}/>
-                            <input type="password" placeholder="비밀번호" onChange={(e) => setSignupPassword(e.target.value)}/>
+                            <input required type="text" placeholder="닉네임" onChange={(e) => setSignupNickname(e.target.value)}/>
+                            <input required type="email" placeholder="이메일" onChange={(e) => setSignupEmail(e.target.value)}/>
+                            <input required type="password" placeholder="비밀번호" onChange={(e) => setSignupPassword(e.target.value)}/>
                             <button type="submit" className="login-submit">회원가입</button>
                         </form>
                         <p className="login-text-bottom">
