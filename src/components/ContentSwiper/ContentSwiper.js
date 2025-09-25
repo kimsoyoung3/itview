@@ -16,9 +16,9 @@ export default function ContentSwiper({ data =[] }) {
             slidesPerView={2}
             navigation
             breakpoints={{
-                480: { slidesPerView: 2 },
-                768: { slidesPerView: 4 },
-                1020: { slidesPerView: 5 },
+                480: { slidesPerView: 2 , slidesPerGroup : 2},
+                768: { slidesPerView: 4 , slidesPerGroup : 4},
+                1020: { slidesPerView: 5 , slidesPerGroup : 5},
             }}
             className="content-swiper"
         >
