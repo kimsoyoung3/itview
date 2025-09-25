@@ -44,14 +44,15 @@
 .webtoon-content-card-poster {
     width: 100%;
     height: auto;
+    aspect-ratio: 2 / 3;
+    border: 1px solid #eeeeee;
     margin-bottom: 5px;
 }
 
 .webtoon-content-card-poster>img {
     width: 100%;
-    aspect-ratio: 2 / 3;
+    height: 100%;
     object-fit: cover;
-    display: block;
 }
 
 .webtoon-content-card>p .bi {

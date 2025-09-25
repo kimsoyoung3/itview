@@ -7,15 +7,15 @@
 }
 
 .swiper-slide {
-    width: calc(100% / 5);
-    display: flex;
-    border-radius: 5px;
-    flex-direction: column;
+    width: 100%;
 }
 
 .slide-image {
-    height: 320px;
+    width: 100%;
+    height: auto;
+    aspect-ratio: 2 / 3;
     border-radius: 5px;
+    border: 1px solid #eeeeee;
 }
 
 .slide-image>img {
@@ -114,8 +114,28 @@
 .swiper-button-prev::after {
     font-size: 1rem  !important;; /* 아이콘 크기 조절 */
 }
+
 .swiper-button-disabled {
     opacity: 0;
     pointer-events: none;
     visibility: hidden;
+}
+
+/*태블릿 사이즈*/
+@media (max-width: 768px) {
+    .comment-page {
+        height: 100%;
+        margin-top: 24px;
+        margin-bottom: 50px;
+        max-width: 800px;
+    }
+}
+
+/*모바일 사이즈*/
+@media (max-width: 480px) {
+    .comment-page {
+        margin-top: 24px;
+        margin-bottom: 50px;
+        max-width: 800px;
+    }
 }
