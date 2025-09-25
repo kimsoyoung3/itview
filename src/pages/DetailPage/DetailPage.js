@@ -190,7 +190,7 @@ const DetailPage = ({userInfo, openLogin}) => {
         };
 
         fetchContentDetail();
-    }, []);
+    }, [id]);
 
     /*컨텐츠 크레딧*/
     useEffect(() => {
@@ -204,7 +204,7 @@ const DetailPage = ({userInfo, openLogin}) => {
         };
         
         fetchContentCredit();
-    }, []); 
+    }, [id]);
 
     /*스와이퍼 레퍼런스*/
     const swiperRef = useRef(null);
