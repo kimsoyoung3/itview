@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { getContentsByGenre, getGenresByContentType } from "../../../API/HomeApi";
 import "./Record.css"
 import { toast } from "react-toastify";
+import {NavLink} from "react-router-dom";
 
 const Record = () => {
 
@@ -46,8 +47,25 @@ const Record = () => {
             <div className="record-page-wrap">
                 <div className="record-page-tab-btn">
                     {genre?.map(item =>(
-                        <button onClick={() => setSelect(item)} key={item.id}>{item.second}</button>
+                        <button className={select?.first === item.first ? "record-page-tab-btn-click" : ""} onClick={() => setSelect(item)} key={item.id}>{item.second}</button>
                     ))}
+                </div>
+
+                <div className="record-page-tab-content">
+                    {contents?.content?.map(item => (
+                        <NavLink to={`/content/${item?.id}`} className="record-content-card">
+                            <div className="record-content-card-poster">
+                                <img src={item.poster} alt=""/>
+                            </div>
+                            <p className="record-content-card-title">{item.title}</p>
+                            <p className="record-content-card-info"><span>{item.nation}</span> &middot; <span>{(new Date(item.releaseDate).getFullYear())}</span></p>
+                            <p className="record-content-card-avg"><i className="bi bi-star-fill"/> {(item.ratingAvg / 2).toFixed(1)}</p>
+                        </NavLink>
+                    ))}
+                </div>
+
+                <div className="record-page-tab-more-btn">
+                    <button>더보기</button>
                 </div>
             </div>
         </div>

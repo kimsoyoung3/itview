@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { getChannelsByContentType, getContentsByChannel, getContentsByGenre, getGenresByContentType } from "../../../API/HomeApi";
 import "./Series.css"
 import { toast } from "react-toastify";
+import {NavLink} from "react-router-dom";
 
 const Series = () => {
 
@@ -64,7 +65,7 @@ const Series = () => {
                 <div className="series-page-tab-btn-wrap">
                     <div className="series-page-tab-btn">
                         {genre?.map(item =>(
-                            <button onClick={() => setSelect(item)} key={item.id}>{item.second}</button>
+                            <button className={select?.first === item.first ? "series-page-tab-btn-click" : ""} onClick={() => setSelect(item)} key={item.id}>{item.second}</button>
                         ))}
                     </div>
                     <div className="series-page-tab-btn">
@@ -72,6 +73,23 @@ const Series = () => {
                             <button onClick={() => setSelect(item)} key={item.id}>{item.second}</button>
                         ))}
                     </div>
+                </div>
+
+                <div className="series-page-tab-content">
+                    {contents?.content?.map(item => (
+                        <NavLink to={`/content/${item?.id}`} className="series-content-card">
+                            <div className="series-content-card-poster">
+                                <img src={item.poster} alt=""/>
+                            </div>
+                            <p className="series-content-card-title">{item.title}</p>
+                            <p className="series-content-card-info"><span>{item.nation}</span> &middot; <span>{(new Date(item.releaseDate).getFullYear())}</span></p>
+                            <p className="series-content-card-avg"><i className="bi bi-star-fill"/> {(item.ratingAvg / 2).toFixed(1)}</p>
+                        </NavLink>
+                    ))}
+                </div>
+
+                <div className="series-page-tab-more-btn">
+                    <button>더보기</button>
                 </div>
             </div>
         </div>

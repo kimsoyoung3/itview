@@ -47,7 +47,7 @@ const Book = () => {
             <div className="book-page-wrap">
                 <div className="book-page-tab-btn">
                     {genre?.map(item =>(
-                        <button onClick={() => setSelect(item)} key={item.id}>{item.second}</button>
+                        <button className={select?.first === item.first ? "book-page-tab-btn-click" : ""} onClick={() => setSelect(item)} key={item.id}>{item.second}</button>
                     ))}
                 </div>
 

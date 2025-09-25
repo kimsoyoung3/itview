@@ -22,35 +22,41 @@
     color: #ffffff;
 }
 
-.movie-page-tab-content {
+.book-page-tab-btn-click {
+    background: #22c55e !important;
+    border: 0 !important;
+    color: #ffffff;
+}
+
+.book-page-tab-content {
     display: grid;
     grid-template-columns: repeat(6, 1fr); /* 4등분 고정 */
     gap: 15px;
     margin-top: 30px;
 }
 
-.movie-content-card-poster {
+.book-content-card-poster {
     width: 100%;
     height: auto;
     margin-bottom: 5px;
 }
 
-.movie-content-card-poster>img {
+.book-content-card-poster>img {
     width: 100%;
     aspect-ratio: 2 / 3;
     object-fit: cover;
     display: block;
 }
 
-.movie-content-card>p .bi {
+.book-content-card>p .bi {
     vertical-align: 0;
 }
 
-.movie-content-card>p {
+.book-content-card>p {
     margin-bottom: 0;
 }
 
-.movie-content-card-title {
+.book-content-card-title {
     font-weight: 700;
     width: 170px;
     white-space: nowrap;
@@ -58,23 +64,23 @@
     overflow: hidden;
 }
 
-.movie-content-card-info>span {
+.book-content-card-info>span {
     font-size: 0.8rem;
     font-weight: 500;
     color: #555555;
 }
 
-.movie-content-card-avg {
+.book-content-card-avg {
     font-size: 0.8rem;
     color: #22c55e;
 }
 
-.movie-page-tab-more-btn {
+.book-page-tab-more-btn {
     margin: 20px 0;
     text-align: center;
 }
 
-.movie-page-tab-more-btn>button {
+.book-page-tab-more-btn>button {
     border: 1px solid #888888;
     background: none;
     color: #555555;
@@ -84,6 +90,6 @@
     font-size: 0.9rem;
 }
 
-.movie-page-tab-more-btn>button:hover {
+.book-page-tab-more-btn>button:hover {
     background: #d9d9d9;
 }

@@ -21,3 +21,75 @@
     border-color: #22c55e;
     color: #ffffff;
 }
+
+.record-page-tab-btn-click {
+    background: #22c55e !important;
+    border: 0 !important;
+    color: #ffffff;
+}
+
+.record-page-tab-content {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr); /* 4등분 고정 */
+    gap: 15px;
+    margin-top: 30px;
+}
+
+.record-content-card-poster {
+    width: 100%;
+    height: auto;
+    margin-bottom: 5px;
+}
+
+.record-content-card-poster>img {
+    width: 100%;
+    aspect-ratio: 2 / 3;
+    object-fit: cover;
+    display: block;
+}
+
+.record-content-card>p .bi {
+    vertical-align: 0;
+}
+
+.record-content-card>p {
+    margin-bottom: 0;
+}
+
+.record-content-card-title {
+    font-weight: 700;
+    width: 170px;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+}
+
+.record-content-card-info>span {
+    font-size: 0.8rem;
+    font-weight: 500;
+    color: #555555;
+}
+
+.record-content-card-avg {
+    font-size: 0.8rem;
+    color: #22c55e;
+}
+
+.record-page-tab-more-btn {
+    margin: 20px 0;
+    text-align: center;
+}
+
+.record-page-tab-more-btn>button {
+    border: 1px solid #888888;
+    background: none;
+    color: #555555;
+    padding: 5px 20px;
+    border-radius: 5px;
+    font-weight: 600;
+    font-size: 0.9rem;
+}
+
+.record-page-tab-more-btn>button:hover {
+    background: #d9d9d9;
+}
