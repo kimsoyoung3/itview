@@ -34,14 +34,26 @@ const Book = () => {
         console.log(select);
         const fetchContents = async () => {
             try {
-                setContents(await getContentsByGenre('book', select?.first).then(res => res.data));
+                setContents(await getContentsByGenre('book', select?.first, 1).then(res => res.data));
             } catch (error) {
                 toast("데이터를 불러오지 못했습니다.");
             }
         };
         fetchContents();
     }, [select]);
-
+    
+    const handleMoreClick = async() => {
+        try {
+            const res = await getContentsByGenre('book', select?.first, contents?.page.number + 2)
+            setContents({
+                content: [...contents.content, ...res.data.content],
+                page: res.data.page
+            });
+        } catch (error) {
+            toast("데이터를 불러오지 못했습니다.");
+        }
+    };
+    
     return (
         <div className="book-page container">
             <div className="book-page-wrap">
@@ -65,7 +77,7 @@ const Book = () => {
                 </div>
 
                 <div className="book-page-tab-more-btn">
-                    <button>더보기</button>
+                    <button onClick={handleMoreClick} hidden={contents?.page.number + 1 >= contents?.page.totalPages}>더보기</button>
                 </div>
             </div>
         </div>

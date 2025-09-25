@@ -206,7 +206,7 @@ const Header = ({ userInfo, handleLogin, handleLogout, isLoginOpen, openLogin, c
                         {/* 로그인/회원정보 */}
                         {userInfo ? (
                             <div className="user-menu">
-                                <Link to={`/user/${userInfo}`} className="login-button">마이페이지</Link>
+                                <Link to={`/user/${userInfo.userId}`} className="login-button">마이페이지</Link>
                                 <button onClick={handleLogout} className="login-button">로그아웃</button>
                             </div>
                         ) : (
@@ -248,12 +248,14 @@ const Header = ({ userInfo, handleLogin, handleLogout, isLoginOpen, openLogin, c
 
                             <div className="mobile-header-menu-list">
                                 <div>
-                                    <Link to={`/user/${userInfo}`} className="login-button">
+                                    <Link to={`/user/${userInfo.userId}`} className="login-button">
                                         <img className="mobile-menu-icon" src={`${process.env.PUBLIC_URL}/mobile-icon/mobile-user-profile.svg`} alt=""/>
                                     </Link>
                                 </div>
                                 <p className="mobile-menu-name">마이페이지</p>
                             </div>
+
+                            
 
                             <div className="mobile-header-menu-list">
                                 <div>

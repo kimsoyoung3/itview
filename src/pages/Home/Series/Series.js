@@ -41,7 +41,7 @@ const Series = () => {
         if (channel?.includes(select)) {
             const fetchContents = async () => {
                 try {
-                    setContents(await getContentsByChannel('series', select?.first).then(res => res.data));
+                    setContents(await getContentsByChannel('series', select?.first, 1).then(res => res.data));
                 } catch (error) {
                     toast("데이터를 불러오지 못했습니다.");
                 }
@@ -50,7 +50,7 @@ const Series = () => {
         } else {
             const fetchContents = async () => {
                 try {
-                    setContents(await getContentsByGenre('series', select?.first).then(res => res.data));
+                    setContents(await getContentsByGenre('series', select?.first, 1).then(res => res.data));
                 } catch (error) {
                     toast("데이터를 불러오지 못했습니다.");
                 }
@@ -58,6 +58,30 @@ const Series = () => {
             fetchContents();
         }
     }, [select, channel]);
+
+    const handleMoreClick = async() => {
+        if (channel?.includes(select)) {
+            try {
+                const res = await getContentsByChannel('series', select?.first, contents?.page.number + 2)
+                setContents({
+                    content: [...contents.content, ...res.data.content],
+                    page: res.data.page
+                });
+            } catch (error) {
+                toast("데이터를 불러오지 못했습니다.");
+            }
+        } else {
+            try {
+                const res = await getContentsByGenre('series', select?.first, contents?.page.number + 2)
+                setContents({
+                    content: [...contents.content, ...res.data.content],
+                    page: res.data.page
+                });
+            } catch (error) {
+                toast("데이터를 불러오지 못했습니다.");
+            }
+        }
+    };
 
     return (
         <div className="series-page container">
@@ -89,7 +113,7 @@ const Series = () => {
                 </div>
 
                 <div className="series-page-tab-more-btn">
-                    <button>더보기</button>
+                    <button onClick={handleMoreClick} hidden={contents?.page.number + 1 >= contents?.page.totalPages}>더보기</button>
                 </div>
             </div>
         </div>

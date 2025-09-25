@@ -36,7 +36,7 @@ function App() {
     }, []);
 
     useEffect(() => {
-        console.log("userId : ", userInfo);
+        console.log(userInfo);
     }, [userInfo]);
 
     const handleLogin = async (loginEmail, loginPassword) => {
