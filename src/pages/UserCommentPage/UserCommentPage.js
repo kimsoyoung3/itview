@@ -20,7 +20,7 @@ function UserCommentPage({ userInfo, openLogin }) {
         { value: "recent", label: "작성 순" },
         { value: "like", label: "좋아요 순" },
         { value: "reply", label: "댓글 순" },
-        { value: "rating", label: Number(userInfo) === Number(id) ? "나의 별점 낮은 순" : "이 회원의 별점 낮은 순" },
+        { value: "rating", label: Number(userInfo?.userId) === Number(id) ? "나의 별점 낮은 순" : "이 회원의 별점 낮은 순" },
         { value: "new", label: "신작 순" },
     ];
 

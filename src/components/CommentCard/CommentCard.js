@@ -172,7 +172,7 @@ const CommentCard = ({ comment, content, userInfo, openLogin, newReply, onDelete
                             <i className="bi bi-share"/>
                         </button>
                     </div>
-                    {userInfo === commentData.user?.id && !clamp && (
+                    {userInfo?.userId === commentData.user?.id && !clamp && (
                         <div>
                             <button onClick={handleDeleteCommentClick}><i className="bi bi-trash"/></button>
                             <button onClick={openComment}><i className="bi bi-pencil"/></button>

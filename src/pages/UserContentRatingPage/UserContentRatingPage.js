@@ -26,8 +26,8 @@ const UserContentRatingPage = ({userInfo}) => {
     const options = [
         { value: "new", label: "담은 순" },
         { value: "old", label: "담은 역순" },
-        { value: "my_score_high", label: Number(userInfo) === Number(id) ? "나의 별점 높은 순" : "이 회원의 별점 높은 순" },
-        { value: "my_score_low", label: Number(userInfo) === Number(id) ? "나의 별점 낮은 순" : "이 회원의 별점 낮은 순" },
+        { value: "my_score_high", label: Number(userInfo?.userId) === Number(id) ? "나의 별점 높은 순" : "이 회원의 별점 높은 순" },
+        { value: "my_score_low", label: Number(userInfo?.userId) === Number(id) ? "나의 별점 낮은 순" : "이 회원의 별점 낮은 순" },
         { value: "avg_score_high", label: "평균 별점 높은 순" },
         { value: "avg_score_low", label: "평균 별점 낮은 순" }
     ];

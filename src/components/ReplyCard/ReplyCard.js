@@ -103,7 +103,7 @@ const ReplyCard = ({ reply, userInfo, openLogin }) => {
                 </div>
 
                 {/* 우측: 수정/삭제 버튼 */}
-                {userInfo === replyData.user?.id && (
+                {userInfo?.userId === replyData.user?.id && (
                     <div className="reply-card-inner-right">
                         <button onClick={openReplyDeleteConfirm}><i className="bi bi-trash"></i></button>
                         <button onClick={openUpdateReply}><i className="bi bi-pencil"></i></button>

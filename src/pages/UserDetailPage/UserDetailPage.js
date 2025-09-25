@@ -105,7 +105,7 @@ const UserDetailPage = ({ userInfo, openLogin }) => {
                     <h5 className="user-detail-info-name">{userDetail?.userProfile.nickname}</h5>
                     <p className="user-detail-info-intro">{userDetail?.userProfile.introduction}</p>
                     <div className="user-detail-info-btn">
-                        <div style={{display: userInfo === userDetail?.userProfile.id ? "block" : "none"}} className="user-detail-info-edit">
+                        <div style={{display: userInfo?.userId === userDetail?.userProfile.id ? "block" : "none"}} className="user-detail-info-edit">
                             <button onClick={openMyProfileEdit}>프로필 수정</button>
                         </div>
 
@@ -121,6 +121,7 @@ const UserDetailPage = ({ userInfo, openLogin }) => {
                         </div>
                     </div>
 
+                    {/*설정 모달*/}
                     <div className="user-setting">
                         {setting && (
                             <div className="modal-overlay" onClick={closeSetting}>
@@ -137,7 +138,7 @@ const UserDetailPage = ({ userInfo, openLogin }) => {
                                                 <p>카카오</p>
                                                 <div className="user-setting-modal-sns-btn">
                                                     <span></span>
-                                                    <span></span>
+                                                    <span onClick={() => {alert("test")}}></span>
                                                 </div>
                                             </div>
                                         </div>

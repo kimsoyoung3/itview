@@ -33,7 +33,7 @@ const UserCollectionPage = ({userInfo}) => {
             <div className="user-collection-page-wrap">
                 <div className="user-collection-page-wrap-title">
                     <h1>컬렉션</h1>
-                    <NavLink to="/collection/new" hidden={(Number(userInfo) !== Number(id))}>새 컬렉션</NavLink>
+                    <NavLink to="/collection/new" hidden={(Number(userInfo?.userId) !== Number(id))}>새 컬렉션</NavLink>
                 </div>
 
                 {collections?.content?.length > 0 ? (
