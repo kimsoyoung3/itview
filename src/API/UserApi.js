@@ -9,6 +9,7 @@ export const checkEmail = (data) => axios.post(`${process.env.REACT_APP_API_URL}
 export const checkVerification = (data) => axios.post(`${process.env.REACT_APP_API_URL}/api/user/checkVerification`, data, {withCredentials: true});
 export const setPassword = (data) => axios.post(`${process.env.REACT_APP_API_URL}/api/user/setPW`, data, {withCredentials: true});
 export const link = (data) => axios.post(`${process.env.REACT_APP_API_URL}/api/user/link?redirectURL=` + encodeURIComponent(data.redirectURL), {}, {withCredentials: true});
+export const unlink = (data) => axios.post(`${process.env.REACT_APP_API_URL}/api/user/unlink?provider=` + encodeURIComponent(data.provider), {}, {withCredentials: true});
 
 export const getUserDetail = (id) => axios.get(`${process.env.REACT_APP_API_URL}/api/user/${id}`, {withCredentials: true});
 export const updateUserProfile = (data) => axios.put(`${process.env.REACT_APP_API_URL}/api/user`, data, {withCredentials: true});

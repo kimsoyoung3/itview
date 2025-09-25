@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import {NavLink, useParams} from "react-router-dom";
 import "./UserDetailPage.css"
-import {getUserDetail, link, updateUserProfile} from "../../API/UserApi";
+import {getUserDetail, link, unlink, updateUserProfile} from "../../API/UserApi";
 import { toast } from "react-toastify";
 import NotFound from "../NotFound/NotFound";
 
@@ -95,6 +95,19 @@ const UserDetailPage = ({ userInfo, openLogin }) => {
         }
     };
 
+    const handleSocialLogin = async (provider) => {
+        if (userInfo?.[provider]) {
+            await unlink({provider}).then(() => {
+                toast("연동이 해제되었습니다.");
+                userInfo[provider] = false;
+            });
+            return;
+        } else {
+            link({redirectURL: window.location.href});
+            window.location.href = `${process.env.REACT_APP_API_URL}/oauth2/authorization/${provider}`;
+        }
+    }
+
     return (notFound ? <NotFound /> :
         <div className="user-detail-page container">
             <div className="user-detail-page-wrap">
@@ -138,7 +151,7 @@ const UserDetailPage = ({ userInfo, openLogin }) => {
                                                 <p>카카오</p>
                                                 <div className="user-setting-modal-sns-btn">
                                                     <span></span>
-                                                    <span onClick={() => {alert("test")}}></span>
+                                                    <span onClick={() => handleSocialLogin("kakao")}></span>
                                                 </div>
                                             </div>
                                         </div>
@@ -148,7 +161,7 @@ const UserDetailPage = ({ userInfo, openLogin }) => {
                                                 <p>구글</p>
                                                 <div className="user-setting-modal-sns-btn">
                                                     <span></span>
-                                                    <span></span>
+                                                    <span onClick={() => handleSocialLogin("google")}></span>
                                                 </div>
                                             </div>
                                         </div>
@@ -158,7 +171,7 @@ const UserDetailPage = ({ userInfo, openLogin }) => {
                                                 <p>네이버</p>
                                                 <div className="user-setting-modal-sns-btn">
                                                     <span></span>
-                                                    <span></span>
+                                                    <span onClick={() => handleSocialLogin("naver")}></span>
                                                 </div>
                                             </div>
                                         </div>

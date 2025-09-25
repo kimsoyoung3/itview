@@ -255,6 +255,8 @@ const Header = ({ userInfo, handleLogin, handleLogout, isLoginOpen, openLogin, c
                                 <p className="mobile-menu-name">마이페이지</p>
                             </div>
 
+                            
+
                             <div className="mobile-header-menu-list">
                                 <div>
                                     <button onClick={handleLogout} className="login-button">
