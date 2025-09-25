@@ -13,6 +13,7 @@ import com.example.itview_spring.DTO.PersonDTO;
 import com.example.itview_spring.DTO.RatingDTO;
 import com.example.itview_spring.DTO.RegisterDTO;
 import com.example.itview_spring.DTO.UserContentCountDTO;
+import com.example.itview_spring.DTO.UserInfoDTO;
 import com.example.itview_spring.DTO.UserProfileUpdateDTO;
 import com.example.itview_spring.DTO.UserRatingCountDTO;
 import com.example.itview_spring.DTO.UserResponseDTO;
@@ -93,11 +94,19 @@ public class UserRestController {
         return ResponseEntity.ok().build();
     }
 
+    // 소셜 연동 해제
+    @PostMapping("/unlink")
+    public ResponseEntity<Void> unlinkSocial(@AuthenticationPrincipal CustomUserDetails user,
+                                             @RequestParam("provider") String provider) {
+        userService.unlinkSocial(user.getId(), provider);
+        return ResponseEntity.ok().build();
+    }
+
     // 현재 로그인된 사용자 정보 조회
     @GetMapping("/me")
-    public ResponseEntity<Integer> me(@AuthenticationPrincipal CustomUserDetails user) {
+    public ResponseEntity<UserInfoDTO> me(@AuthenticationPrincipal CustomUserDetails user) {
         if (user == null) return ResponseEntity.status(401).build();
-        return ResponseEntity.ok(user.getId());
+        return ResponseEntity.ok(userService.getUserInfo(user.getId()));
     }
 
     // 로그아웃

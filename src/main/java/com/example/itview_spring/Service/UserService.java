@@ -3,7 +3,21 @@ package com.example.itview_spring.Service;
 import com.example.itview_spring.Config.CustomUserDetails;
 import com.example.itview_spring.Constant.ContentType;
 import com.example.itview_spring.Constant.Role;
-import com.example.itview_spring.DTO.*;
+import com.example.itview_spring.DTO.CommentAndContentDTO;
+import com.example.itview_spring.DTO.ContentResponseDTO;
+import com.example.itview_spring.DTO.EmailDTO;
+import com.example.itview_spring.DTO.EmailVerificationDTO;
+import com.example.itview_spring.DTO.NewPasswordDTO;
+import com.example.itview_spring.DTO.PersonDTO;
+import com.example.itview_spring.DTO.RatingDTO;
+import com.example.itview_spring.DTO.RegisterDTO;
+import com.example.itview_spring.DTO.UserContentCountDTO;
+import com.example.itview_spring.DTO.UserInfoDTO;
+import com.example.itview_spring.DTO.UserProfileUpdateDTO;
+import com.example.itview_spring.DTO.UserRatingCountDTO;
+import com.example.itview_spring.DTO.UserResponseDTO;
+import com.example.itview_spring.DTO.AdminUserDTO;
+import com.example.itview_spring.DTO.CollectionResponseDTO;
 import com.example.itview_spring.Entity.EmailVerificationEntity;
 import com.example.itview_spring.Entity.UserEntity;
 import com.example.itview_spring.Repository.*;
@@ -39,6 +53,7 @@ import java.util.Optional;
 public class UserService implements UserDetailsService {
 
     private final WishlistRepository wishlistRepository;
+    private final SocialRepository socialRepository;
     private final UserRepository userRepository;
     private final CommentRepository commentRepository;
     private final RatingRepository ratingRepository;
@@ -147,6 +162,30 @@ public class UserService implements UserDetailsService {
         userEntity.get().setPassword(encodedPassword);
 
         userRepository.save(userEntity.get());
+    }
+
+    // 소셜 연동 해제
+    public void unlinkSocial(Integer userId, String provider) {
+        if (!userRepository.existsById(userId)) {
+            throw new NoSuchElementException("존재하지 않는 유저입니다.");
+        }
+        if (!socialRepository.existsByUser_IdAndProvider(userId, provider)) {
+            throw new NoSuchElementException("연동된 소셜 계정이 없습니다.");
+        }
+        socialRepository.deleteByUser_IdAndProvider(userId, provider);
+    }
+
+    // userInfo 조회
+    public UserInfoDTO getUserInfo(Integer id) {
+        if (!userRepository.existsById(id)) {
+            throw new NoSuchElementException("존재하지 않는 유저입니다.");
+        }
+        UserInfoDTO userInfoDTO = new UserInfoDTO();
+        userInfoDTO.setUserId(id);
+        userInfoDTO.setGoogle(socialRepository.existsByUser_IdAndProvider(id, "google"));
+        userInfoDTO.setKakao(socialRepository.existsByUser_IdAndProvider(id, "kakao"));
+        userInfoDTO.setNaver(socialRepository.existsByUser_IdAndProvider(id, "naver"));
+        return userInfoDTO;
     }
 
     // 유저 페이지 정보 조회

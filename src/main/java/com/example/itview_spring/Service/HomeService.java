@@ -46,13 +46,13 @@ public class HomeService {
 
     // 장르 별 컨텐츠 조회
     public Page<ContentResponseDTO> getContentsByGenre(ContentType contentType, Genre genre, int page) {
-        Pageable pageable = PageRequest.of(page - 1, 10);
+        Pageable pageable = PageRequest.of(page - 1, 1);
         return contentRepository.findByContentTypeAndGenre(contentType, genre, pageable);
     }
 
     // 채널 별 컨텐츠 조회
     public Page<ContentResponseDTO> getContentsByChannel(ContentType contentType, Channel channel, int page) {
-        Pageable pageable = PageRequest.of(page - 1, 10);
+        Pageable pageable = PageRequest.of(page - 1, 1);
         return contentRepository.findByContentTypeAndChannel(contentType, channel, pageable);
     }
 }
