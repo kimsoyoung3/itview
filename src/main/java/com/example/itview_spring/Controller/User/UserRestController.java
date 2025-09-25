@@ -38,6 +38,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.context.SecurityContextRepository;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -91,6 +92,14 @@ public class UserRestController {
         } catch (Exception e) {
             return ResponseEntity.status(401).build(); // 인증 실패
         }
+        return ResponseEntity.ok().build();
+    }
+
+    // 탈퇴
+    @DeleteMapping("/delete")
+    public ResponseEntity<Void> deleteUser(@AuthenticationPrincipal CustomUserDetails user) {
+        if (user == null) return ResponseEntity.status(401).build();
+        userService.deleteUser(user.getId());
         return ResponseEntity.ok().build();
     }
 

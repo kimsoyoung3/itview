@@ -234,5 +234,9 @@ public interface CommentRepository extends JpaRepository<CommentEntity, Integer>
             """)
     Page<CommentAndContentDTO> findCommentAndContentUserLike(@Param("loginUserId") Integer loginUserId, @Param("userId") Integer userId, Pageable pageable);
 
+    // 특정 유저의 모든 코멘트 ID 조회
+    @Query("SELECT c.id FROM CommentEntity c WHERE c.user.id = :userId")
+    List<Integer> findAllIdsByUserId(@Param("userId") Integer userId);
+
     Page<CommentEntity> findByUserId(Integer userId, Pageable pageable);
 }

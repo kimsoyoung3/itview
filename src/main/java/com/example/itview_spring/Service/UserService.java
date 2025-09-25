@@ -58,9 +58,12 @@ public class UserService implements UserDetailsService {
     private final CommentRepository commentRepository;
     private final RatingRepository ratingRepository;
     private final PersonRepository personRepository;
+    private final ReplyRepository replyRepository;
     private final CollectionRepository collectionRepository;
     private final EmailVerificationRepository emailVerificationRepository;
     private final CollectionService collectionService;
+    private final CommentService commentservice;
+    private final ReplyService replyService;
     private final ModelMapper modelMapper;
     private final PasswordEncoder passwordEncoder;
     private final JavaMailSender mailSender;
@@ -173,6 +176,38 @@ public class UserService implements UserDetailsService {
             throw new NoSuchElementException("연동된 소셜 계정이 없습니다.");
         }
         socialRepository.deleteByUser_IdAndProvider(userId, provider);
+    }
+
+    // 탈퇴
+    public void deleteUser(Integer userId) {
+        if (!userRepository.existsById(userId)) {
+            throw new NoSuchElementException("존재하지 않는 유저입니다.");
+        }
+        UserEntity user = userRepository.findById(userId).get();
+        // 프로필 사진 S3에서 삭제
+        if (user.getProfile() != null) {
+            s3Uploader.deleteFile(user.getProfile());
+        }
+
+        // 컬렉션 삭제
+        List<Integer> collectionIds = collectionRepository.findAllIdsByUserId(userId);
+        for (var collectionId : collectionIds) {
+            collectionService.deleteCollection(userId, collectionId);
+        }
+
+        // 코멘트 삭제
+        List<Integer> commentIds = commentRepository.findAllIdsByUserId(userId);
+        for (var commentId : commentIds) {
+            commentservice.deleteComment(userId, commentId);
+        }
+
+        // 댓글 삭제
+        List<Integer> replyIds = replyRepository.findAllByUserId(userId);
+        for (var replyId : replyIds) {
+            replyService.deleteReply(userId, replyId);
+        }
+
+        userRepository.deleteById(userId);
     }
 
     // userInfo 조회

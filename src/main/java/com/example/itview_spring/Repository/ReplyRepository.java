@@ -73,5 +73,9 @@ public interface ReplyRepository extends JpaRepository<ReplyEntity, Integer> {
     @Query("SELECT r.id FROM ReplyEntity r WHERE r.targetId = :collectionId AND r.targetType = 'COLLECTION'")
     List<Integer> findAllByCollectionId(@Param("collectionId") Integer collectionId);
 
+    // 특정 유저의 모든 댓글 id 조회
+    @Query("SELECT r.id FROM ReplyEntity r WHERE r.user.id = :userId")
+    List<Integer> findAllByUserId(@Param("userId") Integer userId);
+
     Page<ReplyEntity> findByUserId(int userId, Pageable pageable);
 }
