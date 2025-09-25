@@ -1,15 +1,23 @@
 package com.example.itview_spring.Controller.User;
 
+import com.example.itview_spring.Config.CustomUserDetails;
+import com.example.itview_spring.Constant.Role;
 import com.example.itview_spring.DTO.AdminUserDTO;
+import com.example.itview_spring.DTO.SuperUserDTO;
+import com.example.itview_spring.Entity.UserEntity;
 import com.example.itview_spring.Service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
+import java.util.Collection;
 
 @Controller
 @RequiredArgsConstructor
@@ -47,31 +55,74 @@ public class UserController {
 
     // 유저 상세 조회
     @GetMapping("/user/{userid}")
-    public String read(@PathVariable("userid") int id, Model model) {
+    public String getDetail(@PathVariable("userid") int userid, Model model, Authentication authentication) {
 
-        // 1. 서비스 계층을 호출하여 유저 상세 정보를 가져옵니다.
-        //    ModelMapper를 사용해 AdminUserDTO로 변환된 객체를 받습니다.
-        AdminUserDTO userDetail = userService.read(id);
+        Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
+        boolean isSuperAdmin = authorities.stream()
+                .anyMatch(authority -> authority.getAuthority().equals(Role.SUPER_ADMIN.name()));
 
-        // 2. 조회된 DTO 객체를 모델에 담아 뷰로 전달합니다.
-        model.addAttribute("user", userDetail);
+        AdminUserDTO userDetail = userService.read(userid);
 
-        // 3. Thymeleaf 템플릿의 이름을 반환합니다.
+        if (isSuperAdmin) {
+            Role userRole = userService.getRoleById(userid);
+
+            SuperUserDTO superUserDTO = new SuperUserDTO(
+                    userDetail.getId(),
+                    userDetail.getNickname(),
+                    userDetail.getIntroduction(),
+                    userDetail.getProfile(),
+                    userDetail.getEmail(),
+                    userRole.name()
+            );
+            model.addAttribute("user", superUserDTO);
+        } else {
+            model.addAttribute("user", userDetail);
+        }
+
         return "user/detail";
     }
 
     // 유저 수정 폼 이동
     @GetMapping("/user/{userid}/update")
-    public String getUpdate(@PathVariable("userid") int id, Model model) {
-        AdminUserDTO userDetail = userService.read(id);
-        model.addAttribute("user", userDetail);
+    public String getUpdate(@PathVariable("userid") int userid, Model model, Authentication authentication) {
+
+        // 현재 로그인한 사용자의 ID와 권한을 확인
+        CustomUserDetails customUserDetails = (CustomUserDetails) authentication.getPrincipal();
+        int loggedInUserId = customUserDetails.getId();
+        boolean isSuperAdmin = authentication.getAuthorities().stream()
+                .anyMatch(authority -> authority.getAuthority().equals(Role.SUPER_ADMIN.name()));
+
+        // 수정하려는 유저의 정보
+        AdminUserDTO userDetail = userService.read(userid);
+
+        // 로그인한 유저가 SUPER_ADMIN이고 본인 계정이 아닌 경우
+        if (isSuperAdmin && loggedInUserId != userid) {
+            // SuperUserDTO를 생성하여 모델에 추가
+            Role userRole = userService.getRoleById(userid);
+            SuperUserDTO superUserDTO = new SuperUserDTO(
+                    userDetail.getId(),
+                    userDetail.getNickname(),
+                    userDetail.getIntroduction(),
+                    userDetail.getProfile(),
+                    userDetail.getEmail(),
+                    userRole.name()
+            );
+            model.addAttribute("user", superUserDTO);
+            model.addAttribute("showRoleEdit", true); // 역할 수정 필드 표시 여부
+        } else {
+            // 그 외의 경우 (일반 유저, 본인 계정 수정)
+            model.addAttribute("user", userDetail);
+            model.addAttribute("showRoleEdit", false); // 역할 수정 필드 숨김
+        }
+
         return "user/update";
     }
 
     // 유저 수정 처리
     @PostMapping("/user/{userid}")
-    public String postUpdate(@PathVariable("userid") int id, AdminUserDTO adminUserDTO) {
-        userService.update(id, adminUserDTO);
+    public String postUpdate(@PathVariable("userid") int id, SuperUserDTO superUserDTO) {
+        // 폼에서 전송된 모든 데이터(닉네임, 자기소개, 역할)가 SuperUserDTO에 바인딩됩니다.
+        userService.update(id, superUserDTO);
         return "redirect:/user/" + id;
     }
 

@@ -2,6 +2,7 @@
 <html lang="ko"
       xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
       layout:decorate="~{layouts/mainlayout}">
 <head>
     <meta charset="UTF-8">
@@ -35,6 +36,11 @@
             <div class="row mb-2">
                 <div class="col-3"><strong>자기소개</strong></div>
                 <div class="col" th:text="${user.introduction}"></div>
+            </div>
+
+            <div class="row mb-2" sec:authorize="hasAuthority('SUPER_ADMIN')">
+                <div class="col-3"><strong>역할</strong></div>
+                <div class="col" th:text="${user.role}"></div>
             </div>
 
             <div class="text-start mt-4">

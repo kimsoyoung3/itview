@@ -63,7 +63,9 @@
 
             <div class="text-end mt-4">
                 <a th:href="@{/content/{id}/update(id=${contentDTO.id})}" class="btn btn-primary">수정</a>
-                <a th:href="@{/content/{id}/delete(id=${contentDTO.id})}" class="btn btn-primary">삭제</a>
+                <a th:href="@{/content/delete(id=${contentDTO.id})}"
+                   class="btn btn-primary"
+                   onclick="return confirm('정말 삭제하시겠습니까?');">삭제</a>
                 <a th:href="@{/content/list}" class="btn btn-primary">목록</a>
             </div>
         </div>

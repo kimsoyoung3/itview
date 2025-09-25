@@ -202,10 +202,12 @@ public class ContentService {
         ContentEntity content = contentRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("콘텐츠 ID가 유효하지 않습니다. id: " + id));
 
-        // 관련된 콘텐츠 장르 먼저 삭제
-        contentGenreRepository.deleteByContentId(id);
+        s3Uploader.deleteFile(content.getPoster());
 
-        // 콘텐츠 삭제
+        for (GalleryEntity gallery : content.getGalleries()) {
+            s3Uploader.deleteFile(gallery.getPhoto());
+        }
+
         contentRepository.delete(content);
     }
 

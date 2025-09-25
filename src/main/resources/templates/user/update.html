@@ -2,6 +2,7 @@
 <html lang="ko"
       xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
       layout:decorate="~{layouts/mainlayout}">
 <head>
     <meta charset="UTF-8">
@@ -15,30 +16,24 @@
             <h3 class="mt-5">유저 수정</h3>
             <p class="mt-3">유저 내용</p>
 
-            <form th:action="@{/user/{id}(id=${user.id})}" method="post">
-                <input type="hidden" th:if="${_csrf != null}"
-                       th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+            <form th:action="@{/user/{id}(id=${user.id})}" th:object="${user}" method="post">
+                <input type="hidden" th:if="${_csrf != null}" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
 
                 <div class="d-flex justify-content-center mb-4 position-relative" style="width:120px; height:120px; margin: 0 auto;">
-                    <img th:if="${user.profile}" th:src="${user.profile}" alt="프로필"
-                         id="profileImage"
-                         style="max-width:100%;max-height:100%;object-fit:cover; cursor:pointer;"
-                         data-bs-toggle="modal" data-bs-target="#profileModal">
+                    <img th:if="${user.profile}" th:src="${user.profile}" alt="프로필" id="profileImage" style="max-width:100%;max-height:100%;object-fit:cover; cursor:pointer;" data-bs-toggle="modal" data-bs-target="#profileModal">
 
-                    <button th:if="${user.profile}" type="button" class="btn btn-sm btn-light position-absolute top-0 end-0 p-0"
-                            id="deleteProfileBtn"
-                            style="width: 24px; height: 24px; line-height: 1; border-radius: 50%; display: flex; align-items: center; justify-content: center; transform: translate(50%, -50%);"
-                            onclick="hideProfileAndButton(event)">
+                    <button th:if="${user.profile}" type="button" class="btn btn-sm btn-light position-absolute top-0 end-0 p-0" id="deleteProfileBtn" style="width: 24px; height: 24px; line-height: 1; border-radius: 50%; display: flex; align-items: center; justify-content: center; transform: translate(50%, -50%);" onclick="hideProfileAndButton(event)">
                         <i class="fas fa-times"></i>
                     </button>
                     <input type="hidden" name="profile" th:value="${user.profile}">
                 </div>
+
                 <div class="row">
                     <div class="col-12">
                         <div class="mb-2 row">
                             <div class="col-3"><strong>닉네임</strong></div>
                             <div class="col">
-                                <input type="text" class="form-control" th:value="${user.nickname}" name="nickname">
+                                <input type="text" class="form-control" th:field="*{nickname}">
                             </div>
                         </div>
 
@@ -46,9 +41,28 @@
                             <div class="col-3"><strong>자기소개</strong></div>
                             <div class="col">
                                 <div class="input-group">
-                                    <textarea class="form-control" rows="3" name="introduction" th:text="${user.introduction}" readonly></textarea>
+                                    <textarea class="form-control" rows="3" th:field="*{introduction}" readonly></textarea>
                                     <button type="button" class="btn btn-primary" id="deleteIntroBtn" onclick="deleteIntroduction()">삭제</button>
                                 </div>
+                            </div>
+                        </div>
+
+                        <div class="mb-2 row" th:if="${showRoleEdit}">
+                            <div class="col-3"><strong>역할</strong></div>
+                            <div class="col">
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input" type="radio" th:field="*{role}" id="userRole" value="USER">
+                                    <label class="form-check-label" for="userRole">유저</label>
+                                </div>
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input" type="radio" th:field="*{role}" id="adminRole" value="ADMIN">
+                                    <label class="form-check-label" for="adminRole">관리자</label>
+                                </div>
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input" type="radio" th:field="*{role}" id="superAdminRole" value="SUPER_ADMIN" disabled>
+                                    <label class="form-check-label" for="superAdminRole">최고 관리자</label>
+                                </div>
+                                <input type="hidden" name="role" th:if="*{role == 'SUPER_ADMIN'}" th:value="*{role}">
                             </div>
                         </div>
                     </div>
@@ -75,17 +89,17 @@
             </div>
         </div>
     </div>
+
     <script>
         function hideProfileAndButton(event) {
             document.getElementById('profileImage').style.display = 'none';
-            document.querySelector('input[name="profile"]').value = ''; // 프로필 필드 값을 비움
-            event.currentTarget.style.display = 'none'; // 클릭된 X 버튼 숨기기
+            document.querySelector('input[name="profile"]').value = '';
+            event.currentTarget.style.display = 'none';
         }
-
         function deleteIntroduction() {
             if (confirm("정말 자기소개를 삭제하시겠습니까?")) {
-                document.querySelector('[name="introduction"]').value = ''; // 자기소개 필드 값을 비움
-                document.getElementById('deleteIntroBtn').style.display = 'none'; // 삭제 버튼 숨기기
+                document.querySelector('[name="introduction"]').value = '';
+                document.getElementById('deleteIntroBtn').style.display = 'none';
             }
         }
     </script>
