@@ -3,21 +3,7 @@ package com.example.itview_spring.Service;
 import com.example.itview_spring.Config.CustomUserDetails;
 import com.example.itview_spring.Constant.ContentType;
 import com.example.itview_spring.Constant.Role;
-import com.example.itview_spring.DTO.CommentAndContentDTO;
-import com.example.itview_spring.DTO.ContentResponseDTO;
-import com.example.itview_spring.DTO.EmailDTO;
-import com.example.itview_spring.DTO.EmailVerificationDTO;
-import com.example.itview_spring.DTO.NewPasswordDTO;
-import com.example.itview_spring.DTO.PersonDTO;
-import com.example.itview_spring.DTO.RatingDTO;
-import com.example.itview_spring.DTO.RegisterDTO;
-import com.example.itview_spring.DTO.UserContentCountDTO;
-import com.example.itview_spring.DTO.UserInfoDTO;
-import com.example.itview_spring.DTO.UserProfileUpdateDTO;
-import com.example.itview_spring.DTO.UserRatingCountDTO;
-import com.example.itview_spring.DTO.UserResponseDTO;
-import com.example.itview_spring.DTO.AdminUserDTO;
-import com.example.itview_spring.DTO.CollectionResponseDTO;
+import com.example.itview_spring.DTO.*;
 import com.example.itview_spring.Entity.EmailVerificationEntity;
 import com.example.itview_spring.Entity.UserEntity;
 import com.example.itview_spring.Repository.*;
@@ -383,30 +369,39 @@ public class UserService implements UserDetailsService {
         return modelMapper.map(userEntity, AdminUserDTO.class);
     }
 
-    // 관리자 페이지 - 유저 정보 수정
-    public void update(int id, AdminUserDTO adminUserDTO) {
-        Optional<UserEntity> optionalUser = userRepository.findById(id);
+    // 관리자 페이지 - 슈퍼어드민이 유저 역할 조회
+    public Role getRoleById(int userId) {
+        UserEntity userEntity = userRepository.findById(userId)
+                .orElseThrow(() -> new IllegalArgumentException("해당 유저를 찾을 수 없습니다. ID: " + userId));
+        return userEntity.getRole();
+    }
+
+    // 관리자 페이지 - 유저 수정
+    public void update(int userId, SuperUserDTO superUserDTO) {
+        Optional<UserEntity> optionalUser = userRepository.findById(userId);
         if (optionalUser.isPresent()) {
             UserEntity userEntity = optionalUser.get();
 
-            // 닉네임 업데이트
-            userEntity.setNickname(adminUserDTO.getNickname());
-
-            // 자기소개 업데이트 (빈 문자열이 들어오면 null로 처리)
-            if (adminUserDTO.getIntroduction() != null && adminUserDTO.getIntroduction().isEmpty()) {
-                userEntity.setIntroduction(null);
+            // 닉네임, 자기소개 업데이트 (기존 로직 유지)
+            userEntity.setNickname(superUserDTO.getNickname());
+            if (StringUtils.hasText(superUserDTO.getIntroduction())) {
+                userEntity.setIntroduction(superUserDTO.getIntroduction());
             } else {
-                userEntity.setIntroduction(adminUserDTO.getIntroduction());
+                userEntity.setIntroduction(null);
             }
 
-            // 프로필 사진 삭제 로직
-            // 폼에서 빈 문자열이 오고, DB에 기존 프로필이 있을 경우 S3 파일 삭제
-            if (adminUserDTO.getProfile() != null && adminUserDTO.getProfile().isEmpty() && userEntity.getProfile() != null) {
-                s3Uploader.deleteFile(userEntity.getProfile());
-                userEntity.setProfile(null);
+            // 프로필이 비어있지 않을 때만 업데이트
+            if (StringUtils.hasText(superUserDTO.getProfile())) {
+                userEntity.setProfile(superUserDTO.getProfile());
             } else {
-                // 기존 프로필이 null이 아니고, 폼에서도 빈 문자열이 아니면 프로필 업데이트
-                userEntity.setProfile(adminUserDTO.getProfile());
+                // 프로필이 없는 유저의 프로필을 변경하지 않고 수정 시,
+                // DTO의 프로필 필드는 빈 문자열이 되므로 DB에 null로 저장
+                userEntity.setProfile(null);
+            }
+
+            // ... (기존 역할 업데이트 로직 유지) ...
+            if (superUserDTO.getRole() != null) {
+                userEntity.setRole(Role.valueOf(superUserDTO.getRole()));
             }
 
             userRepository.save(userEntity);
