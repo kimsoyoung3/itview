@@ -12,6 +12,7 @@
 .user-detail-info {
   padding: 20px 20px 0 20px;
   border-bottom: 12px solid #eeeeee;
+  position: relative;
 }
 
 .user-detail-info-profile {
@@ -60,6 +61,103 @@
   padding: 8px 0;
 }
 
+.user-setting-btn {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+}
+
+.user-setting-btn>button {
+  width: 25px;
+  height: 25px;
+  border: none;
+  background: none;
+}
+
+.user-setting-btn>button>img {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.user-setting-modal-wrap {
+  width: 300px;
+  background: #ffffff;
+}
+
+.user-setting-modal-title {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 20px 15px 20px;
+  border-bottom: 1px solid #eeeeee;
+}
+
+.user-setting-modal-title>p {
+  font-size: 1.2rem;
+  font-weight: bold;
+  margin-bottom: 0;
+}
+
+.user-setting-modal-title>button {
+  border: none;
+  background: none;
+  color: #22c55e;
+}
+
+.user-setting-modal-list-wrap {
+  padding: 20px;
+}
+
+.user-setting-modal-list-wrap>p {
+  margin-bottom: 10px;
+  font-size: 0.8rem;
+  font-weight: 500;
+  color: #888888;
+}
+
+.user-setting-modal-list {
+  padding-top: 10px;
+}
+
+.user-setting-modal-list-content {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-bottom: 10px;
+  border-bottom: 1px solid #eeeeee;
+}
+
+.user-setting-modal-list-content>p {
+  margin-bottom: 0;
+  color: #555555;
+  font-weight: 500;
+}
+
+.user-setting-modal-sns-btn {
+  position: relative;
+}
+
+.user-setting-modal-sns-btn>span:nth-of-type(1) {
+  display: block;
+  width: 50px;
+  height: 20px;
+  background: #eeeeee;
+  border-radius: 50px;
+}
+
+.user-setting-modal-sns-btn>span:nth-of-type(2) {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  transform: translateY(-50%);
+  width: 25px;
+  height: 25px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.3);
+  background: #ffffff;
+  border-radius: 50%;
+}
+
 .user-detail-info-group {
   display: flex;
   justify-content: space-between;
@@ -67,7 +165,6 @@
   position: relative;
   text-align: center;
   border-top: 1px solid #d9d9d9;
-
 }
 
 .user-detail-info-group>div {

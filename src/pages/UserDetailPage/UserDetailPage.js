@@ -34,6 +34,10 @@ const UserDetailPage = ({ userInfo, openLogin }) => {
         }
     }, [userDetail]);
 
+    const [setting, setSetting] =useState()
+    const openSetting = () => setSetting(true);
+    const closeSetting = () => setSetting(false);
+
     const [myProfileEditModal, setMyProfileEditModal] = useState();
     const openMyProfileEdit = () => setMyProfileEditModal(true);
     const closeMyProfileEdit = () => setMyProfileEditModal(false);
@@ -116,6 +120,73 @@ const UserDetailPage = ({ userInfo, openLogin }) => {
                             }>프로필 공유</button>
                         </div>
                     </div>
+
+                    <div className="user-setting">
+                        {setting && (
+                            <div className="modal-overlay" onClick={closeSetting}>
+                                <div className="user-setting-modal-wrap" onClick={(e) => e.stopPropagation()}>
+                                    <div className="user-setting-modal-title">
+                                        <p>설정</p>
+                                        <button onClick={closeSetting}><i className="bi bi-x-lg"></i></button>
+                                    </div>
+                                    <div className="user-setting-modal-list-wrap">
+                                        <p>SNS 로그인 연동</p>
+
+                                        <div className="user-setting-modal-list">
+                                            <div className="user-setting-modal-list-content">
+                                                <p>카카오</p>
+                                                <div className="user-setting-modal-sns-btn">
+                                                    <span></span>
+                                                    <span></span>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div className="user-setting-modal-list">
+                                            <div className="user-setting-modal-list-content">
+                                                <p>구글</p>
+                                                <div className="user-setting-modal-sns-btn">
+                                                    <span></span>
+                                                    <span></span>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div className="user-setting-modal-list">
+                                            <div className="user-setting-modal-list-content">
+                                                <p>네이버</p>
+                                                <div className="user-setting-modal-sns-btn">
+                                                    <span></span>
+                                                    <span></span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div className="user-setting-modal-list-wrap">
+                                        <div className="user-setting-modal-list">
+                                            <div className="user-setting-modal-list-content">
+                                                <p>로그아웃</p>
+                                            </div>
+                                        </div>
+
+                                        <div className="user-setting-modal-list">
+                                            <div className="user-setting-modal-list-content">
+                                                <p>탈퇴하기</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        )}
+
+                        <div className="user-setting-btn">
+                            <button onClick={openSetting}>
+                                <img src={`${process.env.PUBLIC_URL}/icon/setting.svg`} alt=""/>
+                            </button>
+                        </div>
+                    </div>
+
                     <div className="user-detail-info-group">
                         <div className="user-detail-info-group-content">
                             <NavLink to={`/user/${id}/rating`}>
@@ -143,7 +214,7 @@ const UserDetailPage = ({ userInfo, openLogin }) => {
                 {/*마이프로필 수정 모달*/}
                 {myProfileEditModal && (
                     <div className="modal-overlay" onClick={closeMyProfileEdit}>
-                        <div className="my-profile-edit-modal"  onClick={(e) => e.stopPropagation()}>
+                        <div className="my-profile-edit-modal" onClick={(e) => e.stopPropagation()}>
                             <div className="my-profile-edit-modal-hd">
                                 <p>프로필 수정</p>
                                 <button className="my-profile-edit-close-btn" onClick={closeMyProfileEdit}><i className="bi bi-x-lg"></i></button>
