@@ -119,7 +119,7 @@ public class ContentController {
 //    @GetMapping("/content/{id}/detail")
 //    public String detailContent(@PathVariable("id") Integer id, Model model) {
     @GetMapping("/content/detail")
-    public String detailContent(Integer id, Model model) {
+    public String detailContent(@RequestParam Integer id, Model model) {
         //0909 수정처리함
         try {
             ContentCreateDTO contentDTO = contentService.read(id);

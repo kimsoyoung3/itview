@@ -161,7 +161,17 @@ public class PersonController {
     /* ======= 삭제 (폼은 POST + _method=DELETE) ======= */
     @DeleteMapping("/person/{id}")
     public String delete(@PathVariable Integer id) {
+        // DB에서 인물 정보를 가져와 프로필 이미지 URL을 얻습니다.
+        PersonEntity existingPerson = personService.get(id);
+
+        // 프로필 이미지가 존재하면 S3에서 먼저 삭제합니다.
+        if (existingPerson != null && existingPerson.getProfile() != null && !existingPerson.getProfile().isEmpty()) {
+            s3Uploader.deleteFile(existingPerson.getProfile());
+        }
+
+        // 데이터베이스에서 인물 정보를 삭제합니다.
         personService.delete(id);
+
         return "redirect:/person/list";
     }
 }

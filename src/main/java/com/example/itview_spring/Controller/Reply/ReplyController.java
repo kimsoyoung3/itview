@@ -5,6 +5,7 @@ import com.example.itview_spring.DTO.AdminUserDTO;
 import com.example.itview_spring.Service.ReplyService;
 import com.example.itview_spring.Service.UserService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
@@ -26,11 +27,13 @@ import static com.example.itview_spring.Constant.Replyable.COMMENT;
 public class ReplyController {
     private final UserService userService;
     private final ReplyService replyService;
+    @Value("${userpage}")
+    private String userpage;
 
     @GetMapping("/reply/{userid}/comment")
     public String listComment(@PathVariable("userid") int id,
-                       @PageableDefault(page = 0, size = 10) Pageable pageable,
-                       Model model) {
+                              @PageableDefault(page = 0, size = 10) Pageable pageable,
+                              Model model) {
 
         // 사용자 상세 정보 조회
         AdminUserDTO userDetail = userService.read(id);
@@ -50,13 +53,15 @@ public class ReplyController {
         model.addAttribute("startPage", startPage);
         model.addAttribute("endPage", endPage);
 
+        model.addAttribute("userpage", userpage);
+
         return "reply/list_comment";
     }
 
     @GetMapping("/reply/{userid}/collection")
     public String listCollection(@PathVariable("userid") int id,
-                       @PageableDefault(page = 0, size = 10) Pageable pageable,
-                       Model model) {
+                                 @PageableDefault(page = 0, size = 10) Pageable pageable,
+                                 Model model) {
 
         AdminUserDTO userDetail = userService.read(id);
         Page<AdminReplyDTO> repliesPage = replyService.list(id, pageable, COLLECTION);
@@ -72,6 +77,8 @@ public class ReplyController {
         model.addAttribute("replies", repliesPage);
         model.addAttribute("startPage", startPage);
         model.addAttribute("endPage", endPage);
+
+        model.addAttribute("userpage", userpage);
 
         return "reply/list_collection";
     }
