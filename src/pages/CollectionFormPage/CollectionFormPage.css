@@ -320,8 +320,8 @@
 /*태블릿 사이즈*/
 @media (max-width: 768px) {
     .user-collection-add-page {
-        margin-top: 50px;
-        margin-bottom: 80px;
+        margin-top: 35px;
+        margin-bottom: 100px;
         width: 100% !important;
         padding: 0;
     }
@@ -333,7 +333,7 @@
         margin-top: 0;
         width: 100% !important;
         padding: 20px 15px;
-        margin-bottom: 50px;
+        margin-bottom: 60px;
     }
 
     .user-collection-add-image-list {

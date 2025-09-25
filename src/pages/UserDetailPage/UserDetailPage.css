@@ -158,6 +158,13 @@
   border-radius: 50%;
 }
 
+.user-setting-modal-sns-btn-click {
+  position: absolute;
+  right: 0 !important;
+  left: auto !important;
+  background: #22c55e !important;
+}
+
 .user-detail-info-group {
   display: flex;
   justify-content: space-between;

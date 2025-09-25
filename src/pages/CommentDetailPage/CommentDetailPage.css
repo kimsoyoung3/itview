@@ -17,6 +17,7 @@
 @media (max-width: 768px) {
     .comment-detail-page {
         margin-top: 30px;
+        margin-bottom: 80px;
     }
 }
 
@@ -24,6 +25,7 @@
 @media (max-width: 480px) {
     .comment-detail-page {
         margin-top: 50px;
+        margin-bottom: 70px;
     }
 
     .mobile-text {

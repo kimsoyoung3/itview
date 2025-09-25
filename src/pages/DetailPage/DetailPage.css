@@ -665,8 +665,9 @@
 /* 모바일 사이즈 */
 @media (max-width: 768px) {
     .detail {
-        margin-bottom: 120px;
+        margin-bottom: 100px;
     }
+
     .container {
         padding: 0 15px;
     }

@@ -146,6 +146,8 @@ const Header = ({ userInfo, handleLogin, handleLogout, isLoginOpen, openLogin, c
 
     const toggleMenu = () => setMenuOpen(prev => !prev);
 
+    const handleClose = () => setMenuOpen(false);
+
 
     return (
         <>
@@ -304,11 +306,11 @@ const Header = ({ userInfo, handleLogin, handleLogout, isLoginOpen, openLogin, c
 
                     <div className={`mobile-header-menu-tab-bar ${menuOpen ? "open" : "close"}`}>
                         <ul className="mobile-header-menu-tab-bar-menu">
-                            <li><NavLink to="/movies">영화</NavLink></li>
-                            <li><NavLink to="/series">시리즈</NavLink></li>
-                            <li><NavLink to="/books">책</NavLink></li>
-                            <li><NavLink to="/webtoons">웹툰</NavLink></li>
-                            <li><NavLink to="/music">음악</NavLink></li>
+                            <li><NavLink to="/movie" onClick={handleClose}>영화</NavLink></li>
+                            <li><NavLink to="/series" onClick={handleClose}>시리즈</NavLink></li>
+                            <li><NavLink to="/book" onClick={handleClose}>책</NavLink></li>
+                            <li><NavLink to="/webtoon" onClick={handleClose}>웹툰</NavLink></li>
+                            <li><NavLink to="/record" onClick={handleClose}>음악</NavLink></li>
                         </ul>
                     </div>
                 </div>

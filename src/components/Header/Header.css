@@ -19,7 +19,7 @@
 .header-transparent {
     background-color: rgba(0,0,0,0);
     box-shadow: none;
-    color: #cccccc;
+    color: #aaaaaa;
 }
 
 .header-transparent .nav a:hover {
@@ -53,9 +53,6 @@
     gap: 40px;
     font-size: 1rem;
     font-weight: 600;
-}
-
-.nav a {
 }
 
 .nav a:hover {
@@ -107,30 +104,31 @@
 .user-menu {
     display: flex;
     gap: 15px;
-    color: #cccccc;
+    color: #aaaaaa;
     font-size: 0.8rem;
     font-weight: 600;
     white-space: nowrap;
 }
 
 .user-menu button {
-    color:#cccccc;
+    color:#aaaaaa;
     border: none;
     background: transparent;
 }
 
 .user-menu button:hover {
-    color: #888;
+    color: #555555;
 }
 
 .user-menu a {
-    color: #cccccc;
+    color: #aaaaaa;
     font-size: 0.8rem;
     font-weight: 600;
 }
 
 .user-menu a:hover {
-    color: #888;
+    color: #555555
+;
 }
 
 /*로그인 모달창 스타일*/
@@ -407,20 +405,18 @@
     .mobile-header {
         display: block;
         width: 100%;
-        margin-top: 50px;
         position: fixed;
         bottom: 0;
         left: 0;
         z-index: 999;
         background-color: #ffffff;
-        padding: 15px 20px;
+        padding: 10px 20px;
         border-top: 1px solid #888888;
         box-sizing: border-box;
     }
 
     .mobile-header-inner {
         width: 100%;
-
     }
 
     .mobile-header-menu {
@@ -453,8 +449,8 @@
     }
 
     .mobile-header-menu-list>div {
-        width: 25px;
-        height: 25px;
+        width: 23px;
+        height: 23px;
     }
 
     .mobile-header-menu-list>div>a {
@@ -473,8 +469,9 @@
     }
 
     .mobile-menu-name {
-        font-size: 0.8rem;
+        font-size: 0.7rem;
         margin-bottom: 0;
+        font-weight: 500;
         color: #888888;
     }
 
@@ -487,7 +484,7 @@
 
     .mobile-header-menu-tab-bar {
         position: absolute;
-        bottom: 55px;
+        bottom: 63px;
         left: 0;
         width: 100%;
         background: #fff;
@@ -551,6 +548,5 @@
 /*모바일 사이즈*/
 @media (max-width: 480px) {
     .mobile-header {
-        margin-top: 50px;
     }
 }
