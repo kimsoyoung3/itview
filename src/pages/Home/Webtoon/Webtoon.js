@@ -41,7 +41,7 @@ const Webtoon = () => {
         if (channel?.includes(select)) {
             const fetchContents = async () => {
                 try {
-                    setContents(await getContentsByChannel('webtoon', select?.first).then(res => res.data));
+                    setContents(await getContentsByChannel('webtoon', select?.first, 1).then(res => res.data));
                 } catch (error) {
                     toast("데이터를 불러오지 못했습니다.");
                 }
@@ -50,7 +50,7 @@ const Webtoon = () => {
         } else {
             const fetchContents = async () => {
                 try {
-                    setContents(await getContentsByGenre('webtoon', select?.first).then(res => res.data));
+                    setContents(await getContentsByGenre('webtoon', select?.first, 1).then(res => res.data));
                 } catch (error) {
                     toast("데이터를 불러오지 못했습니다.");
                 }
@@ -59,6 +59,30 @@ const Webtoon = () => {
         }
     }, [select, channel]);
 
+    const handleMoreClick = async() => {
+        if (channel?.includes(select)) {
+            try {
+                const res = await getContentsByChannel('webtoon', select?.first, contents?.page.number + 2)
+                setContents({
+                    content: [...contents.content, ...res.data.content],
+                    page: res.data.page
+                });
+            } catch (error) {
+                toast("데이터를 불러오지 못했습니다.");
+            }
+        } else {
+            try {
+                const res = await getContentsByGenre('webtoon', select?.first, contents?.page.number + 2)
+                setContents({
+                    content: [...contents.content, ...res.data.content],
+                    page: res.data.page
+                });
+            } catch (error) {
+                toast("데이터를 불러오지 못했습니다.");
+            }
+        }
+    };
+    
     return (
         <div className="webtoon-page container">
             <div className="webtoon-page-wrap">
@@ -89,7 +113,7 @@ const Webtoon = () => {
                 </div>
 
                 <div className="webtoon-page-tab-more-btn">
-                    <button>더보기</button>
+                    <button onClick={handleMoreClick} hidden={contents?.page.number + 1 >= contents?.page.totalPages}>더보기</button>
                 </div>
             </div>
         </div>
