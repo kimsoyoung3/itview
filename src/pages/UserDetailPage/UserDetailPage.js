@@ -195,7 +195,7 @@ const UserDetailPage = ({ userInfo, openLogin }) => {
                             </div>
                         )}
 
-                        <div className="user-setting-btn">
+                        <div className="user-setting-btn" hidden={userInfo?.userId !== userDetail?.userProfile.id}>
                             <button onClick={openSetting}>
                                 <img src={`${process.env.PUBLIC_URL}/icon/setting.svg`} alt=""/>
                             </button>
