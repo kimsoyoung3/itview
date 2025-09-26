@@ -36,8 +36,8 @@ function UserContentPage({ userInfo, openLogin }) {
     }, [userContentCount]);
 
     return (notFound ? <NotFound /> :
-        <div className="user-content-page container">
-            <div className="user-content-page-wrap">
+        <div className="user-content-page">
+            <div className="user-content-page-wrap container">
                 <h1>{domainNameMap[contentType]}</h1>
                 <div className="user-content-page-content">
                     <div>

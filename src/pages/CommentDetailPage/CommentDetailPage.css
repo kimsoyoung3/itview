@@ -1,5 +1,9 @@
 .comment-detail-page {
     margin-top: 114px;
+    width: 100%;
+}
+
+.comment-detail-page-content {
     max-width: 800px;
 }
 
@@ -19,6 +23,10 @@
         margin-top: 30px;
         margin-bottom: 80px;
     }
+
+    .comment-detail-page .container {
+        max-width: 95%;
+    }
 }
 
 /*모바일 사이즈*/
@@ -27,6 +35,8 @@
         margin-top: 50px;
         margin-bottom: 70px;
     }
+
+
 
     .mobile-text {
         display: block;
@@ -41,7 +51,6 @@
         left: 0;
         width: 100%;
         background-color: #ffffff;
-        /*box-shadow: 0 0 4px rgba(0,0,0,0.1);*/
     }
 
 }

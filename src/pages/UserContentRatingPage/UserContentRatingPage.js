@@ -142,8 +142,8 @@ const UserContentRatingPage = ({userInfo}) => {
 
 
     return (notFound ? <NotFound /> :
-        <div className="user-content-rating-page container">
-            <div className="user-content-rating-page-wrap">
+        <div className="user-content-rating-page">
+            <div className="user-content-rating-page-wrap container">
                 <h1>평가한 작품들</h1>
                 <div className="rating-wrap">
                     <div className="rating-wrap-title">
@@ -211,6 +211,7 @@ const UserContentRatingPage = ({userInfo}) => {
                                                     slidesPerGroup={3}
                                                     breakpoints={{
                                                         480: { slidesPerView: 3, slidesPerGroup: 3 },
+                                                        700: { slidesPerView: 5, slidesPerGroup: 5 },
                                                         1280: { slidesPerView: 10, slidesPerGroup: 10 },
                                                     }}
                                                 >

@@ -1,5 +1,6 @@
 .user-content-page {
     margin-top: 114px;
+    width: 100%;
 }
 
 .user-content-page-wrap>h1 {
@@ -37,10 +38,22 @@
     color: #888888;
 }
 
+
+/*태블릿 사이즈*/
+@media (max-width: 768px) {
+    .user-content-page {
+        margin-top: 30px;
+        margin-bottom: 100px;
+    }
+
+    .user-content-page .container {
+        max-width: 95% !important;
+    }
+}
+
 /*모바일 사이즈*/
 @media (max-width: 480px) {
     .user-content-page {
-        margin-top: 84px;
+        margin-top: 20px;
     }
-
 }

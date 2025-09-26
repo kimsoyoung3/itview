@@ -60,8 +60,8 @@ function UserContentWishPage({ userInfo, openLogin }) {
     }
 
     return (notFound ? <NotFound /> :
-        <div className="user-content-wish-page container">
-            <div className="user-content-wish-page-wrap">
+        <div className="user-content-wish-page">
+            <div className="user-content-wish-page-wrap container">
                 <h1>보고싶어요한 {domainNameMap[contentType]}</h1>
 
                 {/*셀렉트 박스*/}

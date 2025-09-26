@@ -55,8 +55,8 @@ const Movie = () => {
     }
 
     return (
-        <div className="movie-page container">
-            <div className="movie-page-wrap">
+        <div className="movie-page">
+            <div className="movie-page-wrap container">
                 <div className="movie-page-tab-btn">
                     {genre?.map(item =>(
                         <button className={select?.first === item.first ? "movie-page-tab-btn-click" : ""} onClick={() => setSelect(item)}>{item.second}</button>

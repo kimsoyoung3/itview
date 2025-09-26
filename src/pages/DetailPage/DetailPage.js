@@ -522,7 +522,7 @@ const DetailPage = ({userInfo, openLogin}) => {
 
                  {/*크레딧 정보 리스트*/}
                  {contentCredit?.content.length > 0 ? (
-                    <div className="credit-list container">
+                    <div className="credit-list">
                         <div className="credit-wrapper">
                             <Swiper
                                 ref={swiperRef}
@@ -582,7 +582,7 @@ const DetailPage = ({userInfo, openLogin}) => {
                                 }}
                                 breakpoints={{
                                     480: {slidesPerView: 1},
-                                    768: {slidesPerView: 2},
+                                    760: {slidesPerView: 2},
                                     1020: {slidesPerView: 3},
                                 }}
                                 className="gallery-swiper">
@@ -645,7 +645,7 @@ const DetailPage = ({userInfo, openLogin}) => {
                                 }}
                                 breakpoints={{
                                     480: {slidesPerView: 1},
-                                    768: {slidesPerView: 2},
+                                    760: {slidesPerView: 2},
                                     1020: {slidesPerView: 3},
                                 }}
                                 className="video-swiper">

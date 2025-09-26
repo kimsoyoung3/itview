@@ -74,10 +74,10 @@ const Home = () => {
                 {/*컨텐츠 라인*/}
                 <div className="home-content">
                     {contents &&
-                        Object.entries(contents).map(([category, items]) => (
+                        Object.entries(contents).map(([category, items], idx) => (
                             <div key={category}>
                                 <h2 className="home-content-title">{`잇뷰 최신 TOP 10 ${domainNameMap[category]}`}</h2>
-                                <ContentSwiper data={items} />
+                                <ContentSwiper data={items}  idx={idx}/>
                             </div>
                         ))}
                 </div>

@@ -33,8 +33,8 @@ function UserRatingPage({ userInfo, openLogin }) {
     }, [userRatingCount]);
 
     return (notFound ? <NotFound /> :
-        <div className="user-rating-page container">
-            <div className="user-rating-page-wrap">
+        <div className="user-rating-page">
+            <div className="user-rating-page-wrap container">
                 <h1>평가</h1>
                 <ul className="rating-list">
                     <li><NavLink to={`/user/${id}/content/movie/rating`}>영화 <span>{userRatingCount?.movie}</span></NavLink></li>

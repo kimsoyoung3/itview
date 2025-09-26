@@ -1,5 +1,9 @@
 .user-comment-page {
     margin-top: 114px;
+    width: 100%;
+}
+
+.user-comment-page-wrap {
     max-width: 800px;
 }
 
@@ -90,10 +94,21 @@
     background: #d9d9d9;
 }
 
+/*태블릿 사이즈*/
+@media (max-width: 768px) {
+    .user-comment-page {
+        margin-top: 30px;
+        margin-bottom: 100px;
+    }
+
+    .user-comment-page .container {
+        max-width: 95% !important;
+    }
+}
+
 /*모바일 사이즈*/
 @media (max-width: 480px) {
     .user-comment-page {
-        margin-top: 84px;
+        margin-top: 20px;
     }
-
 }

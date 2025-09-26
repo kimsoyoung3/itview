@@ -29,8 +29,8 @@ const UserCollectionPage = ({userInfo}) => {
     }, [collections]);
 
     return( notFound ? <NotFound /> :
-        <div className="user-collection-page container">
-            <div className="user-collection-page-wrap">
+        <div className="user-collection-page">
+            <div className="user-collection-page-wrap container">
                 <div className="user-collection-page-wrap-title">
                     <h1>컬렉션</h1>
                     <NavLink to="/collection/new" hidden={(Number(userInfo?.userId) !== Number(id))}>새 컬렉션</NavLink>

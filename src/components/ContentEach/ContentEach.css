@@ -86,3 +86,11 @@
 }
 
 /*유저컬렉션 디테일페이지안에서 컨텐츠 스타일 끝*/
+
+/*모바일 사이즈*/
+@media (max-width: 480px) {
+    .content-each-info-title {
+        width: 90px;
+    }
+
+}
