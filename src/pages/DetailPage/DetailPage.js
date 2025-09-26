@@ -560,13 +560,15 @@ const DetailPage = ({userInfo, openLogin}) => {
                     <div className="collection-list-modal-overlay" onClick={closeCollectionListModal}>
                         <div className="collection-list-modal-content" onClick={(e) => e.stopPropagation()}>
                             <div className="collection-list-modal-content-top">
-                                <button className="collection-list-modal-close-button" onClick={closeCollectionListModal}>
-                                    <i className="bi bi-x-lg"></i>
-                                </button>
-                                <p className="collection-list-modal-title">컬렉션에 추가</p>
-                                <button className="collection-list-modal-content-btn" onClick={() => handleCollectionAdd()}>
-                                     추가
-                                </button>
+                                <div className="collection-list-modal-content-top-wrap">
+                                    <button className="collection-list-modal-close-button" onClick={closeCollectionListModal}>
+                                        <i className="bi bi-x-lg"></i>
+                                    </button>
+                                    <p className="collection-list-modal-title">컬렉션에 추가</p>
+                                    <button className="collection-list-modal-content-btn" onClick={() => handleCollectionAdd()}>
+                                        추가
+                                    </button>
+                                </div>
                             </div>
 
                             <div className="collection-list-modal-content-bottom">
@@ -586,7 +588,7 @@ const DetailPage = ({userInfo, openLogin}) => {
                                         </label>
                                     </div>
                                 )}
-                                <div ref={collectionListRef} hidden={collectionList.page.number + 2 > collectionList.page.totalPages}>더보기</div>
+                                <div ref={collectionListRef} hidden={collectionList?.page.number + 2 > collectionList?.page.totalPages}></div>
                             </div>
                         </div>
                     </div>

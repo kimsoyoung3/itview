@@ -508,13 +508,18 @@
 }
 
 .collection-list-modal-content-top {
+    width: 100%;
+    position: fixed;
+}
+
+.collection-list-modal-content-top-wrap {
     padding: 20px;
     display: flex;
     justify-content: space-between;
     align-items: center;
 }
 
-.collection-list-modal-content-top>p {
+.collection-list-modal-content-top-wrap>p {
     font-size: 1.1rem;
     font-weight: bold;
     margin: 0;
@@ -543,7 +548,12 @@
     margin-bottom: 10px;
 }
 
+.form-check-label {
+    width: 100%;
+}
+
 .collection-list-modal-search-results {
+    width: 100%;
     display: flex;
     align-items: center;
     gap: 10px;
@@ -576,6 +586,10 @@
     height: 100%;
     object-fit: cover;
     border-radius: 4px;
+}
+
+.collection-list-modal-search-results-info {
+    width: 100%;
 }
 
 .collection-list-modal-search-results-info-top {
