@@ -166,7 +166,7 @@ const CommentCard = ({ comment, content, userInfo, openLogin, newReply, onDelete
                         </button>
                         <button onClick={userInfo ? openReply : openLogin}><i className="bi bi-chat-square"/></button>
                         <button onClick={() => {
-                            navigator.clipboard.writeText(`http://localhost:3000/comment/${commentData.id}`)
+                            navigator.clipboard.writeText(`${window.location.href}`)
                                 .then(() => toast("링크가 복사되었습니다."));
                         }}>
                             <i className="bi bi-share"/>
