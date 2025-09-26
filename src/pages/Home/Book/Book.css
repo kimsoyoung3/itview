@@ -76,7 +76,7 @@
 }
 
 .book-page-tab-more-btn {
-    margin-top: 20px;
+    margin: 20px 0;
     text-align: center;
 }
 
@@ -113,6 +113,10 @@
 
     .book-content-card-title {
         width: 150px;
+    }
+
+    .book-page-tab-more-btn {
+        margin-bottom: 0;
     }
 }
 

@@ -51,6 +51,8 @@ const Header = ({ userInfo, handleLogin, handleLogout, isLoginOpen, openLogin, c
     const [isResetCheckOpen, setResetCheckOpen] = useState(false);
     const [isResetNewOpen, setResetNewOpen] = useState(false);
 
+    const [mobileSearchModal, setMobileSearchModal] =useState(false)
+
     /* 비밀번호 찾기 로직 */
     const handleCreateVerification = async (email) => {
         try {
@@ -103,17 +105,52 @@ const Header = ({ userInfo, handleLogin, handleLogout, isLoginOpen, openLogin, c
     };
 
     /* 모달 열기/닫기 함수 */
-    const openSignup = () => setSignupOpen(true);
-    const closeSignup = () => setSignupOpen(false);
+    const openSignup = () => {
+        setSignupOpen(true);
+        document.body.style.overflow = 'hidden';
+    };
+    const closeSignup = () => {
+        setSignupOpen(false);
+        document.body.style.overflow = 'auto';
+    };
 
-    const openReset = () => setResetOpen(true);
-    const closeReset = () => setResetOpen(false);
+    const openReset = () => {
+        setResetOpen(true);
+        document.body.style.overflow = 'hidden';
+    };
+    const closeReset = () => {
+        setResetOpen(false);
+        document.body.style.overflow = 'auto';
+    };
 
-    const openResetCheck = () => setResetCheckOpen(true);
-    const closeResetCheck = () => setResetCheckOpen(false);
+    const openResetCheck = () => {
+        setResetCheckOpen(true);
+        document.body.style.overflow = 'hidden';
+    };
+    const closeResetCheck = () => {
+        setResetCheckOpen(false);
+        document.body.style.overflow = 'auto';
+    };
 
-    const openResetNew = () => setResetNewOpen(true);
-    const closeResetNew = () => setResetNewOpen(false);
+    const openResetNew = () => {
+        setResetNewOpen(true);
+        document.body.style.overflow = 'hidden';
+    };
+    const closeResetNew = () => {
+        setResetNewOpen(false);
+        document.body.style.overflow = 'auto';
+    };
+
+    const openMobileSearchModal = () => {
+        setMobileSearchModal(true);
+        document.body.style.overflow = 'hidden';
+    }
+
+    const closeMobileSearchModal = () => {
+        setMobileSearchModal(false);
+        document.body.style.overflow = 'auto';
+    }
+
 
     /*검색 기능*/
     const navigate = useNavigate(); // useNavigate 훅 추가
@@ -128,6 +165,8 @@ const Header = ({ userInfo, handleLogin, handleLogout, isLoginOpen, openLogin, c
         // HashRouter 기준 URL 이동
         navigate(`/search?keyword=${encodeURIComponent(searchKeyword)}`);
        /* setSearchKeyword(""); // 검색 후 입력 초기화*/
+
+        closeMobileSearchModal();
     };
 
     // 모바일 드롭업
@@ -232,7 +271,7 @@ const Header = ({ userInfo, handleLogin, handleLogout, isLoginOpen, openLogin, c
                                 <p className="mobile-menu-name">메뉴</p>
                             </div>
 
-                            <div className="mobile-header-menu-list">
+                            <div className="mobile-header-menu-list" onClick={openMobileSearchModal}>
                                 <div>
                                     <img className="mobile-menu-icon" src={`${process.env.PUBLIC_URL}/mobile-icon/mobile-search.svg`} alt=""/>
                                 </div>
@@ -277,7 +316,7 @@ const Header = ({ userInfo, handleLogin, handleLogout, isLoginOpen, openLogin, c
                                 <p className="mobile-menu-name">메뉴</p>
                             </div>
 
-                            <div className="mobile-header-menu-list">
+                            <div className="mobile-header-menu-list" onClick={openMobileSearchModal}>
                                 <div>
                                     <img className="mobile-menu-icon" src={`${process.env.PUBLIC_URL}/mobile-icon/mobile-search.svg`} alt=""/>
                                 </div>
@@ -314,6 +353,28 @@ const Header = ({ userInfo, handleLogin, handleLogout, isLoginOpen, openLogin, c
                         </ul>
                     </div>
                 </div>
+
+                {mobileSearchModal && (
+                    <div className="modal-overlay" onClick={closeMobileSearchModal}>
+                        <div className="mobile-search-modal" onClick={(e) => e.stopPropagation()}>
+                            <div className="mobile-search-bar">
+                                <form onSubmit={handleSearchSubmit}>
+                                    <button type="submit" className="mobile-search-button">
+                                        <i className="bi bi-search" />
+                                    </button>
+                                    <input
+                                        type="text"
+                                        placeholder="검색어를 입력해주세요"
+                                        className="mobile-search-input"
+                                        value={searchKeyword}
+                                        onChange={(e) => setSearchKeyword(e.target.value)}
+                                    />
+                                </form>
+                            </div>
+                            <button className="mobile-search-modal-btn" onClick={closeMobileSearchModal}>취소</button>
+                        </div>
+                    </div>
+                )}
             </header>
 
             {/* 로그인 모달 */}

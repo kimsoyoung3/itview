@@ -38,14 +38,32 @@ const CommentCard = ({ comment, content, userInfo, openLogin, newReply, onDelete
     }, [commentData, commentModal]);
 
     /* 모달 관련 함수 */
-    const openComment = () => setCommentModal(true);
-    const closeComment = () => setCommentModal(false);
+    const openComment = () => {
+        setCommentModal(true);
+        document.body.style.overflow = 'hidden'; // 스크롤 막기
+    };
+    const closeComment = () => {
+        setCommentModal(false);
+        document.body.style.overflow = 'auto';   // 스크롤 원래대로
+    };
 
-    const openReply = () => setReplyModal(true);
-    const closeReply = () => setReplyModal(false);
+    const openReply = () => {
+        setReplyModal(true);
+        document.body.style.overflow = 'hidden';
+    };
+    const closeReply = () => {
+        setReplyModal(false);
+        document.body.style.overflow = 'auto';
+    };
 
-    const closeDeleteCommentModal = () => setDeleteCommentModal(false);
-    const handleDeleteCommentClick = () => setDeleteCommentModal(true);
+    const handleDeleteCommentClick = () => {
+        setDeleteCommentModal(true);
+        document.body.style.overflow = 'hidden';
+    };
+    const closeDeleteCommentModal = () => {
+        setDeleteCommentModal(false);
+        document.body.style.overflow = 'auto';
+    };
 
     /* 코멘트 수정 */
     const handleCommentUpdate = async () => {
