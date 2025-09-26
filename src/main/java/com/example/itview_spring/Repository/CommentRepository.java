@@ -238,5 +238,9 @@ public interface CommentRepository extends JpaRepository<CommentEntity, Integer>
     @Query("SELECT c.id FROM CommentEntity c WHERE c.user.id = :userId")
     List<Integer> findAllIdsByUserId(@Param("userId") Integer userId);
 
+    // 특정 코멘트의 모든 유저 ID 조회
+    @Query("SELECT c.user.id FROM CommentEntity c WHERE c.id = :commentId")
+    List<Integer> findAllUserIdsByCommentId(@Param("commentId") Integer commentId);
+
     Page<CommentEntity> findByUserId(Integer userId, Pageable pageable);
 }

@@ -1,11 +1,13 @@
 package com.example.itview_spring.Service;
 
+import com.example.itview_spring.Constant.NotiType;
 import com.example.itview_spring.Constant.Replyable;
 import com.example.itview_spring.DTO.AdminCommentDTO;
 import com.example.itview_spring.DTO.CommentAndContentDTO;
 import com.example.itview_spring.DTO.CommentDTO;
 import com.example.itview_spring.DTO.ReplyDTO;
 import com.example.itview_spring.Entity.CommentEntity;
+import com.example.itview_spring.Entity.NotificationEntity;
 import com.example.itview_spring.Entity.ReplyEntity;
 import com.example.itview_spring.Repository.*;
 import lombok.RequiredArgsConstructor;
@@ -16,6 +18,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.NoSuchElementException;
 
 @Service
@@ -24,6 +27,7 @@ import java.util.NoSuchElementException;
 public class CommentService {
     
     private final CommentRepository commentRepository;
+    private final NotificationRepository notificationRepository;
     private final UserRepository userRepository;
     private final ContentRepository contentRepository;
     private final ReplyRepository replyRepository;
@@ -113,12 +117,27 @@ public class CommentService {
             throw new NoSuchElementException("존재하지 않는 코멘트입니다");
         }
         ReplyEntity reply = new ReplyEntity();
-        reply.setUser(userRepository.findById(userId).orElseThrow(() -> new RuntimeException("User not found")));
+        reply.setUser(userRepository.findById(userId).orElseThrow(() -> new NoSuchElementException("존재하지 않는 유저입니다")));
         reply.setTargetId(commentId);
         reply.setTargetType(Replyable.COMMENT);
         reply.setText(text);
         ReplyEntity savedReply = replyRepository.save(reply);
         ReplyDTO newReply = replyRepository.findReplyDTOById(userId, savedReply.getId());
+
+        // 알림 생성
+        NotificationEntity notification = new NotificationEntity();
+        List<Integer> recipientIds = commentRepository.findAllUserIdsByCommentId(commentId);
+        for (Integer recipientId : recipientIds) {
+            if (!recipientId.equals(userId)) { // 본인에게는 알림을 보내지 않음
+                notification.setUser(userRepository.findById(recipientId).orElseThrow(() -> new NoSuchElementException("존재하지 않는 유저입니다")));
+                notification.setActor(userRepository.findById(userId).orElseThrow(() -> new NoSuchElementException("존재하지 않는 유저입니다")));
+                notification.setType(NotiType.REPLY);
+                notification.setTargetType(Replyable.COMMENT);
+                notification.setTargetId(commentId);
+                notificationRepository.save(notification);
+            }
+        }
+
         if (newReply == null) {
             throw new RuntimeException("Failed to create reply");
         }
