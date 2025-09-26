@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import {NavLink, useParams} from "react-router-dom";
 import "./UserDetailPage.css"
-import {getUserDetail, link, unlink, updateUserProfile} from "../../API/UserApi";
+import {deleteUser, getUserDetail, link, unlink, updateUserProfile} from "../../API/UserApi";
 import { toast } from "react-toastify";
 import NotFound from "../NotFound/NotFound";
 
@@ -187,7 +187,7 @@ const UserDetailPage = ({ userInfo, openLogin }) => {
                                     <div className="user-setting-modal-list-wrap">
                                         <div className="user-setting-modal-list">
                                             <div className="user-setting-modal-list-content">
-                                                <p>탈퇴하기</p>
+                                                <p onClick={deleteUser}>탈퇴하기</p>
                                             </div>
                                         </div>
                                     </div>
@@ -195,7 +195,7 @@ const UserDetailPage = ({ userInfo, openLogin }) => {
                             </div>
                         )}
 
-                        <div className="user-setting-btn">
+                        <div className="user-setting-btn" hidden={userInfo?.userId !== userDetail?.userProfile.id}>
                             <button onClick={openSetting}>
                                 <img src={`${process.env.PUBLIC_URL}/icon/setting.svg`} alt=""/>
                             </button>
