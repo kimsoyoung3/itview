@@ -13,10 +13,12 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.example.itview_spring.Constant.NotiType;
 import com.example.itview_spring.Constant.Replyable;
 import com.example.itview_spring.Repository.CollectionRepository;
 import com.example.itview_spring.Repository.ContentRepository;
 import com.example.itview_spring.Repository.LikeRepository;
+import com.example.itview_spring.Repository.NotificationRepository;
 import com.example.itview_spring.Repository.ReplyRepository;
 import com.example.itview_spring.Repository.UserRepository;
 
@@ -28,6 +30,7 @@ import lombok.RequiredArgsConstructor;
 public class CollectionService {
     
     private final CollectionRepository collectionRepository;
+    private final NotificationRepository notificationRepository;
     private final UserRepository userRepository;
     private final LikeRepository likeRepository;
     private final ReplyRepository replyRepository;
@@ -72,7 +75,12 @@ public class CollectionService {
             throw new NoSuchElementException("존재하지 않는 컨텐츠입니다.");
         }
         Pageable pageable = PageRequest.of(page - 1, 12);
-        return collectionRepository.findCollectionsToAdd(userId, contentId, pageable);
+        Page<CollectionToAddDTO> collections = collectionRepository.findCollectionsToAdd(userId, contentId, pageable);
+        for (CollectionToAddDTO dto : collections) {
+            List<String> posters = collectionRepository.findCollectionPosters(dto.getCollection().getId());
+            dto.getCollection().setPoster(posters);
+        }
+        return collections;
     }
 
     // 컬렉션에 추가
@@ -162,6 +170,18 @@ public class CollectionService {
             return;
         }
         likeRepository.likeTarget(userId, id, Replyable.COLLECTION);
+
+        // 알림 생성
+        CollectionEntity collection = collectionRepository.findById(id).orElseThrow(() -> new NoSuchElementException("존재하지 않는 컬렉션입니다."));
+        if (!collection.getUser().getId().equals(userId)) { // 본인에게는 알림을 보내지 않음
+            NotificationEntity notification = new NotificationEntity();
+            notification.setUser(collection.getUser());
+            notification.setActor(userRepository.findById(userId).orElseThrow(() -> new NoSuchElementException("존재하지 않는 유저입니다")));
+            notification.setType(NotiType.LIKE);
+            notification.setTargetType(Replyable.COLLECTION);
+            notification.setTargetId(id);
+            notificationRepository.save(notification);
+        }
     }
 
     // 컬렉션에 좋아요 제거
@@ -195,6 +215,20 @@ public class CollectionService {
         ReplyDTO newReply = replyRepository.findReplyDTOById(userId, reply.getId());
         if (newReply == null) {
             throw new RuntimeException("Failed to create reply");
+        }
+
+        // 알림 생성
+        List<Integer> recipientIds = collectionRepository.findAllReplyUserIdsByCollectionId(id);
+        for (Integer recipientId : recipientIds) {
+            if (!recipientId.equals(userId)) { // 본인에게는 알림을 보내지 않음
+                NotificationEntity notification = new NotificationEntity();
+                notification.setUser(userRepository.findById(recipientId).orElseThrow(() -> new NoSuchElementException("존재하지 않는 유저입니다")));
+                notification.setActor(userRepository.findById(userId).orElseThrow(() -> new NoSuchElementException("존재하지 않는 유저입니다")));
+                notification.setType(NotiType.REPLY);
+                notification.setTargetType(Replyable.COLLECTION);
+                notification.setTargetId(id);
+                notificationRepository.save(notification);
+            }
         }
         return newReply;
     }

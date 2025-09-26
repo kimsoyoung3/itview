@@ -135,7 +135,10 @@ public class CommentService {
         reply.setText(text);
         ReplyEntity savedReply = replyRepository.save(reply);
         ReplyDTO newReply = replyRepository.findReplyDTOById(userId, savedReply.getId());
-
+        if (newReply == null) {
+            throw new RuntimeException("Failed to create reply");
+        }
+        
         // 알림 생성
         List<Integer> recipientIds = commentRepository.findAllReplyUserIdsByCommentId(commentId);
         for (Integer recipientId : recipientIds) {
@@ -148,10 +151,6 @@ public class CommentService {
                 notification.setTargetId(commentId);
                 notificationRepository.save(notification);
             }
-        }
-
-        if (newReply == null) {
-            throw new RuntimeException("Failed to create reply");
         }
         return newReply;
     }

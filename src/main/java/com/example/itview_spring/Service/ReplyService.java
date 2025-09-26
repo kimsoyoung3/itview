@@ -9,10 +9,14 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.example.itview_spring.Constant.NotiType;
 import com.example.itview_spring.Constant.Replyable;
+import com.example.itview_spring.Entity.NotificationEntity;
 import com.example.itview_spring.Entity.ReplyEntity;
 import com.example.itview_spring.Repository.LikeRepository;
+import com.example.itview_spring.Repository.NotificationRepository;
 import com.example.itview_spring.Repository.ReplyRepository;
+import com.example.itview_spring.Repository.UserRepository;
 
 import lombok.RequiredArgsConstructor;
 
@@ -22,6 +26,8 @@ import lombok.RequiredArgsConstructor;
 public class ReplyService {
 
     private final ReplyRepository replyRepository;
+    private final NotificationRepository notificationRepository;
+    private final UserRepository userRepository;
     private final LikeRepository likeRepository;
     private final ModelMapper modelMapper;
 
@@ -65,6 +71,19 @@ public class ReplyService {
         }
         try {
             likeRepository.likeTarget(userId, replyId, Replyable.REPLY);
+
+            // 알림 생성
+            ReplyEntity reply = replyRepository.findById(replyId).orElseThrow(() -> new NoSuchElementException("존재하지 않는 댓글입니다"));
+            if (!reply.getUser().getId().equals(userId)) { // 본인에게는 알림을 보내지 않음
+                NotificationEntity notification = new NotificationEntity();
+                notification.setUser(reply.getUser());
+                notification.setActor(userRepository.findById(userId).orElseThrow(() -> new NoSuchElementException("존재하지 않는 유저입니다")));
+                notification.setType(NotiType.LIKE);
+                notification.setTargetType(Replyable.REPLY);
+                notification.setTargetId(replyId);
+                notificationRepository.save(notification);
+            }
+
             return true;
         } catch (Exception e) {
             e.printStackTrace();

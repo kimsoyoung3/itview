@@ -253,6 +253,10 @@ public interface CollectionRepository extends JpaRepository<CollectionEntity, In
     @Query("SELECT c.id FROM CollectionEntity c WHERE c.user.id = :userId")
     List<Integer> findAllIdsByUserId(@Param("userId") Integer userId);
 
+    // 특정 컬렉션의 모든 댓글 유저 ID 조회
+    @Query("SELECT DISTINCT r.user.id FROM ReplyEntity r WHERE r.targetId = :collectionId AND r.targetType = 'COLLECTION'")
+    List<Integer> findAllReplyUserIdsByCollectionId(@Param("collectionId") Integer collectionId);
+
     @Query("SELECT c FROM CollectionEntity c JOIN c.user u WHERE c.title LIKE %:keyword% OR u.nickname LIKE %:keyword%")
     Page<CollectionEntity> findByTitleOrUserNicknameContaining(@Param("keyword") String keyword, Pageable pageable);
 
