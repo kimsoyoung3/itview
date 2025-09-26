@@ -164,7 +164,7 @@ const Header = ({ userInfo, handleLogin, handleLogout, isLoginOpen, openLogin, c
 
         // HashRouter 기준 URL 이동
         navigate(`/search?keyword=${encodeURIComponent(searchKeyword)}`);
-       /* setSearchKeyword(""); // 검색 후 입력 초기화*/
+        setSearchKeyword(""); // 검색 후 입력 초기화
 
         closeMobileSearchModal();
     };
