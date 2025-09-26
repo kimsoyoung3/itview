@@ -83,7 +83,7 @@
 }
 
 .series-page-tab-more-btn {
-    margin-top: 20px;
+    margin: 20px 0;
     text-align: center;
 }
 
@@ -120,6 +120,10 @@
 
     .series-content-card-title {
         width: 150px;
+    }
+
+    .series-page-tab-more-btn {
+        margin-bottom: 0;
     }
 }
 

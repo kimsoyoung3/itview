@@ -83,7 +83,7 @@
 }
 
 .webtoon-page-tab-more-btn {
-    margin-top: 20px;
+    margin: 20px 0;
     text-align: center;
 }
 
@@ -121,6 +121,10 @@
     .webtoon-content-card-title {
         width: 150px;
     }
+
+    .webtoon-page-tab-more-btn {
+        margin-bottom: 0;
+    }
 }
 
 /*모바일 사이즈*/
@@ -137,4 +141,6 @@
     .webtoon-content-card-title {
         width: 130px;
     }
+
+
 }

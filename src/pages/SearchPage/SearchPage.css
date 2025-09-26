@@ -181,8 +181,12 @@
         margin-bottom: 80px;
     }
 
-    .search-content-detail-page .container {
+    .search-page .container {
         max-width: 95% !important;
+    }
+
+    .search-result>p {
+        padding: 12px 15px;
     }
 
 }

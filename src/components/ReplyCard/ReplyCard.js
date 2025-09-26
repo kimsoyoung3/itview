@@ -11,13 +11,30 @@ const ReplyCard = ({ reply, userInfo, openLogin }) => {
 
     /* 댓글 수정 모달 */
     const [replyUpdateModal, setReplyUpdateModal] = useState(false);
-    const openUpdateReply = () => setReplyUpdateModal(true);
-    const closeUpdateReply = () => setReplyUpdateModal(false);
+
+    const openUpdateReply = () => {
+        setReplyUpdateModal(true);
+        document.body.style.overflow = 'hidden'; // 스크롤 막기
+    };
+
+    const closeUpdateReply = () => {
+        setReplyUpdateModal(false);
+        document.body.style.overflow = 'auto';   // 스크롤 원래대로
+    };
 
     /* 댓글 삭제 확인 모달 */
     const [replyDeleteConfirmModal, setReplyDeleteConfirmModal] = useState(false);
-    const openReplyDeleteConfirm = () => setReplyDeleteConfirmModal(true);
-    const closeReplyDeleteConfirmModal = () => setReplyDeleteConfirmModal(false);
+
+    const openReplyDeleteConfirm = () => {
+        setReplyDeleteConfirmModal(true);
+        document.body.style.overflow = 'hidden';
+    };
+
+    const closeReplyDeleteConfirmModal = () => {
+        setReplyDeleteConfirmModal(false);
+        document.body.style.overflow = 'auto';
+    };
+
 
     /* reply prop 업데이트 시 state 반영 */
     useEffect(() => {

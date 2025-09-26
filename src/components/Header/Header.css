@@ -370,6 +370,65 @@
     display: none;
 }
 
+/*모바일 검색창 모달*/
+.mobile-search-modal {
+    background: white;
+    padding:20px;
+    width: 100%;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+    position: absolute;
+    top: 0;
+    z-index: 2001;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.mobile-search-bar {
+    width: 100%;
+    background-color: #eee;
+    padding: 10px;
+    display: flex;
+    align-items: center;
+    border-radius: 5px;
+}
+
+.mobile-search-bar>form {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.mobile-search-input {
+    border: none;
+    width: 100%;
+    background: transparent;
+    outline: none;
+    font-size: 1rem;
+}
+
+.mobile-search-input::placeholder {
+    color: rgba(136,136,136,0.5);
+}
+
+.mobile-search-button {
+    border: none;
+    background: none;
+    font-size: 1.1rem;
+    cursor: pointer;
+    color: #888;
+    flex-shrink: 0;
+}
+
+.mobile-search-modal-btn {
+    border: none;
+    background: none;
+    flex-shrink: 0;
+    font-size: 1.1rem;
+    color: #22c55e;
+}
+
 /* 📱 반응형 스타일 */
 
 /*노트북 사이즈*/

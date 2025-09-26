@@ -309,27 +309,29 @@ const CollectionFormPage = ({action}) => {
             {collectionAddModal && (
                 <div className="collection-add-modal-overlay" onClick={closeCollectionAddModal}>
                     <div className="collection-add-modal-content" onClick={(e) => e.stopPropagation()}>
-                        <button className="collection-add-modal-close-button" onClick={closeCollectionAddModal}>
-                            <i className="bi bi-x-lg"></i>
-                        </button>
-
-                        <div className="collection-add-modal-content-top">
-                            <p className="collection-add-modal-title">작품 추가</p>
-                            <button className={`collection-add-modal-content-btn ${tempItems?.length > 0 ? 'has-items' : ''}`} onClick={handleAddItems}>
-                                {tempItems?.length > 0 && `${tempItems?.length}개`} 추가
+                        <div className="collection-add-modal-header">
+                            <button className="collection-add-modal-close-button" onClick={closeCollectionAddModal}>
+                                <i className="bi bi-x-lg"></i>
                             </button>
-                        </div>
 
-                        <div className="collection-add-modal-content-middle">
-                            <div className="collection-add-modal-search-bar">
-                                <button className="collection-add-modal-search-button"><i className="bi bi-search"/></button>
-                                <input
-                                    type="text"
-                                    placeholder="검색하여 작품 추가하기"
-                                    className="collection-add-modal-search-input"
-                                    onChange={(e) => setKeyword(e.target.value)}
-                                    value={keyword}
-                                />
+                            <div className="collection-add-modal-content-top">
+                                <p className="collection-add-modal-title">작품 추가</p>
+                                <button className={`collection-add-modal-content-btn ${tempItems?.length > 0 ? 'has-items' : ''}`} onClick={handleAddItems}>
+                                    {tempItems?.length > 0 && `${tempItems?.length}개`} 추가
+                                </button>
+                            </div>
+
+                            <div className="collection-add-modal-content-middle">
+                                <div className="collection-add-modal-search-bar">
+                                    <button className="collection-add-modal-search-button"><i className="bi bi-search"/></button>
+                                    <input
+                                        type="text"
+                                        placeholder="검색하여 작품 추가하기"
+                                        className="collection-add-modal-search-input"
+                                        onChange={(e) => setKeyword(e.target.value)}
+                                        value={keyword}
+                                    />
+                                </div>
                             </div>
                         </div>
 

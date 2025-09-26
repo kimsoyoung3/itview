@@ -40,8 +40,14 @@ const DetailPage = ({userInfo, openLogin}) => {
     /*코멘트 모달*/
 
     const [myCommentModal, setMyCommentModal] = useState();
-    const openMyComment = () => setMyCommentModal(true);
-    const closeMyComment = () => setMyCommentModal(false);
+    const openMyComment = () => {
+        setMyCommentModal(true);
+        document.body.style.overflow = 'hidden';
+    };
+    const closeMyComment = () => {
+        setMyCommentModal(false);
+        document.body.style.overflow = 'auto';
+    };
 
     /*코멘트 작성*/
     const handleCommentPost = async () => {
@@ -153,8 +159,14 @@ const DetailPage = ({userInfo, openLogin}) => {
 
     const [collectionListModal, setCollectionListModal] = useState();
 
-    const openCollectionListModal = () => setCollectionListModal(true);
-    const closeCollectionListModal = () => setCollectionListModal(false);
+    const openCollectionListModal = () => {
+        setCollectionListModal(true);
+        document.body.style.overflow = 'hidden';
+    }
+    const closeCollectionListModal = () => {
+        setCollectionListModal(false);
+        document.body.style.overflow = 'auto';
+    }
 
     const [selectedCollections, setSelectedCollections] = useState([]);
     useEffect(() => {
@@ -253,10 +265,12 @@ const DetailPage = ({userInfo, openLogin}) => {
     const openGalleryModal = (index) => {
         setGalleryModalStartIndex(index);
         setGalleryModal(true);
+        document.body.style.overflow = 'hidden';
     };
 
     const closeGalleryModal = () => {
         setGalleryModal(false);
+        document.body.style.overflow = 'auto';
     };
 
     /*컨텐츠 디테일*/
@@ -560,15 +574,13 @@ const DetailPage = ({userInfo, openLogin}) => {
                     <div className="collection-list-modal-overlay" onClick={closeCollectionListModal}>
                         <div className="collection-list-modal-content" onClick={(e) => e.stopPropagation()}>
                             <div className="collection-list-modal-content-top">
-                                <div className="collection-list-modal-content-top-wrap">
-                                    <button className="collection-list-modal-close-button" onClick={closeCollectionListModal}>
-                                        <i className="bi bi-x-lg"></i>
-                                    </button>
-                                    <p className="collection-list-modal-title">컬렉션에 추가</p>
-                                    <button className="collection-list-modal-content-btn" onClick={() => handleCollectionAdd()}>
-                                        추가
-                                    </button>
-                                </div>
+                                <button className="collection-list-modal-close-button" onClick={closeCollectionListModal}>
+                                    <i className="bi bi-x-lg"></i>
+                                </button>
+                                <p className="collection-list-modal-title">컬렉션에 추가</p>
+                                <button className="collection-list-modal-content-btn" onClick={() => handleCollectionAdd()}>
+                                    추가
+                                </button>
                             </div>
 
                             <div className="collection-list-modal-content-bottom">
