@@ -9,6 +9,7 @@ import com.example.itview_spring.DTO.EmailDTO;
 import com.example.itview_spring.DTO.EmailVerificationDTO;
 import com.example.itview_spring.DTO.LoginDTO;
 import com.example.itview_spring.DTO.NewPasswordDTO;
+import com.example.itview_spring.DTO.NotificationDTO;
 import com.example.itview_spring.DTO.PersonDTO;
 import com.example.itview_spring.DTO.RatingDTO;
 import com.example.itview_spring.DTO.RegisterDTO;
@@ -202,6 +203,14 @@ public class UserRestController {
         redirectCookie.setHttpOnly(false);
         response.addCookie(redirectCookie);
         System.out.println("redirectURL: " + redirectURL);
+    }
+
+    // 알림 목록 조회
+    @GetMapping("/notification")
+    public ResponseEntity<Page<NotificationDTO>> getNotifications(@AuthenticationPrincipal CustomUserDetails user,
+                                                                  @PageableDefault(page=1) Pageable pageable) {
+        Page<NotificationDTO> notifications = userService.getNotifications(user.getId(), pageable.getPageNumber());
+        return ResponseEntity.ok(notifications);
     }
 
     // 유저 페이지 정보 조회

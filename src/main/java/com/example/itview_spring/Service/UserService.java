@@ -2,9 +2,15 @@ package com.example.itview_spring.Service;
 
 import com.example.itview_spring.Config.CustomUserDetails;
 import com.example.itview_spring.Constant.ContentType;
+import com.example.itview_spring.Constant.NotiType;
+import com.example.itview_spring.Constant.Replyable;
 import com.example.itview_spring.Constant.Role;
 import com.example.itview_spring.DTO.*;
+import com.example.itview_spring.Entity.CollectionEntity;
+import com.example.itview_spring.Entity.CommentEntity;
 import com.example.itview_spring.Entity.EmailVerificationEntity;
+import com.example.itview_spring.Entity.NotificationEntity;
+import com.example.itview_spring.Entity.ReplyEntity;
 import com.example.itview_spring.Entity.UserEntity;
 import com.example.itview_spring.Repository.*;
 import com.example.itview_spring.Util.AuthCodeGenerator;
@@ -33,6 +39,8 @@ import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 
+import javax.management.Notification;
+
 @Service
 @RequiredArgsConstructor
 @Transactional
@@ -47,6 +55,7 @@ public class UserService implements UserDetailsService {
     private final ReplyRepository replyRepository;
     private final CollectionRepository collectionRepository;
     private final EmailVerificationRepository emailVerificationRepository;
+    private final NotificationRepository notificationRepository;
     private final CollectionService collectionService;
     private final CommentService commentservice;
     private final ReplyService replyService;
@@ -194,6 +203,65 @@ public class UserService implements UserDetailsService {
         }
 
         userRepository.deleteById(userId);
+    }
+
+    // 알림 목록 조회
+    public Page<NotificationDTO> getNotifications(Integer userId, Integer page) {
+        if (!userRepository.existsById(userId)) {
+            throw new NoSuchElementException("존재하지 않는 유저입니다.");
+        }
+        Pageable pageable = PageRequest.of(page - 1, 10);
+        Page<NotificationEntity> notifications = notificationRepository.findAllByUser_IdOrderByIdDesc(userId, pageable);
+        Page<NotificationDTO> notificationDTOs = notifications.map(notification -> {
+            NotificationDTO dto = new NotificationDTO();
+            dto.setProfile(notification.getActor().getProfile());
+            dto.setActorId(notification.getActor().getId());
+            dto.setCreatedAt(notification.getCreatedAt());
+
+            String targetName = "내 ";
+            if (notification.getTargetType() == Replyable.COMMENT) {
+                CommentEntity comment = commentRepository.findById(notification.getTargetId()).orElse(null);
+                if (!comment.getUser().getId().equals(userId)) {
+                    targetName = "내가 댓글 남긴 " + notification.getActor().getNickname() + "님의 ";
+                }
+            } else if (notification.getTargetType() == Replyable.COLLECTION) {
+                CollectionEntity collection = collectionRepository.findById(notification.getTargetId()).orElse(null);
+                if (!collection.getUser().getId().equals(userId)) {
+                    targetName = "내가 댓글 남긴 " + notification.getActor().getNickname() + "님의 ";
+                }
+            }
+
+            String targetType = "";
+            if (notification.getTargetType() == Replyable.COMMENT) {
+                targetType = "코멘트";
+                dto.setLink("/comment/" + notification.getTargetId());
+            } else if (notification.getTargetType() == Replyable.COLLECTION) {
+                targetType = "컬렉션";
+                dto.setLink("/collection/" + notification.getTargetId());
+            } else if (notification.getTargetType() == Replyable.REPLY) {
+                targetType = "댓글";
+                ReplyEntity reply = replyRepository.findById(notification.getTargetId()).orElse(null);
+                if (reply.getTargetType() == Replyable.COMMENT) {
+                    dto.setLink("/comment/" + reply.getTargetId());
+                } else if (reply.getTargetType() == Replyable.COLLECTION) {
+                    dto.setLink("/collection/" + reply.getTargetId());
+                }
+            }
+
+            String tail = "";
+            if (notification.getType() == NotiType.REPLY) {
+                tail = "에 댓글을 남겼어요";
+            } else if (notification.getType() == NotiType.LIKE) {
+                if (targetType.equals("코멘트")) {
+                    tail = "를 좋아해요";
+                } else {
+                    tail = "을 좋아해요";
+                }
+            }
+            dto.setTitle(notification.getActor().getNickname() + "님이 " + targetName + targetType + tail);
+            return dto;
+        });
+        return notificationDTOs;
     }
 
     // userInfo 조회
