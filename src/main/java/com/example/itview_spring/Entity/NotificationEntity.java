@@ -52,6 +52,7 @@ public class NotificationEntity {
 
     // 타겟 타입
     @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
     private Replyable targetType;
 
     // 타겟 ID

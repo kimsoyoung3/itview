@@ -101,6 +101,18 @@ public class CommentService {
             return;
         }
         likeRepository.likeTarget(userId, commentId, Replyable.COMMENT);
+
+        // 알림 생성
+        CommentEntity comment = commentRepository.findById(commentId).orElseThrow(() -> new NoSuchElementException("존재하지 않는 코멘트입니다"));
+        if (!comment.getUser().getId().equals(userId)) { // 본인에게는 알림을 보내지 않음
+            NotificationEntity notification = new NotificationEntity();
+            notification.setUser(comment.getUser());
+            notification.setActor(userRepository.findById(userId).orElseThrow(() -> new NoSuchElementException("존재하지 않는 유저입니다")));
+            notification.setType(NotiType.LIKE);
+            notification.setTargetType(Replyable.COMMENT);
+            notification.setTargetId(commentId);
+            notificationRepository.save(notification);
+        }
     }
 
     // 코멘트에 좋아요 취소
@@ -125,9 +137,9 @@ public class CommentService {
         ReplyDTO newReply = replyRepository.findReplyDTOById(userId, savedReply.getId());
 
         // 알림 생성
-        NotificationEntity notification = new NotificationEntity();
-        List<Integer> recipientIds = commentRepository.findAllUserIdsByCommentId(commentId);
+        List<Integer> recipientIds = commentRepository.findAllReplyUserIdsByCommentId(commentId);
         for (Integer recipientId : recipientIds) {
+            NotificationEntity notification = new NotificationEntity();
             if (!recipientId.equals(userId)) { // 본인에게는 알림을 보내지 않음
                 notification.setUser(userRepository.findById(recipientId).orElseThrow(() -> new NoSuchElementException("존재하지 않는 유저입니다")));
                 notification.setActor(userRepository.findById(userId).orElseThrow(() -> new NoSuchElementException("존재하지 않는 유저입니다")));
