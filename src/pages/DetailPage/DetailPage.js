@@ -15,6 +15,7 @@ import {NavLink, useParams} from "react-router-dom";
 import { deleteComment, updateComment } from "../../API/CommentApi";
 import {toast} from "react-toastify";
 import NotFound from "../NotFound/NotFound";
+import { getCollectionToAdd } from "../../API/CollectionApi";
 
 const DetailPage = ({userInfo, openLogin}) => {
     const [notFound, setNotFound] = useState(false);
@@ -142,6 +143,22 @@ const DetailPage = ({userInfo, openLogin}) => {
             } catch (error) {
                 toast(error.response.data);
             }
+        }
+    };
+
+    const [collectionList, setCollectionList] = useState(null);
+    
+    useEffect(() => {
+        console.log(collectionList)
+    }, [collectionList])
+
+    /*컬렉션 추가*/
+    const handleCollectionAdd = async () => {
+        try {
+            const response = await getCollectionToAdd(contentDetail.contentInfo.id);
+            setCollectionList(response.data);
+        } catch (error) {
+            console.error("Error fetching collection to add:", error);
         }
     };
 
@@ -409,7 +426,9 @@ const DetailPage = ({userInfo, openLogin}) => {
                                     </button>
                                 </li>
                                 <li>
-                                    <button>
+                                    <button onClick={async () => {
+                                        userInfo ? handleCollectionAdd() : openLogin();
+                                    }}>
                                         <img src={`${process.env.PUBLIC_URL}/icon/plus-square.svg`} alt=""/>
                                         <p>컬렉션</p>
                                     </button>
