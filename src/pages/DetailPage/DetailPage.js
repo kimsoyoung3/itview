@@ -15,7 +15,7 @@ import {NavLink, useParams} from "react-router-dom";
 import { deleteComment, updateComment } from "../../API/CommentApi";
 import {toast} from "react-toastify";
 import NotFound from "../NotFound/NotFound";
-import { getCollectionToAdd } from "../../API/CollectionApi";
+import { addCollectionItem, getCollectionToAdd } from "../../API/CollectionApi";
 
 const DetailPage = ({userInfo, openLogin}) => {
     const [notFound, setNotFound] = useState(false);
@@ -147,25 +147,84 @@ const DetailPage = ({userInfo, openLogin}) => {
     };
 
     const [collectionList, setCollectionList] = useState(null);
+    useEffect(() => {
+        console.log(collectionList);
+    }, [collectionList]);
 
     const [collectionListModal, setCollectionListModal] = useState();
+
     const openCollectionListModal = () => setCollectionListModal(true);
     const closeCollectionListModal = () => setCollectionListModal(false);
-    
-    useEffect(() => {
-        console.log(collectionList)
-    }, [collectionList])
 
-    /*컬렉션 추가*/
-    const handleCollectionAdd = async () => {
-        openCollectionListModal();
-        try {
-            const response = await getCollectionToAdd(contentDetail.contentInfo.id);
-            setCollectionList(response.data);
-        } catch (error) {
-            console.error("Error fetching collection to add:", error);
+    const [selectedCollections, setSelectedCollections] = useState([]);
+    useEffect(() => {
+        console.log(selectedCollections);
+    }, [selectedCollections]);
+
+    const handleCollectionSelect = async (collectionId) => {
+        if (selectedCollections.some(id => id === collectionId)) {
+            setSelectedCollections(prev => prev.filter(id => id !== collectionId));
+        } else {
+            setSelectedCollections(prev => [...prev, collectionId]);
         }
     };
+
+    /*컬렉션 추가*/
+    const handleCollectionClick = async () => {
+        openCollectionListModal();
+        setSelectedCollections([]);
+        try {
+            const response = await getCollectionToAdd(id, 1);
+            setCollectionList(response.data);
+        } catch (error) {
+            toast("컬렉션 정보를 불러오지 못했습니다.");
+        }
+    };
+
+    const handleCollectionAdd = async () => {
+        if (selectedCollections.length === 0) {
+            toast("하나 이상의 컬렉션을 선택해주세요.");
+            return;
+        }
+        try {
+            await addCollectionItem(id, selectedCollections);
+            toast("컬렉션에 추가되었습니다.");
+            closeCollectionListModal();
+        } catch (error) {
+            toast("컬렉션에 추가하지 못했습니다.");
+        }
+    }
+
+    const collectionListRef = useRef(null);
+
+    const fetchNextPage = async () => {
+        console.log('더보기 감지')
+        try {
+            const nextPage = collectionList.page.number + 2;
+            const response = await getCollectionToAdd(id, nextPage);
+            setCollectionList(prev => ({content: [...prev.content, ...response.data.content], page: response.data.page}));
+        } catch (error) {
+            console.error('Error fetching next collection page:', error);
+        }
+    };
+
+    useEffect(() => {
+        const observer = new IntersectionObserver((entries) => {
+            if (entries[0].isIntersecting) {
+                if (collectionList?.page.number + 1 < collectionList?.page.totalPages) {
+                    fetchNextPage();
+                }
+            }
+        });
+        if (collectionListRef.current) {
+            observer.observe(collectionListRef.current);
+        }
+        return () => {
+            if (collectionListRef.current) {
+                observer.unobserve(collectionListRef.current);
+            }
+        };
+    }, [collectionListRef, collectionList, contentDetail]);
 
     /*외부서비스 로고*/
     const serviceLogos = {
@@ -240,11 +299,7 @@ const DetailPage = ({userInfo, openLogin}) => {
                 try {
                     const nextPage = contentCredit.page.number + 2;
                     const response = await getContentCredit(id, nextPage);
-                    if (response.data.content.length > 0) {
-                        setContentCredit(prev => ({content: [...prev.content, ...response.data.content], page: response.data.page}));
-                    } else {
-                        console.log('더 이상 크레딧이 없습니다.');
-                    }
+                    setContentCredit(prev => ({content: [...prev.content, ...response.data.content], page: response.data.page}));
                 } catch (error) {
                     console.error('Error fetching next credit page:', error);
                 }
@@ -432,7 +487,7 @@ const DetailPage = ({userInfo, openLogin}) => {
                                 </li>
                                 <li>
                                     <button onClick={async () => {
-                                        userInfo ? handleCollectionAdd() : openLogin();
+                                        userInfo ? handleCollectionClick() : openLogin();
                                     }}>
                                         <img src={`${process.env.PUBLIC_URL}/icon/plus-square.svg`} alt=""/>
                                         <p>컬렉션</p>
@@ -509,7 +564,7 @@ const DetailPage = ({userInfo, openLogin}) => {
                                     <i className="bi bi-x-lg"></i>
                                 </button>
                                 <p className="collection-list-modal-title">컬렉션에 추가</p>
-                                <button className="collection-list-modal-content-btn" onClick={handleCollectionAdd}>
+                                <button className="collection-list-modal-content-btn" onClick={() => handleCollectionAdd()}>
                                      추가
                                 </button>
                             </div>
@@ -517,11 +572,11 @@ const DetailPage = ({userInfo, openLogin}) => {
                             <div className="collection-list-modal-content-bottom">
                                 {collectionList?.content?.map(item =>
                                     <div className="form-check" key={item.collection.id}>
-                                        <input className="form-check-input" type="checkbox" value="" id={`checkDefault-${item.collection.id}`} disabled={item.included}/>
+                                        <input className="form-check-input" type="checkbox" value="" onChange={() => handleCollectionSelect(item.collection.id)} id={`checkDefault-${item.collection.id}`} checked={item.included || selectedCollections.includes(item.collection.id)} disabled={item.included}/>
                                         <label className="form-check-label" htmlFor={`checkDefault-${item.collection.id}`}>
                                             <div className="collection-list-modal-search-results">
                                                 <div className="collection-list-modal-search-results-img">
-                                                    <img src={item.collection.poster ? item.collection.poster : `${process.env.PUBLIC_URL}/basic-bg.jpg`} alt=""/>
+                                                    <img src={item.collection.poster.length > 0 ? item.collection.poster : `${process.env.PUBLIC_URL}/basic-bg.jpg`} alt=""/>
                                                 </div>
                                                 <div className="collection-list-modal-search-results-info">
                                                     <p className="collection-list-modal-search-results-info-top">{item.collection.title}</p>
@@ -531,6 +586,7 @@ const DetailPage = ({userInfo, openLogin}) => {
                                         </label>
                                     </div>
                                 )}
+                                <div ref={collectionListRef} hidden={collectionList.page.number + 2 > collectionList.page.totalPages}>더보기</div>
                             </div>
                         </div>
                     </div>
