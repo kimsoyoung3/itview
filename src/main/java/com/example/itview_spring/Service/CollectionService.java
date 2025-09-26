@@ -94,6 +94,10 @@ public class CollectionService {
             if (!collection.getUser().getId().equals(userId)) {
                 throw new SecurityException("본인의 컬렉션에만 추가할 수 있습니다.");
             }
+            // 이미 추가된 컨텐츠는 건너뜀
+            if (collection.getItems().stream().map(item -> item.getContent().getId()).collect(Collectors.toList()).contains(contentId)) {
+                continue;
+            }
             CollectionItemEntity item = new CollectionItemEntity();
             item.setCollection(collection);
             item.setContent(content);
