@@ -147,6 +147,10 @@ const DetailPage = ({userInfo, openLogin}) => {
     };
 
     const [collectionList, setCollectionList] = useState(null);
+
+    const [collectionListModal, setCollectionListModal] = useState();
+    const openCollectionListModal = () => setCollectionListModal(true);
+    const closeCollectionListModal = () => setCollectionListModal(false);
     
     useEffect(() => {
         console.log(collectionList)
@@ -154,6 +158,7 @@ const DetailPage = ({userInfo, openLogin}) => {
 
     /*컬렉션 추가*/
     const handleCollectionAdd = async () => {
+        openCollectionListModal();
         try {
             const response = await getCollectionToAdd(contentDetail.contentInfo.id);
             setCollectionList(response.data);
@@ -490,6 +495,42 @@ const DetailPage = ({userInfo, openLogin}) => {
                             <div className="confirm-btn-group">
                                 <button  onClick={handleDeleteConfirm}>확인</button>
                                 <button onClick={() => setDeleteConfirmModal(false)}>취소</button>
+                            </div>
+                        </div>
+                    </div>
+                )}
+
+                {/*컬렉션 이미지 추가 모달창*/}
+                {collectionListModal && (
+                    <div className="collection-list-modal-overlay" onClick={closeCollectionListModal}>
+                        <div className="collection-list-modal-content" onClick={(e) => e.stopPropagation()}>
+                            <div className="collection-list-modal-content-top">
+                                <button className="collection-list-modal-close-button" onClick={closeCollectionListModal}>
+                                    <i className="bi bi-x-lg"></i>
+                                </button>
+                                <p className="collection-list-modal-title">컬렉션에 추가</p>
+                                <button className="collection-list-modal-content-btn" onClick={handleCollectionAdd}>
+                                     추가
+                                </button>
+                            </div>
+
+                            <div className="collection-list-modal-content-bottom">
+                                {collectionList?.content?.map(item =>
+                                    <div className="form-check" key={item.collection.id}>
+                                        <input className="form-check-input" type="checkbox" value="" id={`checkDefault-${item.collection.id}`} disabled={item.included}/>
+                                        <label className="form-check-label" htmlFor={`checkDefault-${item.collection.id}`}>
+                                            <div className="collection-list-modal-search-results">
+                                                <div className="collection-list-modal-search-results-img">
+                                                    <img src={item.collection.poster ? item.collection.poster : `${process.env.PUBLIC_URL}/basic-bg.jpg`} alt=""/>
+                                                </div>
+                                                <div className="collection-list-modal-search-results-info">
+                                                    <p className="collection-list-modal-search-results-info-top">{item.collection.title}</p>
+                                                    <p className="collection-list-modal-search-results-info-bottom">{item.collection.contentCount}개 작품</p>
+                                                </div>
+                                            </div>
+                                        </label>
+                                    </div>
+                                )}
                             </div>
                         </div>
                     </div>
