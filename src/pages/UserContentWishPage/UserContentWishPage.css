@@ -53,10 +53,26 @@
     background: #d9d9d9;
 }
 
+/*태블릿 사이즈*/
+@media (max-width: 768px) {
+    .user-content-wish-page {
+        margin-top: 30px;
+        margin-bottom: 80px;
+    }
+
+    .user-content-wish-page .container {
+        max-width: 95% !important;
+    }
+
+    .user-wish-page-content-list {
+        grid-template-columns: repeat(6, 1fr);
+    }
+}
+
 /*모바일 사이즈*/
 @media (max-width: 480px) {
     .user-content-wish-page {
-        margin-top: 84px;
+        margin-top: 20px;
     }
 
     .user-wish-page-content-list {

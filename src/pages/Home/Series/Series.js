@@ -84,8 +84,8 @@ const Series = () => {
     };
 
     return (
-        <div className="series-page container">
-            <div className="series-page-wrap">
+        <div className="series-page">
+            <div className="series-page-wrap container">
                 <div className="series-page-tab-btn-wrap">
                     <div className="series-page-tab-btn">
                         {genre?.map(item =>(

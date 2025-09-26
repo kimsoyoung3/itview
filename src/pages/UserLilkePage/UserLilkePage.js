@@ -91,8 +91,8 @@ function UserLikePage({userInfo, openLogin, onDelete}) {
 
     return ( notFound ? <NotFound /> :
         <>
-            <div className="user-like-page container">{/*유저가 좋아요한 {contentType} 페이지 - 준비중*/}
-                <div className="user-like-page-wrap">
+            <div className="user-like-page">
+                <div className="user-like-page-wrap container">
                     <h1>좋아요</h1>
                     <div className="user-like-title">
                         <div className={`like-page-tab-btn ${contentType === "person" ? "active" : ""}`}

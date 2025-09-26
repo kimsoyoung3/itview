@@ -84,8 +84,8 @@ const Webtoon = () => {
     };
     
     return (
-        <div className="webtoon-page container">
-            <div className="webtoon-page-wrap">
+        <div className="webtoon-page">
+            <div className="webtoon-page-wrap container">
                 <div className="webtoon-page-tab-btn-wrap">
                     <div className="webtoon-page-tab-btn">
                         {genre?.map(item =>(

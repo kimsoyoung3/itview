@@ -1,6 +1,11 @@
 .user-like-page {
     margin-top: 114px;
+    width: 100%;
+}
+
+.user-like-page-wrap {
     max-width: 700px;
+
 }
 
 .user-like-page-wrap>h1 {
@@ -74,9 +79,22 @@
     margin-top: 20px;
 }
 
+/*태블릿 사이즈*/
+@media (max-width: 768px) {
+    .user-like-page {
+        margin-top: 30px;
+        margin-bottom: 100px;
+    }
+
+    .user-like-page .container {
+        max-width: 95% !important;
+    }
+}
+
 /*모바일 사이즈*/
 @media (max-width: 480px) {
     .user-like-page {
-        margin-top: 84px;
+        margin-top: 20px;
+        margin-bottom: 80px;
     }
 }

@@ -174,12 +174,21 @@
     font-size: 0.9rem;
 }
 
-/*모바일 사이즈*/
-@media (max-width: 480px) {
+/*태블릿 사이즈*/
+@media (max-width: 768px) {
     .search-page {
-        margin-top: 50px;
+        margin-top: 0;
+        margin-bottom: 80px;
     }
 
+    .search-content-detail-page .container {
+        max-width: 95% !important;
+    }
+
+}
+
+/*모바일 사이즈*/
+@media (max-width: 480px) {
     .search-page-tab-content-list>div {
         width: 100%;
     }

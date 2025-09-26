@@ -42,12 +42,21 @@
     background: #d9d9d9;
 }
 
-/*모바일 사이즈*/
-@media (max-width: 480px) {
+/*태블릿 사이즈*/
+@media (max-width: 768px) {
     .search-content-detail-page {
-        margin-top: 50px;
+        margin-top: 0;
+        margin-bottom: 100px;
     }
 
+    .search-content-detail-page .container {
+        max-width: 95% !important;
+    }
+
+}
+
+/*모바일 사이즈*/
+@media (max-width: 480px) {
     .search-content-list {
         width: 100%;
     }

@@ -98,8 +98,12 @@
 /*태블릿 사이즈*/
 @media (max-width: 768px) {
     .record-page {
-        margin-top: 20px;
+        margin-top: 30px;
         margin-bottom: 100px;
+    }
+
+    .record-page .container {
+        max-width: 95%;
     }
 
     .record-page-tab-content {
@@ -115,10 +119,15 @@
 /*모바일 사이즈*/
 @media (max-width: 480px) {
     .record-page {
+        margin-top: 20px;
         margin-bottom: 80px;
     }
 
     .record-page-tab-content {
-        grid-template-columns: repeat(2, 1fr); /* 4등분 고정 */
+        grid-template-columns: repeat(3, 1fr); /* 4등분 고정 */
+    }
+
+    .record-content-card-title {
+        width: 130px;
     }
 }

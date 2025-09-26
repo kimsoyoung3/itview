@@ -81,8 +81,8 @@ const CommentDetailPage = ({userInfo, openLogin}) => {
     }, [loadMoreRepliesRef, page]);
 
     return(notFound ? <NotFound /> :
-        <div className="comment-detail-page container">
-            <div className="comment-detail-page-content">
+        <div className="comment-detail-page">
+            <div className="comment-detail-page-content container">
                 <h1 className="mobile-text">코멘트</h1>
                 <CommentCard comment={comment?.comment} content={comment?.content} userInfo={userInfo} openLogin={openLogin} newReply={newReply} onDelete={onDelete}/>
 

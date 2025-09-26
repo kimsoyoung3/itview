@@ -77,24 +77,6 @@
     padding: 0 5px;
 }
 
-.credit-prev,
-.credit-next {
-    position: absolute;
-    top: 50%;
-    transform: translateY(-50%);
-    z-index: 10;
-    background: rgba(0,0,0,0.3);
-    color: #fff;
-    padding: 8px 12px;
-    border-radius: 50%;
-    cursor: pointer;
-}
-
-.credit-prev:hover,
-.credit-next:hover {
-    background: rgba(0,0,0,0.6);
-}
-
 .credit-prev {
     left: -40px;
 }
@@ -132,6 +114,31 @@
     font-size: 1rem  !important;; /* 아이콘 크기 조절 */
 }
 
+.content-wrapper {
+    position: relative;
+}
+
+.content-prev, .content-next {
+    position: absolute;
+    top: 40%;
+    transform: translateY(-50%);
+    z-index: 10;
+    background: #f6f6f6;
+    box-shadow: 1px 2px 3px rgba(0,0,0,0.1);
+    color: #555555 !important;
+    padding: 4px 8px;
+    border-radius: 50%;
+    cursor: pointer;
+}
+
+.content-prev {
+    left: -15px;
+}
+
+.content-next {
+    right: -15px;
+}
+
 .swiper-button-disabled {
     opacity: 0;
     pointer-events: none;
@@ -154,5 +161,10 @@
         margin-top: 24px;
         margin-bottom: 50px;
         max-width: 800px;
+    }
+
+    .content-next,
+    .content-prev {
+        display: none !important;
     }
 }

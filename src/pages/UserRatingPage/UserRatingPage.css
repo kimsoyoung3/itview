@@ -1,5 +1,9 @@
 .user-rating-page {
     margin-top: 114px;
+    width: 100%;
+}
+
+.user-rating-page-wrap {
     max-width: 800px;
 }
 
@@ -35,9 +39,23 @@
     color: #888888;
 }
 
+/*태블릿 사이즈*/
+@media (max-width: 768px) {
+    .user-rating-page {
+        margin-top: 30px;
+        margin-bottom: 100px;
+    }
+
+    .user-rating-page .container {
+        max-width: 95% !important;
+    }
+}
+
 /*모바일 사이즈*/
 @media (max-width: 480px) {
     .user-rating-page {
-        margin-top: 84px;
+        margin-top: 20px;
+        margin-bottom: 80px;
     }
 }
+

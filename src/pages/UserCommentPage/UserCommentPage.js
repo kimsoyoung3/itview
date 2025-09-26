@@ -74,8 +74,8 @@ function UserCommentPage({ userInfo, openLogin }) {
     }
 
     return (notFound ? <NotFound /> :
-        <div className="user-comment-page container">
-            <div className="user-comment-page-wrap">
+        <div className="user-comment-page">
+            <div className="user-comment-page-wrap container">
                 <h1>코멘트</h1>
                 <div>
                     <div className="user-comment-tab-title">

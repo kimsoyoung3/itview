@@ -361,6 +361,10 @@
 
 /*태블릿 사이즈*/
 @media (max-width: 768px) {
+    .user-collection-detail-page .container {
+        max-width: 100% !important;
+    }
+
     .user-collection-detail-page {
         margin-top: 50px;
         margin-bottom: 100px;

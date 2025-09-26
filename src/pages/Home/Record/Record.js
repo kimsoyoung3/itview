@@ -55,8 +55,8 @@ const Record = () => {
     };
 
     return (
-        <div className="record-page container">
-            <div className="record-page-wrap">
+        <div className="record-page">
+            <div className="record-page-wrap container">
                 <div className="record-page-tab-btn">
                     {genre?.map(item =>(
                         <button className={select?.first === item.first ? "record-page-tab-btn-click" : ""} onClick={() => setSelect(item)} key={item.id}>{item.second}</button>

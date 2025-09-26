@@ -106,20 +106,22 @@ const CommentPage = ({userInfo, openLogin}) => {
     }, [loadMoreCommentsRef, page]);
 
     return(notFound ? <NotFound /> :
-        <div className="comment-page container">
-            <h1 className="comment-page-title">코멘트</h1>
-            <div className="comment-page-select-wrap">
-                <CustomSelect value={order} onChange={setOrder} options={options} />
-            </div>
-
-            {comments.length > 0 ? (
-                <div className="comment-page-content">
-                    {comments.map((c, index) => <CommentCard key={c.id} comment={c} content={{title}} userInfo={userInfo} openLogin={openLogin} onDelete={() => onDelete(index)}/>)}
+        <div className="comment-page">
+            <div className="comment-page-wrap container">
+                <h1 className="comment-page-title">코멘트</h1>
+                <div className="comment-page-select-wrap">
+                    <CustomSelect value={order} onChange={setOrder} options={options} />
                 </div>
-            ) : (
-                <p className="empty-message">코멘트가 없습니다 :)</p>
-            )}
-            <div ref={loadMoreCommentsRef} style={{ height: '20px' }}></div>
+
+                {comments.length > 0 ? (
+                    <div className="comment-page-content">
+                        {comments.map((c, index) => <CommentCard key={c.id} comment={c} content={{title}} userInfo={userInfo} openLogin={openLogin} onDelete={() => onDelete(index)}/>)}
+                    </div>
+                ) : (
+                    <p className="empty-message">코멘트가 없습니다 :)</p>
+                )}
+                <div ref={loadMoreCommentsRef} style={{ height: '20px' }}></div>
+            </div>
         </div>
     )
 };
