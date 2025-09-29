@@ -66,7 +66,7 @@
     border-bottom: 1px solid #eeeeee;
 }
 
-.notification-tab-content-wrap:last-child {
+.notification-tab-content-wrap:last-of-type {
     border-bottom: none;
 }
 
@@ -82,7 +82,6 @@
     width: 100%;
     height: 100%;
 }
-
 
 .notification-tab-content-profile>a>img {
     width: 100%;
@@ -100,13 +99,13 @@
     width: 100%;
 }
 
-.notification-tab-content-title>a>div{
+.notification-tab-content-title>a>p{
     font-size: 0.9rem;
-    color: #555555;
     font-weight: 500;
+    margin-bottom: 0;
 }
 
-.notification-tab-content-title>a>div:last-child{
+.notification-tab-content-title>a>div{
     font-size: 0.7rem;
     color: #888888;
 }
