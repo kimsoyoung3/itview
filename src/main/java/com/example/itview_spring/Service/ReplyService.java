@@ -29,6 +29,7 @@ public class ReplyService {
     private final NotificationRepository notificationRepository;
     private final UserRepository userRepository;
     private final LikeRepository likeRepository;
+    private final NotificationService notificationService;
     private final ModelMapper modelMapper;
 
     // 댓글 수정
@@ -82,6 +83,8 @@ public class ReplyService {
                 notification.setTargetType(Replyable.REPLY);
                 notification.setTargetId(replyId);
                 notificationRepository.save(notification);
+                // 실시간 알림 전송
+                notificationService.sendNotification(reply.getUser().getId());
             }
 
             return true;

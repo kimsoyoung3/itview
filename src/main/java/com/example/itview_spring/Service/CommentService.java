@@ -32,6 +32,7 @@ public class CommentService {
     private final ContentRepository contentRepository;
     private final ReplyRepository replyRepository;
     private final LikeRepository likeRepository;
+    private final NotificationService notificationService;
     private final ModelMapper modelMapper;
 
     // 코멘트 추가
@@ -112,6 +113,8 @@ public class CommentService {
             notification.setTargetType(Replyable.COMMENT);
             notification.setTargetId(commentId);
             notificationRepository.save(notification);
+            // 실시간 알림 전송
+            notificationService.sendNotification(comment.getUser().getId());
         }
     }
 
@@ -140,6 +143,22 @@ public class CommentService {
         }
         
         // 알림 생성
+
+        // 해당 코멘트 작성자에게 알림 전송
+        CommentEntity comment = commentRepository.findById(commentId).orElseThrow(() -> new NoSuchElementException("존재하지 않는 코멘트입니다"));
+        if (!comment.getUser().getId().equals(userId)) { // 본인에게는 알림을 보내지 않음
+            NotificationEntity notification = new NotificationEntity();
+            notification.setUser(comment.getUser());
+            notification.setActor(userRepository.findById(userId).orElseThrow(() -> new NoSuchElementException("존재하지 않는 유저입니다")));
+            notification.setType(NotiType.REPLY);
+            notification.setTargetType(Replyable.COMMENT);
+            notification.setTargetId(commentId);
+            notificationRepository.save(notification);
+            // 실시간 알림 전송
+            notificationService.sendNotification(comment.getUser().getId());
+        }
+
+        // 해당 코멘트에 댓글을 단 모든 유저에게 알림 전송
         List<Integer> recipientIds = commentRepository.findAllReplyUserIdsByCommentId(commentId);
         for (Integer recipientId : recipientIds) {
             NotificationEntity notification = new NotificationEntity();
@@ -150,6 +169,8 @@ public class CommentService {
                 notification.setTargetType(Replyable.COMMENT);
                 notification.setTargetId(commentId);
                 notificationRepository.save(notification);
+                // 실시간 알림 전송
+                notificationService.sendNotification(recipientId);
             }
         }
         return newReply;

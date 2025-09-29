@@ -18,6 +18,7 @@ import com.example.itview_spring.DTO.UserInfoDTO;
 import com.example.itview_spring.DTO.UserProfileUpdateDTO;
 import com.example.itview_spring.DTO.UserRatingCountDTO;
 import com.example.itview_spring.DTO.UserResponseDTO;
+import com.example.itview_spring.Service.NotificationService;
 import com.example.itview_spring.Service.UserService;
 
 import jakarta.servlet.http.Cookie;
@@ -50,6 +51,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 @RestController
 @RequiredArgsConstructor
@@ -57,6 +59,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class UserRestController {
     
     private final UserService registerService;
+    private final NotificationService notificationService;
     private final AuthenticationManager authenticationManager;
     private final SecurityContextRepository securityContextRepository;
     private final UserService userService;
@@ -117,6 +120,13 @@ public class UserRestController {
     public ResponseEntity<UserInfoDTO> me(@AuthenticationPrincipal CustomUserDetails user) {
         if (user == null) return ResponseEntity.status(401).build();
         return ResponseEntity.ok(userService.getUserInfo(user.getId()));
+    }
+
+    // sse subscription
+    @GetMapping(value = "/subscribe", produces = "text/event-stream")
+    public SseEmitter subscribe(@RequestParam Integer userId) {
+        System.out.println("userSubscribe: " + userId);
+        return notificationService.subscribe(userId);
     }
 
     // 로그아웃
