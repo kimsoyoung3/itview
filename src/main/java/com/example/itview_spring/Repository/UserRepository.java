@@ -1,6 +1,5 @@
 package com.example.itview_spring.Repository;
 
-import com.example.itview_spring.DTO.PersonDTO;
 import com.example.itview_spring.DTO.UserProfileDTO;
 import com.example.itview_spring.DTO.UserResponseDTO;
 import com.example.itview_spring.Entity.UserEntity;

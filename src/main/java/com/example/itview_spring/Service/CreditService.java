@@ -6,7 +6,6 @@ import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 
 import com.example.itview_spring.DTO.PersonDTO;
-import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -37,8 +36,6 @@ public class CreditService {
     private final ContentRepository contentRepository;
     private final PersonRepository personRepository;
     private final ExternalServiceRepository externalServiceRepository;
-
-    private final ModelMapper modelMapper;
 
 //    itview-spring/
 //            ├─src/main/java/com/example/itview_spring/
@@ -209,7 +206,7 @@ public class CreditService {
     @Transactional
     public void deleteCredit(Integer creditId) {
         // 기존 크레딧 조회
-        CreditEntity entity = creditRepository.findById(creditId)
+        creditRepository.findById(creditId)
                 .orElseThrow(() -> new NoSuchElementException("존재하지 않는 크레딧 ID: " + creditId));
 
         // 크레딧 삭제

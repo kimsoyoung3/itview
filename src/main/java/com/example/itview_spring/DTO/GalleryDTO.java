@@ -1,6 +1,5 @@
 package com.example.itview_spring.DTO;
 
-import com.example.itview_spring.Entity.ContentEntity;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

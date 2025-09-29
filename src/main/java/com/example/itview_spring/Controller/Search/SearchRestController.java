@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.example.itview_spring.DTO.CollectionResponseDTO;
 import com.example.itview_spring.DTO.ContentDTO;
-import com.example.itview_spring.DTO.ContentResponseDTO;
 import com.example.itview_spring.DTO.PersonDTO;
 import com.example.itview_spring.DTO.SearchContentDTO;
 import com.example.itview_spring.DTO.UserResponseDTO;

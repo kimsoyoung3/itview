@@ -4,7 +4,6 @@ import com.example.itview_spring.Config.CustomUserDetails;
 import com.example.itview_spring.Constant.Role;
 import com.example.itview_spring.DTO.AdminUserDTO;
 import com.example.itview_spring.DTO.SuperUserDTO;
-import com.example.itview_spring.Entity.UserEntity;
 import com.example.itview_spring.Service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
