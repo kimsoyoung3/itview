@@ -282,7 +282,7 @@ const CollectionDetailPage = ({userInfo, openLogin}) => {
                         )}
 
                         <div className="user-collection-detail-reply-input">
-                            <input type="text" maxLength={200} placeholder="댓글을 입력해주세요." ref={replyRef}/>
+                            <input disabled={userInfo == null} type="text" maxLength={200} placeholder={userInfo == null ? "로그인 후 댓글을 입력해주세요." : "댓글을 입력해주세요."} ref={replyRef}/>
                             <button onClick={handleReplySubmit}>등록</button>
                         </div>
 
