@@ -52,7 +52,7 @@ const NotificationPage = ({ userInfo, openLogin }) => {
                                     {notifications?.content.map(item =>
                                         <div className="notification-tab-content-wrap">
                                             <div className="notification-tab-content-profile">
-                                                <NavLink to={item.actorId}>
+                                                <NavLink to={`/user/${item.actorId}`}>
                                                     <img src={item.profile ? item.profile : `${process.env.PUBLIC_URL}/user.png`} alt=""/>
                                                 </NavLink>
                                             </div>

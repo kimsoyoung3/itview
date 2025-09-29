@@ -40,6 +40,25 @@ const Header = ({ userInfo, handleLogin, handleLogout, isLoginOpen, openLogin, c
     const [isErrorModalOpen, setErrorModalOpen] = useState(false);
     const closeErrorModal = () => setErrorModalOpen(false);
 
+    // SSE 연결 설정
+    useEffect(() => {
+        if (!userInfo) return;
+
+        console.log("try sse connect");
+
+        const eventSource = new EventSource(`${process.env.REACT_APP_API_URL}/api/user/subscribe?userId=${userInfo.userId}`);
+
+        eventSource.addEventListener("connected", () => {
+            console.log("SSE 연결 성공");
+        });
+
+        eventSource.addEventListener("new-notification", () => {
+            toast("새 알림 도착");
+        });
+
+        return () => eventSource.close();
+    }, [userInfo]);
+
     /* 비밀번호 재설정 관련 */
     const [verifyingEmail, setVerifyingEmail] = useState('');
     const [isSignupOpen, setSignupOpen] = useState(false);
