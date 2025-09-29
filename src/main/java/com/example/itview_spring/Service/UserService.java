@@ -218,16 +218,16 @@ public class UserService implements UserDetailsService {
             dto.setActorId(notification.getActor().getId());
             dto.setCreatedAt(notification.getCreatedAt());
 
-            String targetName = "내 ";
+            String targetName = "**내** ";
             if (notification.getTargetType() == Replyable.COMMENT) {
                 CommentEntity comment = commentRepository.findById(notification.getTargetId()).orElse(null);
                 if (!comment.getUser().getId().equals(userId)) {
-                    targetName = "내가 댓글 남긴 " + notification.getActor().getNickname() + "님의 ";
+                    targetName = "내가 댓글 남긴 " + "**" + comment.getUser().getNickname() + "**님의 ";
                 }
             } else if (notification.getTargetType() == Replyable.COLLECTION) {
                 CollectionEntity collection = collectionRepository.findById(notification.getTargetId()).orElse(null);
                 if (!collection.getUser().getId().equals(userId)) {
-                    targetName = "내가 댓글 남긴 " + notification.getActor().getNickname() + "님의 ";
+                    targetName = "내가 댓글 남긴 " + "**" + collection.getUser().getNickname() + "**님의 ";
                 }
             }
 
@@ -258,7 +258,7 @@ public class UserService implements UserDetailsService {
                     tail = "을 좋아해요";
                 }
             }
-            dto.setTitle(notification.getActor().getNickname() + "님이 " + targetName + targetType + tail);
+            dto.setTitle("**" + notification.getActor().getNickname() + "**님이 " + targetName + targetType + tail);
             return dto;
         });
         return notificationDTOs;
