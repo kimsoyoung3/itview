@@ -1,5 +1,6 @@
 package com.example.itview_spring.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
@@ -146,6 +147,9 @@ public class CollectionService {
             item.setCollection(collection);
             item.setContent(content);
             collection.getItems().add(item);
+            if (i == 0) {
+                collection.setUpdatedAt(LocalDateTime.now());
+            }
         }
         
         collectionRepository.save(collection);
