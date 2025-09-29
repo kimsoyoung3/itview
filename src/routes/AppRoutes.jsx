@@ -7,6 +7,7 @@ import UserRoutes from './UserRoutes';
 import CollectionRoutes from './CollectionRoutes';
 import SearchRoutes from './SearchRoutes';
 import HomeRoutes from './HomeRoutes';
+import NotificationPage from '../pages/NotificationPage/NotificationPage';
 
 function AppRoutes({ userInfo, openLogin }) {
   return (
@@ -18,6 +19,7 @@ function AppRoutes({ userInfo, openLogin }) {
       <Route path="/user/*" element={<UserRoutes userInfo={userInfo} openLogin={openLogin} />} />
       <Route path="/collection/*" element={<CollectionRoutes userInfo={userInfo} openLogin={openLogin} />} />
       <Route path="/search/*" element={<SearchRoutes userInfo={userInfo} openLogin={openLogin} />} />
+      <Route path="/notification" element={<NotificationPage userInfo={userInfo} openLogin={openLogin} />} />
     </Routes>
   )
 }

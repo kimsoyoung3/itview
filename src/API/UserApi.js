@@ -12,6 +12,7 @@ export const setPassword = (data) => axios.post(`${process.env.REACT_APP_API_URL
 export const link = (data) => axios.post(`${process.env.REACT_APP_API_URL}/api/user/link?redirectURL=` + encodeURIComponent(data.redirectURL), {}, {withCredentials: true});
 export const unlink = (data) => axios.post(`${process.env.REACT_APP_API_URL}/api/user/unlink?provider=` + encodeURIComponent(data.provider), {}, {withCredentials: true});
 
+export const getNotification = (page) => axios.get(`${process.env.REACT_APP_API_URL}/api/user/notification`, {withCredentials: true});
 export const getUserDetail = (id) => axios.get(`${process.env.REACT_APP_API_URL}/api/user/${id}`, {withCredentials: true});
 export const updateUserProfile = (data) => axios.put(`${process.env.REACT_APP_API_URL}/api/user`, data, {withCredentials: true});
 export const getUserRatingCount = (userId) => axios.get(`${process.env.REACT_APP_API_URL}/api/user/${userId}/rating`, {withCredentials: true});
