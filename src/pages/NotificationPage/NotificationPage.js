@@ -2,6 +2,8 @@ import React, { useEffect, useState } from "react";
 import "./NotificationPage.css"
 import { getNotification } from "../../API/UserApi";
 import {NavLink} from "react-router-dom";
+import { toast } from "react-toastify";
+import Markdown from "react-markdown";
 
 const NotificationPage = ({ userInfo, openLogin }) => {
 
@@ -14,12 +16,24 @@ const NotificationPage = ({ userInfo, openLogin }) => {
 
     useEffect(() => {
         const fetchNotifications = async () => {
-            const res = await getNotification();
+            const res = await getNotification(1);
             setNotifications(res.data);
         }
 
         fetchNotifications();
     }, []);
+
+    const handleLoadMore = async () => {
+        try {
+            const res = await getNotification(notifications.page.number + 2);
+            setNotifications(prev => ({
+                content: [...prev.content, ...res.data.content],
+                page: res.data.page
+            }));
+        } catch (e) {
+            toast("소식을 불러오는데 실패했습니다.");
+        }
+    }
 
     return (
         <div className="notification-page">
@@ -49,8 +63,8 @@ const NotificationPage = ({ userInfo, openLogin }) => {
                         {activeId === "notification-tab1" && <div className="notification-tab1 notification-tab">
                             {notifications?.content?.length > 0 ? (
                                 <div className="notification-tab-content-list">
-                                    {notifications?.content.map(item =>
-                                        <div className="notification-tab-content-wrap">
+                                    {notifications?.content.map((item, index) =>
+                                        <div key={index} className="notification-tab-content-wrap">
                                             <div className="notification-tab-content-profile">
                                                 <NavLink to={`/user/${item.actorId}`}>
                                                     <img src={item.profile ? item.profile : `${process.env.PUBLIC_URL}/user.png`} alt=""/>
@@ -58,7 +72,7 @@ const NotificationPage = ({ userInfo, openLogin }) => {
                                             </div>
                                             <div className="notification-tab-content-title">
                                                 <NavLink to={item.link}>
-                                                    <div>{item.title}</div>
+                                                    <Markdown>{item.title}</Markdown>
                                                     <div>{new Date(item.createdAt).toLocaleDateString().slice(0, -1)}</div>
                                                 </NavLink>
                                             </div>
@@ -66,7 +80,7 @@ const NotificationPage = ({ userInfo, openLogin }) => {
                                     )}
 
                                     <div className="notification-tab-content-btn">
-                                        <button>더보기</button>
+                                        <button onClick={handleLoadMore} hidden={notifications.page.number + 1 >= notifications.page.totalPages}>더보기</button>
                                     </div>
                                 </div>
                             ) : (
