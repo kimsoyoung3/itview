@@ -62,6 +62,7 @@ const NotificationPage = ({ userInfo, openLogin }) => {
                     <div className="notification-tab-content">
                         {activeId === "notification-tab1" && <div className="notification-tab1 notification-tab">
                             {notifications?.content?.length > 0 ? (
+                                <>
                                 <div className="notification-tab-content-list">
                                     {notifications?.content.map((item, index) =>
                                         <div key={index} className="notification-tab-content-wrap">
@@ -78,11 +79,11 @@ const NotificationPage = ({ userInfo, openLogin }) => {
                                             </div>
                                         </div>
                                     )}
-
-                                    <div className="notification-tab-content-btn">
-                                        <button onClick={handleLoadMore} hidden={notifications.page.number + 1 >= notifications.page.totalPages}>더보기</button>
-                                    </div>
                                 </div>
+                                <div className="notification-tab-content-btn">
+                                    <button onClick={handleLoadMore} hidden={notifications.page.number + 1 >= notifications.page.totalPages}>더보기</button>
+                                </div>
+                                </>
                             ) : (
                                 <p className="empty-message">소식이 없습니다 :)</p>
                             )}
