@@ -247,6 +247,7 @@ const Header = ({ userInfo, handleLogin, handleLogout, isLoginOpen, openLogin, c
                         {/* 로그인/회원정보 */}
                         {userInfo ? (
                             <div className="user-menu">
+                                <Link to=""><i className="bi bi-bell-fill"></i></Link>
                                 <Link to={`/user/${userInfo.userId}`} className="login-button">마이페이지</Link>
                                 <button onClick={handleLogout} className="login-button">로그아웃</button>
                             </div>

@@ -103,6 +103,7 @@
 
 .user-menu {
     display: flex;
+    align-items: center;
     gap: 15px;
     color: #aaaaaa;
     font-size: 0.8rem;
@@ -127,8 +128,12 @@
 }
 
 .user-menu a:hover {
-    color: #555555
-;
+    color: #555555;
+}
+
+.user-menu>a>i {
+    vertical-align: unset;
+    font-size: 1rem;
 }
 
 /*로그인 모달창 스타일*/

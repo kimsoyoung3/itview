@@ -86,12 +86,15 @@
 
 .poster-top {
     width: 100%;
+    height: auto;
     margin-bottom: 25px;
 }
 
 .poster-top>img {
     width: 100%;
+    height: 100%;
     display: block;
+    object-fit: cover;
 }
 
 /*별점 그래프*/
@@ -816,6 +819,7 @@
     .detail-content-inner {
         flex-direction: column-reverse;
         align-items: center;
+        gap: 0;
     }
 
     .info-top {
