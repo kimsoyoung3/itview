@@ -41,6 +41,10 @@ const UserCollectionPage = ({userInfo}) => {
                         {collections?.content.map(item =>
                             <CollectionCard key={item.id} collectionData={item}/>
                         )}
+
+                        <div className="user-collection-list-btn">
+                            <button>더보기</button>
+                        </div>
                     </div>
                 ) : (
                     <p className="empty-message">컬렉션이 없습니다 :)</p>

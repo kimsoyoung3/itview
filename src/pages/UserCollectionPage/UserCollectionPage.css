@@ -27,6 +27,25 @@
     color: #22C55E;
 }
 
+.user-collection-list-btn {
+    text-align: center;
+    margin: 20px 0;
+}
+
+.user-collection-list-btn>button {
+    border: 1px solid #888888;
+    background: none;
+    color: #555555;
+    padding: 5px 20px;
+    border-radius: 5px;
+    font-weight: 600;
+    font-size: 0.9rem;
+}
+
+.user-collection-list-btn>button:hover {
+    background: #d9d9d9;
+}
+
 /*태블릿 사이즈*/
 @media (max-width: 768px) {
     .user-collection-page {

@@ -260,6 +260,10 @@ const CollectionDetailPage = ({userInfo, openLogin}) => {
                                 {replies?.content.map((reply) => (
                                     <ReplyCard key={reply.id} reply={reply} userInfo={userInfo} openLogin={openLogin}/>
                                 ))}
+
+                                <div className="user-collection-detail-reply-btn">
+                                    <button>더보기</button>
+                                </div>
                             </div>
                         )}
 
