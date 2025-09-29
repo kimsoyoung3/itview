@@ -258,7 +258,7 @@ const CollectionDetailPage = ({userInfo, openLogin}) => {
                         {replies?.content?.length > 0 && (
                             <div className="user-collection-detail-reply-content-wrap">
                                 {replies?.content.map((reply) => (
-                                    <ReplyCard reply={reply} userInfo={userInfo} openLogin={openLogin}/>
+                                    <ReplyCard key={reply.id} reply={reply} userInfo={userInfo} openLogin={openLogin}/>
                                 ))}
                             </div>
                         )}
