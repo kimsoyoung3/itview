@@ -32,6 +32,7 @@ const CollectionDetailPage = ({userInfo, openLogin}) => {
         document.addEventListener("mousedown", handleClickOutside);
         return () => document.removeEventListener("mousedown", handleClickOutside);
     }, []);
+
     useEffect(() => {
         const fetchData = async () => {
             try {
@@ -93,12 +94,25 @@ const CollectionDetailPage = ({userInfo, openLogin}) => {
             try {
                 const res = await getCollectionItems(id, items.page.number + 2);
                 setItems(prev => ({
-                    ...res.data,
                     content: [...prev.content, ...res.data.content],
                     page: res.data.page
                 }));
             } catch (e) {
                 toast("작품을 불러오는데 실패했습니다.");
+            }
+        }
+    }
+
+    const handleLoadMoreReply = async () => {
+        if (replies.page.number < replies.page.totalPages - 1) {
+            try {
+                const res = await getCollectionReplies(id, replies.page.number + 2);
+                setReplies(prev => ({
+                    content: [...prev.content, ...res.data.content],
+                    page: res.data.page
+                }));
+            } catch (e) {
+                toast("댓글을 불러오는데 실패했습니다.");
             }
         }
     }
@@ -160,7 +174,7 @@ const CollectionDetailPage = ({userInfo, openLogin}) => {
                     </NavLink>
 
                     {/*수정&삭제 버튼*/}
-                    <div className="user-collection-detail-edit-box" ref={menuRef} hidden={userInfo !== collection?.user?.id}>
+                    <div className="user-collection-detail-edit-box" ref={menuRef} hidden={userInfo?.userId !== collection?.user?.id}>
                         {edit && (
                             <div>
                                 <NavLink to={`/collection/${collection.id}/edit`}>수정</NavLink>
@@ -262,7 +276,7 @@ const CollectionDetailPage = ({userInfo, openLogin}) => {
                                 ))}
 
                                 <div className="user-collection-detail-reply-btn">
-                                    <button>더보기</button>
+                                    <button onClick={handleLoadMoreReply} hidden={replies?.page?.number + 1 >= replies?.page?.totalPages}>더보기</button>
                                 </div>
                             </div>
                         )}
