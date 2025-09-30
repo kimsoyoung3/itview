@@ -9,6 +9,7 @@ import com.example.itview_spring.DTO.*;
 import com.example.itview_spring.Entity.CollectionEntity;
 import com.example.itview_spring.Entity.CommentEntity;
 import com.example.itview_spring.Entity.EmailVerificationEntity;
+import com.example.itview_spring.Entity.FollowEntity;
 import com.example.itview_spring.Entity.NotificationEntity;
 import com.example.itview_spring.Entity.ReplyEntity;
 import com.example.itview_spring.Entity.UserEntity;
@@ -39,14 +40,13 @@ import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 
-import javax.management.Notification;
-
 @Service
 @RequiredArgsConstructor
 @Transactional
 public class UserService implements UserDetailsService {
 
     private final WishlistRepository wishlistRepository;
+    private final FollowRepository followRepository;
     private final SocialRepository socialRepository;
     private final UserRepository userRepository;
     private final CommentRepository commentRepository;
@@ -57,8 +57,9 @@ public class UserService implements UserDetailsService {
     private final EmailVerificationRepository emailVerificationRepository;
     private final NotificationRepository notificationRepository;
     private final CollectionService collectionService;
-    private final CommentService commentservice;
+    private final CommentService commentService;
     private final ReplyService replyService;
+    private final NotificationService notificationService;
     private final ModelMapper modelMapper;
     private final PasswordEncoder passwordEncoder;
     private final JavaMailSender mailSender;
@@ -193,7 +194,7 @@ public class UserService implements UserDetailsService {
         // 코멘트 삭제
         List<Integer> commentIds = commentRepository.findAllIdsByUserId(userId);
         for (var commentId : commentIds) {
-            commentservice.deleteComment(userId, commentId);
+            commentService.deleteComment(userId, commentId);
         }
 
         // 댓글 삭제
@@ -217,6 +218,12 @@ public class UserService implements UserDetailsService {
             dto.setProfile(notification.getActor().getProfile());
             dto.setActorId(notification.getActor().getId());
             dto.setCreatedAt(notification.getCreatedAt());
+
+            if (notification.getType() == NotiType.FOLLOW) {
+                dto.setTitle("**" + notification.getActor().getNickname() + "**님이 나를 팔로우해요");
+                dto.setLink("/user/" + notification.getActor().getId());
+                return dto;
+            }
 
             String targetName = "**내** ";
             if (notification.getTargetType() == Replyable.COMMENT) {
@@ -278,11 +285,11 @@ public class UserService implements UserDetailsService {
     }
 
     // 유저 페이지 정보 조회
-    public UserResponseDTO getUserProfile(Integer id) {
+    public UserResponseDTO getUserProfile(Integer id, Integer loginUserId) {
         if (!userRepository.existsById(id)) {
             throw new NoSuchElementException("존재하지 않는 유저입니다.");
         }
-        return userRepository.findUserResponseById(id);
+        return userRepository.findUserResponseById(id, loginUserId);
     }
 
     // 유저 프로필 수정
@@ -303,6 +310,59 @@ public class UserService implements UserDetailsService {
         } catch (IOException e) {
             throw new IllegalStateException("이미지 업로드에 실패했습니다.");
         }
+    }
+
+    // 유저 팔로우
+    public void followUser(Integer userId, Integer targetId) {
+        if (!userRepository.existsById(targetId)) {
+            throw new NoSuchElementException("존재하지 않는 유저입니다.");
+        }
+        if (followRepository.findByFollower_IdAndFollowing_Id(userId, targetId) != null) {
+            throw new IllegalStateException("이미 팔로우한 유저입니다.");
+        }
+        FollowEntity follow = new FollowEntity();
+        follow.setFollower(userRepository.findById(userId).get());
+        follow.setFollowing(userRepository.findById(targetId).get());
+        followRepository.save(follow);
+
+        // 알림 전송
+        NotificationEntity notification = new NotificationEntity();
+        notification.setUser(userRepository.findById(targetId).get());
+        notification.setActor(userRepository.findById(userId).get());
+        notification.setType(NotiType.FOLLOW);
+        notificationRepository.save(notification);
+        // 실시간 알림 전송
+        notificationService.sendNotification(targetId);
+    }
+
+    // 유저 언팔로우
+    public void unfollowUser(Integer userId, Integer targetId) {
+        if (!userRepository.existsById(targetId)) {
+            throw new NoSuchElementException("존재하지 않는 유저입니다.");
+        }
+        FollowEntity follow = followRepository.findByFollower_IdAndFollowing_Id(userId, targetId);
+        if (follow == null) {
+            throw new IllegalStateException("팔로우하지 않는 유저입니다.");
+        }
+        followRepository.delete(follow);
+    }
+
+    // 유저 팔로워 조회
+    public Page<UserResponseDTO> getUserFollowers(Integer userId, Integer loginUserId, Integer page) {
+        if (!userRepository.existsById(userId)) {
+            throw new NoSuchElementException("존재하지 않는 유저입니다.");
+        }
+        Pageable pageable = PageRequest.of(page - 1, 10);
+        return userRepository.findUserFollower(userId, loginUserId, pageable);
+    }
+
+    // 유저 팔로잉 조회
+    public Page<UserResponseDTO> getUserFollowing(Integer userId, Integer loginUserId, Integer page) {
+        if (!userRepository.existsById(userId)) {
+            throw new NoSuchElementException("존재하지 않는 유저입니다.");
+        }
+        Pageable pageable = PageRequest.of(page - 1, 10);
+        return userRepository.findUserFollowing(userId, loginUserId, pageable);
     }
 
     // 유저가 매긴 별점 개수 조회

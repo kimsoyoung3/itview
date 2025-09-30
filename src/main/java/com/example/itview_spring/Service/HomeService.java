@@ -10,7 +10,6 @@ import org.springframework.stereotype.Service;
 import com.example.itview_spring.Constant.Channel;
 import com.example.itview_spring.Constant.ContentType;
 import com.example.itview_spring.Constant.Genre;
-import com.example.itview_spring.DTO.ContentDTO;
 import com.example.itview_spring.DTO.ContentResponseDTO;
 import com.example.itview_spring.DTO.HomeContentDTO;
 import com.example.itview_spring.Repository.ContentRepository;

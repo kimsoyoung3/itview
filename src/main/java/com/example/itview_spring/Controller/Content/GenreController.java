@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import com.example.itview_spring.Util.PageInfo;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -16,7 +15,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import com.example.itview_spring.Constant.Genre;
 import com.example.itview_spring.DTO.ContentCreateDTO;
-import com.example.itview_spring.Service.ContentService;
 import com.example.itview_spring.Service.GenreService;
 
 import lombok.RequiredArgsConstructor;
@@ -25,9 +23,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class GenreController {
 
-    private final ContentService contentService;
     private final GenreService genreService;
-    private final PageInfo pageInfo;
 
     //    1. 기능 흐름
 //    기능명	URL	설명

@@ -3,13 +3,11 @@ package com.example.itview_spring.Controller.Content;
 import java.util.List;
 import java.util.NoSuchElementException;
 
-import com.example.itview_spring.Entity.CreditEntity;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -21,7 +19,6 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.example.itview_spring.DTO.CreditDTO;
 import com.example.itview_spring.DTO.PersonDTO;
-import com.example.itview_spring.Entity.PersonEntity;
 import com.example.itview_spring.Service.CreditService;
 
 import lombok.RequiredArgsConstructor;
@@ -137,7 +134,7 @@ public class CreditController {
                 //   creditDTO.id가 null이면 항상 신규 생성이 수행됩니다.
                 //  선택된 인물이 있어도 신규 생성, 없으면 이름으로 생성 후 등록
 
-                CreditDTO newCredit = creditService.addCredit(contentId, creditDTO);
+                creditService.addCredit(contentId, creditDTO);
                 redirectAttributes.addFlashAttribute("message", "크레딧 신규 등록 완료");
 //                try {
 //                    creditService.addCredit(contentId, creditDTO);
@@ -194,17 +191,4 @@ public class CreditController {
 //                                        @RequestParam String keyword) {
 //        return creditService.searchPersons(keyword);
 //    }
-
-    private PersonDTO ensurePerson(CreditDTO creditDTO, RedirectAttributes redirectAttributes) {
-        if (creditDTO.getPerson() == null || creditDTO.getPerson().getId() == null) {
-            if (creditDTO.getPerson() != null && creditDTO.getPerson().getName() != null) {
-                PersonEntity person = creditService.getOrCreatePersonByName(creditDTO.getPerson().getName());
-                return new PersonDTO(person.getId(), person.getName(), person.getProfile(), person.getJob());
-            } else {
-                redirectAttributes.addFlashAttribute("error", "인물 정보가 누락되었습니다.");
-                throw new IllegalArgumentException("인물 정보가 누락되었습니다.");
-            }
-        }
-        return creditDTO.getPerson();
-    }
 }

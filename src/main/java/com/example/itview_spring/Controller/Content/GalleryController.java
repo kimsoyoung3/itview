@@ -8,10 +8,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.example.itview_spring.DTO.GalleryDTO;
-import com.example.itview_spring.DTO.GalleryDTOListWrapper;
 import com.example.itview_spring.Service.GalleryService;
 
 import lombok.RequiredArgsConstructor;

@@ -18,4 +18,7 @@ public class UserResponseDTO {
     private Long personLikeCount;
     private Long collectionLikeCount;
     private Long commentLikeCount;
+    private Long followerCount;
+    private Long followingCount;
+    private Boolean isFollowed;
 }

@@ -3,7 +3,6 @@ package com.example.itview_spring.Controller.Content;
 import com.example.itview_spring.DTO.*;
 import com.example.itview_spring.Entity.ContentEntity;
 import com.example.itview_spring.Service.ContentService;
-import com.example.itview_spring.Util.PageInfo;
 import lombok.RequiredArgsConstructor;
 
 import org.modelmapper.ModelMapper;
@@ -26,7 +25,6 @@ public class ContentController {
     @Autowired
     private final ContentService contentService;  // 콘텐츠 서비스
 
-    private final PageInfo pageInfo;
     @Autowired
     private ModelMapper modelMapper;
 

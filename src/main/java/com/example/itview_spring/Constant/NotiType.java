@@ -7,7 +7,8 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public enum NotiType {
     REPLY("reply"),
-    LIKE("like");
+    LIKE("like"),
+    FOLLOW("follow");
 
     private final String type; 
 }

@@ -51,12 +51,10 @@ public class NotificationEntity {
     private NotiType type;
 
     // 타겟 타입
-    @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private Replyable targetType;
 
     // 타겟 ID
-    @Column(nullable = false)
     private Integer targetId;
 
     // 발생시각

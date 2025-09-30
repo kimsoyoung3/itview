@@ -90,6 +90,7 @@ public class CommentService {
         commentRepository.delete(comment);
         likeRepository.deleteByTargetIdAndTargetType(commentId, Replyable.COMMENT);
         replyRepository.deleteByTargetIdAndTargetType(commentId, Replyable.COMMENT);
+        notificationRepository.deleteByTargetIdAndTargetType(commentId, Replyable.COMMENT);
         return true;
     }
 
@@ -162,7 +163,7 @@ public class CommentService {
         List<Integer> recipientIds = commentRepository.findAllReplyUserIdsByCommentId(commentId);
         for (Integer recipientId : recipientIds) {
             NotificationEntity notification = new NotificationEntity();
-            if (!recipientId.equals(userId)) { // 본인에게는 알림을 보내지 않음
+            if (!recipientId.equals(userId) && !comment.getUser().getId().equals(recipientId)) { // 본인 및 코멘트 작성자에게는 알림을 보내지 않음
                 notification.setUser(userRepository.findById(recipientId).orElseThrow(() -> new NoSuchElementException("존재하지 않는 유저입니다")));
                 notification.setActor(userRepository.findById(userId).orElseThrow(() -> new NoSuchElementException("존재하지 않는 유저입니다")));
                 notification.setType(NotiType.REPLY);
