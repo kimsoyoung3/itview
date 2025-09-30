@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import {NavLink, useParams} from "react-router-dom";
 import "./UserDetailPage.css"
-import {deleteUser, getUserDetail, link, unlink, updateUserProfile} from "../../API/UserApi";
+import {deleteUser, followUser, getUserDetail, link, unfollowUser, unlink, updateUserProfile} from "../../API/UserApi";
 import { toast } from "react-toastify";
 import NotFound from "../NotFound/NotFound";
 
@@ -100,6 +100,36 @@ const UserDetailPage = ({ userInfo, openLogin }) => {
         }
     };
 
+    const handleFollow = async () => {
+        if (!userInfo) {
+            openLogin();
+            return;
+        }
+        try {
+            await followUser(id);
+            setUserDetail(prev => ({
+                ...prev,
+                isFollowed: true,
+                followerCount: prev.followerCount + 1
+            }))
+        } catch (error) {
+            toast("팔로우에 실패했습니다.");
+        }
+    };
+
+    const handleUnfollow = async () => {
+        try {
+            await unfollowUser(id);
+            setUserDetail(prev => ({
+                ...prev,
+                isFollowed: false,
+                followerCount: prev.followerCount - 1
+            }))
+        } catch (error) {
+            toast("팔로우 취소에 실패했습니다.");
+        }
+    };
+
     const handleSocialLogin = async (provider) => {
         if (userInfo?.[provider]) {
             await unlink({provider}).then(() => {
@@ -123,10 +153,15 @@ const UserDetailPage = ({ userInfo, openLogin }) => {
                         <img src={userDetail?.userProfile.profile ? userDetail?.userProfile.profile : `${process.env.PUBLIC_URL}/user.png`} alt=""/>
                     </div>
                     <h5 className="user-detail-info-name">{userDetail?.userProfile.nickname}</h5>
+                    <span style={{marginRight: "8px"}}>팔로워 {userDetail?.followerCount}</span><span>팔로잉 {userDetail?.followingCount}</span>
                     <p className="user-detail-info-intro">{userDetail?.userProfile.introduction}</p>
                     <div className="user-detail-info-btn">
                         <div style={{display: userInfo?.userId === userDetail?.userProfile.id ? "block" : "none"}} className="user-detail-info-edit">
                             <button onClick={openMyProfileEdit}>프로필 수정</button>
+                        </div>
+                        <div style={{display: userInfo?.userId !== userDetail?.userProfile.id ? "block" : "none"}} className="user-detail-info-edit">
+                            <button style={{display: userDetail?.isFollowed ? "block" : "none"}} onClick={handleUnfollow}>팔로우 취소</button>
+                            <button style={{display: !userDetail?.isFollowed ? "block" : "none"}} onClick={handleFollow}>팔로우</button>
                         </div>
 
                         <div className="user-detail-info-share">
