@@ -226,7 +226,13 @@ public class UserRestController {
     // 유저 페이지 정보 조회
     @GetMapping("/{id}")
     public ResponseEntity<UserResponseDTO> getUserProfile(@PathVariable("id") Integer id) {
-        return ResponseEntity.ok(registerService.getUserProfile(id));
+        var auth = SecurityContextHolder.getContext().getAuthentication();
+        Integer loginUserId = 0;
+        if (auth.getPrincipal() != "anonymousUser") {
+            loginUserId = ((CustomUserDetails) auth.getPrincipal()).getId();
+        }
+
+        return ResponseEntity.ok(registerService.getUserProfile(id, loginUserId));
     }
 
     // 유저 프로필 수정
@@ -237,7 +243,7 @@ public class UserRestController {
             throw new SecurityException("본인의 프로필만 수정할 수 있습니다.");
         }
         userService.updateUserProfile(userProfileUpdateDTO);
-        return ResponseEntity.ok(userService.getUserProfile(userProfileUpdateDTO.getId()));
+        return ResponseEntity.ok(userService.getUserProfile(userProfileUpdateDTO.getId(), 0));
     }
 
     // 유저 평점 개수 조회

@@ -66,8 +66,8 @@ public class SearchService {
         return res;
     }
 
-    public Page<UserResponseDTO> searchUsers(String keyword, int page) {
+    public Page<UserResponseDTO> searchUsers(String keyword, Integer loginUserId, int page) {
         Pageable pageable = PageRequest.of(page - 1, 1);
-        return userRepository.searchUsers(keyword, pageable);
+        return userRepository.searchUsers(keyword, loginUserId, pageable);
     }
 }

@@ -4,11 +4,13 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.example.itview_spring.Config.CustomUserDetails;
 import com.example.itview_spring.DTO.CollectionResponseDTO;
 import com.example.itview_spring.DTO.ContentDTO;
 import com.example.itview_spring.DTO.PersonDTO;
@@ -47,6 +49,12 @@ public class SearchRestController {
 
     @GetMapping("/user")
     public ResponseEntity<Page<UserResponseDTO>> searchUsers(@RequestParam("keyword") String keyword, @PageableDefault(page = 1) Pageable page) {
-        return ResponseEntity.ok(searchService.searchUsers(keyword, page.getPageNumber()));
+        var auth = SecurityContextHolder.getContext().getAuthentication();
+        Integer loginUserId = 0;
+        if (auth.getPrincipal() != "anonymousUser") {
+            loginUserId = ((CustomUserDetails) auth.getPrincipal()).getId();
+        }
+
+        return ResponseEntity.ok(searchService.searchUsers(keyword, loginUserId, page.getPageNumber()));
     }
 }

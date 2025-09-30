@@ -276,11 +276,11 @@ public class UserService implements UserDetailsService {
     }
 
     // 유저 페이지 정보 조회
-    public UserResponseDTO getUserProfile(Integer id) {
+    public UserResponseDTO getUserProfile(Integer id, Integer loginUserId) {
         if (!userRepository.existsById(id)) {
             throw new NoSuchElementException("존재하지 않는 유저입니다.");
         }
-        return userRepository.findUserResponseById(id);
+        return userRepository.findUserResponseById(id, loginUserId);
     }
 
     // 유저 프로필 수정
