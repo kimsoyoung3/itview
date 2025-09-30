@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from "react";
-import { getUserFollowers, getUserFollowings } from "../../API/UserApi";
+import { followUser, getUserFollowers, getUserFollowings, unfollowUser } from "../../API/UserApi";
 import {NavLink, useParams} from "react-router-dom";
 import "./UserFollowPage.css"
+import { toast } from "react-toastify";
 
 const UserFollowPage = ({userInfo, openLogin, type}) => {
 
@@ -30,6 +31,33 @@ const UserFollowPage = ({userInfo, openLogin, type}) => {
         fetchFollowData();
     }, [id, type]);
 
+    const handleFollow = async (e, isFollowed, targetUserId, index) => {
+        e.preventDefault();
+        if (!userInfo) {
+            openLogin();
+            return;
+        }
+        if (isFollowed) {
+            try {
+                await unfollowUser(targetUserId);
+                const updatedFollowData = { ...followData };
+                updatedFollowData.content[index].isFollowed = false;
+                setFollowData(updatedFollowData);
+            } catch (error) {
+                toast("팔로우 취소 중 오류가 발생했습니다.");
+            }
+        } else {
+            try {
+                await followUser(targetUserId);
+                const updatedFollowData = { ...followData };
+                updatedFollowData.content[index].isFollowed = true;
+                setFollowData(updatedFollowData);
+            } catch (error) {
+                toast("팔로우 중 오류가 발생했습니다.");
+            }
+        }
+    }
+
     return (
         <div className="user-follow-page">
             <div className="user-follow-page-wrap container">
@@ -37,7 +65,7 @@ const UserFollowPage = ({userInfo, openLogin, type}) => {
 
                 {followData?.content?.length > 0 ?(
                     <div className="user-follow-content-list">
-                        {followData?.content?.map(item =>
+                        {followData?.content?.map((item, index) =>
                             <NavLink key={item.userProfile.id} to={`/user/${item?.userProfile?.id}`} className="user-follow-content-wrap">
                                 <div className="user-follow-profile">
                                     <img src={item.userProfile.profile ? item.userProfile.profile : `${process.env.PUBLIC_URL}/user.png`} alt=""/>
@@ -59,7 +87,7 @@ const UserFollowPage = ({userInfo, openLogin, type}) => {
                                     </div>
 
                                     <div className="user-follow-info-btn">
-                                        <button>{type === "follower" ? "팔로우" : "팔로잉"}</button>
+                                        <button onClick={(e) => handleFollow(e, item.isFollowed, item.userProfile.id, index)}>{item.isFollowed ? "언팔로우" : "팔로우"}</button>
                                     </div>
                                 </div>
 
