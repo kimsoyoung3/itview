@@ -1,5 +1,5 @@
 import React, {useEffect, useRef, useState} from "react";
-import { NavLink, useParams } from "react-router-dom";
+import { NavLink, useNavigate, useParams } from "react-router-dom";
 import { deleteCollection, getCollectionDetail, getCollectionItems, getCollectionReplies, insertReply, likeCollection, unlikeCollection } from "../../API/CollectionApi";
 import NotFound from "../NotFound/NotFound";
 import "./CollectionDetailPage.css"
@@ -8,6 +8,8 @@ import ContentEach from "../../components/ContentEach/ContentEach";
 import ReplyCard from "../../components/ReplyCard/ReplyCard";
 
 const CollectionDetailPage = ({userInfo, openLogin}) => {
+    const navigator = useNavigate();
+
     const { id } = useParams();
     const [notFound, setNotFound] = useState(false);
 
@@ -65,7 +67,7 @@ const CollectionDetailPage = ({userInfo, openLogin}) => {
         try {
             await deleteCollection(id);
             toast("컬렉션이 삭제되었습니다.");
-            window.location.replace(`/user/${userInfo}/collection`);
+            navigator("/user/" + userInfo.userId + "/collection");
         } catch (e) {
             toast("컬렉션 삭제에 실패했습니다.");
         }
