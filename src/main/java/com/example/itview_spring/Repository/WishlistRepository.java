@@ -22,6 +22,8 @@ public interface WishlistRepository extends JpaRepository<WishlistEntity, Intege
             """)
     void deleteByUserIdAndContentId(@Param("userId") Integer userId, @Param("contentId") Integer contentId);
 
+    WishlistEntity findByUserIdAndContentId(Integer userId, Integer contentId);
+
     // 위시리스트 존재 여부 확인
     @Query("""
             SELECT CASE WHEN COUNT(w) > 0 THEN TRUE ELSE FALSE END
