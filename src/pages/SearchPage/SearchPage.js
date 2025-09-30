@@ -11,7 +11,7 @@ import CollectionCard from "../../components/CollectionCard/CollectionCard";
 import NotFound from "../NotFound/NotFound";
 import { toast } from "react-toastify";
 
-const SearchPage = () => {
+const SearchPage = ({type}) => {
     const [activeTab, setActiveTab] = useState("search-page-tab-btn1")
 
     const [notFound, setNotFound] = useState(false);
@@ -254,18 +254,24 @@ const SearchPage = () => {
                                                 <img src={item.userProfile.profile ? item.userProfile.profile : `${process.env.PUBLIC_URL}/user.png`} alt=""/>
                                             </div>
                                             <div className="search-page-tab-user-info">
-                                                <p>{item.userProfile.nickname}</p>
-                                                <p>
-                                                    {item.userProfile.introduction ? (
-                                                        item.userProfile.introduction
-                                                    ) : (
-                                                        <>
-                                                            {item.ratingCount > 0 && <>평가 {item.ratingCount} </>}
-                                                            {item.commentCount > 0 && <>&middot; 댓글 {item.commentCount} </>}
-                                                            {item.collectionCount > 0 && <>&middot; 컬렉션 {item.collectionCount}</>}
-                                                        </>
-                                                    )}
-                                                </p>
+                                                <div className="search-page-tab-user-info-wrap">
+                                                    <p>{item.userProfile.nickname}</p>
+                                                    <p>
+                                                        {item.userProfile.introduction ? (
+                                                            item.userProfile.introduction
+                                                        ) : (
+                                                            <>
+                                                                {item.ratingCount > 0 && <>평가 {item.ratingCount} </>}
+                                                                {item.commentCount > 0 && <>&middot; 댓글 {item.commentCount} </>}
+                                                                {item.collectionCount > 0 && <>&middot; 컬렉션 {item.collectionCount}</>}
+                                                            </>
+                                                        )}
+                                                    </p>
+                                                </div>
+
+                                                <div className="search-page-tab-user-info-btn">
+                                                    <button>{type === "follower" ? "팔로우" : "팔로잉"}</button>
+                                                </div>
                                             </div>
 
                                         </NavLink>
