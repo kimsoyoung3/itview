@@ -6,6 +6,8 @@ import com.example.itview_spring.Entity.ActivityLogEntity;
 import com.example.itview_spring.Constant.ActivityLogType;
 
 
+
 public interface ActivityLogRepository extends JpaRepository<ActivityLogEntity, Integer> {
+    ActivityLogEntity findByReferenceIdAndType(Integer referenceId, ActivityLogType type);
     void deleteByReferenceIdAndType(Integer referenceId, ActivityLogType type);
 }

@@ -3,7 +3,6 @@ package com.example.itview_spring.Repository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
@@ -14,14 +13,7 @@ import com.example.itview_spring.Entity.WishlistEntity;
 
 @Repository
 public interface WishlistRepository extends JpaRepository<WishlistEntity, Integer> {
-    
-    // 위시리스트 삭제
-    @Modifying
-    @Query("""
-            DELETE FROM WishlistEntity w WHERE w.user.id = :userId AND w.content.id = :contentId
-            """)
-    void deleteByUserIdAndContentId(@Param("userId") Integer userId, @Param("contentId") Integer contentId);
-
+   
     WishlistEntity findByUserIdAndContentId(Integer userId, Integer contentId);
 
     // 위시리스트 존재 여부 확인
