@@ -24,9 +24,11 @@ public class NotificationService {
 
         // 초기 이벤트
         try {
+            System.out.println("Sending initial event to userId: " + userId);
             emitter.send(SseEmitter.event()
                 .name("connected")
                 .data("{}"));
+            System.out.println("Initial event sent to userId: " + userId);
         } catch (IOException e) {
             emitters.remove(userId);
         }
@@ -38,6 +40,7 @@ public class NotificationService {
         System.out.println("sendNotification to userId: " + userId);
         try {
             SseEmitter emitter = emitters.get(userId);
+            System.out.println("Retrieved emitter: " + (emitter != null ? "exists" : "null"));
             if (emitter != null) {
                 try {
                     emitter.send(SseEmitter.event()

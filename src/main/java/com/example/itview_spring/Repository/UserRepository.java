@@ -32,7 +32,9 @@ public interface UserRepository extends JpaRepository<UserEntity, Integer> {
             (select count(col.id) from CollectionEntity col where col.user.id = u.id),
             (select count(l1.id) from LikeEntity l1 where l1.user.id = u.id and l1.targetType = Replyable.PERSON),
             (select count(l2.id) from LikeEntity l2 where l2.user.id = u.id and l2.targetType = Replyable.COLLECTION),
-            (select count(l3.id) from LikeEntity l3 where l3.user.id = u.id and l3.targetType = Replyable.COMMENT)
+            (select count(l3.id) from LikeEntity l3 where l3.user.id = u.id and l3.targetType = Replyable.COMMENT),
+            (select count(f1.id) from FollowEntity f1 where f1.following.id = u.id),
+            (select count(f2.id) from FollowEntity f2 where f2.follower.id = u.id)
         )
         from UserEntity u
         where u.id = :id
@@ -48,7 +50,9 @@ public interface UserRepository extends JpaRepository<UserEntity, Integer> {
                 (select count(col.id) from CollectionEntity col where col.user.id = u.id),
                 (select count(l1.id) from LikeEntity l1 where l1.user.id = u.id and l1.targetType = Replyable.PERSON),
                 (select count(l2.id) from LikeEntity l2 where l2.user.id = u.id and l2.targetType = Replyable.COLLECTION),
-                (select count(l3.id) from LikeEntity l3 where l3.user.id = u.id and l3.targetType = Replyable.COMMENT)
+                (select count(l3.id) from LikeEntity l3 where l3.user.id = u.id and l3.targetType = Replyable.COMMENT),
+                (select count(f1.id) from FollowEntity f1 where f1.following.id = u.id),
+                (select count(f2.id) from FollowEntity f2 where f2.follower.id = u.id)
             )
             from UserEntity u
             where u.nickname like %:keyword%

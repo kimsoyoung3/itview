@@ -86,4 +86,11 @@ public class UserEntity {
     // 유저의 소셜 계정 목록
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<SocialEntity> socials;
+
+    // 유저의 팔로우 목록 (팔로워와 팔로잉 관계)
+    @OneToMany(mappedBy = "follower", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<FollowEntity> followers;
+
+    @OneToMany(mappedBy = "following", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<FollowEntity> followings;
 }

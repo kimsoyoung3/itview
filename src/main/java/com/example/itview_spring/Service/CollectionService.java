@@ -232,7 +232,7 @@ public class CollectionService {
 
         // 해당 컬렉션의 작성자에게 알림 전송
         CollectionEntity collection = collectionRepository.findById(id).orElseThrow(() -> new NoSuchElementException("존재하지 않는 컬렉션입니다."));
-        if (!collection.getUser().getId().equals(userId)) { // 본인에게는 알림을 보내지 않음
+        if (!collection.getUser().getId().equals(userId) ) { // 본인 및 작성자에게는 알림을 보내지 않음
             NotificationEntity notification = new NotificationEntity();
             notification.setUser(collection.getUser());
             notification.setActor(userRepository.findById(userId).orElseThrow(() -> new NoSuchElementException("존재하지 않는 유저입니다")));
@@ -247,7 +247,7 @@ public class CollectionService {
         // 해당 컬렉션에 댓글을 남긴 모든 유저에게 알림 전송
         List<Integer> recipientIds = collectionRepository.findAllReplyUserIdsByCollectionId(id);
         for (Integer recipientId : recipientIds) {
-            if (!recipientId.equals(userId)) { // 본인에게는 알림을 보내지 않음
+            if (!recipientId.equals(userId) && !recipientId.equals(collection.getUser().getId())) { // 본인 및 컬렉션 작성자에게는 알림을 보내지 않음
                 NotificationEntity notification = new NotificationEntity();
                 notification.setUser(userRepository.findById(recipientId).orElseThrow(() -> new NoSuchElementException("존재하지 않는 유저입니다")));
                 notification.setActor(userRepository.findById(userId).orElseThrow(() -> new NoSuchElementException("존재하지 않는 유저입니다")));
