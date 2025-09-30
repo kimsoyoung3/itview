@@ -4,8 +4,10 @@ import com.example.itview_spring.DTO.AdminCollectionDTO;
 import com.example.itview_spring.DTO.AdminContentDTO;
 import com.example.itview_spring.Service.CollectionService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -16,10 +18,12 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 @RequiredArgsConstructor
 public class CollectionController {
     private final CollectionService collectionService;
+    @Value("${userpage}")
+    private String userpage;
 
     @GetMapping("/collection/list")
     public String listAll(@RequestParam(value = "keyword", required = false) String keyword,
-                          @PageableDefault(page = 0, size = 10) Pageable pageable,
+                          @PageableDefault(page = 0, size = 10, sort = "id", direction = Sort.Direction.DESC) Pageable pageable,
                           Model model) {
 
         Page<AdminCollectionDTO> collectionsPage = collectionService.list(keyword, pageable);
@@ -69,6 +73,8 @@ public class CollectionController {
         model.addAttribute("contents", contentsPage);
         model.addAttribute("startPage", startPage);
         model.addAttribute("endPage", endPage);
+
+        model.addAttribute("userpage", userpage);
 
         return "collection/detail";
     }

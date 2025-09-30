@@ -6,13 +6,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>콘텐츠 장르 등록/수정</title>
+    <title>IT VIEW 관리자 페이지</title>
 </head>
 <body>
 <main layout:fragment="content">
     <div class="row mt-3 mb-3">
         <div class="col-12 mx-auto" style="max-width: 600px;">
-            <h3 class="mt-4">콘텐츠 장르 등록/수정</h3>
+            <h3 class="mt-4" th:text="${contentDTO.id != null} ? '콘텐츠 수정' : '콘텐츠 등록'"></h3>
             <p class="mt-4">콘텐츠의 장르를 선택해주세요:</p>
 
             <form th:action="@{/content/{contentId}/genre(contentId=${contentId})}" method="post">

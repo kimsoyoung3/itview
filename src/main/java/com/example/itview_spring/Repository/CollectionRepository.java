@@ -262,6 +262,6 @@ public interface CollectionRepository extends JpaRepository<CollectionEntity, In
 
     Optional<CollectionEntity> findById(Integer id);
 
-    @Query("SELECT c.content FROM CollectionEntity co JOIN co.items c WHERE co.id = :collectionId")
+    @Query("SELECT c.content FROM CollectionEntity co JOIN co.items c WHERE co.id = :collectionId ORDER BY c.id DESC")
     Page<ContentEntity> findContentsByCollectionId(@Param("collectionId") Integer collectionId, Pageable pageable);
 }

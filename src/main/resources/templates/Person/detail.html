@@ -6,7 +6,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>인물 상세</title>
+    <title>IT VIEW 관리자 페이지</title>
     <style>
         .col {
             word-break: break-all; /* 긴 URL이 자동으로 줄바꿈되도록 설정 */
@@ -18,14 +18,33 @@
     <div class="container mt-3 mb-3">
         <div class="row">
             <div class="col-12 mx-auto" style="max-width: 600px;">
-                <h3 class="mt-5">인물 상세</h3>
-                <p class="mt-3">인물 정보</p>
+                <h3 class="mt-4">인물 조회</h3>
+                <p class="mt-4">인물 정보</p>
 
                 <div class="d-flex justify-content-center mb-4">
-                    <img th:if="${personDTO.profile}" th:src="${personDTO.profile}" alt="프로필"
-                         style="max-width:120px;max-height:120px;object-fit:cover;">
-                </div>
+                    <div th:if="${personDTO.profile}">
+                        <img th:src="${personDTO.profile}"
+                             alt="프로필"
+                             style="max-width: 250px;  /* ⭐ 250px로 통일 ⭐ */
+                                    height: auto;     /* ⭐ auto로 통일 ⭐ */
+                                    object-fit: cover;
+                                    border-radius: 8px;
+                                    box-shadow: 0 4px 8px rgba(0,0,0,0.1);">
+                    </div>
 
+                    <div th:unless="${personDTO.profile}">
+                        <div style="width: 250px; height: 350px; /* ⭐ content_detail의 포스터 크기로 통일 ⭐ */
+                                    background-color: #f0f0f0;
+                                    display: flex;
+                                    align-items: center;
+                                    justify-content: center;
+                                    border-radius: 8px;
+                                    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+                                    color: #888;">
+                            프로필 이미지 없음
+                        </div>
+                    </div>
+                </div>
                 <div class="container">
                     <div class="row mb-2">
                         <div class="col-3"><strong>이름</strong></div>
@@ -34,10 +53,6 @@
                     <div class="row mb-2">
                         <div class="col-3"><strong>직업</strong></div>
                         <div class="col" th:text="${personDTO.job}"></div>
-                    </div>
-                    <div class="row mb-2">
-                        <div class="col-3"><strong>프로필 URL</strong></div>
-                        <div class="col" th:text="${personDTO.profile}"></div>
                     </div>
                 </div>
 

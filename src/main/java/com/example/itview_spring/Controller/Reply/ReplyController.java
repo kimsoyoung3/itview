@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -32,7 +33,7 @@ public class ReplyController {
 
     @GetMapping("/reply/{userid}/comment")
     public String listComment(@PathVariable("userid") int id,
-                              @PageableDefault(page = 0, size = 10) Pageable pageable,
+                              @PageableDefault(page = 0, size = 10, sort = "id", direction = Sort.Direction.DESC) Pageable pageable,
                               Model model) {
 
         // 사용자 상세 정보 조회
@@ -60,7 +61,7 @@ public class ReplyController {
 
     @GetMapping("/reply/{userid}/collection")
     public String listCollection(@PathVariable("userid") int id,
-                                 @PageableDefault(page = 0, size = 10) Pageable pageable,
+                                 @PageableDefault(page = 0, size = 10, sort = "id", direction = Sort.Direction.DESC) Pageable pageable,
                                  Model model) {
 
         AdminUserDTO userDetail = userService.read(id);

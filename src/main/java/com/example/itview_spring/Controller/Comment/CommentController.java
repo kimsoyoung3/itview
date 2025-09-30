@@ -5,8 +5,10 @@ import com.example.itview_spring.DTO.AdminUserDTO;
 import com.example.itview_spring.Service.CommentService;
 import com.example.itview_spring.Service.UserService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -21,10 +23,12 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 public class CommentController {
     private final UserService userService;
     private final CommentService commentService;
+    @Value("${userpage}")
+    private String userpage;
 
     @GetMapping("/comment/{userid}")
     public String listComments(@PathVariable("userid") int id,
-                               @PageableDefault(page = 0, size = 10) Pageable pageable,
+                               @PageableDefault(page = 0, size = 10, sort = "id", direction = Sort.Direction.DESC) Pageable pageable,
                                Model model) {
 
         // 사용자 상세 정보 조회
@@ -44,6 +48,8 @@ public class CommentController {
         model.addAttribute("comments", commentsPage);
         model.addAttribute("startPage", startPage);
         model.addAttribute("endPage", endPage);
+
+        model.addAttribute("userpage", userpage);
 
         return "comment/list";
     }

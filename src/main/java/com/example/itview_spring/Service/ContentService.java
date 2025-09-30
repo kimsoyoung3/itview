@@ -89,7 +89,7 @@ public class ContentService {
     //public ProductDTO 역시 안알려줌(Integer id) {
     //public ProductDTO read(Integer id) {    ex)
     @Transactional
-    public  ContentCreateDTO read(Integer contentId) {
+    public  AdminContentDTO read(Integer contentId) {
         //해당내용을 조회
         if (contentId == null) {
             throw new IllegalArgumentException("id는 null일 수 없습니다.");
@@ -99,7 +99,7 @@ public class ContentService {
             throw new NoSuchElementException("해당 ID에 대한 콘텐츠를 찾을 수 없습니다: " + contentId);
         }
         // Entity를 DTO로 변환하여 반환
-        return modelMapper.map(contentEntity, ContentCreateDTO.class);
+        return modelMapper.map(contentEntity, AdminContentDTO.class);
     }
 
     public ContentEntity findById(Integer id) {

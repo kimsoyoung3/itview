@@ -9,6 +9,7 @@ import com.example.itview_spring.Service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
@@ -27,7 +28,7 @@ public class UserController {
     // 유저 목록 조회
     @GetMapping("/user/list")
     public String list(
-            @PageableDefault(page = 0, size = 10) Pageable pageable,
+            @PageableDefault(page = 0, size = 10, sort = "id", direction = Sort.Direction.DESC) Pageable pageable,
             @RequestParam(required = false) String keyword,
             Model model) {
 

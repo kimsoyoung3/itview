@@ -6,7 +6,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>콘텐츠 조회</title>
+    <title>IT VIEW 관리자 페이지</title>
 </head>
 <body>
 <main layout:fragment="content">
@@ -17,6 +17,16 @@
                 <p class="mt-4">콘텐츠 정보</p>
 
                 <div class="d-flex justify-content-center mb-4">
+                    <div th:if="${contentDTO.poster}">
+                        <img th:src="${contentDTO.poster}"
+                             alt="콘텐츠 포스터"
+                             style="max-width: 250px; height: auto; border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">
+                    </div>
+                    <div th:unless="${contentDTO.poster}">
+                        <div style="width: 250px; height: 350px; background-color: #f0f0f0; display: flex; align-items: center; justify-content: center; border-radius: 8px; color: #888;">
+                            포스터 이미지 없음
+                        </div>
+                    </div>
                 </div>
 
                 <div>

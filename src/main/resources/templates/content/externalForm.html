@@ -6,7 +6,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>콘텐츠 외부서비스 등록/수정</title>
+    <title>IT VIEW 관리자 페이지</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <style>
         .btn-primary {
@@ -14,6 +14,7 @@
             border-color: #007bff;
             color: white;
         }
+
         .btn-primary:hover {
             background-color: #0056b3;
             border-color: #0056b3;
@@ -27,6 +28,7 @@
             position: relative;
             cursor: pointer;
         }
+
         .service-thumbnail-container {
             width: 100px;
             height: 100px;
@@ -40,16 +42,18 @@
             border: 1px solid #ccc;
             margin: 0 auto;
         }
+
         .service-thumbnail-container img {
             width: 100%;
             height: 100%;
             object-fit: cover;
         }
+
         .service-item .delete-btn {
             position: absolute;
             top: -5px;
             right: -5px;
-            background-color: rgba(0,0,0,0.6);
+            background-color: rgba(0, 0, 0, 0.6);
             color: white;
             border-radius: 50%;
             width: 20px;
@@ -63,11 +67,13 @@
             padding: 0;
             line-height: 1;
         }
+
         .service-container {
             display: flex;
             flex-wrap: wrap;
             align-items: flex-start;
         }
+
         .selected-service {
             border: 2px solid #007bff;
         }
@@ -75,44 +81,53 @@
 </head>
 <body>
 <main layout:fragment="content">
-    <div class="container mt-5">
-        <h2 class="mb-4">콘텐츠 등록/수정</h2>
-        <h4 class="mb-3">외부서비스 등록/수정</h4>
+    <div class="container mt-3">
+        <div class="row">
+            <div class="col">
+                <h3 class="mt-4" th:text="${contentId != null} ? '콘텐츠 수정' : '콘텐츠 등록'"></h3>
+                <p class="mt-4">외부서비스를 등록합니다:</p>
 
-        <button class="btn btn-primary mb-3" type="button" id="showFormButton">
-            + 추가
-        </button>
-
-        <div id="externalServiceFormSection" style="display: none;">
-            <h5 id="formTitle" class="mb-3">외부서비스 등록</h5>
-            <input type="hidden" id="externalServiceId">
-
-            <div class="mb-3">
-                <label class="form-label">서비스</label>
-                <select class="form-select" id="serviceTypeInput">
-                    <option value="">선택하세요</option>
-                    <option th:each="channel : ${T(com.example.itview_spring.Constant.Channel).values()}"
-                            th:value="${channel}" th:text="${channel.description}">
-                    </option>
-                </select>
-            </div>
-
-            <div class="mb-4">
-                <label class="form-label">링크</label>
-                <input type="text" id="serviceUrlInput" class="form-control" placeholder="외부 서비스 링크를 입력하세요.">
-            </div>
-
-            <div class="d-flex justify-content-end mb-4">
-                <button class="btn btn-primary me-2" type="button" id="saveServiceButton">
-                    등록
+                <button class="btn btn-primary mb-3" type="button" id="showFormButton">
+                    + 추가
                 </button>
-                <button class="btn btn-secondary" type="button" id="cancelFormButton">
-                    취소
-                </button>
+
+                <div id="externalServiceFormSection" style="display: none;">
+                    <h5 id="formTitle" class="mb-3">외부서비스 등록</h5>
+                    <form th:action="@{/content/{contentId}/external(contentId=${contentId})}" method="post"
+                          id="externalServiceForm">
+
+                        <input type="hidden" id="externalServiceId" name="id">
+
+                        <div class="mb-3">
+                            <label class="form-label">서비스</label>
+                            <select class="form-select" id="serviceTypeInput" name="type">
+                                <option value="">선택하세요</option>
+                                <option th:each="channel : ${T(com.example.itview_spring.Constant.Channel).values()}"
+                                        th:value="${channel}" th:text="${channel.description}">
+                                </option>
+                            </select>
+                        </div>
+
+                        <div class="mb-4">
+                            <label class="form-label">링크</label>
+                            <input type="text" id="serviceUrlInput" name="href" class="form-control"
+                                   placeholder="외부 서비스 링크를 입력하세요.">
+                        </div>
+
+                        <div class="d-flex justify-content-end mb-4">
+                            <button class="btn btn-primary me-2" type="submit" id="saveServiceButton">
+                                등록
+                            </button>
+                            <button class="btn btn-secondary" type="button" id="cancelFormButton">
+                                취소
+                            </button>
+                        </div>
+                    </form>
+                </div>
+                <hr>
             </div>
         </div>
 
-        <hr>
 
         <div class="service-container" id="serviceContainer">
             <div th:each="service : ${externalServiceList}"
@@ -145,10 +160,6 @@
 
         // 전역 스코프 함수
         function editServiceItem(item) {
-            const serviceId = $(item).data('service-id');
-            const serviceType = $(item).data('service-type');
-            const serviceUrl = $(item).data('service-href');
-
             const externalServiceFormSection = $('#externalServiceFormSection');
             const serviceTypeInput = $('#serviceTypeInput');
             const serviceUrlInput = $('#serviceUrlInput');
@@ -157,8 +168,12 @@
             const formTitle = $('#formTitle');
             const showFormButton = $('#showFormButton');
 
+            const serviceId = $(item).data('service-id');
+            const serviceType = $(item).data('service-type');
+            const serviceUrl = $(item).data('service-href');
+
             formTitle.text('외부서비스 수정');
-            externalServiceId.val(serviceId);
+            externalServiceId.val(serviceId); // hidden ID 필드에 값 설정
             serviceTypeInput.val(serviceType);
             serviceUrlInput.val(serviceUrl);
             saveServiceButton.text('수정');
@@ -180,12 +195,13 @@
                 $.ajax({
                     url: `/content/${contentId}/external/delete`,
                     type: 'POST',
-                    data: { externalServiceId: serviceId },
-                    success: function() {
-                        itemDiv.remove();
-                        resetForm();
+                    data: {externalServiceId: serviceId},
+                    success: function () {
+                        // ⭐️ 삭제 후 Controller에서 리다이렉트하지만,
+                        //    AJAX 성공 시 화면을 갱신하기 위해 새로고침을 명시적으로 추가
+                        window.location.reload();
                     },
-                    error: function() {
+                    error: function () {
                         alert('삭제 중 오류가 발생했습니다.');
                     }
                 });
@@ -195,13 +211,8 @@
         $(document).ready(function () {
             const showFormButton = $('#showFormButton');
             const externalServiceFormSection = $('#externalServiceFormSection');
-            const serviceTypeInput = $('#serviceTypeInput');
-            const serviceUrlInput = $('#serviceUrlInput');
-            const saveServiceButton = $('#saveServiceButton');
+            const externalServiceForm = $('#externalServiceForm'); // 폼 참조 추가
             const cancelFormButton = $('#cancelFormButton');
-            const externalServiceId = $('#externalServiceId');
-            const formTitle = $('#formTitle');
-            const serviceContainer = $('#serviceContainer');
 
             // 폼 숨기기
             externalServiceFormSection.hide();
@@ -210,7 +221,7 @@
                 resetForm();
                 externalServiceFormSection.slideDown();
                 showFormButton.hide();
-                serviceTypeInput.focus();
+                $('#serviceTypeInput').focus();
             });
 
             cancelFormButton.on('click', () => {
@@ -219,45 +230,26 @@
                 showFormButton.show();
             });
 
-            saveServiceButton.on('click', () => {
-                const serviceId = externalServiceId.val();
-                const serviceType = serviceTypeInput.val();
-                const serviceUrl = serviceUrlInput.val();
+            // ⭐️ 폼 제출 시 유효성 검사 (AJAX 저장 로직은 제거됨)
+            externalServiceForm.on('submit', function (e) {
+                const serviceType = $('#serviceTypeInput').val();
+                const serviceUrl = $('#serviceUrlInput').val();
 
                 if (!serviceType || !serviceUrl) {
                     alert('서비스 종류와 링크를 모두 입력하세요.');
+                    e.preventDefault(); // 폼 전송을 막습니다.
                     return;
                 }
-
-                const serviceDTO = {
-                    id: serviceId || null,
-                    type: serviceType,
-                    href: serviceUrl
-                };
-
-                const type = serviceId ? 'PUT' : 'POST';
-                const url = serviceId ? `/content/${contentId}/external/${serviceId}` : `/content/${contentId}/external/register`;
-
-                $.ajax({
-                    url: url,
-                    type: type,
-                    contentType: 'application/json',
-                    data: JSON.stringify(serviceDTO),
-                    success: function() {
-                        window.location.reload();
-                    },
-                    error: function() {
-                        alert('저장 중 오류가 발생했습니다.');
-                    }
-                });
+                // 유효성 검사 통과 시 폼이 동기적으로 제출되어 Controller로 이동합니다.
             });
 
+
             function resetForm() {
-                formTitle.text('외부서비스 등록');
-                externalServiceId.val('');
-                serviceTypeInput.val('');
-                serviceUrlInput.val('');
-                saveServiceButton.text('등록');
+                $('#formTitle').text('외부서비스 등록');
+                $('#externalServiceId').val('');
+                $('#serviceTypeInput').val('');
+                $('#serviceUrlInput').val('');
+                $('#saveServiceButton').text('등록');
                 $('.service-item').removeClass('selected-service');
             }
         });

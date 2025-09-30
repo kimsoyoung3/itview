@@ -322,11 +322,7 @@ public class CollectionService {
 
         Page<ContentEntity> contentsPage = collectionRepository.findContentsByCollectionId(collectionId, pageable);
 
-        return contentsPage.map(content -> new AdminContentDTO(
-                content.getId(),
-                content.getTitle(),
-                content.getPoster()
-        ));
+        return contentsPage.map(content -> modelMapper.map(content, AdminContentDTO.class));
     }
 
     // 관리자 페이지 - 컬렉션 수정

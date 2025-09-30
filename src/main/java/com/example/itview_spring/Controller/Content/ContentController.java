@@ -23,8 +23,6 @@ import java.util.NoSuchElementException;
 @Controller
 @RequiredArgsConstructor
 public class ContentController {
-    //  private final VideoService videoService;      //Video 서비스
-    //  private final GalleryService galleryService;  // 갤러리 서비스
     @Autowired
     private final ContentService contentService;  // 콘텐츠 서비스
 
@@ -32,22 +30,7 @@ public class ContentController {
     @Autowired
     private ModelMapper modelMapper;
 
-//    1. 기능 흐름
-//    기능명	URL	설명
-//    콘텐츠 등록 폼 이동	GET /content/register	콘텐츠 등록 화면 이동
-//    콘텐츠 등록 처리	POST /content/register	저장 후 장르 선택으로 리디렉트
-//    콘텐츠 전체 조회	GET /content/list	페이지네이션 포함
-//    콘텐츠 상세 보기	GET /content/detail?id={id}	contentId 기반 상세 정보
-//    콘텐츠 수정 폼	GET /content/{id}/update	콘텐츠 수정 화면
-//    콘텐츠 수정 처리	POST /content/{id}/update	저장 후 장르 수정으로 이동
-//    콘텐츠 삭제	GET /content/delete?id={id}	삭제 후 리스트로 이동
-//    장르 선택 폼	GET /content/{id}/genre	장르 선택 화면 표시
-//    장르 저장 처리	POST /content/{id}/genre	저장 후 영상 등록으로 이동
-//
-
-
-    // ==================== CONTENT CRUD ==========================
-// 등록 폼 이동
+    // 등록 폼 이동
     @GetMapping("/content/register")
     public String newContent(Model model) {
         // 등록 모드: 빈 객체를 모델에 추가하여 템플릿에 전달
@@ -78,17 +61,7 @@ public class ContentController {
         }
     }
 
-
-    //localhost:8080/content/list 확인함(@GetMppping
-    //전체강의 조회후 (list.html)로이동
-
-    /**
-     * 전체조회
-     *
-     * @param pageable 조회할 페이지 번호 /페이징 정보 (기본 페이지 1)
-     * @param model    결좌 전달 /뷰에 전달할 모델
-     * @return 페이지 이동 /뷰
-     */
+    // 전체 조회
     @GetMapping("/content/list")
     public String listContent(
             @PageableDefault(page = 0) Pageable pageable,
@@ -114,25 +87,16 @@ public class ContentController {
     }
 
     // 상세 보기 (id 파라미터로 받음, @PathVariable 대신 @RequestParam 형식)
-// @GetMapping("/content/{id:\\d+}")
-//    @GetMapping("/content/detail")
-//    @GetMapping("/content/{id}/detail")
-//    public String detailContent(@PathVariable("id") Integer id, Model model) {
     @GetMapping("/content/detail")
     public String detailContent(@RequestParam Integer id, Model model) {
-        //0909 수정처리함
         try {
-            ContentCreateDTO contentDTO = contentService.read(id);
+            AdminContentDTO contentDTO = contentService.read(id);
             model.addAttribute("contentDTO", contentDTO);
             return "content/detail"; // Renders content detail page
         } catch (NoSuchElementException e) {
             model.addAttribute("error", "해당 콘텐츠를 찾을 수 없습니다.");
             return "error/404"; // 또는 에러 페이지로 리디렉션
         }
-//        // URL 경로 변수인 {id}를 받으려면 @PathVariable을 써야 합니다.
-//        ContentCreateDTO contentDTO = contentService.read(id);
-//        model.addAttribute("contentDTO", contentDTO);
-//        return "content/detail"; // 경로가 정확한지 확인 필요
     }
 
     // 수정 폼 이동
@@ -188,15 +152,6 @@ public class ContentController {
             return "redirect:/content/" + id + "/update"; // 수정 폼으로 다시 리다이렉트
         }
     }
-//    @PostMapping("/content/{id}/update")
-//    public String updateContentProc(@PathVariable("id") Integer id, ContentCreateDTO contentDTO) {
-//
-//        // Service에서 수정 처리 후 저장된 DTO 반환 받음
-//        ContentCreateDTO savedContent = contentService.update(id, contentDTO);
-
-//        // 수정 후 바로 장르 수정 페이지로 이동
-//        return "redirect:/content/" + savedContent.getId() + "/genre";     // 장르 수정 폼으로 이동
-//    }
 
     // 삭제 처리 (id를 @RequestParam 으로 받음)
     @GetMapping("/content/delete")

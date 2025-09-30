@@ -6,7 +6,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>콘텐츠 동영상 등록/수정</title>
+    <title>IT VIEW 관리자 페이지</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <style>
         /* (기존 스타일 유지) */
@@ -15,6 +15,7 @@
             border-color: #007bff;
             color: white;
         }
+
         .btn-primary:hover {
             background-color: #0056b3;
             border-color: #0056b3;
@@ -28,6 +29,7 @@
             position: relative;
             cursor: pointer;
         }
+
         .video-thumbnail-container {
             width: 100%;
             height: 100px;
@@ -39,16 +41,18 @@
             overflow: hidden;
             border: 1px solid #ccc;
         }
+
         .video-thumbnail-container img {
             width: 100%;
             height: auto;
             object-fit: contain;
         }
+
         .video-item .delete-btn {
             position: absolute;
             top: -5px;
             right: -5px;
-            background-color: rgba(0,0,0,0.6);
+            background-color: rgba(0, 0, 0, 0.6);
             color: white;
             border-radius: 50%;
             width: 20px;
@@ -62,6 +66,7 @@
             padding: 0;
             line-height: 1;
         }
+
         .video-title {
             margin-top: 5px;
             font-size: 0.9rem;
@@ -69,11 +74,13 @@
             overflow: hidden;
             text-overflow: ellipsis;
         }
+
         .video-container {
             display: flex;
             flex-wrap: wrap;
             align-items: flex-start;
         }
+
         .input-group {
             margin-bottom: 20px;
         }
@@ -86,57 +93,62 @@
 </head>
 <body>
 <main layout:fragment="content">
-    <div class="container mt-5">
-        <h2 class="mb-4">콘텐츠 등록/수정</h2>
+    <div class="container mt-3">
+        <div class="row">
+            <div class="col">
+                <h3 class="mt-4" th:text="${contentId != null} ? '콘텐츠 수정' : '콘텐츠 등록'"></h3>
 
-        <h4 class="mb-3">동영상 등록/수정</h4>
+                <p class="mt-4">동영상을 등록합니다:</p>
 
-        <button class="btn btn-primary mb-3" type="button" id="showFormButton">
-            + 추가
-        </button>
-
-        <div id="videoFormSection" style="display: none;">
-            <h5 id="formTitle" class="mb-3">동영상 등록</h5>
-            <input type="hidden" id="videoIdInput">
-            <div class="mb-2">
-                <label for="videoUrlInput" class="form-label">영상 링크</label>
-                <input type="text" id="videoUrlInput" class="form-control" placeholder="유튜브 영상 링크를 입력하세요.">
-            </div>
-            <div class="mb-4">
-                <label for="videoTitleInput" class="form-label">제목</label>
-                <input type="text" id="videoTitleInput" class="form-control" placeholder="제목을 입력하세요.">
-            </div>
-            <div class="d-flex justify-content-end mb-4">
-                <button class="btn btn-primary me-2" type="button" id="saveVideoButton">
-                    등록
+                <button class="btn btn-primary mb-3" type="button" id="showFormButton">
+                    + 추가
                 </button>
-                <button class="btn btn-secondary" type="button" id="cancelFormButton">
-                    취소
-                </button>
-            </div>
-        </div>
 
-        <hr>
-
-        <div class="video-container" id="videoContainer">
-            <div th:each="video : ${videoList}"
-                 class="video-item"
-                 th:data-video-id="${video.id}"
-                 th:data-video-url="${video.url}"
-                 th:data-video-title="${video.title}"
-                 onclick="editVideoItem(this)">
-                <div class="video-thumbnail-container">
-                    <img th:src="${video.image}" alt="동영상 썸네일">
-                    <button type="button" class="delete-btn" onclick="deleteVideoItem(this, event)">
-                        <i class="fas fa-times"></i>
-                    </button>
+                <div id="videoFormSection" style="display: none;">
+                    <h5 id="formTitle" class="mb-3">동영상 등록</h5>
+                    <input type="hidden" id="videoIdInput">
+                    <div class="mb-2">
+                        <label for="videoUrlInput" class="form-label">영상 링크</label>
+                        <input type="text" id="videoUrlInput" class="form-control" placeholder="유튜브 영상 링크를 입력하세요.">
+                    </div>
+                    <div class="mb-4">
+                        <label for="videoTitleInput" class="form-label">제목</label>
+                        <input type="text" id="videoTitleInput" class="form-control" placeholder="제목을 입력하세요.">
+                    </div>
+                    <div class="d-flex justify-content-end mb-4">
+                        <button class="btn btn-primary me-2" type="button" id="saveVideoButton">
+                            등록
+                        </button>
+                        <button class="btn btn-secondary" type="button" id="cancelFormButton">
+                            취소
+                        </button>
+                    </div>
                 </div>
-                <div class="video-title" th:text="${video.title}"></div>
-            </div>
-        </div>
 
-        <div class="d-flex justify-content-end mt-5">
-            <a th:href="@{/content/{contentId}/external(contentId=${contentId})}" class="btn btn-primary" th:text="${contentId != null} ? '다음/수정' : '다음'"></a>
+                <hr>
+
+                <div class="video-container" id="videoContainer">
+                    <div th:each="video : ${videoList}"
+                         class="video-item"
+                         th:data-video-id="${video.id}"
+                         th:data-video-url="${video.url}"
+                         th:data-video-title="${video.title}"
+                         onclick="editVideoItem(this)">
+                        <div class="video-thumbnail-container">
+                            <img th:src="${video.image}" alt="동영상 썸네일">
+                            <button type="button" class="delete-btn" onclick="deleteVideoItem(this, event)">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        </div>
+                        <div class="video-title" th:text="${video.title}"></div>
+                    </div>
+                </div>
+
+                <div class="d-flex justify-content-end mt-5">
+                    <a th:href="@{/content/{contentId}/external(contentId=${contentId})}" class="btn btn-primary"
+                       th:text="${contentId != null} ? '다음/수정' : '다음'"></a>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -145,6 +157,7 @@
     <script th:inline="javascript">
         /*<![CDATA[*/
         const contentId = /*[[${contentId}]]*/ null;
+
         /*]]>*/
 
         function editVideoItem(item) {
@@ -187,12 +200,12 @@
                 $.ajax({
                     url: `/content/${contentId}/video/${videoId}`,
                     type: 'DELETE',
-                    success: function() {
+                    success: function () {
                         itemDiv.remove();
                         // ✅ 삭제 후 폼 초기화
                         resetForm();
                     },
-                    error: function(jqXHR, textStatus, errorThrown) {
+                    error: function (jqXHR, textStatus, errorThrown) {
                         console.error('영상 삭제 중 오류 발생:', textStatus, errorThrown);
                         alert('영상 삭제 중 오류가 발생했습니다.');
                     }
@@ -249,10 +262,10 @@
                     type: type,
                     contentType: 'application/json',
                     data: JSON.stringify(videoDTO),
-                    success: function(response) {
+                    success: function (response) {
                         window.location.reload();
                     },
-                    error: function(jqXHR, textStatus, errorThrown) {
+                    error: function (jqXHR, textStatus, errorThrown) {
                         console.error('영상 저장 중 오류 발생:', textStatus, errorThrown);
                         alert('영상 저장 중 오류가 발생했습니다.');
                     }

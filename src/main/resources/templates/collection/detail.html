@@ -6,7 +6,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title th:text="${collection.title} + ' - 컬렉션 상세'"></title>
+    <title>IT VIEW 관리자 페이지</title>
     <style>
         .content-item {
             text-align: center;
@@ -46,8 +46,8 @@
     <div class="container mt-3 mb-3">
         <div class="row">
             <div class="col-12">
-                <h3 class="mt-5">컬렉션 조회</h3>
-                <p class="mt-3">컬렉션 정보</p>
+                <h3 class="mt-4">컬렉션 조회</h3>
+                <p class="mt-4">컬렉션 정보</p>
 
                 <div class="row mb-2">
                     <div class="col-3"><strong>컬렉션 제목</strong></div>
@@ -78,7 +78,7 @@
                         컬렉션에 등록된 작품이 없습니다.
                     </div>
                     <a th:each="content : ${contents.content}"
-                       th:href="|http://localhost:3000/#/content/${content.id}|"
+                       th:href="@{${userpage} + '/#/content/' + ${content.id}}"
                        class="col-10-1 content-item content-link"
                        target="_blank" rel="noopener noreferrer">
                         <img th:src="${content.poster}" alt="포스터" class="mb-2">

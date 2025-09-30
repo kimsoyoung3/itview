@@ -8,7 +8,10 @@ import com.example.itview_spring.Util.S3Uploader;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;
@@ -16,6 +19,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.Map;
 
 @Controller
 @RequiredArgsConstructor
@@ -46,7 +50,7 @@ public class PersonController {
 
     /* ======= 목록 ======= */
     @GetMapping("/person/list")
-    public String list(@PageableDefault(size = 10) Pageable pageable,
+    public String list(@PageableDefault(size = 10, sort = "id", direction = Sort.Direction.DESC) Pageable pageable,
                        @RequestParam(required = false) String keyword,
                        Model model) {
 
@@ -173,5 +177,46 @@ public class PersonController {
         personService.delete(id);
 
         return "redirect:/person/list";
+    }
+
+    @PostMapping("/api/upload/profile")
+    @ResponseBody
+    public ResponseEntity<Map<String, String>> uploadProfileImage(
+            @RequestParam("file") MultipartFile file) {
+
+        // 1. 파일이 비어있는지 검사
+        if (file.isEmpty()) {
+            return new ResponseEntity<>(
+                    // 클라이언트에게 오류 메시지 전달
+                    Map.of("message", "파일이 비어있습니다. 파일을 선택해주세요."),
+                    HttpStatus.BAD_REQUEST // 400
+            );
+        }
+
+        try {
+            // 2. S3Uploader 호출 및 URL 획득
+            // S3Uploader 내부에서 Thumbnails 라이브러리가 지원하지 않는 포맷을 받으면
+            // IOException이나 IllegalArgumentException이 발생할 수 있습니다.
+            String s3Url = s3Uploader.uploadFile(file);
+
+            // 3. 성공 시 URL 반환 (HTTP 200 OK)
+            return new ResponseEntity<>(
+                    Map.of("url", s3Url),
+                    HttpStatus.OK
+            );
+
+        } catch (IllegalArgumentException e) {
+            // S3Uploader 내부에서 발생한 파일 형식 관련 오류(예: 'image/webp'를 제대로 처리 못함)
+            return new ResponseEntity<>(
+                    Map.of("message", "파일 처리 중 오류가 발생했습니다. JPG, PNG, GIF 파일인지 확인해주세요."),
+                    HttpStatus.BAD_REQUEST // 400
+            );
+        } catch (IOException e) {
+            // S3 통신 오류 또는 Thumbnails IO 오류 등 처리
+            return new ResponseEntity<>(
+                    Map.of("message", "파일 업로드 중 서버 통신 오류가 발생했습니다."),
+                    HttpStatus.INTERNAL_SERVER_ERROR // 500
+            );
+        }
     }
 }
