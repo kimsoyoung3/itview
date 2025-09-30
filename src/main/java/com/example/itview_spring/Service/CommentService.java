@@ -90,6 +90,7 @@ public class CommentService {
         commentRepository.delete(comment);
         likeRepository.deleteByTargetIdAndTargetType(commentId, Replyable.COMMENT);
         replyRepository.deleteByTargetIdAndTargetType(commentId, Replyable.COMMENT);
+        notificationRepository.deleteByTargetIdAndTargetType(commentId, Replyable.COMMENT);
         return true;
     }
 

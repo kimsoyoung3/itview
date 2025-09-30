@@ -55,9 +55,7 @@ public class ReplyService {
         if (!reply.getUser().getId().equals(userId)) {
             throw new SecurityException("권한이 없습니다");
         }
-        // 댓글에 달린 좋아요 먼저 삭제
         likeRepository.deleteByTargetIdAndTargetType(replyId, Replyable.REPLY);
-        // 댓글 삭제
         replyRepository.deleteById(replyId);
         return true;
     }

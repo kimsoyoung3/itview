@@ -167,6 +167,7 @@ public class CollectionService {
             likeRepository.deleteByTargetIdAndTargetType(replyId, Replyable.REPLY);
         }
         replyRepository.deleteByTargetIdAndTargetType(id, Replyable.COLLECTION);
+        notificationRepository.deleteByTargetIdAndTargetType(id, Replyable.COLLECTION);
         collectionRepository.deleteById(id);
     }
 
