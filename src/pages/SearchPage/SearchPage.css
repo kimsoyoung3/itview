@@ -147,6 +147,9 @@
 .search-page-tab-user-info {
     position: relative;
     width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 }
 
 .search-page-tab-user-info::before {
@@ -160,18 +163,28 @@
     transform: translateY(10px);
 }
 
-.search-page-tab-user-info>p {
+.search-page-tab-user-info-wrap>p {
     margin-bottom: 0;
+    font-weight: 500;
 }
 
-.search-page-tab-user-info>p:nth-of-type(1) {
-    font-weight: bold;
-}
-
-.search-page-tab-user-info>p:nth-of-type(2) {
+.search-page-tab-user-info-wrap>p:nth-of-type(2) {
     font-weight: 400;
     color: #888888;
     font-size: 0.9rem;
+}
+
+.search-page-tab-user-info-btn>button {
+    border: none;
+    background: #ffffff;
+    padding: 4px 8px;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    color: #555555;
+}
+
+.search-page-tab-user-info-btn>button:hover {
+    background: #eeeeee;
 }
 
 /*태블릿 사이즈*/

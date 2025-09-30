@@ -59,7 +59,7 @@
 
 .user-follow-info-wrap>p {
     margin-bottom: 0;
-    font-weight: 600;
+    font-weight: 500;
 }
 
 .user-follow-info-wrap>p:nth-of-type(2) {
@@ -80,7 +80,4 @@
 
 .user-follow-info-btn>button:hover {
     background: #eeeeee;
-    padding: 4px 8px;
-    border-radius: 20px;
-    font-size: 0.8rem;
 }
