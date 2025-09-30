@@ -153,15 +153,17 @@ const UserDetailPage = ({ userInfo, openLogin }) => {
                         <img src={userDetail?.userProfile.profile ? userDetail?.userProfile.profile : `${process.env.PUBLIC_URL}/user.png`} alt=""/>
                     </div>
                     <h5 className="user-detail-info-name">{userDetail?.userProfile.nickname}</h5>
-                    <NavLink to={`/user/${userDetail?.userProfile.id}/follower`}><span style={{marginRight: "8px"}}>팔로워 {userDetail?.followerCount}</span></NavLink>
-                    <NavLink to={`/user/${userDetail?.userProfile.id}/following`}><span>팔로잉 {userDetail?.followingCount}</span></NavLink>
+                    <div className="user-detail-info-follow">
+                        <NavLink to={`/user/${userDetail?.userProfile.id}/follower`}>팔로워<span> {userDetail?.followerCount}</span></NavLink>
+                        <NavLink to={`/user/${userDetail?.userProfile.id}/following`}>팔로잉<span> {userDetail?.followingCount}</span></NavLink>
+                    </div>
                     <p className="user-detail-info-intro">{userDetail?.userProfile.introduction}</p>
                     <div className="user-detail-info-btn">
-                        <div style={{display: userInfo?.userId === userDetail?.userProfile.id ? "block" : "none"}} className="user-detail-info-edit">
+                        <div style={{display: userInfo?.userId === userDetail?.userProfile.id ? "block" : "none"}}>
                             <button onClick={openMyProfileEdit}>프로필 수정</button>
                         </div>
-                        <div style={{display: userInfo?.userId !== userDetail?.userProfile.id ? "block" : "none"}} className="user-detail-info-edit">
-                            <button style={{display: userDetail?.isFollowed ? "block" : "none"}} onClick={handleUnfollow}>팔로우 취소</button>
+                        <div style={{display: userInfo?.userId !== userDetail?.userProfile.id ? "block" : "none"}}>
+                            <button className="user-detail-info-edit" style={{display: userDetail?.isFollowed ? "block" : "none"}} onClick={handleUnfollow}>팔로우 취소</button>
                             <button style={{display: !userDetail?.isFollowed ? "block" : "none"}} onClick={handleFollow}>팔로우</button>
                         </div>
 
@@ -237,28 +239,28 @@ const UserDetailPage = ({ userInfo, openLogin }) => {
                             </button>
                         </div>
                     </div>
+                </div>
 
-                    <div className="user-detail-info-group">
-                        <div className="user-detail-info-group-content">
-                            <NavLink to={`/user/${id}/rating`}>
-                                <p>{userDetail?.ratingCount}</p>
-                                <p>평가</p>
-                            </NavLink>
-                        </div>
+                <div className="user-detail-info-group">
+                    <div className="user-detail-info-group-content">
+                        <NavLink to={`/user/${id}/rating`}>
+                            <p>{userDetail?.ratingCount}</p>
+                            <p>평가</p>
+                        </NavLink>
+                    </div>
 
-                        <div className="user-detail-info-group-content">
-                            <NavLink to={`/user/${id}/comment`}>
-                                <p>{userDetail?.commentCount}</p>
-                                <p>코멘트</p>
-                            </NavLink>
-                        </div>
+                    <div className="user-detail-info-group-content">
+                        <NavLink to={`/user/${id}/comment`}>
+                            <p>{userDetail?.commentCount}</p>
+                            <p>코멘트</p>
+                        </NavLink>
+                    </div>
 
-                        <div className="user-detail-info-group-content">
-                            <NavLink to={`/user/${id}/collection`}>
-                                <p>{userDetail?.collectionCount}</p>
-                                <p>컬렉션</p>
-                            </NavLink>
-                        </div>
+                    <div className="user-detail-info-group-content">
+                        <NavLink to={`/user/${id}/collection`}>
+                            <p>{userDetail?.collectionCount}</p>
+                            <p>컬렉션</p>
+                        </NavLink>
                     </div>
                 </div>
 
