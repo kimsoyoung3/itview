@@ -246,6 +246,52 @@ public class UserRestController {
         return ResponseEntity.ok(userService.getUserProfile(userProfileUpdateDTO.getId(), 0));
     }
 
+    // 유저 팔로우
+    @PostMapping("/{id}/follow")
+    public ResponseEntity<Void> followUser(@AuthenticationPrincipal CustomUserDetails user,
+                                           @PathVariable("id") Integer targetUserId) {
+        if (user.getId().equals(targetUserId)) {
+            return ResponseEntity.badRequest().build(); // 자기 자신을 팔로우할 수 없음
+        }
+        userService.followUser(user.getId(), targetUserId);
+        return ResponseEntity.ok().build();
+    }
+
+    // 유저 언팔로우
+    @DeleteMapping("/{id}/follow")
+    public ResponseEntity<Void> unfollowUser(@AuthenticationPrincipal CustomUserDetails user,
+                                             @PathVariable("id") Integer targetUserId) {
+        if (user.getId().equals(targetUserId)) {
+            return ResponseEntity.badRequest().build(); // 자기 자신을 언팔로우할 수 없음
+        }
+        userService.unfollowUser(user.getId(), targetUserId);
+        return ResponseEntity.ok().build();
+    }
+
+    // 유저 팔로워 조회
+    @GetMapping("/{id}/follower")
+    public ResponseEntity<Page<UserResponseDTO>> getUserFollowers(@PathVariable("id") Integer userId,
+                                                                  @PageableDefault(page=1) Pageable pageable) {
+        var auth = SecurityContextHolder.getContext().getAuthentication();
+        Integer loginUserId = 0;
+        if (auth.getPrincipal() != "anonymousUser") {
+            loginUserId = ((CustomUserDetails) auth.getPrincipal()).getId();
+        }
+        return ResponseEntity.ok(userService.getUserFollowers(userId, loginUserId, pageable.getPageNumber()));
+    }
+
+    // 유저 팔로잉 조회
+    @GetMapping("/{id}/following")
+    public ResponseEntity<Page<UserResponseDTO>> getUserFollowing(@PathVariable("id") Integer userId,
+                                                                  @PageableDefault(page=1) Pageable pageable) {
+        var auth = SecurityContextHolder.getContext().getAuthentication();
+        Integer loginUserId = 0;
+        if (auth.getPrincipal() != "anonymousUser") {
+            loginUserId = ((CustomUserDetails) auth.getPrincipal()).getId();
+        }
+        return ResponseEntity.ok(userService.getUserFollowing(userId, loginUserId, pageable.getPageNumber()));
+    }
+
     // 유저 평점 개수 조회
     @GetMapping("/{id}/rating")
     public ResponseEntity<UserRatingCountDTO> getUserRatingCount(@PathVariable("id") Integer userId) {

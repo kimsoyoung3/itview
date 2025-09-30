@@ -18,10 +18,4 @@ public class NotificationDTO {
     private String title;
     private String link;
     private LocalDateTime createdAt;
-
-    public NotificationDTO(String profile, Integer actorId, LocalDateTime createdAt) {
-        this.profile = profile;
-        this.actorId = actorId;
-        this.createdAt = createdAt;
-    }
 }
