@@ -18,6 +18,8 @@ export const getUserDetail = (id) => axios.get(`${process.env.REACT_APP_API_URL}
 export const updateUserProfile = (data) => axios.put(`${process.env.REACT_APP_API_URL}/api/user`, data, {withCredentials: true});
 export const followUser = (targetId) => axios.post(`${process.env.REACT_APP_API_URL}/api/user/${targetId}/follow`, {}, {withCredentials: true});
 export const unfollowUser = (targetId) => axios.delete(`${process.env.REACT_APP_API_URL}/api/user/${targetId}/follow`, {withCredentials: true});
+export const getUserFollowers = (userId, page) => axios.get(`${process.env.REACT_APP_API_URL}/api/user/${userId}/follower?page=${page}`, {withCredentials: true});
+export const getUserFollowings = (userId, page) => axios.get(`${process.env.REACT_APP_API_URL}/api/user/${userId}/following?page=${page}`, {withCredentials: true});
 export const getUserRatingCount = (userId) => axios.get(`${process.env.REACT_APP_API_URL}/api/user/${userId}/rating`, {withCredentials: true});
 export const getUserContentCount = (userId, contentType) => axios.get(`${process.env.REACT_APP_API_URL}/api/user/${userId}/content/${contentType}`, {withCredentials: true});
 export const getUserContentRating = (userId, contentType, page, order) => axios.get(`${process.env.REACT_APP_API_URL}/api/user/${userId}/content/${contentType}/rating?page=${page}&order=${order}`, {withCredentials: true});

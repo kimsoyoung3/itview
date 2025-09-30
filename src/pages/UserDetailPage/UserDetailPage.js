@@ -153,7 +153,8 @@ const UserDetailPage = ({ userInfo, openLogin }) => {
                         <img src={userDetail?.userProfile.profile ? userDetail?.userProfile.profile : `${process.env.PUBLIC_URL}/user.png`} alt=""/>
                     </div>
                     <h5 className="user-detail-info-name">{userDetail?.userProfile.nickname}</h5>
-                    <span style={{marginRight: "8px"}}>팔로워 {userDetail?.followerCount}</span><span>팔로잉 {userDetail?.followingCount}</span>
+                    <NavLink to={`/user/${userDetail?.userProfile.id}/follower`}><span style={{marginRight: "8px"}}>팔로워 {userDetail?.followerCount}</span></NavLink>
+                    <NavLink to={`/user/${userDetail?.userProfile.id}/following`}><span>팔로잉 {userDetail?.followingCount}</span></NavLink>
                     <p className="user-detail-info-intro">{userDetail?.userProfile.introduction}</p>
                     <div className="user-detail-info-btn">
                         <div style={{display: userInfo?.userId === userDetail?.userProfile.id ? "block" : "none"}} className="user-detail-info-edit">

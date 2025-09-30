@@ -8,6 +8,7 @@ import UserContentWishPage from '../pages/UserContentWishPage/UserContentWishPag
 import UserCommentPage from '../pages/UserCommentPage/UserCommentPage';
 import UserLikePage from '../pages/UserLilkePage/UserLilkePage';
 import UserCollectionPage from '../pages/UserCollectionPage/UserCollectionPage';
+import UserFollowPage from '../pages/UserFollowPage/UserFollowPage';
 
 function UserRoutes({ userInfo, openLogin }) {
   return (
@@ -20,8 +21,10 @@ function UserRoutes({ userInfo, openLogin }) {
       <Route path=":id/comment" element={<UserCommentPage userInfo={userInfo} openLogin={openLogin} />} />
       <Route path=":id/like" element={<UserLikePage userInfo={userInfo} openLogin={openLogin} />} />
       <Route path=":id/collection" element={<UserCollectionPage userInfo={userInfo} openLogin={openLogin} />} />
+      <Route path=":id/follower" element={<UserFollowPage userInfo={userInfo} openLogin={openLogin} type={"follower"}/>} />
+      <Route path=":id/following" element={<UserFollowPage userInfo={userInfo} openLogin={openLogin} type={"following"}/>} />
     </Routes>
-  )
+  );
 }
 
 export default UserRoutes;
