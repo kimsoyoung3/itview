@@ -79,7 +79,8 @@ public class SecurityConfig {
                 )
                 .oauth2Login(oauth2 -> oauth2
                         .successHandler(linkingSuccessHandler())
-                );
+                )
+                .headers((headers) -> headers.frameOptions().sameOrigin());
 
         return http.build();
     }
