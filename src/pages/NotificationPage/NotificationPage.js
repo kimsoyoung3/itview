@@ -1,11 +1,22 @@
 import React, { useEffect, useState } from "react";
 import "./NotificationPage.css"
 import { getFriendNotification, getNotification } from "../../API/UserApi";
-import {NavLink, useNavigate} from "react-router-dom";
+import {NavLink, useNavigate, useSearchParams} from "react-router-dom";
 import { toast } from "react-toastify";
 import Markdown from "react-markdown";
 
 const NotificationPage = ({ userInfo, openLogin }) => {
+
+    const [searchParams] = useSearchParams();
+    const type = searchParams.get("type");
+    useEffect(() => {
+        console.log(type)
+        if (type === "friend") {
+            setActiveId("notification-tab2");
+        } else {
+            setActiveId("notification-tab1");
+        }
+    }, [type]);
 
     const navigate = useNavigate();
     if (!userInfo) {
@@ -21,17 +32,17 @@ const NotificationPage = ({ userInfo, openLogin }) => {
 
     useEffect(() => {
         const fetchNotifications = async () => {
-            if (activeId === "notification-tab1") {
-                const res = await getNotification(1);
-                setNotifications(res.data);
-            } else if (activeId === "notification-tab2") {
+            if (type === "friend") {
                 const res = await getFriendNotification(1);
+                setNotifications(res.data);
+            } else {
+                const res = await getNotification(1);
                 setNotifications(res.data);
             }
         }
 
         fetchNotifications();
-    }, [activeId]);
+    }, [type]);
 
     const handleLoadMore = async () => {
         try {
@@ -61,9 +72,9 @@ const NotificationPage = ({ userInfo, openLogin }) => {
                 <div className="notification-tab-wrap">
                     <div className="notification-tab-title">
                         <div className={`notification-tab-btn ${activeId === "notification-tab1" ? "active" : ""}`}
-                             onClick={() => setActiveId('notification-tab1')}>내 소식</div>
+                             onClick={() => navigate("/notification?type=my")}>내 소식</div>
                         <div className={`notification-tab-btn ${activeId === "notification-tab2" ? "active" : ""}`}
-                             onClick={() => setActiveId('notification-tab2')}>친구 소식</div>
+                             onClick={() => navigate("/notification?type=friend")}>친구 소식</div>
 
                         <span
                             className="notification-tab-indicator"
