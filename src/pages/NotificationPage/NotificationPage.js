@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import "./NotificationPage.css"
-import { getNotification } from "../../API/UserApi";
+import { getFriendNotification, getNotification } from "../../API/UserApi";
 import {NavLink, useNavigate} from "react-router-dom";
 import { toast } from "react-toastify";
 import Markdown from "react-markdown";
@@ -21,12 +21,17 @@ const NotificationPage = ({ userInfo, openLogin }) => {
 
     useEffect(() => {
         const fetchNotifications = async () => {
-            const res = await getNotification(1);
-            setNotifications(res.data);
+            if (activeId === "notification-tab1") {
+                const res = await getNotification(1);
+                setNotifications(res.data);
+            } else if (activeId === "notification-tab2") {
+                const res = await getFriendNotification(1);
+                setNotifications(res.data);
+            }
         }
 
         fetchNotifications();
-    }, []);
+    }, [activeId]);
 
     const handleLoadMore = async () => {
         try {

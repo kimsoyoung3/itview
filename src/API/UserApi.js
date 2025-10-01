@@ -14,6 +14,7 @@ export const link = (data) => axios.post(`${process.env.REACT_APP_API_URL}/api/u
 export const unlink = (data) => axios.post(`${process.env.REACT_APP_API_URL}/api/user/unlink?provider=` + encodeURIComponent(data.provider), {}, {withCredentials: true});
 
 export const getNotification = (page) => axios.get(`${process.env.REACT_APP_API_URL}/api/user/notification?page=${page}`, {withCredentials: true});
+export const getFriendNotification = (page) => axios.get(`${process.env.REACT_APP_API_URL}/api/user/notification/friend?page=${page}`, {withCredentials: true});
 export const getUserDetail = (id) => axios.get(`${process.env.REACT_APP_API_URL}/api/user/${id}`, {withCredentials: true});
 export const updateUserProfile = (data) => axios.put(`${process.env.REACT_APP_API_URL}/api/user`, data, {withCredentials: true});
 export const followUser = (targetId) => axios.post(`${process.env.REACT_APP_API_URL}/api/user/${targetId}/follow`, {}, {withCredentials: true});
