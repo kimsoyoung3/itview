@@ -64,6 +64,20 @@ const NotificationPage = ({ userInfo, openLogin }) => {
         }
     }
 
+    const timeAgo = (dateString) => {
+        const date = new Date(dateString);
+        const now = new Date();
+        const diff = (now - date) / 1000; // 초 단위
+
+        if (diff < 60) return "방금 전";
+        if (diff < 3600) return `${Math.floor(diff / 60)}분 전`;
+        if (diff < 86400) return `${Math.floor(diff / 3600)}시간 전`;
+        if (diff < 604800) return `${Math.floor(diff / 86400)}일 전`;
+        if (diff < 2592000) return `${Math.floor(diff / 604800)}주 전`;
+        if (diff < 31536000) return `${Math.floor(diff / 2592000)}개월 전`;
+        return `${Math.floor(diff / 31536000)}년 전`;
+    }
+
     return (
         <div className="notification-page">
             <div className="notification-page-wrap container">
@@ -102,7 +116,7 @@ const NotificationPage = ({ userInfo, openLogin }) => {
                                             <div className="notification-tab-content-title">
                                                 <NavLink to={item.link}>
                                                     <Markdown>{item.title}</Markdown>
-                                                    <div>{new Date(item.createdAt).toLocaleDateString().slice(0, -1)}</div>
+                                                    <div>{timeAgo(item.createdAt)}</div>
                                                 </NavLink>
                                             </div>
                                         </div>
