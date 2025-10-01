@@ -37,7 +37,7 @@ public class HomeRestController {
     @GetMapping("/{contentType}/genre")
     public ResponseEntity<List<Pair<String, String>>> getGenres(@PathVariable String contentType) {
         List<Genre> genres = homeService.getGenres(ContentType.valueOf(contentType.toUpperCase()));
-        List<Pair<String, String>> genrePairs = new ArrayList<>();
+        List<Pair<String, String>> genrePairs = new ArrayList<>(List.of(Pair.of("ALL", "전체")));
         for (Genre genre : genres) {
             genrePairs.add(Pair.of(genre.name(), genre.getGenreName()));
         }
@@ -46,6 +46,9 @@ public class HomeRestController {
 
     @GetMapping("/{contentType}/genre/{genre}")
     public ResponseEntity<Page<ContentResponseDTO>> getContentsByGenre(@PathVariable String contentType, @PathVariable String genre, @PageableDefault(page = 1) Pageable pageable) {
+        if (genre.equalsIgnoreCase("ALL")) {
+            return ResponseEntity.ok(homeService.getContentsByType(ContentType.valueOf(contentType.toUpperCase()), pageable.getPageNumber()));
+        }
         return ResponseEntity.ok(homeService.getContentsByGenre(ContentType.valueOf(contentType.toUpperCase()), Genre.valueOf(genre.toUpperCase()), pageable.getPageNumber()));
     }
 

@@ -89,6 +89,27 @@ public interface ContentRepository extends JpaRepository<ContentEntity, Integer>
             """)
     List<ContentResponseDTO> findByContentType(@Param("contentType") ContentType contentType);
 
+    // 컨텐츠 타입 별 목록 조회 (페이징)
+    @Query("""
+        SELECT new com.example.itview_spring.DTO.ContentResponseDTO(
+            c.id,
+            c.title,
+            c.contentType,
+            c.creatorName,
+            c.nation,
+            c.description,
+            c.releaseDate,
+            c.poster,
+            c.age,
+            c.duration,
+            (SELECT AVG(r.score) FROM RatingEntity r WHERE r.content.id = c.id)
+        )
+        FROM ContentEntity c
+        WHERE c.contentType = :contentType
+        ORDER BY c.releaseDate DESC
+            """)
+    Page<ContentResponseDTO> findByContentType(@Param("contentType") ContentType contentType, Pageable pageable);
+
     // 컨텐츠 타입 별 장르 목록 조회
     @Query("SELECT DISTINCT cg.genre FROM ContentGenreEntity cg WHERE cg.content.contentType = :contentType")
     List<Genre> findGenresByContentType(@Param("contentType") ContentType contentType);
