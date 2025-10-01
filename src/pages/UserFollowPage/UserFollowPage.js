@@ -86,7 +86,7 @@ const UserFollowPage = ({userInfo, openLogin, type}) => {
                                         </p>
                                     </div>
 
-                                    <div className="user-follow-info-btn">
+                                    <div className="user-follow-info-btn" hidden={userInfo?.userId === item.userProfile.id}>
                                         <button onClick={(e) => handleFollow(e, item.isFollowed, item.userProfile.id, index)}>{item.isFollowed ? "언팔로우" : "팔로우"}</button>
                                     </div>
                                 </div>

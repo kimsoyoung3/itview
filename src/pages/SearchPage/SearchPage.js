@@ -3,7 +3,7 @@ import "./SearchPage.css"
 import {NavLink, useParams, useSearchParams} from "react-router-dom";
 import CommentCard from "../../components/CommentCard/CommentCard";
 import {searchContents, searchPersons, searchCollections, searchUsers} from "../../API/SearchApi";
-import {getUserLikeCollection, getUserLikeComment, getUserLikePerson} from "../../API/UserApi";
+import {followUser, getUserLikeCollection, getUserLikeComment, getUserLikePerson, unfollowUser} from "../../API/UserApi";
 import ContentEach from "../../components/ContentEach/ContentEach";
 import SearchContentEach from "../../components/SearchContentEach/SearchContentEach";
 import CreditOrPersonCard from "../../components/CreditOrPersonCard/CreditOrPersonCard";
@@ -11,7 +11,7 @@ import CollectionCard from "../../components/CollectionCard/CollectionCard";
 import NotFound from "../NotFound/NotFound";
 import { toast } from "react-toastify";
 
-const SearchPage = ({type}) => {
+const SearchPage = ({userInfo, openLogin, type}) => {
     const [activeTab, setActiveTab] = useState("search-page-tab-btn1")
 
     const [notFound, setNotFound] = useState(false);
@@ -94,6 +94,33 @@ const SearchPage = ({type}) => {
             }));
         } catch (error) {
             toast("데이터를 불러오는데 실패했습니다.");
+        }
+    }
+
+    const handleFollow = async (e, isFollowed, targetUserId, index) => {
+        e.preventDefault();
+        if (!userInfo) {
+            openLogin();
+            return;
+        }
+        if (isFollowed) {
+            try {
+                await unfollowUser(targetUserId);
+                const updatedUserData = { ...users };
+                updatedUserData.content[index].isFollowed = false;
+                setUsers(updatedUserData);
+            } catch (error) {
+                toast("팔로우 취소 중 오류가 발생했습니다.");
+            }
+        } else {
+            try {
+                await followUser(targetUserId);
+                const updatedUserData = { ...users };
+                updatedUserData.content[index].isFollowed = true;
+                setUsers(updatedUserData);
+            } catch (error) {
+                toast("팔로우 중 오류가 발생했습니다.");
+            }
         }
     }
 
@@ -248,7 +275,7 @@ const SearchPage = ({type}) => {
                         {users?.content?.length > 0 ? (
                             <div>
                                 <div className="search-page-tab-user">
-                                    {users?.content?.map(item =>
+                                    {users?.content?.map((item, index) =>
                                         <NavLink key={item.userProfile.id} to={`/user/${item?.userProfile?.id}`} className="search-page-tab-user-profile-wrap">
                                             <div className="search-page-tab-user-profile">
                                                 <img src={item.userProfile.profile ? item.userProfile.profile : `${process.env.PUBLIC_URL}/user.png`} alt=""/>
@@ -270,7 +297,7 @@ const SearchPage = ({type}) => {
                                                 </div>
 
                                                 <div className="search-page-tab-user-info-btn">
-                                                    <button>{type === "follower" ? "팔로우" : "팔로잉"}</button>
+                                                    <button onClick={(e) => handleFollow(e, item.isFollowed, item.userProfile.id, index)}>{item.isFollowed ? "언팔로우" : "팔로우"}</button>
                                                 </div>
                                             </div>
 

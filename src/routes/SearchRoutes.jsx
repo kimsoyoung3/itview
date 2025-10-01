@@ -6,7 +6,7 @@ import SearchContentDetailPage from '../pages/SearchContentDetailPage/SearchCont
 function SearchRoutes({ userInfo, openLogin }) {
   return (
     <Routes>
-        <Route path="/" element={<SearchPage/>} />
+        <Route path="/" element={<SearchPage userInfo={userInfo} openLogin={openLogin} />} />
         <Route path="/content" element={<SearchContentDetailPage/>} />
     </Routes>
   )
