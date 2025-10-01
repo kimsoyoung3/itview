@@ -14,6 +14,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -115,27 +116,17 @@ public class ContentService {
     //public void 내맘대로 (ProductDTO productDTO) {
     //public void create (ProductDTO productDTO) {  ex)
 
-    public ContentCreateDTO create(ContentCreateDTO dto) throws IOException {
+    public ContentCreateDTO create(ContentCreateDTO dto) {
+        // ContentCreateDTO의 poster 필드는 이제 String 타입입니다.
+        // AJAX 업로드를 통해 이미 URL이 String poster 필드에 담겨있습니다.
 
-        // 1. DTO에 파일이 있는지 확인
-        MultipartFile posterFile = dto.getPoster();
-        String posterUrl = null;
-
-        if (posterFile != null && !posterFile.isEmpty()) {
-            // 2. 파일이 있으면 S3에 업로드하고 URL 받기
-            posterUrl = s3Uploader.uploadFile(posterFile);
-        }
-
-        // 3. DTO를 Entity로 변환 (poster 필드는 MultipartFile이므로 변환되지 않음)
+        // 1. DTO를 Entity로 변환 (String poster 필드가 ContentEntity의 String poster 필드로 자동 매핑됩니다.)
         ContentEntity contentEntity = modelMapper.map(dto, ContentEntity.class);
 
-        // 4. 업로드된 URL을 Entity의 poster 필드에 직접 저장
-        contentEntity.setPoster(posterUrl);
-
-        // 5. Entity를 DB에 저장
+        // 2. Entity를 DB에 저장 (poster URL도 함께 저장됨)
         contentRepository.save(contentEntity);
 
-        // 6. 저장된 Entity를 다시 DTO로 변환하여 반환
+        // 3. 저장된 Entity를 다시 DTO로 변환하여 반환
         return modelMapper.map(contentEntity, ContentCreateDTO.class);
     }
 
@@ -152,39 +143,29 @@ public class ContentService {
      * @param dto 수정할 콘텐츠 정보
      * @return ContentCreateDTO
      */
-    public ContentCreateDTO update(Integer id, ContentCreateDTO dto) throws IOException {
+    public ContentCreateDTO update(Integer id, ContentCreateDTO dto) {
 
         ContentEntity contentEntity = contentRepository.findById(id)
                 .orElseThrow(() -> new NoSuchElementException("콘텐츠 ID가 유효하지 않습니다: " + id));
 
-        String newPosterUrl = contentEntity.getPoster(); // 기존 URL을 일단 유지
+        // --- 1. 포스터 URL 처리 (기존 로직 유지) ---
+        String newPoster = dto.getPoster();
+        String oldPoster = contentEntity.getPoster();
 
-        // DTO에 파일이 존재하고 비어있지 않은 경우에만 S3 로직 실행
-        if (dto.getPoster() != null && !dto.getPoster().isEmpty()) {
-            // 1. 기존 S3 파일 삭제 (기존 포스터 URL이 있다면)
-            if (contentEntity.getPoster() != null && !contentEntity.getPoster().isEmpty()) {
-                s3Uploader.deleteFile(contentEntity.getPoster());
-            }
-
-            // 2. 새로운 파일 S3에 업로드하고 URL 받기
-            newPosterUrl = s3Uploader.uploadFile(dto.getPoster());
+        if (StringUtils.hasText(oldPoster) && !Objects.equals(oldPoster, newPoster)) {
+            // 기존 파일 삭제
+            s3Uploader.deleteFile(oldPoster);
         }
+        contentEntity.setPoster(StringUtils.hasText(newPoster) ? newPoster : null);
+        // ------------------------------------------
 
-        // DTO의 poster 필드는 MultipartFile 타입이므로,
-        // Entity에 URL을 직접 담기 위해 새 변수를 사용합니다.
-        contentEntity.setPoster(newPosterUrl);
+        // 2. ModelMapper를 사용하여 나머지 모든 필드를 복사
+        modelMapper.map(dto, contentEntity);
 
-        // 나머지 내용 수정
-        contentEntity.setTitle(dto.getTitle());
-        contentEntity.setContentType(dto.getContentType());
-        contentEntity.setReleaseDate(dto.getReleaseDate());
-        contentEntity.setNation(dto.getNation());
-        contentEntity.setDescription(dto.getDescription());
-        contentEntity.setDuration(dto.getDuration());
-        contentEntity.setAge(dto.getAge());
-        contentEntity.setCreatorName(dto.getCreatorName());
-        contentEntity.setChannelName(dto.getChannelName());
+        // 3. 포스터 URL을 다시 명시적으로 설정 (ModelMapper가 String poster 필드도 덮어쓰므로 안전 조치)
+        contentEntity.setPoster(StringUtils.hasText(newPoster) ? newPoster : null);
 
+        // 4. 최종 저장
         contentRepository.save(contentEntity);
 
         return modelMapper.map(contentEntity, ContentCreateDTO.class);

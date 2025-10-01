@@ -16,13 +16,23 @@
             <h3 class="mt-4">유저 조회</h3>
             <p class="mt-4">유저 정보</p>
 
-            <div class="d-flex justify-content-center mb-4">
-                <img th:if="${user.profile}"
-                     th:src="${user.profile}"
+            <div class="d-flex justify-content-center mb-4"
+                 th:if="${user.profile}"
+                 style="width:250px; height:250px; margin: 0 auto;
+                        border-radius: 50%; box-shadow: 0 4px 8px rgba(0,0,0,0.1); overflow: hidden;">
+
+                <img th:src="${user.profile}"
                      alt="프로필"
-                     style="max-width:120px;max-height:120px;object-fit:cover; cursor:pointer;"
-                     data-bs-toggle="modal"
-                     data-bs-target="#profileModal">
+                     style="max-width:100%;max-height:100%;object-fit:cover; border-radius: 50%;">
+            </div>
+
+            <div th:unless="${user.profile}"
+                 class="d-flex justify-content-center mb-4"
+                 style="width:250px; height:250px; margin: 0 auto;
+                        background-color: #f0f0f0; border-radius: 50%;
+                        box-shadow: 0 4px 8px rgba(0,0,0,0.1); color: #888;
+                        display: flex; align-items: center; justify-content: center; text-align: center;">
+                프로필 이미지 없음
             </div>
 
             <div class="row mb-2">
@@ -66,17 +76,6 @@
         </div>
     </div>
 
-    <div class="modal fade" id="profileModal" tabindex="-1" aria-labelledby="profileModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered modal-lg">
-            <div class="modal-content">
-                <div class="modal-header d-flex justify-content-center border-0"> <h5 class="modal-title" id="profileModalLabel">프로필 이미지</h5>
-                    <button type="button" class="btn-close position-absolute end-0 me-3" data-bs-dismiss="modal" aria-label="Close"></button> </div>
-                <div class="modal-body text-center">
-                    <img th:src="${user.profile}" alt="프로필" style="max-width:100%;">
-                </div>
-            </div>
-        </div>
-    </div>
 </main>
 </body>
 </html>

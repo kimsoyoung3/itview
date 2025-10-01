@@ -140,7 +140,9 @@ public interface ContentRepository extends JpaRepository<ContentEntity, Integer>
             """)
     Page<ContentResponseDTO> findByContentTypeAndChannel(@Param("contentType") ContentType contentType, @Param("channel") Channel channel, Pageable pageable);
 
-    @Query("SELECT c FROM ContentEntity c WHERE (:keyword IS NULL OR c.title LIKE %:keyword% OR c.description LIKE %:keyword%) AND (:contentType IS NULL OR c.contentType = :contentType)")
+    @Query("SELECT c FROM ContentEntity c " +
+            "WHERE (:keyword IS NULL OR c.title LIKE %:keyword%) " +
+            "AND (:contentType IS NULL OR c.contentType = :contentType)")
     Page<ContentEntity> searchByKeywordAndType(
             @Param("keyword") String keyword,
             @Param("contentType") ContentType contentType,

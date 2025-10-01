@@ -54,45 +54,32 @@ public class PersonController {
                        @RequestParam(required = false) String keyword,
                        Model model) {
 
-        // 검색어가 있으면 /search/person으로 리다이렉트
-        if (StringUtils.hasText(keyword)) {
-            String redirectUrl = "/search/person?keyword=" + keyword.trim()
-                    + "&page=" + pageable.getPageNumber()
-                    + "&size=" + pageable.getPageSize();
-            return "redirect:" + redirectUrl;
+        // 1. 통합된 서비스 메서드 호출: 키워드 유무에 따라 검색 또는 전체 목록 조회
+        // (PersonService.getAllPeople는 keyword가 null일 때 findAll을 호출하도록 수정됨)
+        Page<PersonDTO> personDTOS = personService.list(keyword, pageable);
+
+        // 2. 모델에 데이터 추가
+        model.addAttribute("page", personDTOS);
+        model.addAttribute("personList", personDTOS.getContent());
+
+        // 3. 페이지 블록 계산 (Thymeleaf 'null' 에러 방지)
+        int currentBlock = personDTOS.getNumber() / 10; // 현재 페이지 블록 인덱스 (0, 1, 2...)
+        int startPage = currentBlock * 10; // 0, 10, 20... (0-기반 인덱스)
+        int endPage = Math.min(startPage + 9, personDTOS.getTotalPages() - 1);
+
+        // 전체 페이지가 0일 때의 안전장치
+        if (personDTOS.getTotalPages() == 0) {
+            startPage = 0;
+            endPage = 0;
         }
 
-        Page<PersonDTO> page = personService.list(pageable, null).map(this::toDTO);
-
-        // --- 페이지 블록 계산 로직 추가 ---
-        int currentPage = page.getNumber();
-        int blockSize = 10; // 페이지 블록의 크기
-        int startPage = (int)Math.floor(currentPage / blockSize) * blockSize;
-        int endPage = Math.min(startPage + blockSize - 1, page.getTotalPages() - 1);
-
-        model.addAttribute("page", page);
-        model.addAttribute("personList", page.getContent());
-        model.addAttribute("keyword", null);
-        model.addAttribute("baseUrl", "/person/list");
-        model.addAttribute("startPage", startPage); // 뷰로 startPage 전달
-        model.addAttribute("endPage", endPage);     // 뷰로 endPage 전달
+        // 4. 모델에 페이징 및 검색 정보 추가
+        model.addAttribute("startPage", startPage); // ⬅️ Thymeleaf 오류 해결!
+        model.addAttribute("endPage", endPage);
+        model.addAttribute("keyword", keyword); // ⬅️ 검색어 유지
+        model.addAttribute("baseUrl", "/person/list"); // ⬅️ 페이징 링크의 기본 URL
 
         return "Person/list";
-    }
-
-    /* ======= (사람) 검색 ======= */
-    // /search/person?keyword=홍길동
-    @GetMapping("/search/person")
-    public String searchPerson(@PageableDefault(size = 10) Pageable pageable,
-                               @RequestParam String keyword,
-                               Model model) {
-
-        Page<PersonDTO> page = personService.list(pageable, keyword).map(this::toDTO);
-        model.addAttribute("page", page);
-        model.addAttribute("personList", page.getContent());
-        model.addAttribute("keyword", keyword);
-        model.addAttribute("baseUrl", "/search/person"); // 페이지네이션용
-        return "Person/list"; // 같은 목록 템플릿 재사용
     }
 
     /* ======= 상세 ======= */
@@ -112,14 +99,7 @@ public class PersonController {
 
     /* ======= 등록 저장 ======= */
     @PostMapping("/person/register")
-    public String register(@ModelAttribute("personDTO") PersonDTO personDTO,
-                           @RequestParam("profileImage") MultipartFile profileImage) throws IOException {
-
-        if (!profileImage.isEmpty()) {
-            String s3Url = s3Uploader.uploadFile(profileImage);
-            personDTO.setProfile(s3Url); // 업로드된 URL을 DTO에 설정
-        }
-
+    public String register(@ModelAttribute("personDTO") PersonDTO personDTO) {
         personService.create(toEntity(personDTO));
         return "redirect:/person/list";
     }
@@ -135,27 +115,32 @@ public class PersonController {
     /* ======= 수정 저장 (폼은 POST + _method=PUT) ======= */
     @PutMapping("/person/{id}/update")
     public String update(@PathVariable("id") Integer id,
-                         @ModelAttribute("personDTO") PersonDTO personDTO,
-                         @RequestParam("profileImage") MultipartFile profileImage) throws IOException {
-
+                         @ModelAttribute("personDTO") PersonDTO personDTO) {
         personDTO.setId(id);
 
-        // 기존 인물 정보 조회
+        // 기존 인물 정보 조회 (기존 파일 삭제를 위해 필요)
         PersonEntity existingPerson = personService.get(id);
 
-        // 새로운 파일이 업로드된 경우
-        if (!profileImage.isEmpty()) {
-            // 기존 S3 파일 삭제
-            if (existingPerson.getProfile() != null && !existingPerson.getProfile().isEmpty()) {
-                s3Uploader.deleteFile(existingPerson.getProfile());
-            }
+        // 1. S3 URL 변경 여부 확인 (AJAX로 이미 profile 필드가 업데이트됨)
+        String newProfileUrl = personDTO.getProfile();
+        String oldProfileUrl = existingPerson.getProfile();
 
-            // 새 파일 업로드 및 DTO에 URL 설정
-            String s3Url = s3Uploader.uploadFile(profileImage);
-            personDTO.setProfile(s3Url);
-        } else {
-            // 새로운 파일이 없는 경우, 기존 URL 유지
-            personDTO.setProfile(existingPerson.getProfile());
+        // 2. 만약 새 URL이 있고 기존 URL과 다르다면, 기존 S3 파일 삭제
+        //    (프로필 이미지를 변경했거나 새로 추가한 경우)
+        if (StringUtils.hasText(newProfileUrl) && !newProfileUrl.equals(oldProfileUrl)) {
+            if (StringUtils.hasText(oldProfileUrl)) {
+                // 기존 S3 파일 삭제
+                s3Uploader.deleteFile(oldProfileUrl);
+            }
+        }
+        // 3. 만약 DTO의 profile이 null/empty인데 기존 URL이 있다면 (이미지 삭제 요청 시), 삭제.
+        else if (!StringUtils.hasText(newProfileUrl) && StringUtils.hasText(oldProfileUrl)) {
+            s3Uploader.deleteFile(oldProfileUrl);
+            personDTO.setProfile(null); // DB에도 null 저장
+        }
+        // 4. 새 URL이 없고 기존 URL이 있다면, DTO에 기존 URL을 설정 (이미지 변경 안 한 경우)
+        else if (!StringUtils.hasText(newProfileUrl) && StringUtils.hasText(oldProfileUrl)) {
+            personDTO.setProfile(oldProfileUrl);
         }
 
         personService.update(id, toEntity(personDTO));

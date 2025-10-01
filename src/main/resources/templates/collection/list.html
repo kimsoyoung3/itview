@@ -35,7 +35,12 @@
         <div class="row">
             <div class="col-12">
                 <h3 class="mt-4">컬렉션 관리</h3>
-                <p class="mt-4">현재 등록된 컬렉션 목록입니다:</p>
+
+                <p class="mt-4" th:text="${(keyword == null or #strings.isEmpty(keyword))
+                    ? '현재 등록된 컬렉션 목록입니다:'
+                    : keyword + '에 대한 검색 결과입니다.'}">
+                    현재 등록된 컬렉션 목록입니다:
+                </p>
 
                 <div class="d-flex justify-content-end align-items-center mb-4">
                     <form th:action="@{/collection/list}" method="get">
@@ -59,7 +64,7 @@
                     </tr>
                     </thead>
                     <tbody>
-                    <tr th:if="${#lists.isEmpty(collections.content)}">
+                    <tr th:if="${collections.content.isEmpty()}">
                         <td colspan="3" class="text-center">컬렉션이 없습니다.</td>
                     </tr>
                     <tr th:each="collection : ${collections.content}"

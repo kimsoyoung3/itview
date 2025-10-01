@@ -20,30 +20,33 @@
             <form th:action="@{/user/{id}(id=${user.id})}" th:object="${user}" method="post">
                 <input type="hidden" th:if="${_csrf != null}" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
 
-                <div th:if="${user.profile}"
-                     class="d-flex justify-content-center mb-4 position-relative"
-                     style="width: 250px; height: 350px; margin: 0 auto;
-                            border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">
+                <div id="imageContainer"
+                     class="justify-content-center mb-4 position-relative image-wrapper"
+                     th:classappend="${user.profile} ? 'd-flex' : 'd-none'"
+                     style="width:250px; height:250px; margin: 0 auto;
+                            border-radius: 50%; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">
 
                     <img th:src="${user.profile}" alt="프로필" id="profileImage"
-                         style="max-width: 100%; height: auto; object-fit: contain; border-radius: 8px;">
+                         style="max-width:100%; max-height:100%; object-fit:cover; border-radius: 50%;">
 
                     <button type="button" class="btn btn-sm btn-light position-absolute top-0 end-0 p-0" id="deleteProfileBtn"
-                            style="width: 24px; height: 24px; line-height: 1; border-radius: 50%; display: flex; align-items: center; justify-content: center; transform: translate(50%, -50%);"
+                            style="width: 24px; height: 24px; line-height: 1; border-radius: 50%; display: flex; align-items: center; justify-content: center;"
                             onclick="hideProfileAndButton(event)">
                         <i class="fas fa-times"></i>
                     </button>
                 </div>
 
-                <div th:unless="${user.profile}"
-                     class="d-flex justify-content-center mb-4"
-                     style="width: 250px; height: 350px; margin: 0 auto;
-                            background-color: #f0f0f0; align-items: center; justify-content: center;
-                            border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); color: #888;">
-                    프로필 이미지 없음
+                <div id="profilePlaceholder"
+                     class="align-items-center mb-4 text-center"
+                     th:classappend="${user.profile} ? 'd-none' : 'd-flex justify-content-center'"
+                     style="width:250px; height:250px; margin: 0 auto;
+                            background-color: #f0f0f0; border-radius: 50%;
+                            box-shadow: 0 4px 8px rgba(0,0,0,0.1); color: #888;
+                            word-break: keep-all;">
+                    <div class="w-100">프로필 이미지 없음</div>
                 </div>
 
-                <input type="hidden" name="profile" th:value="${user.profile}">
+                <input type="hidden" name="profile" th:value="${user.profile}" id="profileHiddenInput">
 
                 <div class="row">
                     <div class="col-12">
@@ -94,28 +97,33 @@
     </div>
 
     <script>
-        // ⭐ 이미지 클릭 시 모달 띄우는 동작 관련 속성이 제거되었으므로, 해당 JS 코드도 제거합니다. ⭐
-
         function hideProfileAndButton(event) {
-            // 이미지 엘리먼트를 숨기기 전에, 부모 DIV 영역을 찾아서 display를 none으로 설정하면
-            // 전체 이미지를 감싸는 영역이 사라져서 공간을 차지하지 않게 됩니다.
-            const imageContainer = event.currentTarget.closest('.position-relative');
+            event.preventDefault();
+            event.stopPropagation();
+
+            const imageContainer = document.getElementById('imageContainer');
+            const placeholder = document.getElementById('profilePlaceholder');
+
+            // 이미지 컨테이너 숨기기
             if (imageContainer) {
-                imageContainer.style.display = 'none';
+                imageContainer.classList.remove('d-flex');
+                imageContainer.classList.add('d-none');
             }
 
-            // 폼 전송을 위해 hidden input의 값을 비웁니다.
-            document.querySelector('input[name="profile"]').value = '';
+            // 플레이스홀더 보이기
+            if (placeholder) {
+                placeholder.classList.remove('d-none');
+                placeholder.classList.add('d-flex');
+            }
 
-            // 삭제 버튼은 이미 숨겨진 상태이므로, 별도로 숨길 필요는 없습니다.
-            // 하지만 안전을 위해 event.currentTarget.style.display = 'none';은 제거하는 대신,
-            // 이미 부모 DIV가 사라져서 버튼도 사라지게 되므로 위 로직만으로 충분합니다.
+            // Hidden input 값을 비웁니다.
+            document.getElementById('profileHiddenInput').value = '';
         }
+
         function deleteIntroduction() {
             if (confirm("정말 자기소개를 삭제하시겠습니까?")) {
                 document.querySelector('[name="introduction"]').value = '';
 
-                // 자기소개 삭제 버튼을 숨깁니다.
                 const deleteIntroBtn = document.getElementById('deleteIntroBtn');
                 if (deleteIntroBtn) {
                     deleteIntroBtn.style.display = 'none';

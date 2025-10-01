@@ -3,6 +3,7 @@ package com.example.itview_spring.Controller.Content;
 import com.example.itview_spring.DTO.*;
 import com.example.itview_spring.Entity.ContentEntity;
 import com.example.itview_spring.Service.ContentService;
+import com.example.itview_spring.Util.S3Uploader;
 import lombok.RequiredArgsConstructor;
 
 import org.modelmapper.ModelMapper;
@@ -10,13 +11,17 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.io.IOException;
 import java.time.format.DateTimeFormatter;
+import java.util.Map;
 import java.util.NoSuchElementException;
 
 @Controller
@@ -27,6 +32,8 @@ public class ContentController {
 
     @Autowired
     private ModelMapper modelMapper;
+
+    private final S3Uploader s3Uploader;
 
     // 등록 폼 이동
     @GetMapping("/content/register")
@@ -39,24 +46,15 @@ public class ContentController {
     // 등록 처리 후 → 장르 선택 페이지로 이동
     @PostMapping("/content/register")
     public String newContent(ContentCreateDTO contentDTO, RedirectAttributes redirectAttributes) {
-        try {
-            // 데이터 저장 및 S3 파일 업로드 처리
-            ContentCreateDTO savedContent = contentService.create(contentDTO);
+        // 데이터 저장 및 S3 파일 업로드 처리
+        ContentCreateDTO savedContent = contentService.create(contentDTO);
 
-            // 성공 메시지 추가
-            redirectAttributes.addFlashAttribute("message", "콘텐츠가 성공적으로 등록되었습니다.");
+        // 성공 메시지 추가
+        redirectAttributes.addFlashAttribute("message", "콘텐츠가 성공적으로 등록되었습니다.");
 
 
-            // 장르 등록 폼으로 이동 (새로 생성된 ID를 사용)
-            return "redirect:/content/" + savedContent.getId() + "/genre";
-        } catch (IOException e) {
-            // 파일 업로드 실패 시 예외 처리
-            redirectAttributes.addFlashAttribute("errorMessage", "콘텐츠 등록 중 파일 업로드에 실패했습니다. 다시 시도해주세요.");
-            e.printStackTrace(); // 로깅
-
-            // 등록 폼으로 다시 이동
-            return "redirect:/content/register";
-        }
+        // 장르 등록 폼으로 이동 (새로 생성된 ID를 사용)
+        return "redirect:/content/" + savedContent.getId() + "/genre";
     }
 
     // 전체 조회
@@ -143,11 +141,6 @@ public class ContentController {
             // 콘텐츠 ID가 유효하지 않을 경우
             redirectAttributes.addFlashAttribute("error", "콘텐츠를 찾을 수 없어 수정할 수 없습니다.");
             return "redirect:/content/list"; // 목록 페이지로 리다이렉트
-        } catch (IOException e) {
-            // 파일 업로드 실패 등 입출력 오류 발생 시
-            redirectAttributes.addFlashAttribute("error", "콘텐츠 수정 중 파일 업로드에 실패했습니다. 다시 시도해주세요.");
-            e.printStackTrace(); // 콘솔에 오류 로그 출력
-            return "redirect:/content/" + id + "/update"; // 수정 폼으로 다시 리다이렉트
         }
     }
 
@@ -156,5 +149,47 @@ public class ContentController {
     public String deleteContent(@RequestParam("id") Integer id) {
         contentService.delete(id);
         return "redirect:/content/list";
+    }
+
+    @PostMapping("/content/poster-upload")
+    @ResponseBody
+    public ResponseEntity<Map<String, String>> uploadPoster(
+            @RequestParam("poster") MultipartFile file) {
+
+        // 1. 파일이 비어있는지 검사 (400 BAD REQUEST)
+        if (file.isEmpty()) {
+            return new ResponseEntity<>(
+                    Map.of("message", "포스터 파일을 선택해주세요."),
+                    HttpStatus.BAD_REQUEST
+            );
+        }
+
+        try {
+            // 2. S3Uploader 호출 및 URL 획득 (제공해주신 S3Uploader의 uploadFile 메서드 사용)
+            String s3Url = s3Uploader.uploadFile(file);
+
+            // 3. 성공 시 URL 반환 (200 OK)
+            return new ResponseEntity<>(
+                    Map.of("url", s3Url), // 'url' 키 사용
+                    HttpStatus.OK
+            );
+
+        } catch (IllegalArgumentException e) {
+            // 4. 파일 형식 관련 오류 (400 BAD REQUEST)
+            // S3Uploader 내부의 Thumbnails.of() 처리 중 발생할 수 있는 예외
+            e.printStackTrace();
+            return new ResponseEntity<>(
+                    Map.of("message", "파일 처리 중 오류가 발생했습니다. 이미지 파일(JPG, PNG 등)인지 확인해주세요."),
+                    HttpStatus.BAD_REQUEST
+            );
+        } catch (IOException e) {
+            // 5. 서버 통신/IO 오류 (500 INTERNAL SERVER ERROR)
+            // S3 통신 오류 또는 Thumbnails IO 오류 등
+            e.printStackTrace();
+            return new ResponseEntity<>(
+                    Map.of("message", "포스터 업로드 중 서버 통신 오류가 발생했습니다."),
+                    HttpStatus.INTERNAL_SERVER_ERROR
+            );
+        }
     }
 }

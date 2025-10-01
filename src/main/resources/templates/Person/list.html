@@ -37,10 +37,13 @@
         <div class="row">
             <div class="col-12">
                 <h3 class="mt-4">인물 목록</h3>
-                <p class="mt-4">현재 등록한 인물 목록입니다:</p>
+
+                <p class="mt-4" th:text="${(keyword == null or #strings.isEmpty(keyword)) ? '현재 등록한 인물 목록입니다:' : keyword + '에 대한 검색 결과입니다.'}">
+                    현재 등록한 인물 목록입니다:
+                </p>
 
                 <div class="d-flex justify-content-end align-items-center mb-4">
-                    <form th:action="@{/search/person}" method="get" class="me-3">
+                    <form th:action="@{/person/list}" method="get" class="me-3">
                         <div class="input-group">
                             <input class="form-control" type="text" name="keyword" th:value="${keyword}" placeholder="인물 이름 검색" aria-label="인물 이름 검색" aria-describedby="btnPersonSearch" />
                             <button class="btn btn-primary" id="btnPersonSearch" type="submit">
@@ -60,11 +63,11 @@
                     </tr>
                     </thead>
                     <tbody>
-                    <tr th:if="${#lists.isEmpty(personList)}">
+                    <tr th:if="${page.content.isEmpty()}">
                         <td colspan="4" class="text-center">데이터가 없습니다.</td>
                     </tr>
 
-                    <tr th:each="person : ${personList}"
+                    <tr th:each="person : ${page.content}"
                         class="clickable-row"
                         th:onclick="|window.location.href='@{/person/{id}(id=${person.id})}'|">
                         <td class="text-start" th:text="${person.name}">이름</td>
@@ -91,7 +94,6 @@
 
                 <div class="d-flex justify-content-center mt-3" th:if="${page != null and page.totalPages >= 1}">
                     <ul class="pagination">
-
                         <li class="page-item" th:classappend="${startPage == 0} ? 'disabled'">
                             <a class="page-link"
                                th:href="@{${baseUrl}(page=0, size=${page.size}, keyword=${keyword})}">
