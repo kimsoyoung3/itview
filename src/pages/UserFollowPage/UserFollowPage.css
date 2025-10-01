@@ -83,9 +83,9 @@
 .user-follow-info-btn>button {
     border: none;
     background: #ffffff;
-    padding: 8px 15px;
+    padding: 5px 10px;
     border-radius: 20px;
-    font-size: 0.85rem;
+    font-size: 0.8rem;
     color: #555555;
     font-weight: 500;
 }
