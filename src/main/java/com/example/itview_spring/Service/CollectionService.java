@@ -44,8 +44,12 @@ public class CollectionService {
 
     // 컬렉션 생성
     public Integer createCollection(Integer userId, CollectionFormDTO dto) {
+        if (!userRepository.existsById(userId)) {
+            throw new NoSuchElementException("존재하지 않는 유저입니다.");
+        }        
+        UserEntity user = userRepository.findById(userId).get();
         CollectionEntity collection = new CollectionEntity();
-        collection.setUser(userRepository.findById(userId).get());
+        collection.setUser(user);
         collection.setTitle(dto.getTitle());
         collection.setDescription(dto.getDescription());
 
@@ -65,6 +69,11 @@ public class CollectionService {
         activityLog.setReferenceId(collection.getId());
         activityLog.setTimestamp(LocalDateTime.now());
         activityLogRepository.save(activityLog);
+
+        // 팔로워들에게 알림 전송
+        for (FollowEntity follow : user.getFollowers()) {
+            notificationService.sendNotification(follow.getFollower().getId());
+        }
 
         return collection.getId();
     }
@@ -133,6 +142,11 @@ public class CollectionService {
                 activityLogRepository.save(activityLog);
             }
         }
+
+        // 팔로워들에게 알림 전송
+        for (FollowEntity follow : userRepository.findById(userId).get().getFollowers()) {
+            notificationService.sendNotification(follow.getFollower().getId());
+        }
     }
 
     // 컬렉션 아이템 페이징 조회
@@ -194,6 +208,11 @@ public class CollectionService {
             activityLog.setTimestamp(LocalDateTime.now());
             activityLog.setIsUpdate(true);
             activityLogRepository.save(activityLog);
+        }
+
+        // 팔로워들에게 알림 전송
+        for (FollowEntity follow : userRepository.findById(userId).get().getFollowers()) {
+            notificationService.sendNotification(follow.getFollower().getId());
         }
     }
 
@@ -271,8 +290,6 @@ public class CollectionService {
         if (newReply == null) {
             throw new RuntimeException("Failed to create reply");
         }
-
-        // 알림 생성
 
         // 해당 컬렉션의 작성자에게 알림 전송
         CollectionEntity collection = collectionRepository.findById(id).orElseThrow(() -> new NoSuchElementException("존재하지 않는 컬렉션입니다."));

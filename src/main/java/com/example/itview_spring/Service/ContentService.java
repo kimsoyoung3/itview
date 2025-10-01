@@ -34,7 +34,7 @@ public class ContentService {
     private final ContentGenreRepository contentGenreRepository;
     private final GalleryRepository galleryRepository;
     private final ActivityLogRepository activityLogRepository;
-
+    private final NotificationService notificationService;
     private final VideoRepository videoRepository;
     private final ExternalServiceRepository externalServiceRepository;
     private final RatingRepository ratingRepository;
@@ -317,6 +317,10 @@ public class ContentService {
         activityLog.setTimestamp(LocalDateTime.now());
         activityLogRepository.save(activityLog);
 
+        // 팔로워들에게 알림 전송
+        for (FollowEntity follow : userRepository.findById(userId).get().getFollowers()) {
+            notificationService.sendNotification(follow.getFollower().getId());
+        }
     }
 
     // 위시리스트 삭제

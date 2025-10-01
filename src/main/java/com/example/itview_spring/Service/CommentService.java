@@ -9,6 +9,7 @@ import com.example.itview_spring.DTO.CommentDTO;
 import com.example.itview_spring.DTO.ReplyDTO;
 import com.example.itview_spring.Entity.ActivityLogEntity;
 import com.example.itview_spring.Entity.CommentEntity;
+import com.example.itview_spring.Entity.FollowEntity;
 import com.example.itview_spring.Entity.NotificationEntity;
 import com.example.itview_spring.Entity.ReplyEntity;
 import com.example.itview_spring.Repository.*;
@@ -59,6 +60,11 @@ public class CommentService {
         activityLog.setReferenceId(comment.getId());
         activityLog.setTimestamp(LocalDateTime.now());
         activityLogRepository.save(activityLog);
+
+        // 팔로워들에게 알림 전송
+        for (FollowEntity follow : comment.getUser().getFollowers()) {
+            notificationService.sendNotification(follow.getFollower().getId());
+        }
     }
 
     // 코멘트 조회
@@ -101,6 +107,11 @@ public class CommentService {
             activityLog.setTimestamp(LocalDateTime.now());
             activityLog.setIsUpdate(true);
             activityLogRepository.save(activityLog);
+        }
+
+        // 팔로워들에게 알림 전송
+        for (FollowEntity follow : comment.getUser().getFollowers()) {
+            notificationService.sendNotification(follow.getFollower().getId());
         }
     }
 

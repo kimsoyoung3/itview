@@ -302,7 +302,7 @@ public class UserService implements UserDetailsService {
             if (activity.getType() == ActivityLogType.COMMENT) {
                 dto.setLink("/comment/" + activity.getReferenceId());
                 CommentEntity comment = commentRepository.findById(activity.getReferenceId()).get();
-                dto.setTitle("**" + activity.getUser().getNickname() + "**님이 **" + comment.getContent().getTitle() + "**에 코멘트를 남겼어요");
+                dto.setTitle("**" + activity.getUser().getNickname() + "**님이 **" + comment.getContent().getTitle() + "**" + (activity.getIsUpdate() ? "의 코멘트를 수정했어요" : "에 코멘트를 남겼어요"));
             } else if (activity.getType() == ActivityLogType.COLLECTION) {
                 dto.setLink("/collection/" + activity.getReferenceId());
                 CollectionEntity collection = collectionRepository.findById(activity.getReferenceId()).get();
@@ -310,7 +310,7 @@ public class UserService implements UserDetailsService {
             } else if (activity.getType() == ActivityLogType.RATING) {
                 RatingEntity rating = ratingRepository.findById(activity.getReferenceId()).get();
                 dto.setLink("/content/" + rating.getContent().getId());
-                dto.setTitle("**" + activity.getUser().getNickname() + "**님이 **" + rating.getContent().getTitle() + "**에 별점 " + rating.getScore() + "점을 남겼어요");
+                dto.setTitle("**" + activity.getUser().getNickname() + "**님이 **" + rating.getContent().getTitle() + "**" + (activity.getIsUpdate() ? "의 별점을 " + rating.getScore() + "점으로 수정했어요" : "에 별점" + rating.getScore() + "점을 남겼어요"));
             } else if (activity.getType() == ActivityLogType.WISH) {
                 WishlistEntity wishlist = wishlistRepository.findById(activity.getReferenceId()).get();
                 dto.setLink("/content/" + wishlist.getContent().getId());

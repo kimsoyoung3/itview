@@ -9,6 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.example.itview_spring.Constant.ActivityLogType;
 import com.example.itview_spring.Entity.ActivityLogEntity;
+import com.example.itview_spring.Entity.FollowEntity;
 import com.example.itview_spring.Entity.RatingEntity;
 import com.example.itview_spring.Repository.ActivityLogRepository;
 import com.example.itview_spring.Repository.ContentRepository;
@@ -23,6 +24,7 @@ import lombok.RequiredArgsConstructor;
 public class RatingService {
 
     private final RatingRepository ratingRepository;
+    private final NotificationService notificationService;
     private final ActivityLogRepository activityLogRepository;
     private final UserRepository userRepository;
     private final ContentRepository contentRepository;
@@ -71,7 +73,12 @@ public class RatingService {
                 activityLog.setIsUpdate(true);
                 activityLogRepository.save(activityLog);
             }
-        }        
+        }
+
+        // 팔로워들에게 알림 전송
+        for (FollowEntity follow : userRepository.findById(userId).get().getFollowers()) {
+            notificationService.sendNotification(follow.getFollower().getId());
+        }
     }
 
     // 별점 삭제
