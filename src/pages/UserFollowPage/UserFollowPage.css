@@ -83,12 +83,22 @@
 .user-follow-info-btn>button {
     border: none;
     background: #ffffff;
-    padding: 4px 8px;
+    padding: 8px 15px;
     border-radius: 20px;
-    font-size: 0.8rem;
+    font-size: 0.85rem;
     color: #555555;
+    font-weight: 500;
 }
 
 .user-follow-info-btn>button:hover {
     background: #eeeeee;
+}
+
+.user-follow-info-btn-follow {
+    color: #22c55e !important;
+    background: #e6f5eb !important;
+}
+
+.user-follow-info-btn-follow:hover {
+    background: #b7e8c7 !important;
 }

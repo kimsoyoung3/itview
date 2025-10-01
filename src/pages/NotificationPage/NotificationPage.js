@@ -115,10 +115,6 @@ const NotificationPage = ({ userInfo, openLogin }) => {
                             ) : (
                                 <p className="empty-message">소식이 없습니다 :)</p>
                             )}
-
-
-
-
                     </div>
                 </div>
             </div>

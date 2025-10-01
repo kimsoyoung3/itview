@@ -87,7 +87,8 @@ const UserFollowPage = ({userInfo, openLogin, type}) => {
                                     </div>
 
                                     <div className="user-follow-info-btn">
-                                        <button onClick={(e) => handleFollow(e, item.isFollowed, item.userProfile.id, index)}>{item.isFollowed ? "언팔로우" : "팔로우"}</button>
+                                        <button onClick={(e) => handleFollow(e, item.isFollowed, item.userProfile.id, index)}
+                                                className={`${item.isFollowed ? "user-follow-info-btn-follow" : ""}`}>{item.isFollowed ? "팔로잉" : "팔로우"}</button>
                                     </div>
                                 </div>
 
