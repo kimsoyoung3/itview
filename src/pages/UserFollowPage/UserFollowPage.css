@@ -62,11 +62,22 @@
     font-weight: 500;
 }
 
+.user-follow-info-wrap {
+    width: 100%;
+}
+
 .user-follow-info-wrap>p:nth-of-type(2) {
     font-weight: 400;
     color: #888888;
     font-size: 0.9rem;
     width: 95%;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+}
+
+.user-follow-info-btn {
+    flex-shrink: 0;
 }
 
 .user-follow-info-btn>button {

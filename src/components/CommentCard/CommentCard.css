@@ -9,10 +9,6 @@
     box-shadow: 0 1px 3px rgba(0,0,0,0.1);
 }
 
-.comment-inner .comment-card {
-    margin: 0;
-}
-
 .bi-heart-fill {
     color: #22C55E;
 }
@@ -45,10 +41,6 @@
     height: 100%;
     border-radius: 50%;
     object-fit: cover;
-}
-
-.comment-inner .comment-card-date {
-    display: none;
 }
 
 .comment-card-date {
@@ -156,6 +148,22 @@
     color: #888888;
 }
 
+/*디테일 페이지 코멘트 카드*/
+.comment-inner .comment-card {
+    margin: 0;
+}
+
+.comment-inner .comment-card-date {
+    display: none;
+}
+
+.comment-inner .comment-card-nickname {
+    display: block;
+    width: 170px;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+}
 
 /* 📱 반응형 스타일 */
 
