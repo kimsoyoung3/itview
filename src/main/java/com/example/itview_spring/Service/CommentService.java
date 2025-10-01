@@ -1,11 +1,13 @@
 package com.example.itview_spring.Service;
 
+import com.example.itview_spring.Constant.ActivityLogType;
 import com.example.itview_spring.Constant.NotiType;
 import com.example.itview_spring.Constant.Replyable;
 import com.example.itview_spring.DTO.AdminCommentDTO;
 import com.example.itview_spring.DTO.CommentAndContentDTO;
 import com.example.itview_spring.DTO.CommentDTO;
 import com.example.itview_spring.DTO.ReplyDTO;
+import com.example.itview_spring.Entity.ActivityLogEntity;
 import com.example.itview_spring.Entity.CommentEntity;
 import com.example.itview_spring.Entity.NotificationEntity;
 import com.example.itview_spring.Entity.ReplyEntity;
@@ -18,6 +20,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.NoSuchElementException;
 
@@ -27,6 +30,7 @@ import java.util.NoSuchElementException;
 public class CommentService {
     
     private final CommentRepository commentRepository;
+    private final ActivityLogRepository activityLogRepository;
     private final NotificationRepository notificationRepository;
     private final UserRepository userRepository;
     private final ContentRepository contentRepository;
@@ -48,6 +52,13 @@ public class CommentService {
         comment.setContent(contentRepository.findById(contentId).orElseThrow(() -> new RuntimeException("Content not found")));
         comment.setText(text);
         commentRepository.save(comment);
+
+        ActivityLogEntity activityLog = new ActivityLogEntity();
+        activityLog.setUser(comment.getUser());
+        activityLog.setType(ActivityLogType.COMMENT);
+        activityLog.setReferenceId(comment.getId());
+        activityLog.setTimestamp(LocalDateTime.now());
+        activityLogRepository.save(activityLog);
     }
 
     // 코멘트 조회
@@ -76,6 +87,21 @@ public class CommentService {
         }
         comment.setText(newText);
         commentRepository.save(comment);
+
+        ActivityLogEntity activityLog = activityLogRepository.findByReferenceIdAndType(comment.getId(), ActivityLogType.COMMENT);
+        if (activityLog != null) {
+            activityLog.setTimestamp(LocalDateTime.now());
+            activityLog.setIsUpdate(true);
+            activityLogRepository.save(activityLog);
+        } else {
+            activityLog = new ActivityLogEntity();
+            activityLog.setUser(comment.getUser());
+            activityLog.setType(ActivityLogType.COMMENT);
+            activityLog.setReferenceId(comment.getId());
+            activityLog.setTimestamp(LocalDateTime.now());
+            activityLog.setIsUpdate(true);
+            activityLogRepository.save(activityLog);
+        }
     }
 
     // 코멘트 삭제
@@ -87,10 +113,11 @@ public class CommentService {
         if (!comment.getUser().getId().equals(userId)) {
             throw new SecurityException("권한이 없습니다");
         }
-        commentRepository.delete(comment);
         likeRepository.deleteByTargetIdAndTargetType(commentId, Replyable.COMMENT);
         replyRepository.deleteByTargetIdAndTargetType(commentId, Replyable.COMMENT);
         notificationRepository.deleteByTargetIdAndTargetType(commentId, Replyable.COMMENT);
+        activityLogRepository.deleteByReferenceIdAndType(comment.getId(), ActivityLogType.COMMENT);
+        commentRepository.delete(comment);
         return true;
     }
 

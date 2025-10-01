@@ -223,6 +223,15 @@ public class UserRestController {
         return ResponseEntity.ok(notifications);
     }
 
+    // 친구 소식 조회
+    @GetMapping("/notification/friend")
+    public ResponseEntity<Page<NotificationDTO>> getFriendNotifications(@AuthenticationPrincipal CustomUserDetails user,
+                                                                        @PageableDefault(page=1) Pageable pageable) {
+        Page<NotificationDTO> notifications = userService.getFriendNotifications(user.getId(), pageable.getPageNumber());
+        return ResponseEntity.ok(notifications);
+    }
+
+
     // 유저 페이지 정보 조회
     @GetMapping("/{id}")
     public ResponseEntity<UserResponseDTO> getUserProfile(@PathVariable("id") Integer id) {

@@ -1,18 +1,22 @@
 package com.example.itview_spring.Service;
 
 import com.example.itview_spring.Config.CustomUserDetails;
+import com.example.itview_spring.Constant.ActivityLogType;
 import com.example.itview_spring.Constant.ContentType;
 import com.example.itview_spring.Constant.NotiType;
 import com.example.itview_spring.Constant.Replyable;
 import com.example.itview_spring.Constant.Role;
 import com.example.itview_spring.DTO.*;
+import com.example.itview_spring.Entity.ActivityLogEntity;
 import com.example.itview_spring.Entity.CollectionEntity;
 import com.example.itview_spring.Entity.CommentEntity;
 import com.example.itview_spring.Entity.EmailVerificationEntity;
 import com.example.itview_spring.Entity.FollowEntity;
 import com.example.itview_spring.Entity.NotificationEntity;
+import com.example.itview_spring.Entity.RatingEntity;
 import com.example.itview_spring.Entity.ReplyEntity;
 import com.example.itview_spring.Entity.UserEntity;
+import com.example.itview_spring.Entity.WishlistEntity;
 import com.example.itview_spring.Repository.*;
 import com.example.itview_spring.Util.AuthCodeGenerator;
 import com.example.itview_spring.Util.S3Uploader;
@@ -46,6 +50,7 @@ import java.util.Optional;
 public class UserService implements UserDetailsService {
 
     private final WishlistRepository wishlistRepository;
+    private final ActivityLogRepository activityLogRepository;
     private final FollowRepository followRepository;
     private final SocialRepository socialRepository;
     private final UserRepository userRepository;
@@ -266,6 +271,51 @@ public class UserService implements UserDetailsService {
                 }
             }
             dto.setTitle("**" + notification.getActor().getNickname() + "**님이 " + targetName + targetType + tail);
+            return dto;
+        });
+        return notificationDTOs;
+    }
+
+    // 한글 받침 유무 확인
+    private boolean hasJong(char ch) {
+        if (ch < 0xAC00 || ch > 0xD7A3) return false; // 한글 범위 밖
+        int code = ch - 0xAC00;
+        int jongseong = code % 28;
+        return jongseong != 0;
+    }
+
+    // 친구 소식 조회
+    public Page<NotificationDTO> getFriendNotifications(Integer userId, Integer page) {
+
+
+        if (!userRepository.existsById(userId)) {
+            throw new NoSuchElementException("존재하지 않는 유저입니다.");
+        }
+        Pageable pageable = PageRequest.of(page - 1, 10);
+        Page<ActivityLogEntity> activities = activityLogRepository.findFriendActivities(userId, pageable);
+        Page<NotificationDTO> notificationDTOs = activities.map(activity -> {        
+            NotificationDTO dto = new NotificationDTO();
+            dto.setProfile(activity.getUser().getProfile());
+            dto.setActorId(activity.getUser().getId());
+            dto.setCreatedAt(activity.getTimestamp());
+            
+            if (activity.getType() == ActivityLogType.COMMENT) {
+                dto.setLink("/comment/" + activity.getReferenceId());
+                CommentEntity comment = commentRepository.findById(activity.getReferenceId()).get();
+                dto.setTitle("**" + activity.getUser().getNickname() + "**님이 **" + comment.getContent().getTitle() + "**에 코멘트를 남겼어요");
+            } else if (activity.getType() == ActivityLogType.COLLECTION) {
+                dto.setLink("/collection/" + activity.getReferenceId());
+                CollectionEntity collection = collectionRepository.findById(activity.getReferenceId()).get();
+                dto.setTitle("**" + activity.getUser().getNickname() + "**님이 **" + collection.getTitle() + "** 컬렉션을 " + (activity.getIsUpdate() ? "수정했어요" : "만들었어요"));
+            } else if (activity.getType() == ActivityLogType.RATING) {
+                RatingEntity rating = ratingRepository.findById(activity.getReferenceId()).get();
+                dto.setLink("/content/" + rating.getContent().getId());
+                dto.setTitle("**" + activity.getUser().getNickname() + "**님이 **" + rating.getContent().getTitle() + "**에 별점 " + rating.getScore() + "점을 남겼어요");
+            } else if (activity.getType() == ActivityLogType.WISH) {
+                WishlistEntity wishlist = wishlistRepository.findById(activity.getReferenceId()).get();
+                dto.setLink("/content/" + wishlist.getContent().getId());
+                dto.setTitle("**" + activity.getUser().getNickname() + "**님이 **" + wishlist.getContent().getTitle() + (hasJong(wishlist.getContent().getTitle().charAt(wishlist.getContent().getTitle().length() - 1)) ? "**을" : "**를") + " 보고싶어해요");
+            }
             return dto;
         });
         return notificationDTOs;

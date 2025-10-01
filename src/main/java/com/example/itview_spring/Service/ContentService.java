@@ -1,5 +1,6 @@
 package com.example.itview_spring.Service;
 
+import com.example.itview_spring.Constant.ActivityLogType;
 import com.example.itview_spring.Constant.ContentType;
 import com.example.itview_spring.DTO.*;
 import com.example.itview_spring.Entity.*;
@@ -16,6 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -30,6 +32,7 @@ public class ContentService {
     private final WishlistRepository wishlistRepository;
     private final ContentGenreRepository contentGenreRepository;
     private final GalleryRepository galleryRepository;
+    private final ActivityLogRepository activityLogRepository;
 
     private final VideoRepository videoRepository;
     private final ExternalServiceRepository externalServiceRepository;
@@ -324,8 +327,15 @@ public class ContentService {
         WishlistEntity wishlistEntity = new WishlistEntity();
         wishlistEntity.setUser(userRepository.findById(userId).get());
         wishlistEntity.setContent(contentRepository.findById(contentId).get());
-
         wishlistRepository.save(wishlistEntity);
+
+        ActivityLogEntity activityLog = new ActivityLogEntity();
+        activityLog.setUser(wishlistEntity.getUser());
+        activityLog.setType(ActivityLogType.WISH);
+        activityLog.setReferenceId(wishlistEntity.getId());
+        activityLog.setTimestamp(LocalDateTime.now());
+        activityLogRepository.save(activityLog);
+
     }
 
     // 위시리스트 삭제
@@ -336,6 +346,8 @@ public class ContentService {
         if (!contentRepository.existsById(contentId)) {
             throw new NoSuchElementException("존재하지 않는 컨텐츠입니다.");
         }
-        wishlistRepository.deleteByUserIdAndContentId(userId, contentId);
+        WishlistEntity wishlistEntity = wishlistRepository.findByUserIdAndContentId(userId, contentId);
+        activityLogRepository.deleteByReferenceIdAndType(wishlistEntity.getId(), ActivityLogType.WISH);
+        wishlistRepository.delete(wishlistEntity);
     }
 }

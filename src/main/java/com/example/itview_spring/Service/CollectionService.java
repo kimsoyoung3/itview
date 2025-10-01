@@ -14,8 +14,10 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.example.itview_spring.Constant.ActivityLogType;
 import com.example.itview_spring.Constant.NotiType;
 import com.example.itview_spring.Constant.Replyable;
+import com.example.itview_spring.Repository.ActivityLogRepository;
 import com.example.itview_spring.Repository.CollectionRepository;
 import com.example.itview_spring.Repository.ContentRepository;
 import com.example.itview_spring.Repository.LikeRepository;
@@ -31,6 +33,7 @@ import lombok.RequiredArgsConstructor;
 public class CollectionService {
     
     private final CollectionRepository collectionRepository;
+    private final ActivityLogRepository activityLogRepository;
     private final NotificationRepository notificationRepository;
     private final UserRepository userRepository;
     private final LikeRepository likeRepository;
@@ -55,6 +58,14 @@ public class CollectionService {
         }
         
         collectionRepository.save(collection);
+
+        ActivityLogEntity activityLog = new ActivityLogEntity();
+        activityLog.setUser(collection.getUser());
+        activityLog.setType(ActivityLogType.COLLECTION);
+        activityLog.setReferenceId(collection.getId());
+        activityLog.setTimestamp(LocalDateTime.now());
+        activityLogRepository.save(activityLog);
+
         return collection.getId();
     }
 
@@ -104,7 +115,23 @@ public class CollectionService {
             item.setCollection(collection);
             item.setContent(content);
             collection.getItems().add(item);
+            collection.setUpdatedAt(LocalDateTime.now());
             collectionRepository.save(collection);
+
+            ActivityLogEntity activityLog = activityLogRepository.findByReferenceIdAndType(collection.getId(), ActivityLogType.COLLECTION);
+            if (activityLog != null) {
+                activityLog.setTimestamp(LocalDateTime.now());
+                activityLog.setIsUpdate(true);
+                activityLogRepository.save(activityLog);
+            } else {
+                activityLog = new ActivityLogEntity();
+                activityLog.setUser(collection.getUser());
+                activityLog.setType(ActivityLogType.COLLECTION);
+                activityLog.setReferenceId(collection.getId());
+                activityLog.setTimestamp(LocalDateTime.now());
+                activityLog.setIsUpdate(true);
+                activityLogRepository.save(activityLog);
+            }
         }
     }
 
@@ -153,6 +180,21 @@ public class CollectionService {
         }
         
         collectionRepository.save(collection);
+
+        ActivityLogEntity activityLog = activityLogRepository.findByReferenceIdAndType(collection.getId(), ActivityLogType.COLLECTION);
+        if (activityLog != null) {
+            activityLog.setTimestamp(LocalDateTime.now());
+            activityLog.setIsUpdate(true);
+            activityLogRepository.save(activityLog);
+        } else {
+            activityLog = new ActivityLogEntity();
+            activityLog.setUser(collection.getUser());
+            activityLog.setType(ActivityLogType.COLLECTION);
+            activityLog.setReferenceId(collection.getId());
+            activityLog.setTimestamp(LocalDateTime.now());
+            activityLog.setIsUpdate(true);
+            activityLogRepository.save(activityLog);
+        }
     }
 
     // 컬렉션 삭제
@@ -168,6 +210,7 @@ public class CollectionService {
         }
         replyRepository.deleteByTargetIdAndTargetType(id, Replyable.COLLECTION);
         notificationRepository.deleteByTargetIdAndTargetType(id, Replyable.COLLECTION);
+        activityLogRepository.deleteByReferenceIdAndType(id, ActivityLogType.COLLECTION);
         collectionRepository.deleteById(id);
     }
 
