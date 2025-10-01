@@ -1,11 +1,16 @@
 import React, { useEffect, useState } from "react";
 import "./NotificationPage.css"
 import { getNotification } from "../../API/UserApi";
-import {NavLink} from "react-router-dom";
+import {NavLink, useNavigate} from "react-router-dom";
 import { toast } from "react-toastify";
 import Markdown from "react-markdown";
 
 const NotificationPage = ({ userInfo, openLogin }) => {
+
+    const navigate = useNavigate();
+    if (!userInfo) {
+        navigate("/");
+    }
 
     const [activeId, setActiveId] = useState("notification-tab1");
 
