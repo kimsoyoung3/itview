@@ -124,7 +124,7 @@ public class UserRestController {
 
     // sse subscription
     @GetMapping(value = "/subscribe", produces = "text/event-stream")
-    public SseEmitter subscribe(@RequestParam Integer userId) {
+    public SseEmitter subscribe(@RequestParam("userId") Integer userId) {
         System.out.println("userSubscribe: " + userId);
         return notificationService.subscribe(userId);
     }
