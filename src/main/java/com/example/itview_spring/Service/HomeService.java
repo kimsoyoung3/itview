@@ -33,6 +33,12 @@ public class HomeService {
         return homeContent;
     }
 
+    // 컨텐츠 타입 별 전체 조회
+    public Page<ContentResponseDTO> getContentsByType(ContentType contentType, int page) {
+        Pageable pageable = PageRequest.of(page - 1, 12);
+        return contentRepository.findByContentType(contentType, pageable);
+    }
+
     // 장르 목록 조회
     public List<Genre> getGenres(ContentType contentType) {
         return contentRepository.findGenresByContentType(contentType);
