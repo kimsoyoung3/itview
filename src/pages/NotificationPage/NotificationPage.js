@@ -35,11 +35,19 @@ const NotificationPage = ({ userInfo, openLogin }) => {
 
     const handleLoadMore = async () => {
         try {
-            const res = await getNotification(notifications.page.number + 2);
-            setNotifications(prev => ({
-                content: [...prev.content, ...res.data.content],
-                page: res.data.page
-            }));
+            if (activeId === "notification-tab1") {
+                const res = await getNotification(notifications.page.number + 2);
+                setNotifications(prev => ({
+                    content: [...prev.content, ...res.data.content],
+                    page: res.data.page
+                }));
+            } else if (activeId === "notification-tab2") {
+                const res = await getFriendNotification(notifications.page.number + 2);
+                setNotifications(prev => ({
+                    content: [...prev.content, ...res.data.content],
+                    page: res.data.page
+                }));
+            }
         } catch (e) {
             toast("소식을 불러오는데 실패했습니다.");
         }
@@ -70,7 +78,6 @@ const NotificationPage = ({ userInfo, openLogin }) => {
                     </div>
 
                     <div className="notification-tab-content">
-                        {activeId === "notification-tab1" && <div className="notification-tab1 notification-tab">
                             {notifications?.content?.length > 0 ? (
                                 <>
                                 <div className="notification-tab-content-list">
@@ -99,10 +106,8 @@ const NotificationPage = ({ userInfo, openLogin }) => {
                             )}
 
 
-                        </div>}
+                        
 
-                        {activeId === "notification-tab2" && <div className="notification-tab2 notification-tab">
-                        </div>}
                     </div>
                 </div>
             </div>
