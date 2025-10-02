@@ -40,11 +40,11 @@
                     <img th:if="${user.profile}" th:src="${user.profile}" alt="프로필"
                          class="me-3"
                          style="width: 80px; height: 80px; object-fit: cover;">
+
                     <div th:unless="${user.profile}"
-                         class="me-3 d-flex justify-content-center align-items-center"
-                         style="width: 80px; height: 80px; background-color: #f8f9fa;">
-                        <span class="text-muted">No Profile</span>
+                         style="height: 80px;">
                     </div>
+
                     <div>
                         <h5 class="mb-0" th:text="${user.nickname}">닉네임</h5>
                         <small class="text-muted" th:text="${user.email}">이메일주소</small>

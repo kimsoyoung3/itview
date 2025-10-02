@@ -1,4 +1,268 @@
 @charset "UTF-8";
+
+/* ================================================= */
+/* 🔴 최종 확정: Header.css 디자인 원칙 완벽 통일 및 기능 완성 */
+/* ================================================= */
+
+/* (사이드바 스타일 등 이전 스타일 유지 - 생략) */
+.sb-sidenav-light {
+  /* 💥 관리자 페이지 최적화 색상: 매우 밝은 회색 (눈의 피로 감소) */
+  background-color: #f7f7f7 !important;
+
+  /* 💥 그림자 효과: 깔끔한 구분을 위해 그림자 강도 유지 */
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1) !important;
+
+  border-right: none !important;
+  filter: none !important;
+}
+.sb-sidenav { display: flex; flex-direction: column; }
+.sb-sidenav-menu { flex-grow: 1; overflow-y: auto; }
+.sb-sidenav-header, .sb-sidenav-footer { border-top: none !important; border-bottom: none !important; }
+.sb-sidenav-header {
+  /* 상하 패딩은 3rem으로 유지 */
+  padding-top: 3rem !important;
+  padding-bottom: 3rem !important;
+
+  /* 💥 IT VIEW 로고 좌우 패딩을 2rem으로 통일 */
+  padding-left: 2rem !important;
+  padding-right: 2rem !important;
+
+  justify-content: flex-start;
+  align-items: flex-start;
+  display: flex;
+  border-bottom: none !important;
+}
+
+.sb-sidenav-header .navbar-brand {
+  /* 1. 폰트 크기 및 라인 높이 유지 */
+  font-size: 1.5rem !important;
+  line-height: 1 !important;
+
+  /* 2. 💥 텍스트 정렬을 'center'에서 'left'로 변경합니다. */
+  text-align: left !important;
+
+  /* 3. 로고가 컨테이너 너비를 모두 차지하지 않도록 width를 제거하거나 조정합니다. */
+  width: auto; /* 💥 100% 대신 auto로 변경하거나, 이 속성을 제거합니다. */
+
+  margin: 0 !important;
+  padding: 0 !important;
+  display: block !important;
+  color: #000000 !important;
+  font-weight: bold;
+}
+
+.sb-sidenav-footer {
+  /* 상하 패딩 3rem 유지 */
+  padding-top: 3rem !important;
+  padding-bottom: 3rem !important;
+
+  /* 💥 푸터 좌우 패딩을 2rem으로 통일 */
+  padding-left: 2rem !important;
+  padding-right: 2rem !important;
+
+  /* 텍스트는 왼쪽 정렬을 기본으로 유지 */
+  text-align: left !important;
+}
+
+/* 2. 메뉴 항목 및 로그아웃 링크의 기본 스타일 정의 */
+.sb-sidenav-light .sb-sidenav-menu .nav a.nav-link,
+.sb-sidenav-footer a {
+  /* 💥 메뉴 항목 좌우 패딩을 2rem으로 통일 */
+  padding: 0.75rem 2rem !important; /* 상하 0.75rem, 좌우 2rem */
+
+  color: #888888 !important;
+  text-decoration: none !important;
+  background-color: transparent !important;
+}
+
+/* 3. 로그아웃 링크의 불필요한 패딩 제거 (정렬 문제 해결 핵심) */
+/* 이 코드가 로그아웃 a 태그에 불필요하게 적용된 32px 패딩을 제거합니다. */
+.sb-sidenav-footer a {
+  padding: 0 !important; /* 로그아웃 링크의 자체 패딩은 0으로 유지 */
+  margin: 0 !important;
+  display: block !important;
+  text-align: left !important;
+}
+
+/* 4. 호버 및 활성화 상태 */
+.sb-sidenav-light .sb-sidenav-menu .nav a.nav-link:hover, .sb-sidenav-footer a:hover,
+.sb-sidenav-light .sb-sidenav-menu .nav a.nav-link.active {
+  color: #000000 !important;
+  background-color: transparent !important;
+}
+
+
+/* ---------------------------------------------------- */
+/* 🚀 6. 검색바 스타일 통일 (최종: 원본 CSS 값 그대로 적용) */
+/* ---------------------------------------------------- */
+
+.search-bar {
+  background-color: #eee !important;
+  width: 250px;
+  padding: 10px !important; /* 💥 높이 원본값 10px으로 복원 및 강제 적용 */
+  border-radius: 0 !important;
+  box-shadow: none !important;
+}
+
+.search-bar > form {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.search-input {
+  border: none !important;
+  width: 100% !important;
+  background: transparent !important;
+  outline: none !important;
+  font-size: 0.9rem !important;
+  padding: 0 !important;
+  margin: 0 !important;
+}
+
+.search-input::placeholder {
+  color: rgba(136,136,136,0.5) !important;
+}
+
+.search-button {
+  border: none !important;
+  background: none !important;
+  font-size: 1rem !important; /* 💥 아이콘 크기 원본값 1rem으로 복원 및 강제 적용 */
+  cursor: pointer;
+  color: #888 !important; /* 아이콘 색상 원본값 #888로 복원 및 강제 적용 */
+  flex-shrink: 0;
+  padding: 0 !important;
+  margin: 0 !important;
+  line-height: 1 !important; /* 아이콘 세로 정렬 보조 */
+}
+/* 💥 아이콘이 확실하게 보이도록 i 태그도 직접 타겟팅 */
+.search-button i {
+  color: #888 !important;
+  font-size: 1rem !important;
+  line-height: 1 !important;
+}
+
+/* ---------------------------------------------------- */
+/* 7. 레이아웃 기능 제어 (생략) */
+/* ---------------------------------------------------- */
+.sb-nav-fixed #layoutSidenav_content { padding-top: 0 !important; }
+.sidebar-mobile-toggle { display: none !important; }
+@media (max-width: 991.98px) {
+  .sidebar-mobile-toggle {
+    display: block !important;
+    position: fixed; top: 0; left: 0; z-index: 1040;
+    padding: 0.75rem 1.25rem;
+    background: #fff;
+    border: none !important;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  }
+}
+
+/* ================================================= */
+/* 🔴 주 버튼(btn-primary) 디자인을 알약 탭 스타일로 통일 */
+/* ================================================= */
+
+.btn-primary,
+.btn-primary:focus {
+  /* 기본 모양 */
+  border: 1px solid #eeeeee !important;
+  background: none !important;
+  padding: 5px 15px !important;
+  border-radius: 50px !important; /* 알약 모양 */
+  color: #444444 !important; /* 기본 글자색 (어두운 회색) */
+  font-weight: normal !important;
+  box-shadow: none !important;
+  box-sizing: border-box;
+  transition: all 0.2s ease-in-out; /* 부드러운 전환 효과 추가 */
+}
+
+.btn-primary:hover,
+.btn-primary:active,
+.btn-primary:not(:disabled):not(.disabled):active,
+.btn-primary:active:focus {
+  /* 호버 및 클릭(활성화) 상태 */
+  background: #22c55e !important; /* 녹색 배경 */
+  border-color: #22c55e !important;
+  color: #ffffff !important; /* 흰색 글자 */
+  box-shadow: none !important;
+}
+
+/* ================================================= */
+/* 🔴 페이지네이션(Pagination) 디자인 통일: 녹색 활성화 */
+/* ================================================= */
+
+/* 1. 기본 스타일 (드래그 방지 포함) */
+.pagination .page-link {
+  color: #444444;
+  border: 1px solid #eeeeee;
+  background-color: #ffffff;
+  border-radius: 5px;
+  margin: 0 3px;
+  user-select: none; /* 텍스트 드래그 방지 */
+}
+
+/* 2. 호버, 클릭, 활성화 상태 (녹색 통일) */
+/* 이 규칙이 가장 구체적이므로, 클릭 중에는 이 녹색을 유지합니다. */
+.pagination .page-item:not(.disabled) .page-link:hover,
+.pagination .page-item:not(.disabled) .page-link:active, /* 💥 클릭 중에도 녹색 유지 */
+.pagination .page-item.active .page-link {
+  color: #ffffff !important;
+  background-color: #22c55e !important;
+  border-color: #22c55e !important;
+}
+
+/* 3. 클릭 후 포커스 상태 제거 (잔여 효과 제거 핵심) */
+/* 마우스를 뗀 후 남아있는 'focus' 상태의 녹색 효과를 흰색 기본값으로 덮어씁니다. */
+.pagination .page-link:focus {
+  color: #444444 !important; /* 기본 글자색 */
+  background-color: #ffffff !important; /* 기본 배경색 */
+  border-color: #eeeeee !important; /* 기본 테두리색 */
+  outline: none !important;
+  box-shadow: none !important;
+}
+
+/* 4. 활성화된 페이지 폰트 강조 및 비활성화 버튼 */
+.pagination .page-item.active .page-link {
+  font-weight: bold;
+}
+.pagination .page-item.disabled .page-link {
+  color: #cccccc !important;
+  background-color: #f8f8f8 !important;
+  border-color: #eeeeee !important;
+}
+
+/* 💥💥 메인 콘텐츠 영역 상하 패딩 설정 💥💥 */
+
+#layoutSidenav_content {
+  /* 1. 중앙 정렬 관련 스타일은 모두 제거된 상태여야 함 */
+
+  /* 2. 상단 네비게이션바가 없으므로 상단 패딩은 0을 유지 */
+  padding-top: 0 !important;
+
+  /* 3. 콘텐츠와 브라우저 하단 사이에 여백을 주고 싶다면, 여기에 패딩 추가 */
+  /* 예시: padding-bottom: 2rem !important; */
+}
+
+/* 4. 메인 태그와 그 내부 컨테이너의 불필요한 마진/패딩 초기화 */
+main {
+  width: 100%;
+  /* 템플릿의 간섭을 막기 위해 마진/패딩 초기화 */
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+/* 5. 메인 콘텐츠 내부의 첫 번째 요소에 상하 패딩을 적용 */
+/* person_list.html의 .container mt-3, mb-3을 대체하여 깔끔한 여백을 만듭니다. */
+main > div.container:first-child {
+  /* 💥 상단/하단 패딩을 확실하게 설정합니다. (예: 2rem) */
+  padding-top: 2rem !important;
+  padding-bottom: 2rem !important;
+
+  /* 💥 기존 mt-3, mb-3 마진은 제거하고 패딩으로 통일 */
+  margin-top: 0 !important;
+  margin-bottom: 0 !important;
+}
 /*!
 * Start Bootstrap - SB Admin v7.0.7 (https://startbootstrap.com/template/sb-admin)
 * Copyright 2013-2023 Start Bootstrap
@@ -10923,15 +11187,15 @@ body {
   height: 100vh;
   z-index: 1038;
 }
-.sb-nav-fixed #layoutSidenav #layoutSidenav_nav .sb-sidenav {
-  padding-top: 56px;
-}
+/*.sb-nav-fixed #layoutSidenav #layoutSidenav_nav .sb-sidenav {*/
+/*  padding-top: 25px;*/
+/*}*/
 .sb-nav-fixed #layoutSidenav #layoutSidenav_nav .sb-sidenav .sb-sidenav-menu {
   overflow-y: auto;
 }
 .sb-nav-fixed #layoutSidenav #layoutSidenav_content {
   padding-left: 225px;
-  top: 56px;
+  /*top: 56px;*/
 }
 
 #layoutError {
@@ -11047,34 +11311,34 @@ body {
   background-color: #343a40;
 }
 
-.sb-sidenav-light {
-  background-color: #f8f9fa;
-  color: #212529;
-}
-.sb-sidenav-light .sb-sidenav-menu .sb-sidenav-menu-heading {
-  color: #adb5bd;
-}
-.sb-sidenav-light .sb-sidenav-menu .nav-link {
-  color: #212529;
-}
-.sb-sidenav-light .sb-sidenav-menu .nav-link .sb-nav-link-icon {
-  color: #adb5bd;
-}
-.sb-sidenav-light .sb-sidenav-menu .nav-link .sb-sidenav-collapse-arrow {
-  color: #adb5bd;
-}
-.sb-sidenav-light .sb-sidenav-menu .nav-link:hover {
-  color: #0d6efd;
-}
-.sb-sidenav-light .sb-sidenav-menu .nav-link.active {
-  color: #0d6efd;
-}
-.sb-sidenav-light .sb-sidenav-menu .nav-link.active .sb-nav-link-icon {
-  color: #0d6efd;
-}
-.sb-sidenav-light .sb-sidenav-footer {
-  background-color: #e9ecef;
-}
+/*.sb-sidenav-light {*/
+/*  background-color: #f8f9fa;*/
+/*  color: #212529;*/
+/*}*/
+/*.sb-sidenav-light .sb-sidenav-menu .sb-sidenav-menu-heading {*/
+/*  color: #adb5bd;*/
+/*}*/
+/*.sb-sidenav-light .sb-sidenav-menu .nav-link {*/
+/*  color: #212529;*/
+/*}*/
+/*.sb-sidenav-light .sb-sidenav-menu .nav-link .sb-nav-link-icon {*/
+/*  color: #adb5bd;*/
+/*}*/
+/*.sb-sidenav-light .sb-sidenav-menu .nav-link .sb-sidenav-collapse-arrow {*/
+/*  color: #adb5bd;*/
+/*}*/
+/*.sb-sidenav-light .sb-sidenav-menu .nav-link:hover {*/
+/*  color: #0d6efd;*/
+/*}*/
+/*.sb-sidenav-light .sb-sidenav-menu .nav-link.active {*/
+/*  color: #0d6efd;*/
+/*}*/
+/*.sb-sidenav-light .sb-sidenav-menu .nav-link.active .sb-nav-link-icon {*/
+/*  color: #0d6efd;*/
+/*}*/
+/*.sb-sidenav-light .sb-sidenav-footer {*/
+/*  background-color: #e9ecef;*/
+/*}*/
 
 .datatable-wrapper .datatable-container {
   font-size: 0.875rem;

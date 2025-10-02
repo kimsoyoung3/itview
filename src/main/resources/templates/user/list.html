@@ -41,14 +41,18 @@
                 </p>
 
                 <div class="d-flex justify-content-end align-items-center mb-4">
-                    <form th:action="@{/user/list}" method="get">
-                        <div class="input-group">
-                            <input class="form-control" type="text" name="keyword" th:value="${keyword}" placeholder="유저 검색" aria-label="유저 검색" aria-describedby="btnUserSearch" />
-                            <button class="btn btn-primary" id="btnUserSearch" type="submit">
-                                <i class="fas fa-search"></i>
+                    <div class="search-bar">
+                        <form th:action="@{/user/list}" method="get">
+                            <button type="submit" class="search-button">
+                                <i class="bi bi-search"></i>
                             </button>
-                        </div>
-                    </form>
+                            <input
+                                    type="text"
+                                    placeholder="검색어를 입력해주세요"  class="search-input" name="keyword"
+                                    th:value="${keyword}"
+                            />
+                        </form>
+                    </div>
                 </div>
 
                 <table class="table table-hover table-custom-layout">
