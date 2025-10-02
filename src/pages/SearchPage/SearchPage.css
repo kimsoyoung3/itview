@@ -113,7 +113,6 @@
 
 .search-page-tab-collection>div {
     width: calc(100% / 3 - 15px);
-    ;
 }
 
 /*유저 탭*/
@@ -187,6 +186,15 @@
     background: #eeeeee;
 }
 
+.search-page-tab-btn-follow {
+    color: #22c55e !important;
+    background: #e6f5eb !important;
+}
+
+.search-page-tab-btn-follow:hover {
+    background: #b7e8c7 !important;
+}
+
 /*태블릿 사이즈*/
 @media (max-width: 768px) {
     .search-page {
@@ -195,13 +203,24 @@
     }
 
     .search-page .container {
-        max-width: 95% !important;
+        max-width: 95%;
     }
 
     .search-result>p {
         padding: 12px 15px;
     }
 
+    .search-page-tab-more-btn>button:hover {
+        background: none;
+    }
+
+    .search-page-tab-collection>div {
+        width: calc(100% / 2 - 15px);
+    }
+
+    .search-page-tab-collection .collection-card {
+        margin-top:  0;
+    }
 }
 
 /*모바일 사이즈*/
@@ -216,5 +235,13 @@
 
     .search-page-tab-user-profile-wrap {
         width: 100%;
+    }
+
+    .search-page-tab-collection>div {
+        width: 100%;
+    }
+
+    .search-page-tab-collection {
+        gap: 0;
     }
 }

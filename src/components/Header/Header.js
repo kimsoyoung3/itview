@@ -316,7 +316,16 @@ const Header = ({ userInfo, handleLogin, handleLogout, isLoginOpen, openLogin, c
                                 <p className="mobile-menu-name">마이페이지</p>
                             </div>
 
-                            
+                            <div className="mobile-header-menu-list">
+                                <div>
+                                    <Link to="/notification" className="login-button">
+                                        <img className="mobile-menu-icon" src={`${process.env.PUBLIC_URL}/mobile-icon/mobile-bell.svg`} alt=""/>
+                                    </Link>
+                                </div>
+                                <p className="mobile-menu-name">소식</p>
+                            </div>
+
+
 
                             <div className="mobile-header-menu-list">
                                 <div>

@@ -297,7 +297,8 @@ const SearchPage = ({userInfo, openLogin, type}) => {
                                                 </div>
 
                                                 <div className="search-page-tab-user-info-btn">
-                                                    <button onClick={(e) => handleFollow(e, item.isFollowed, item.userProfile.id, index)}>{item.isFollowed ? "언팔로우" : "팔로우"}</button>
+                                                    <button onClick={(e) => handleFollow(e, item.isFollowed, item.userProfile.id, index)}
+                                                            className={`${item.isFollowed ? "" : "search-page-tab-btn-follow"}`}>{item.isFollowed ? "팔로잉" : "팔로우"}</button>
                                                 </div>
                                             </div>
 

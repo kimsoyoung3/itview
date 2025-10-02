@@ -48,15 +48,23 @@
     object-fit: cover; /* 크기 통일 + 이미지 잘림 방지 */
 }
 
+.collection-card-info {
+    width: 100%;
+    padding: 0 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: absolute;
+    bottom: 20px;
+    z-index: 15;
+}
+
 .collection-card-profile {
     color: #ffffff;
     z-index: 10;
     display: inline-flex; /* inline-flex로 block처럼 쓰면서 flex 가능 */
     align-items: center;
     gap: 10px;
-    position: absolute;
-    bottom: 20px;
-    left: 20px;
 }
 
 .collection-card-profile-image {
@@ -78,10 +86,6 @@
 }
 
 .collection-card-item-count {
-    position: absolute;
-    top: 85%;
-    right: 3%;
-    z-index: 15;
     width: 25px;
     height: 25px;
     color: #ffffff;

@@ -1,12 +1,12 @@
 .user-detail-page {
   margin-top: 114px;
-  max-width: 640px;
 }
 
 .user-detail-page-wrap {
   border: 1px solid #d9d9d9;
   border-radius: 12px;
   margin-bottom: 30px;
+  max-width: 640px;
 }
 
 .user-detail-info {
@@ -480,7 +480,7 @@
   }
 
   .user-detail-page .container {
-    max-width: 100% !important;
+    max-width: 85%;
   }
 }
 
@@ -489,7 +489,12 @@
   .user-detail-page {
     margin-top: 0;
     margin-bottom: 80px;
-    width: 100% !important;
+    width: 100% ;
+    padding: 0;
+  }
+
+  .user-detail-page .container {
+    max-width: 100%;
     padding: 0;
   }
 

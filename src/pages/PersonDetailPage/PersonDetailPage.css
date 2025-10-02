@@ -220,18 +220,22 @@
 
 /*태블릿 사이즈*/
 @media (max-width: 768px) {
-    .person-detail-page .container {
-        max-width: 100% !important;
+    .person-detail-page {
+        margin-top: 30px;
+        margin-bottom: 100px;
     }
 
-    .person-detail-page {
-        margin-top: 20px;
-        margin-bottom: 100px;
+    .person-detail-page .container {
+        max-width: 95%;
     }
 
     .person-detail-page-content {
         grid-column-gap: 20px;
         grid-template-columns: 4fr 1fr;
+    }
+
+    .person-detail-page-content-domain-btn>button:hover {
+        background: none;
     }
 }
 

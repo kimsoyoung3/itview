@@ -39,7 +39,4 @@
 
 /*모바일 사이즈*/
 @media (max-width: 480px) {
-    .footer {
-        display: none;
-    }
 }

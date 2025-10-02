@@ -379,14 +379,30 @@
 /*태블릿 사이즈*/
 @media (max-width: 768px) {
     .user-collection-detail-page .container {
-        max-width: 100% !important;
+        max-width: 100%;
     }
 
     .user-collection-detail-page {
         margin-top: 50px;
         margin-bottom: 100px;
-        width: 100% !important;
+        width: 100%;
         padding: 0;
+    }
+
+    .user-collection-detail-btn-list-content>button:hover {
+        background: none;
+    }
+
+    .user-collection-detail-content-list-btn:hover {
+        background: none;
+    }
+
+    .user-collection-detail-reply-input>button:hover {
+        background: #e6f5eb;
+    }
+
+    .user-collection-detail-reply-btn>button:hover {
+        background: none;
     }
 }
 
@@ -395,10 +411,10 @@
     .user-collection-detail-page {
         margin-top: 0;
         margin-bottom: 60px;
-        width: 100% !important;
+        width: 100%;
     }
 
-    .user-collection-detail-p햣age-wrap {
+    .user-collection-detail-page-wrap {
         border: 0;
         border-radius: 0;
     }
