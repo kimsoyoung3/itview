@@ -95,9 +95,6 @@ const UserFollowPage = ({userInfo, openLogin, type}) => {
                                                 className={`${item.isFollowed ? "" : "user-follow-info-btn-follow"}`}>{item.isFollowed ? "팔로잉" : "팔로우"}</button>
                                     </div>
                                 </div>
-
-
-
                             </NavLink>
                         )}
                     </div>
