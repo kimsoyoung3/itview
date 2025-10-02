@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { use, useEffect, useState } from "react";
 import "./NotificationPage.css"
 import { getFriendNotification, getNotification } from "../../API/UserApi";
 import {NavLink, useNavigate, useSearchParams} from "react-router-dom";
@@ -6,6 +6,8 @@ import { toast } from "react-toastify";
 import Markdown from "react-markdown";
 
 const NotificationPage = ({ userInfo, openLogin }) => {
+
+    const navigate = useNavigate();
 
     const [searchParams] = useSearchParams();
     const type = searchParams.get("type");
@@ -18,11 +20,6 @@ const NotificationPage = ({ userInfo, openLogin }) => {
         }
     }, [type]);
 
-    const navigate = useNavigate();
-    if (!userInfo) {
-        navigate("/");
-    }
-
     const [activeId, setActiveId] = useState("notification-tab1");
 
     const [notifications, setNotifications] = useState([]);
@@ -32,12 +29,16 @@ const NotificationPage = ({ userInfo, openLogin }) => {
 
     useEffect(() => {
         const fetchNotifications = async () => {
-            if (type === "friend") {
-                const res = await getFriendNotification(1);
-                setNotifications(res.data);
-            } else {
-                const res = await getNotification(1);
-                setNotifications(res.data);
+            try {
+                if (type === "friend") {
+                    const res = await getFriendNotification(1);
+                    setNotifications(res.data);
+                } else {
+                    const res = await getNotification(1);
+                    setNotifications(res.data);
+                }
+            } catch (e) {
+                navigate("/");
             }
         }
 
