@@ -7,14 +7,18 @@ import SearchContentEach from "../../components/SearchContentEach/SearchContentE
 import { toast } from "react-toastify";
 
 const SearchContentDetailPage = () => {
+    /* 에러 상태 */
     const [notFound, setNotFound] = useState(false);
 
+    /* 검색 파라미터 */
     const [searchParams] = useSearchParams();
     const type = searchParams.get("type");
     const keyword = searchParams.get("keyword");
 
+    /* 검색 결과 데이터 */
     const [data, setData] = useState(null);
 
+    /* 검색 결과 불러오기 */
     useEffect(() => {
         try {
             const fetchData = async () => {
@@ -31,6 +35,7 @@ const SearchContentDetailPage = () => {
             console.log(data);
     }, [data]);
 
+    /* 더 불러오기 */
     const handleMoreClick = async () => {
         try {
             const response = await searchContentsDetail(type, keyword, data.page.number + 2);
@@ -44,6 +49,7 @@ const SearchContentDetailPage = () => {
         }
     }
 
+    /* 도메인 이름 매핑 */
     const domainNameMap = {
         "movie" : "영화",
         "series" : "시리즈",

@@ -18,27 +18,31 @@ import NotFound from "../NotFound/NotFound";
 import { addCollectionItem, getCollectionToAdd } from "../../API/CollectionApi";
 
 const DetailPage = ({userInfo, openLogin}) => {
+    /* notFound 상태 */
     const [notFound, setNotFound] = useState(false);
 
+    /* URL에서 :id 가져오기 */
     const { id } = useParams();
 
+    /* 컨텐츠 상태 */
     const [contentDetail, setContentDetail] = useState(null);
     const [contentCredit, setContentCredit] = useState(null);
     const [chunkedContentCredit, setChunkedcontentCredit] = useState([]);
 
+    /* chunkedContentCredit 확인 */
     useEffect(() => {
         console.log(chunkedContentCredit)
-    }, [chunkedContentCredit])
+    }, [chunkedContentCredit]);
 
+    /* 점수 상태 */
     const [score, setScore] = useState(0);
-    /*마우스 올릴 때 임시 점수*/
+    /* 마우스 올릴 때 임시 점수 */
     const [hoverScore, setHoverScore] = useState(0);
 
-    /*코멘트 텍스트 영역 참조*/
+    /* 코멘트 텍스트 영역 참조 */
     const textRef = React.useRef(null);
 
-    /*코멘트 모달*/
-
+    /* 코멘트 모달 상태 */
     const [myCommentModal, setMyCommentModal] = useState();
     const openMyComment = () => {
         setMyCommentModal(true);
@@ -49,7 +53,7 @@ const DetailPage = ({userInfo, openLogin}) => {
         document.body.style.overflow = 'auto';
     };
 
-    /*코멘트 작성*/
+    /* 코멘트 작성 */
     const handleCommentPost = async () => {
         try {
             await postContentComment(id, { text: textRef.current.value })
@@ -62,11 +66,11 @@ const DetailPage = ({userInfo, openLogin}) => {
             });
             toast("코멘트가 등록되었습니다.");
         } catch (error) {
-            toast(error.response.data);    
+            toast(error.response.data);
         }
     };
 
-    /*코멘트 수정*/
+    /* 코멘트 수정 */
     const handleCommentUpdate = async () => {
         try {
             const res = await updateComment(contentDetail?.myComment.id, { text: textRef.current.value })
@@ -85,6 +89,7 @@ const DetailPage = ({userInfo, openLogin}) => {
         }
     };
 
+    /* 코멘트 제출 */
     const handleMyCommentSubmit = () => {
         if (contentDetail?.myComment) {
             handleCommentUpdate();
@@ -94,7 +99,7 @@ const DetailPage = ({userInfo, openLogin}) => {
         closeMyComment();
     };
 
-    /*마이코멘트 삭제 확인 모달창*/
+    /* 마이코멘트 삭제 확인 모달창 */
     const [deleteConfirmModal, setDeleteConfirmModal] = useState(false);
 
     const handleDeleteClick = () => {
@@ -104,7 +109,7 @@ const DetailPage = ({userInfo, openLogin}) => {
     const handleDeleteConfirm = async () => {
         try {
             await deleteComment(contentDetail?.myComment.id);
-            setDeleteConfirmModal(false); // ✅ 모달 닫기만
+            setDeleteConfirmModal(false);
             getContentComment(id).then(response => {
                 setContentDetail(prev => ({
                     ...prev,
@@ -116,17 +121,16 @@ const DetailPage = ({userInfo, openLogin}) => {
         }
     };
 
-    /*별점 삭제 로직 구현*/
+    /* 별점 삭제 로직 구현 */
     const handleScoreDelete = () => {
         deleteRating(id).then(response => {
             console.log('Rating deleted:', response.status);
         });
     };
 
-    /*보고싶어요 로직 구현*/
+    /* 보고싶어요 로직 구현 */
     const handleWish = async () => {
         if (contentDetail?.wishlistCheck) {
-            // 위시리스트에서 제거
             try {
                 await unwishContent(contentDetail.contentInfo.id);
                 setContentDetail(prev => ({
@@ -138,7 +142,6 @@ const DetailPage = ({userInfo, openLogin}) => {
                 toast(error.response.data);
             }
         } else {
-            // 위시리스트에 추가
             try {
                 await wishContent(contentDetail.contentInfo.id)
                 setContentDetail(prev => ({
@@ -152,21 +155,21 @@ const DetailPage = ({userInfo, openLogin}) => {
         }
     };
 
+    /* 컬렉션 관련 상태 */
     const [collectionList, setCollectionList] = useState(null);
     useEffect(() => {
         console.log(collectionList);
     }, [collectionList]);
 
     const [collectionListModal, setCollectionListModal] = useState();
-
     const openCollectionListModal = () => {
         setCollectionListModal(true);
         document.body.style.overflow = 'hidden';
-    }
+    };
     const closeCollectionListModal = () => {
         setCollectionListModal(false);
         document.body.style.overflow = 'auto';
-    }
+    };
 
     const [selectedCollections, setSelectedCollections] = useState([]);
     useEffect(() => {
@@ -181,7 +184,7 @@ const DetailPage = ({userInfo, openLogin}) => {
         }
     };
 
-    /*컬렉션 추가*/
+    /* 컬렉션 추가 */
     const handleCollectionClick = async () => {
         openCollectionListModal();
         setSelectedCollections([]);
@@ -205,12 +208,10 @@ const DetailPage = ({userInfo, openLogin}) => {
         } catch (error) {
             toast("컬렉션에 추가하지 못했습니다.");
         }
-    }
+    };
 
     const collectionListRef = useRef(null);
-
     const fetchNextPage = async () => {
-        console.log('더보기 감지')
         try {
             const nextPage = collectionList.page.number + 2;
             const response = await getCollectionToAdd(id, nextPage);
@@ -238,7 +239,7 @@ const DetailPage = ({userInfo, openLogin}) => {
         };
     }, [collectionListRef, collectionList, contentDetail]);
 
-    /*외부서비스 로고*/
+    /* 외부서비스 로고 */
     const serviceLogos = {
         NETFLIX: `${process.env.PUBLIC_URL}/externalLogo/netflix.png`,
         DISNEY_PLUS: `${process.env.PUBLIC_URL}/externalLogo/disney.png`,
@@ -248,32 +249,28 @@ const DetailPage = ({userInfo, openLogin}) => {
         TVN: `${process.env.PUBLIC_URL}/externalLogo/tvn.png`,
         APPLE_TV_PLUS: `${process.env.PUBLIC_URL}/externalLogo/apple-tv-plus.png`,
         COUPANG_PLAY: `${process.env.PUBLIC_URL}/externalLogo/coupang-play.png`,
-
         ALADIN: `${process.env.PUBLIC_URL}/externalLogo/aladin.png`,
         YES24: `${process.env.PUBLIC_URL}/externalLogo/yes24.png`,
         KYOBO: `${process.env.PUBLIC_URL}/externalLogo/kyobo.png`,
-
         NAVER: `${process.env.PUBLIC_URL}/externalLogo/naverWebtoon.png`,
         KAKAO: `${process.env.PUBLIC_URL}/externalLogo/kakaoWebtoon.png`,
     };
 
-    /*갤러리 모달창*/
+    /* 갤러리 모달창 */
     const [galleryModal, setGalleryModal] = useState(false);
-    /*모달 슬라이드 시작 인덱스*/
+    /* 모달 슬라이드 시작 인덱스 */
     const [galleryModalStartIndex, setGalleryModalStartIndex] = useState(0);
-
     const openGalleryModal = (index) => {
         setGalleryModalStartIndex(index);
         setGalleryModal(true);
         document.body.style.overflow = 'hidden';
     };
-
     const closeGalleryModal = () => {
         setGalleryModal(false);
         document.body.style.overflow = 'auto';
     };
 
-    /*컨텐츠 디테일*/
+    /* 컨텐츠 디테일 가져오기 */
     useEffect(() => {
         const fetchContentDetail = async () => {
             try {
@@ -283,11 +280,10 @@ const DetailPage = ({userInfo, openLogin}) => {
                 setNotFound(true);
             }
         };
-
         fetchContentDetail();
     }, [id]);
 
-    /*컨텐츠 크레딧*/
+    /* 컨텐츠 크레딧 가져오기 */
     useEffect(() => {
         const fetchContentCredit = async () => {
             try {
@@ -297,16 +293,14 @@ const DetailPage = ({userInfo, openLogin}) => {
                 console.error('Error fetching content credit:', error);
             }
         };
-        
         fetchContentCredit();
     }, [id]);
 
-    /*스와이퍼 레퍼런스*/
+    /* 스와이퍼 레퍼런스 */
     const swiperRef = useRef(null);
-
     const loadMoreRef = useRef(null);
 
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    /* 컨텐츠 크레딧 페이지 더보기 */
     const handleNextPage = async () => {
         if (contentCredit.page.number + 2 <= contentCredit.page.totalPages) {
             const fetchNextPage = async () => {
@@ -320,7 +314,7 @@ const DetailPage = ({userInfo, openLogin}) => {
             };
             fetchNextPage();
         }
-    }
+    };
 
     useEffect(() => {
         const observer = new IntersectionObserver((entries) => {
@@ -338,27 +332,21 @@ const DetailPage = ({userInfo, openLogin}) => {
         };
     }, [loadMoreRef, contentCredit, handleNextPage]);
 
-    /*컨텐츠 정보를 가져온 후*/
+    /* 컨텐츠 정보를 가져온 후 */
     useEffect(() => {
         console.log(contentDetail);
-        /*내가 준 별점 설정*/
         setScore(contentDetail?.myRating || 0);
 
-        /*별점 그래프 높이 계산*/
         if (contentDetail && contentDetail.ratingDistribution.some(rating => rating.height === undefined)) {
-            /*최대 값 찾기*/
             const max = Math.max(...contentDetail.ratingDistribution.map(rating => rating.scoreCount));
 
-            /*최고 점수에 isMax 플래그 추가*/
             contentDetail.ratingDistribution = contentDetail.ratingDistribution.map(rating => ({
                 ...rating,
                 isMax: rating.scoreCount === max
             }));
 
-            /*각 점수에 대한 높이 계산을 하여 contentDetail에 추가*/
             const updatedDistribution = contentDetail.ratingDistribution.map(rating => ({
                 ...rating,
-                /*예: 최대 높이를 100으로 설정*/
                 height: (rating.scoreCount / max) * 100
             }));
 
@@ -369,12 +357,14 @@ const DetailPage = ({userInfo, openLogin}) => {
         }
     }, [contentDetail]);
 
+    /* 코멘트 초기값 설정 */
     useEffect(() => {
         if (contentDetail?.myComment && textRef.current) {
             textRef.current.value = contentDetail.myComment.text;
         }
     }, [contentDetail, myCommentModal]);
 
+    /* 컨텐츠 크레딧 청크 처리 */
     useEffect(() => {
         console.log(contentCredit)
         const chunked = [];
@@ -383,6 +373,7 @@ const DetailPage = ({userInfo, openLogin}) => {
         }
         setChunkedcontentCredit(chunked)
     }, [contentCredit]);
+
 
     return (notFound ? <NotFound /> :
         <div className="detail">
@@ -658,8 +649,8 @@ const DetailPage = ({userInfo, openLogin}) => {
                                 ref={swiperRef}
                                 modules={[Navigation]}
                                 spaceBetween={20}
-                                slidesPerView={4}   // ✅ 슬라이드 하나 안에 그리드 넣기
-                                slidesPerGroup={4}
+                                slidesPerView={1}   // ✅ 슬라이드 하나 안에 그리드 넣기
+                                slidesPerGroup={1}
                                 navigation={{
                                     prevEl: ".credit-prev",
                                     nextEl: ".credit-next",

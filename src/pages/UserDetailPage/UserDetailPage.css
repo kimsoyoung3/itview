@@ -481,6 +481,7 @@
 
   .user-detail-page .container {
     max-width: 85%;
+    padding: 0;
   }
 }
 

@@ -10,18 +10,23 @@ import NotFound from "../NotFound/NotFound";
 import { toast } from "react-toastify";
 
 const SearchPage = ({userInfo, openLogin, type}) => {
+    /* 탭 상태 */
     const [activeTab, setActiveTab] = useState("search-page-tab-btn1")
 
+    /* 에러 상태 */
     const [notFound, setNotFound] = useState(false);
 
+    /* 검색 파라미터 */
     const [searchParams] = useSearchParams();
     const keyword =searchParams.get("keyword")
 
+    /* 검색 파라미터 */
     const [contents, setContents] = useState({});
     const [persons, setPersons] = useState({});
     const [collections, setCollections] = useState({});
     const [users, setUsers] = useState({});
 
+    /* 검색 결과 불러오기 */
     useEffect(() => {
         const fetchData = async () => {
             try {
@@ -56,6 +61,7 @@ const SearchPage = ({userInfo, openLogin, type}) => {
         console.log(users);
     }, [users]);
 
+    /* 인물 더 불러오기 */
     const handleMorePersonClick = async () => {
         try {
             const response = await searchPersons(keyword, persons.page.number + 2);
@@ -69,6 +75,7 @@ const SearchPage = ({userInfo, openLogin, type}) => {
         }
     }
 
+    /* 컬렉션 더 불러오기 */
     const handleMoreCollectionClick = async () => {
         try {
             const response = await searchCollections(keyword, collections.page.number + 2);
@@ -82,6 +89,7 @@ const SearchPage = ({userInfo, openLogin, type}) => {
         }
     }
 
+    /* 유저 더 불러오기 */
     const handleMoreUserClick = async () => {
         try {
             const response = await searchUsers(keyword, users.page.number + 2);
@@ -95,6 +103,7 @@ const SearchPage = ({userInfo, openLogin, type}) => {
         }
     }
 
+    /* 컬렉션 더 불러오기 */
     const handleFollow = async (e, isFollowed, targetUserId, index) => {
         e.preventDefault();
         if (!userInfo) {
@@ -128,6 +137,7 @@ const SearchPage = ({userInfo, openLogin, type}) => {
                 <p className="container">"{keyword}" 검색결과</p>
             </div>
 
+            {/*탭 버튼*/}
             <div className="search-page-wrap container">
                 <div className="search-page-tab-title-wrap">
                     <div className={`search-page-tab-btn ${activeTab === "search-page-tab-btn1" ? "active" : ""}`}
@@ -148,6 +158,7 @@ const SearchPage = ({userInfo, openLogin, type}) => {
                     </div>
                 </div>
 
+                {/*탭 내용*/}
                 <div className="search-page-tab-content-wrap">
                     {activeTab === "search-page-tab-btn1" && <div className="search-page-tab search-page-tab1">
                         {contents?.movie?.length > 0 && (

@@ -8,16 +8,15 @@ import NotFound from "../NotFound/NotFound";
 import CustomSelect from "../../components/CustomSelect/CustomSelect";
 
 const CommentPage = ({userInfo, openLogin}) => {
+    /* 상태 변수 */
     const [notFound, setNotFound] = useState(false);
-
-    /*URL에서 :id 가져오기*/
     const { id } = useParams();
     const [title, setTitle] = useState("");
     const [comments, setComments] = useState([]);
     const [page, setPage] = useState({});
-
     const [order, setOrder] = useState("new");
 
+    /* 댓글 정렬 옵션 */
     const options = [
         { value: "new", label: "최신 순" },
         { value: "old", label: "오래된 순" },

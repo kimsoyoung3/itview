@@ -9,12 +9,13 @@ import ContentSwiper from "../../components/ContentSwiper/ContentSwiper"; // CSS
 
 
 const Home = () => {
-
+    /* 컨텐츠 상태 */
     const [contents, setContents] = useState(null);
     useEffect(() => {
         console.log(contents);
     }, [contents]);
 
+    /* 홈 컨텐츠 불러오기 */
     useEffect(() => {
         const fetchContents = async () => {
             try {
@@ -26,6 +27,7 @@ const Home = () => {
         fetchContents();
     }, []);
 
+    /* 도메인 한글 매핑 */
     const domainNameMap = {
         "movie" : "영화",
         "series" : "시리즈",
@@ -34,10 +36,10 @@ const Home = () => {
         "record" : "음반"
     }
 
+    /* 반응형 perView */
     const containerRef = useRef(null);
     const [perView, setPerView] = useState(3);
 
-    // 반응형 perView 설정
     useEffect(() => {
         const handleResize = () => {
             if (window.innerWidth < 640) setPerView(1);
@@ -49,7 +51,7 @@ const Home = () => {
         return () => window.removeEventListener("resize", handleResize);
     }, []);
 
-    // 모바일 드래그
+    /* 모바일 드래그 */
     let startX = 0;
     let scrollLeft = 0;
     const onTouchStart = e => {

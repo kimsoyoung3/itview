@@ -5,14 +5,17 @@ import "./UserFollowPage.css"
 import { toast } from "react-toastify";
 
 const UserFollowPage = ({userInfo, openLogin, type}) => {
+    /* URL 파라미터 */
+    const { id } = useParams();
 
-    const {id} = useParams();
-
+    /* 팔로우/팔로잉 데이터 상태 */
     const [followData, setFollowData] = useState([]);
+
     useEffect(() => {
         console.log(followData);
     }, [followData]);
 
+    /* 팔로워/팔로잉 데이터 불러오기 */
     useEffect(() => {
         const fetchFollowData = async () => {
             try {
@@ -31,6 +34,7 @@ const UserFollowPage = ({userInfo, openLogin, type}) => {
         fetchFollowData();
     }, [id, type]);
 
+    /* 팔로우/언팔로우 기능 */
     const handleFollow = async (e, isFollowed, targetUserId, index) => {
         e.preventDefault();
         if (!userInfo) {

@@ -5,7 +5,7 @@ const CustomSelect = ({ value, onChange, options }) => {
     const [open, setOpen] = useState(false);
     const selectRef = useRef(null);
 
-    // 바깥 클릭 시 닫기
+    /* 바깥 클릭 시 드롭다운 닫기 */
     useEffect(() => {
         const handleClickOutside = (event) => {
             if (selectRef.current && !selectRef.current.contains(event.target)) {
@@ -28,11 +28,11 @@ const CustomSelect = ({ value, onChange, options }) => {
                 onClick={() => setOpen((prev) => !prev)}>
                 {currentLabel}
                 <div>
-                    {/*<i className="bi bi-caret-down-fill"></i>*/}
                     <img src={`${process.env.PUBLIC_URL}/icon/down.svg`} alt=""/>
                 </div>
             </div>
 
+            {/*옵션 창*/}
             {open && (
                 <ul className="custom-select-options">
                     {options.map((opt) => (

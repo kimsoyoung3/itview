@@ -90,7 +90,7 @@
 /*모바일 사이즈*/
 @media (max-width: 480px) {
     .content-each-info-title {
-        width: 90px;
+        width: 80px;
     }
 
 }

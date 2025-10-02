@@ -7,32 +7,36 @@ import { searchContent } from '../../API/ContentApi';
 import { useNavigate, useParams } from 'react-router-dom';
 
 const CollectionFormPage = ({action}) => {
-    const [collectionAddModal, setCollectionAddModal] = useState()
+    /* 모달 상태 */
+    const [collectionAddModal, setCollectionAddModal] = useState(false);
+    const openCollectionAddModal = () => setCollectionAddModal(true);
+    const closeCollectionAddModal = () => { setCollectionAddModal(false); setKeyword(""); }
 
-    const navigation = useNavigate();
-
-    const openCollectionAddModal = () => setCollectionAddModal(true)
-    const closeCollectionAddModal = () => {setCollectionAddModal(false); setKeyword("")}
-
+    /* 제목, 설명 ref */
     const title = useRef();
     const description = useRef();
 
+    /* 검색 관련 상태 */
     const [keyword, setKeyword] = useState("");
     const [debounceQuery, setDebounceQuery] = useState(keyword);
     const [searchResults, setSearchResults] = useState(null);
 
-    const {id} = useParams();
-    
-    // 컬렉션 아이템 ID 리스트
+    const { id } = useParams();
+    const navigation = useNavigate();
+
+    /* 컬렉션 아이템 ID 리스트 및 선택된 아이템 */
     const [collectionItemIds, setCollectionItemIds] = useState([]);
-    
-    // 컬렉션 아이템 페이지 정보
+    const [selectedItems, setSelectedItems] = useState([]);
+    const [tempItems, setTempItems] = useState([]);
+
+    /* 컬렉션 아이템 페이지 정보 */
     const [collectionItemsPage, setCollectionItemsPage] = useState({});
 
     useEffect(() => {
         console.log(collectionItemIds);
     }, [collectionItemIds]);
 
+    /* 컬렉션 수정 시 기존 데이터 불러오기 */
     useEffect(() => {
         const fetchCollectionDetail = async () => {
             try {
@@ -53,7 +57,7 @@ const CollectionFormPage = ({action}) => {
         }
     }, [action, id]);
 
-    // 디바운스
+    /* 디바운스 */
     useEffect(() => {
         const handler = setTimeout(() => {
             setDebounceQuery(keyword);
@@ -64,7 +68,7 @@ const CollectionFormPage = ({action}) => {
         };
     }, [keyword]);
 
-    // 검색 결과 가져오기
+    /* 검색 결과 가져오기 */
     useEffect(() => {
         const fetchSearchResults = async () => {
             if(debounceQuery){
@@ -82,26 +86,19 @@ const CollectionFormPage = ({action}) => {
         fetchSearchResults();
     }, [debounceQuery]);
 
-    // 검색 결과 확인
     useEffect(() => {
         console.log(searchResults);
     }, [searchResults]);
 
-    // 선택된 아이템들
-    const [selectedItems, setSelectedItems] = useState([]);
-    // 선택된 아이템들 확인
     useEffect(() => {
         console.log(selectedItems);
     }, [selectedItems]);
 
-    // 임시 선택된 아이템들
-    const [tempItems, setTempItems] = useState([]);
-    // 임시 선택된 아이템들 확인
     useEffect(() => {
         console.log(tempItems);
     }, [tempItems]);
 
-    // 아이템 더보기
+    /* 아이템 더보기 */
     const LoadMoreItemRef = useRef();
 
     const loadMoreItems = async () => {
@@ -135,7 +132,7 @@ const CollectionFormPage = ({action}) => {
         };
     }, [collectionAddModal, selectedItems]);
 
-    // 체크박스 핸들러
+    /* 체크박스 핸들러 */
     const handleCheck = async (item) => {
         if (tempItems.some(i => i.id === item.id)) {
             setTempItems(tempItems.filter(i => i.id !== item.id));
@@ -144,7 +141,7 @@ const CollectionFormPage = ({action}) => {
         }
     };
 
-    // 아이템 추가 핸들러
+    /* 선택 아이템 추가 */
     const handleAddItems = async () => {
         setSelectedItems([...tempItems.filter(item => !selectedItems.some(i => i.id === item.id)), ...selectedItems]);
         setCollectionItemIds([...tempItems.map(item => item.id), ...collectionItemIds]);
@@ -154,10 +151,9 @@ const CollectionFormPage = ({action}) => {
         setSearchResults(null);
     }
 
-    // 아이템 수정상태 변수
+    /* 아이템 수정 상태 */
     const [edit, setEdit] = useState(false);
 
-    // 아이템 수정하기 버튼 핸들러
     const handleEditItems = async () => {
         if (!edit) {
             setEdit(true);
@@ -170,13 +166,13 @@ const CollectionFormPage = ({action}) => {
         }
     }
 
-    // 아이템 수정 취소 핸들러
+
     const handleEditCancel = async () => {
         setEdit(false);
         setTempItems([]);
     }
 
-    // 더보기
+    /* 검색 더보기 */
     const loadMoreSearchRef = useRef();
 
     const loadMore = async () => {
@@ -213,6 +209,7 @@ const CollectionFormPage = ({action}) => {
         };
     }, [collectionAddModal, searchResults]);
 
+    /* 컬렉션 제출 */
     const handleSubmitCollection = async () => {
         if(title.current.value === ""){
             toast("컬렉션 제목을 입력해주세요");
@@ -244,6 +241,7 @@ const CollectionFormPage = ({action}) => {
         }
     }
 
+    /* 도메인 이름 매핑 */
     const domainNameMap = {
         "MOVIE" : "영화" ,
         "SERIES" : "시리즈",
@@ -265,6 +263,7 @@ const CollectionFormPage = ({action}) => {
 
                 <textarea placeholder="컬렉션 설명을 입력해주세요" rows={5} className="user-collection-add-text" maxLength={200} ref={description}/>
 
+                {/*이미지 추가*/}
                 <div className="user-collection-add-image-wrap">
                     <div className="user-collection-add-image-title">
                         <p>작품들</p>

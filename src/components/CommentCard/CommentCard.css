@@ -159,7 +159,7 @@
 
 .comment-inner .comment-card-nickname {
     display: block;
-    width: 170px;
+    width: 60%;
     white-space: nowrap;
     text-overflow: ellipsis;
     overflow: hidden;

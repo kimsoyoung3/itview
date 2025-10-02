@@ -688,7 +688,7 @@
 .comment-inner {
     width: 100%;
     display: grid;
-    grid-template-columns: repeat(4, 1fr); /* 4등분 고정 */
+    grid-template-columns: repeat(4, minmax(0, 1fr)); /* 4등분 고정 */
     gap: 10px;
 }
 
@@ -817,24 +817,30 @@
     z-index: 10;
 }
 
-/* 모바일 사이즈 */
+/*태블릿 사이즈*/
 @media (max-width: 768px) {
-    .detail {
-        margin-bottom: 100px;
-    }
-
     .container {
         padding: 0 15px;
     }
 
-    .detail-content {
-        margin-bottom: 50px;
+    .detail .container {
+        max-width: 95%;
+    }
+
+    .user-detail-page {
+        margin-top: 20px;
+        margin-bottom: 80px;
     }
 
     .detail-content-inner {
         flex-direction: column-reverse;
         align-items: center;
         gap: 0;
+    }
+
+    .info-top-right>li>button:hover img {
+        transform: none;
+        transition: none;
     }
 
     .info-top {
@@ -856,18 +862,21 @@
         max-width: 280px;
     }
 
-    .comment-inner {
-        width: 100%;
-        grid-template-columns: repeat(2, 1fr);
+    .comment-content-btn:hover {
+        background: #22C55E;
     }
 
-    .gallery-prev,
-    .gallery-next,
-    .video-prev,
-    .video-next,
-    .credit-prev,
-    .credit-next {
-        display: none;
+    .collection-list-modal-close-button:hover,
+    .collection-list-modal-content-btn:hover {
+        background: none;
+    }
+
+    .confirm-btn-group>button:hover {
+        background: none;
+    }
+
+    .my-comment-btn>button:hover {
+        background: none;
     }
 
     .my-comment-content {
@@ -891,39 +900,14 @@
         margin: 0;
         text-align: center;
     }
-}
 
-/*태블릿 사이즈*/
-@media (max-width: 768px) {
-    .detail .container {
-        max-width: 95%;
+    .detail-content {
+        margin-bottom: 50px;
     }
 
-    .user-detail-page {
-        margin-top: 20px;
-        margin-bottom: 80px;
-    }
-
-    .info-top-right>li>button:hover img {
-        transform: none;
-        transition: none;
-    }
-
-    .comment-content-btn:hover {
-        background: #22C55E;
-    }
-
-    .collection-list-modal-close-button:hover,
-    .collection-list-modal-content-btn:hover {
-        background: none;
-    }
-
-    .confirm-btn-group>button:hover {
-        background: none;
-    }
-
-    .my-comment-btn>button:hover {
-        background: none;
+    .comment-inner {
+        width: 100%;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
     }
 
     .credit-prev:hover,
@@ -935,6 +919,16 @@
         background: rgba(0,0,0,0.3);
     }
 
+    .gallery-prev,
+    .gallery-next,
+    .video-prev,
+    .video-next,
+    .credit-prev,
+    .credit-next {
+        display: none;
+    }
+
+
 }
 
 /*모바일 사이즈*/
@@ -944,6 +938,6 @@
     }
 
     .comment-inner {
-        grid-template-columns: repeat(1, 1fr);
+        grid-template-columns: repeat(1, minmax(0, 1fr));
     }
 }

@@ -5,23 +5,28 @@ import { toast } from "react-toastify";
 import {NavLink} from "react-router-dom";
 
 const Webtoon = () => {
-
+    /*장르 상태*/
     const [genre, setGenre] = useState(null);
+
+    /* 장르 변경 시 초기 선택값 세팅 */
     useEffect(() => {
         console.log(genre);
         setSelect(genre?.[0]);
     }, [genre]);
 
+    /* 채널 상태 */
     const [channel, setChannel] = useState(null);
     useEffect(() => {
         console.log(channel);
     }, [channel]);
 
+    /* 컨텐츠 상태 */
     const [contents, setContents] = useState(null);
     useEffect(() => {
         console.log(contents);
     }, [contents]);
 
+    /* 장르 불러오기 */
     useEffect(() => {
         const fetchDomain = async () => {
             try {
@@ -34,7 +39,10 @@ const Webtoon = () => {
         fetchDomain();
     }, []);
 
+    /* 선택된 장르 */
     const [select, setSelect] = useState(null);
+
+    /* 장르 선택 시 컨텐츠 불러오기 */
     useEffect(() => {
         if (!select) return;
         console.log(select);
@@ -59,6 +67,7 @@ const Webtoon = () => {
         }
     }, [select, channel]);
 
+    /* 더보기 버튼 클릭 */
     const handleMoreClick = async() => {
         if (channel?.includes(select)) {
             try {
@@ -87,6 +96,8 @@ const Webtoon = () => {
         <div className="webtoon-page">
             <div className="webtoon-page-wrap container">
                 <div className="webtoon-page-tab-btn-wrap">
+
+                    {/*탭 버튼*/}
                     <div className="webtoon-page-tab-btn">
                         {genre?.map(item =>(
                             <button className={select?.first === item.first ? "webtoon-page-tab-btn-click" : ""} onClick={() => setSelect(item)} key={item.id}>{item.second}</button>
@@ -99,6 +110,7 @@ const Webtoon = () => {
                     </div>
                 </div>
 
+                {/*탭 내용*/}
                 <div className="webtoon-page-tab-content">
                     {contents?.content?.map(item => (
                         <NavLink to={`/content/${item?.id}`} className="webtoon-content-card">
@@ -112,6 +124,7 @@ const Webtoon = () => {
                     ))}
                 </div>
 
+                {/*탭 더보기 버튼*/}
                 <div className="webtoon-page-tab-more-btn">
                     <button onClick={handleMoreClick} hidden={contents?.page.number + 1 >= contents?.page.totalPages}>더보기</button>
                 </div>

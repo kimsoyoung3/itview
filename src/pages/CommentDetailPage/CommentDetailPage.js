@@ -9,17 +9,19 @@ import NotFound from "../NotFound/NotFound";
 
 
 const CommentDetailPage = ({userInfo, openLogin}) => {
+    /* 상태 변수 */
     const [notFound, setNotFound] = useState(false);
-
-    const navigate = useNavigate();
-
     const [comment, setComment] = useState({});
     const [replies, setReplies] = useState([]);
     const [page, setPage] = useState({});
 
+    /* 라우터 변수 */
+    const navigate = useNavigate();
+
     /*URL에서 :id 가져오기*/
     const { id } = useParams();
 
+    /* 데이터 불러오기 */
     useEffect(() => {
         const fetchData = async () => {
             try {
@@ -44,14 +46,17 @@ const CommentDetailPage = ({userInfo, openLogin}) => {
         console.log(replies);
     }, [replies]);
 
+    /* 댓글 삭제 후 이동 */
     const onDelete = async () => {
         navigate(`/content/${comment.content.id}`);
     }
 
+    /* 새 댓글 추가 */
     const newReply = (data) => {
         setReplies((prev) => ([data, ...prev]));
     }
 
+    /* 더보기 기능: 페이지네이션 */
     const loadMoreRepliesRef = React.useRef();
 
     const handleNextPage = async () => {
@@ -62,17 +67,18 @@ const CommentDetailPage = ({userInfo, openLogin}) => {
         }
     }
 
+    /* 더보기 자동 로드 옵저버 */
     useEffect(() => {
         const observer = new IntersectionObserver((entries) => {
             if (entries[0].isIntersecting) {
                 handleNextPage();
             }
-        }, {
-            threshold: 0.1
-        });
+        }, { threshold: 0.1 });
+
         if (loadMoreRepliesRef.current) {
             observer.observe(loadMoreRepliesRef.current);
         }
+
         return () => {
             if (loadMoreRepliesRef.current) {
                 observer.unobserve(loadMoreRepliesRef.current);

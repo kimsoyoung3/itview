@@ -8,6 +8,7 @@ import Markdown from "react-markdown";
 const NotificationPage = ({ userInfo, setUserInfo, openLogin }) => {
     const navigate = useNavigate();
 
+    /* URL 파라미터에서 type 가져오기 */
     const [searchParams] = useSearchParams();
     const type = searchParams.get("type");
     useEffect(() => {
@@ -19,13 +20,16 @@ const NotificationPage = ({ userInfo, setUserInfo, openLogin }) => {
         }
     }, [type]);
 
+    /* 알림 탭 상태 */
     const [activeId, setActiveId] = useState("notification-tab1");
 
+    /* 알림 데이터 */
     const [notifications, setNotifications] = useState([]);
     useEffect(() => {
         console.log(notifications)
     }, [notifications]);
 
+    /* 알림 불러오기 */
     useEffect(() => {
         const fetchNotifications = async () => {
             try {
@@ -54,6 +58,7 @@ const NotificationPage = ({ userInfo, setUserInfo, openLogin }) => {
         fetchNotifications();
     }, [type]);
 
+    /* 더 불러오기 */
     const handleLoadMore = async () => {
         try {
             if (activeId === "notification-tab1") {
@@ -74,6 +79,7 @@ const NotificationPage = ({ userInfo, setUserInfo, openLogin }) => {
         }
     }
 
+    /*시간 경과 계산*/
     const timeAgo = (dateString) => {
         const date = new Date(dateString);
         const now = new Date();

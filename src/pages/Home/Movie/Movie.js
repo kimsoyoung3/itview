@@ -5,18 +5,22 @@ import { toast } from "react-toastify";
 import {NavLink} from "react-router-dom";
 
 const Movie = () => {
-
+    /*장르 상태*/
     const [genre, setGenre] = useState(null);
+
+    /* 장르 변경 시 초기 선택값 세팅 */
     useEffect(() => {
         console.log(genre);
         setSelect(genre?.[0]);
     }, [genre]);
 
+    /* 컨텐츠 상태 */
     const [contents, setContents] = useState(null);
     useEffect(() => {
         console.log(contents);
     }, [contents]);
 
+    /* 장르 불러오기 */
     useEffect(() => {
         const fetchDomain = async () => {
             try {
@@ -28,7 +32,10 @@ const Movie = () => {
         fetchDomain();
     }, []);
 
+    /* 선택된 장르 */
     const [select, setSelect] = useState(null);
+
+    /* 장르 선택 시 컨텐츠 불러오기 */
     useEffect(() => {
         if (!select) return;
         console.log(select);
@@ -42,6 +49,7 @@ const Movie = () => {
         fetchContents();
     }, [select]);
 
+    /* 더보기 버튼 클릭 */
     const handleMoreClick = async() => {
         try {
             const res = await getContentsByGenre('movie', select?.first, contents?.page.number + 2)
@@ -57,12 +65,15 @@ const Movie = () => {
     return (
         <div className="movie-page">
             <div className="movie-page-wrap container">
+
+                {/*탭 버튼*/}
                 <div className="movie-page-tab-btn">
                     {genre?.map(item =>(
                         <button className={select?.first === item.first ? "movie-page-tab-btn-click" : ""} onClick={() => setSelect(item)}>{item.second}</button>
                     ))}
                 </div>
 
+                {/*탭 내용*/}
                 <div className="movie-page-tab-content">
                     {contents?.content?.map(item => (
                         <NavLink to={`/content/${item?.id}`} className="movie-content-card">
@@ -76,6 +87,7 @@ const Movie = () => {
                     ))}
                 </div>
 
+                {/*탭 더보기 버튼*/}
                 <div className="movie-page-tab-more-btn">
                     <button onClick={handleMoreClick} hidden={contents?.page.number + 1 >= contents?.page.totalPages}>더보기</button>
                 </div>

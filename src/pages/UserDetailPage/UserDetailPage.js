@@ -6,12 +6,16 @@ import { toast } from "react-toastify";
 import NotFound from "../NotFound/NotFound";
 
 const UserDetailPage = ({ userInfo, setUserInfo, openLogin }) => {
+    /* 에러 상태 */
     const [notFound, setNotFound] = useState(false);
 
+    /* URL 파라미터 */
     const { id } = useParams();
 
+    /* 유저 상세 정보 상태 */
     const [userDetail, setUserDetail] = useState(null);
 
+    /* 유저 상세 정보 가져오기 */
     useEffect(() => {
         const fetchUserDetail = async () => {
             try {
@@ -34,17 +38,21 @@ const UserDetailPage = ({ userInfo, setUserInfo, openLogin }) => {
         }
     }, [userDetail]);
 
-    const [setting, setSetting] =useState()
+    /* 설정 모달 */
+    const [setting, setSetting] = useState();
     const openSetting = () => setSetting(true);
     const closeSetting = () => setSetting(false);
 
+    /* 프로필 수정 모달 */
     const [myProfileEditModal, setMyProfileEditModal] = useState();
     const openMyProfileEdit = () => setMyProfileEditModal(true);
     const closeMyProfileEdit = () => setMyProfileEditModal(false);
 
+    /* 프로필 입력 참조 */
     const nameRef = useRef(null);
     const introductionRef = useRef(null);
 
+    /* 모달 열릴 때 입력란 초기화 */
     useEffect(() => {
         if (nameRef.current && introductionRef.current && userDetail) {
             nameRef.current.value = userDetail?.userProfile.nickname;
@@ -52,6 +60,7 @@ const UserDetailPage = ({ userInfo, setUserInfo, openLogin }) => {
         }
     }, [myProfileEditModal, userDetail]);
 
+    /* 프로필 이미지 변경 */
     const handleImageChange = (e) => {
         console.log("이미지 변경");
         const file = e.target.files[0];
@@ -65,6 +74,7 @@ const UserDetailPage = ({ userInfo, setUserInfo, openLogin }) => {
         }
     }
 
+    /* 프로필 수정 제출 */
     const handleProfileUpdate = async (e) => {
         e.preventDefault();
 
@@ -95,6 +105,7 @@ const UserDetailPage = ({ userInfo, setUserInfo, openLogin }) => {
         }
     };
 
+    /* 팔로우 기능 */
     const handleFollow = async () => {
         if (!userInfo) {
             openLogin();
@@ -112,6 +123,7 @@ const UserDetailPage = ({ userInfo, setUserInfo, openLogin }) => {
         }
     };
 
+    /* 팔로우 해제 기능 */
     const handleUnfollow = async () => {
         try {
             await unfollowUser(id);
@@ -125,6 +137,7 @@ const UserDetailPage = ({ userInfo, setUserInfo, openLogin }) => {
         }
     };
 
+    /* 소셜 로그인 연동/해제 */
     const handleSocialLogin = async (provider) => {
         if (userInfo?.[provider]) {
             await unlink({provider}).then(() => {
@@ -143,6 +156,7 @@ const UserDetailPage = ({ userInfo, setUserInfo, openLogin }) => {
     return (notFound ? <NotFound /> :
         <div className="user-detail-page">
             <div className="user-detail-page-wrap container">
+                {/*유저 정보 및 팔로우, 주소 공유*/}
                 <div className="user-detail-info">
                     <div className="user-detail-info-profile">
                         <img src={userDetail?.userProfile.profile ? userDetail?.userProfile.profile : `${process.env.PUBLIC_URL}/user.png`} alt=""/>
@@ -236,6 +250,7 @@ const UserDetailPage = ({ userInfo, setUserInfo, openLogin }) => {
                     </div>
                 </div>
 
+                {/*유저 컨텐츠 리스트*/}
                 <div className="user-detail-info-group">
                     <div className="user-detail-info-group-content">
                         <NavLink to={`/user/${id}/rating`}>
@@ -294,6 +309,7 @@ const UserDetailPage = ({ userInfo, setUserInfo, openLogin }) => {
                     </div>
                 )}
 
+                {/*유저 보관함*/}
                 <div className="user-detail-collection">
                     <p>보관함</p>
                     <div className="user-detail-collection-wrap">
@@ -334,6 +350,7 @@ const UserDetailPage = ({ userInfo, setUserInfo, openLogin }) => {
                     </div>
                 </div>
 
+                {/*유저 좋아요*/}
                 <div className="user-detail-like">
                     <p>좋아요</p>
                     <NavLink to={`/user/${id}/like?type=person`} className="user-detail-like-list">

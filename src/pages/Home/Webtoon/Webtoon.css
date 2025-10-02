@@ -2,15 +2,14 @@
     margin-top: 114px;
 }
 
+.webtoon-page-tab-btn-wrap>div:nth-of-type(1) {
+    margin-bottom: 10px;
+}
+
 .webtoon-page-tab-btn {
     display: flex;
     flex-wrap: wrap;
-    margin-bottom: 10px;
     gap: 10px;
-}
-
-.series-page-tab-btn-wrap>div:nth-of-type(2) {
-    margin-bottom: 0;
 }
 
 .webtoon-page-tab-btn>button {
@@ -27,7 +26,6 @@
     color: #ffffff;
 }
 
-
 .webtoon-page-tab-btn-click {
     background: #22c55e !important;
     border: 0 !important;
@@ -35,8 +33,9 @@
 }
 
 .webtoon-page-tab-content {
+    width: 100%;
     display: grid;
-    grid-template-columns: repeat(6, 1fr); /* 4등분 고정 */
+    grid-template-columns: repeat(6, minmax(0, 1fr)); /* 4등분 고정 */
     gap: 15px;
     margin-top: 30px;
 }
@@ -44,15 +43,14 @@
 .webtoon-content-card-poster {
     width: 100%;
     height: auto;
-    aspect-ratio: 2 / 3;
-    border: 1px solid #eeeeee;
     margin-bottom: 5px;
 }
 
 .webtoon-content-card-poster>img {
     width: 100%;
-    height: 100%;
+    aspect-ratio: 2 / 3;
     object-fit: cover;
+    display: block;
 }
 
 .webtoon-content-card>p .bi {
@@ -65,7 +63,8 @@
 
 .webtoon-content-card-title {
     font-weight: 700;
-    width: 170px;
+    /*width: 170px;*/
+    width: 100%;
     white-space: nowrap;
     text-overflow: ellipsis;
     overflow: hidden;
@@ -101,7 +100,6 @@
     background: #d9d9d9;
 }
 
-
 /*태블릿 사이즈*/
 @media (max-width: 768px) {
     .webtoon-page {
@@ -115,11 +113,7 @@
 
     .webtoon-page-tab-content {
         margin-top: 20px;
-        grid-template-columns: repeat(4, 1fr); /* 4등분 고정 */
-    }
-
-    .webtoon-content-card-title {
-        width: 150px;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
     }
 
     .webtoon-page-tab-more-btn {
@@ -139,12 +133,7 @@
     }
 
     .webtoon-page-tab-content {
-        grid-template-columns: repeat(3, 1fr); /* 4등분 고정 */
+        grid-template-columns: repeat(3, minmax(0, 1fr));
     }
-
-    .webtoon-content-card-title {
-        width: 130px;
-    }
-
 
 }

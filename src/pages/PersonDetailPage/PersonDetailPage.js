@@ -9,9 +9,11 @@ import NotFound from "../NotFound/NotFound";
 const PersonDetailPage = ({userInfo, openLogin}) => {
     const [notFound, setNotFound] = useState(false);
 
+    /* 인물 정보 / 작업 정보 */
     const [personInfo, setPersonInfo] = useState(null);
     const [workInfo, setWorkInfo] = useState(null);
 
+    /* 도메인 매핑 */
     const domainNameMap = {
         "영화" : "MOVIE",
         "시리즈" : "SERIES",
@@ -20,7 +22,10 @@ const PersonDetailPage = ({userInfo, openLogin}) => {
         "음반" : "RECORD"
     }
 
+    /* URL 파라미터 */
     const { id } = useParams();
+
+    /* 데이터 불러오기 */
     useEffect(() => {
         const fetchData = async () => {
             try {
@@ -61,6 +66,7 @@ const PersonDetailPage = ({userInfo, openLogin}) => {
         console.log(workInfo);
     }, [workInfo]);
 
+    /* 더 불러오기 */
     const handleMoreClick = async (contentType, department, page) => {
         console.log(domainNameMap[contentType], department, page);
         const res = await getPersonWorks(id, domainNameMap[contentType], department, page);
@@ -79,6 +85,7 @@ const PersonDetailPage = ({userInfo, openLogin}) => {
         }
     }
 
+    /* 좋아요 처리 */
     const handleLikeClick = async () => {
         if (personInfo.liked) {
             const res = await unlikePerson(id);
@@ -101,6 +108,7 @@ const PersonDetailPage = ({userInfo, openLogin}) => {
         }
     }
 
+    /* 탭 스크롤 제어 */
     const headerHeight = 94; // 헤더 높이(px)
 
     const handleTabClick = (contentType, department = null) => {
@@ -131,8 +139,7 @@ const PersonDetailPage = ({userInfo, openLogin}) => {
         }
     };
 
-
-
+    /* 탭 상태 */
     const [activeTab, setActiveTab] = useState(null);
 
     /*외부서비스 로고*/
@@ -191,6 +198,7 @@ const PersonDetailPage = ({userInfo, openLogin}) => {
                                 </div>
                             </div>
 
+                            {/* 모바일 버전 탑 스크롤 버튼 */}
                             <div className="top-btn" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}>
                                 <i className="bi bi-chevron-up"></i>
                             </div>

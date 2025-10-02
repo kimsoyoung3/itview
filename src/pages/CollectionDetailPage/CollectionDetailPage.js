@@ -9,22 +9,24 @@ import ReplyCard from "../../components/ReplyCard/ReplyCard";
 
 const CollectionDetailPage = ({userInfo, openLogin}) => {
     const navigator = useNavigate();
-
     const { id } = useParams();
-    const [notFound, setNotFound] = useState(false);
 
+    /* 상태: 컬렉션, 아이템, 댓글 */
     const [collection, setCollection] = useState({});
     const [items, setItems] = useState({});
     const [replies, setReplies] = useState({});
+    const [notFound, setNotFound] = useState(false);
 
-    const [deleteCollectionModal, setDeleteCollectionModal] = useState()
+    /* 상태: 컬렉션 삭제 모달 */
+    const [deleteCollectionModal, setDeleteCollectionModal] = useState(false);
+    const openDeleteCollectionModal = () => setDeleteCollectionModal(true);
+    const closeDeleteCollectionModal = () => setDeleteCollectionModal(false);
 
-    const openDeleteCollectionModal = () => setDeleteCollectionModal(true)
-    const closeDeleteCollectionModal = () => setDeleteCollectionModal(false)
-
+    /* 상태: 수정 메뉴 */
     const [edit, setEdit] = useState(false);
     const menuRef = useRef(null);
 
+    /* 바깥 클릭 시 수정 메뉴 닫기 */
     useEffect(() => {
         const handleClickOutside = (e) => {
             if (menuRef.current && !menuRef.current.contains(e.target)) {
@@ -35,13 +37,16 @@ const CollectionDetailPage = ({userInfo, openLogin}) => {
         return () => document.removeEventListener("mousedown", handleClickOutside);
     }, []);
 
+    /* 컬렉션, 아이템, 댓글 데이터 가져오기 */
     useEffect(() => {
         const fetchData = async () => {
             try {
                 const detailRes = await getCollectionDetail(id);
                 setCollection(detailRes.data);
+
                 const itemsRes = await getCollectionItems(id, 1);
                 setItems(itemsRes.data);
+
                 const repliesRes = await getCollectionReplies(id, 1);
                 setReplies(repliesRes.data);
             } catch (e) {
@@ -63,6 +68,7 @@ const CollectionDetailPage = ({userInfo, openLogin}) => {
         console.log(replies);
     }, [replies]);
 
+    /* 컬렉션 삭제 */
     const handleCollectionDelete = async () => {
         try {
             await deleteCollection(id);
@@ -73,6 +79,7 @@ const CollectionDetailPage = ({userInfo, openLogin}) => {
         }
     }
 
+    /* 컬렉션 좋아요/취소 */
     const handleLike = async () => {
         if (!collection.liked) {
             try {
@@ -91,6 +98,7 @@ const CollectionDetailPage = ({userInfo, openLogin}) => {
         }
     }
 
+    /* 더보기: 작성 */
     const handleLoadMoreItem = async () => {
         if (items.page.number < items.page.totalPages - 1) {
             try {
@@ -105,6 +113,7 @@ const CollectionDetailPage = ({userInfo, openLogin}) => {
         }
     }
 
+    /* 더보기: 댓글 */
     const handleLoadMoreReply = async () => {
         if (replies.page.number < replies.page.totalPages - 1) {
             try {
@@ -119,6 +128,7 @@ const CollectionDetailPage = ({userInfo, openLogin}) => {
         }
     }
 
+    /* 댓글 작성 */
     const replyRef = useRef();
     const handleReplySubmit = async () => {
         if (replyRef.current.value.trim() !== "") {
@@ -136,7 +146,7 @@ const CollectionDetailPage = ({userInfo, openLogin}) => {
         }
     }
 
-    /*댓글 탭*/
+    /* 댓글 탭 스크롤 */
     const replySectionRef = useRef(null);
 
     const scrollToReply= () => {

@@ -29,8 +29,9 @@
 }
 
 .book-page-tab-content {
+    width: 100%;
     display: grid;
-    grid-template-columns: repeat(6, 1fr); /* 4등분 고정 */
+    grid-template-columns: repeat(6, minmax(0, 1fr));
     gap: 15px;
     margin-top: 30px;
 }
@@ -58,7 +59,7 @@
 
 .book-content-card-title {
     font-weight: 700;
-    width: 170px;
+    width: 100%;
     white-space: nowrap;
     text-overflow: ellipsis;
     overflow: hidden;
@@ -94,7 +95,6 @@
     background: #d9d9d9;
 }
 
-
 /*태블릿 사이즈*/
 @media (max-width: 768px) {
     .book-page {
@@ -108,11 +108,7 @@
 
     .book-page-tab-content {
         margin-top: 20px;
-        grid-template-columns: repeat(4, 1fr); /* 4등분 고정 */
-    }
-
-    .book-content-card-title {
-        width: 150px;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
     }
 
     .book-page-tab-more-btn {
@@ -132,10 +128,7 @@
     }
 
     .book-page-tab-content {
-        grid-template-columns: repeat(3, 1fr); /* 4등분 고정 */
+        grid-template-columns: repeat(3, minmax(0, 1fr));
     }
 
-    .book-content-card-title {
-        width: 130px;
-    }
 }
