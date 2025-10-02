@@ -3,6 +3,7 @@ package com.example.itview_spring.Entity;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import com.example.itview_spring.Constant.Role;
@@ -54,6 +55,10 @@ public class UserEntity {
     // 유저 소개
     @Column(length = 1024)
     private String introduction;
+
+    // 마지막 알림 확인 시각
+    @Column
+    private LocalDateTime lastNotificationCheckAt = LocalDateTime.now();
 
     // 유저의 컬렉션 목록
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)

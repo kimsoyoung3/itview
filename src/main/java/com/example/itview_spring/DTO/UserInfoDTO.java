@@ -15,4 +15,5 @@ public class UserInfoDTO {
     private Boolean google;
     private Boolean kakao;
     private Boolean naver;
+    private Boolean newNotification;
 }
