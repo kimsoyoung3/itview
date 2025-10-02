@@ -7,7 +7,7 @@ import 'swiper/css/pagination';
 import 'swiper/css';
 import 'swiper/css/grid';
 import { getContentCredit, deleteRating, getContentComment, getContentDetail, postContentComment, postContentRating, unwishContent, wishContent } from "../../API/ContentApi";
-import {Navigation, Pagination, Grid} from "swiper/modules";
+import {Navigation, Pagination} from "swiper/modules";
 import {Swiper, SwiperSlide} from "swiper/react";
 import CreditOrPersonCard from "../../components/CreditOrPersonCard/CreditOrPersonCard";
 import CommentCard from "../../components/CommentCard/CommentCard";
@@ -52,7 +52,7 @@ const DetailPage = ({userInfo, openLogin}) => {
     /*코멘트 작성*/
     const handleCommentPost = async () => {
         try {
-            const res = await postContentComment(id, { text: textRef.current.value })
+            await postContentComment(id, { text: textRef.current.value })
             closeMyComment();
             getContentComment(id).then(response => {
                 setContentDetail(prev => ({

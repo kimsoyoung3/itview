@@ -8,7 +8,7 @@ import {
     postReply,
     updateComment
 } from "../../API/CommentApi";
-import { NavLink, useNavigate } from "react-router-dom";
+import { NavLink } from "react-router-dom";
 import { toast } from "react-toastify";
 
 const CommentCard = ({ comment, content, userInfo, openLogin, newReply, onDelete, clamp = false }) => {
@@ -21,8 +21,6 @@ const CommentCard = ({ comment, content, userInfo, openLogin, newReply, onDelete
 
     const commentTextRef = useRef(null); /* 코멘트 수정 textarea */
     const replyTextRef = useRef(null);   /* 댓글 textarea */
-
-    const navigate = useNavigate();
 
     /* prop 변경 시 state 업데이트 */
     useEffect(() => {

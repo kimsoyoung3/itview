@@ -2,7 +2,7 @@ import {useEffect, useRef, useState} from 'react';
 import "./CollectionFormPage.css"
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { toast } from 'react-toastify';
-import { CollectionCreate, editCollection, getCollectionDetail, getCollectionForm, getCollectionItems } from '../../API/CollectionApi';
+import { CollectionCreate, editCollection, getCollectionForm, getCollectionItems } from '../../API/CollectionApi';
 import { searchContent } from '../../API/ContentApi';
 import { useNavigate, useParams } from 'react-router-dom';
 

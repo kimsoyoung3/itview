@@ -1,10 +1,8 @@
 import React, {useEffect, useState} from "react";
 import "./SearchPage.css"
-import {NavLink, useParams, useSearchParams} from "react-router-dom";
-import CommentCard from "../../components/CommentCard/CommentCard";
+import {NavLink, useSearchParams} from "react-router-dom";
 import {searchContents, searchPersons, searchCollections, searchUsers} from "../../API/SearchApi";
-import {followUser, getUserLikeCollection, getUserLikeComment, getUserLikePerson, unfollowUser} from "../../API/UserApi";
-import ContentEach from "../../components/ContentEach/ContentEach";
+import {followUser, unfollowUser} from "../../API/UserApi";
 import SearchContentEach from "../../components/SearchContentEach/SearchContentEach";
 import CreditOrPersonCard from "../../components/CreditOrPersonCard/CreditOrPersonCard";
 import CollectionCard from "../../components/CollectionCard/CollectionCard";

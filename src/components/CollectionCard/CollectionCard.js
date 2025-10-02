@@ -1,4 +1,3 @@
-import React, {useEffect} from "react";
 import "./CollectionCard.css";
 import {NavLink, useNavigate} from "react-router-dom";
 
