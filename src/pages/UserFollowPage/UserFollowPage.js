@@ -102,7 +102,7 @@ const UserFollowPage = ({userInfo, openLogin, type}) => {
                         )}
                     </div>
                 ) : (
-                    <p className="empty-message">{type === "follower" ? "팔로워 검색 결과가 없습니다 :)" : "팔로잉 검색 결과가 없습니다 :) "}</p>
+                    <p className="empty-message">{type === "follower" ? "팔로워가 아직 없습니다. 공유하고 친구들을 초대해보세요 :)" : "팔로잉한 사용자가 없습니다 :) "}</p>
                 )}
 
             </div>

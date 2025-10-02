@@ -2,6 +2,10 @@
   margin-top: 114px;
 }
 
+.user-detail-page .container {
+  padding: 0;
+}
+
 .user-detail-page-wrap {
   border: 1px solid #d9d9d9;
   border-radius: 12px;
@@ -481,7 +485,6 @@
 
   .user-detail-page .container {
     max-width: 85%;
-    padding: 0;
   }
 }
 
