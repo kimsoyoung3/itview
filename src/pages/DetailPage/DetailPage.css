@@ -827,9 +827,8 @@
         max-width: 95%;
     }
 
-    .user-detail-page {
-        margin-top: 20px;
-        margin-bottom: 80px;
+    .detail {
+        margin-bottom: 100px;
     }
 
     .detail-content-inner {
@@ -927,8 +926,6 @@
     .credit-next {
         display: none;
     }
-
-
 }
 
 /*모바일 사이즈*/
