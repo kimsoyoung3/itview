@@ -1,4 +1,6 @@
 package com.example.itview_spring.Repository;
+import java.time.LocalDateTime;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -9,4 +11,5 @@ import com.example.itview_spring.Constant.Replyable;
 public interface NotificationRepository extends JpaRepository<NotificationEntity, Integer> {
     Page<NotificationEntity> findAllByUser_IdOrderByIdDesc(Integer userId, Pageable pageable);
     void deleteByTargetIdAndTargetType(Integer targetId, Replyable targetType);
+    boolean existsByUser_IdAndCreatedAtAfter(Integer userId, LocalDateTime time);
 }

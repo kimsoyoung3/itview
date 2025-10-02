@@ -40,6 +40,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
@@ -321,6 +322,16 @@ public class UserService implements UserDetailsService {
         return notificationDTOs;
     }
 
+    // 마지막 알림 확인 시각 업데이트
+    public void updateLastNotificationCheckAt(Integer userId) {
+        if (!userRepository.existsById(userId)) {
+            throw new NoSuchElementException("존재하지 않는 유저입니다.");
+        }
+        UserEntity user = userRepository.findById(userId).get();
+        user.setLastNotificationCheckAt(LocalDateTime.now());
+        userRepository.save(user);
+    }
+
     // userInfo 조회
     public UserInfoDTO getUserInfo(Integer id) {
         if (!userRepository.existsById(id)) {
@@ -331,6 +342,9 @@ public class UserService implements UserDetailsService {
         userInfoDTO.setGoogle(socialRepository.existsByUser_IdAndProvider(id, "google"));
         userInfoDTO.setKakao(socialRepository.existsByUser_IdAndProvider(id, "kakao"));
         userInfoDTO.setNaver(socialRepository.existsByUser_IdAndProvider(id, "naver"));
+        userInfoDTO.setNewNotification(
+            notificationRepository.existsByUser_IdAndCreatedAtAfter(id, userRepository.findById(id).get().getLastNotificationCheckAt())
+        );
         return userInfoDTO;
     }
 

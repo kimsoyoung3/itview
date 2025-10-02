@@ -219,14 +219,30 @@ public class UserRestController {
     @GetMapping("/notification")
     public ResponseEntity<Page<NotificationDTO>> getNotifications(@AuthenticationPrincipal CustomUserDetails user,
                                                                   @PageableDefault(page=1) Pageable pageable) {
+        var auth = SecurityContextHolder.getContext().getAuthentication();
+        if (auth.getPrincipal() == "anonymousUser") {
+            return ResponseEntity.status(401).build();
+        }
         Page<NotificationDTO> notifications = userService.getNotifications(user.getId(), pageable.getPageNumber());
         return ResponseEntity.ok(notifications);
+    }
+    
+    // 알림 확인 시간 업데이트
+    @PostMapping("/notification/check")
+    public ResponseEntity<Void> checkNotification(@AuthenticationPrincipal CustomUserDetails user) {
+        if (user == null) return ResponseEntity.status(401).build();
+        userService.updateLastNotificationCheckAt(user.getId());
+        return ResponseEntity.ok().build();
     }
 
     // 친구 소식 조회
     @GetMapping("/notification/friend")
     public ResponseEntity<Page<NotificationDTO>> getFriendNotifications(@AuthenticationPrincipal CustomUserDetails user,
                                                                         @PageableDefault(page=1) Pageable pageable) {
+        var auth = SecurityContextHolder.getContext().getAuthentication();
+        if (auth.getPrincipal() == "anonymousUser") {
+            return ResponseEntity.status(401).build();
+        }
         Page<NotificationDTO> notifications = userService.getFriendNotifications(user.getId(), pageable.getPageNumber());
         return ResponseEntity.ok(notifications);
     }
