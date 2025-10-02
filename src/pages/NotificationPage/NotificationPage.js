@@ -1,12 +1,11 @@
 import React, { use, useEffect, useState } from "react";
 import "./NotificationPage.css"
-import { getFriendNotification, getNotification } from "../../API/UserApi";
+import { checkNotification, getFriendNotification, getNotification } from "../../API/UserApi";
 import {NavLink, useNavigate, useSearchParams} from "react-router-dom";
 import { toast } from "react-toastify";
 import Markdown from "react-markdown";
 
-const NotificationPage = ({ userInfo, openLogin }) => {
-
+const NotificationPage = ({ userInfo, setUserInfo, openLogin }) => {
     const navigate = useNavigate();
 
     const [searchParams] = useSearchParams();
@@ -33,12 +32,22 @@ const NotificationPage = ({ userInfo, openLogin }) => {
                 if (type === "friend") {
                     const res = await getFriendNotification(1);
                     setNotifications(res.data);
+                    checkNotification();
+                    setUserInfo(prev => ({
+                        ...prev,
+                        newNotification: false
+                    }));
                 } else {
                     const res = await getNotification(1);
                     setNotifications(res.data);
+                    checkNotification();
+                    setUserInfo(prev => ({
+                        ...prev,
+                        newNotification: false
+                    }));
                 }
             } catch (e) {
-                navigate("/");
+                // navigate("/");
             }
         }
 

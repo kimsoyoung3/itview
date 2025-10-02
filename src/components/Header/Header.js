@@ -12,7 +12,7 @@ import {
 } from '../../API/UserApi';
 import { toast } from "react-toastify";
 
-const Header = ({ userInfo, handleLogin, handleLogout, isLoginOpen, openLogin, closeLogin }) => {
+const Header = ({ userInfo, setUserInfo, handleLogin, handleLogout, isLoginOpen, openLogin, closeLogin }) => {
     /* 현재 경로 및 스크롤 상태 */
     const location = useLocation();
     const [scrolled, setScrolled] = useState(false);
@@ -54,10 +54,14 @@ const Header = ({ userInfo, handleLogin, handleLogout, isLoginOpen, openLogin, c
 
         eventSource.addEventListener("new-notification", () => {
             toast("새 알림 도착");
+            setUserInfo(prev => ({
+                ...prev,
+                newNotification: true
+            }));
         });
 
         return () => eventSource.close();
-    }, [userInfo]);
+    }, [userInfo?.userId]);
 
     /* 비밀번호 재설정 관련 */
     const [verifyingEmail, setVerifyingEmail] = useState('');
@@ -268,7 +272,7 @@ const Header = ({ userInfo, handleLogin, handleLogout, isLoginOpen, openLogin, c
                             <div className="user-menu">
                                 <Link to="/notification">
                                     소식
-                                    <span className="pc-red-dot"></span>
+                                    <span hidden={!userInfo.newNotification} className="pc-red-dot"></span>
                                 </Link>
                                 <Link to={`/user/${userInfo.userId}`} className="login-button">마이페이지</Link>
                                 <button onClick={handleLogout} className="login-button">로그아웃</button>
@@ -325,7 +329,7 @@ const Header = ({ userInfo, handleLogin, handleLogout, isLoginOpen, openLogin, c
                                         <img className="mobile-menu-icon" src={`${process.env.PUBLIC_URL}/mobile-icon/mobile-bell.svg`} alt=""/>
                                     </Link>
 
-                                    <span className="red-dot"></span>
+                                    <span hidden={!userInfo.newNotification} className="red-dot"></span>
                                 </div>
                                 <p className="mobile-menu-name">소식</p>
                             </div>

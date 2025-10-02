@@ -10,10 +10,10 @@ import UserLikePage from '../pages/UserLilkePage/UserLilkePage';
 import UserCollectionPage from '../pages/UserCollectionPage/UserCollectionPage';
 import UserFollowPage from '../pages/UserFollowPage/UserFollowPage';
 
-function UserRoutes({ userInfo, openLogin }) {
+function UserRoutes({ userInfo, setUserInfo, openLogin }) {
   return (
     <Routes>
-      <Route path=":id" element={<UserDetailPage userInfo={userInfo} openLogin={openLogin} />} />
+      <Route path=":id" element={<UserDetailPage userInfo={userInfo} setUserInfo={setUserInfo} openLogin={openLogin} />} />
       <Route path=":id/rating" element={<UserRatingPage userInfo={userInfo} openLogin={openLogin} />} />
       <Route path=":id/content/:contentType" element={<UserContentPage userInfo={userInfo} openLogin={openLogin} />} />
       <Route path=":id/content/:contentType/rating" element={<UserContentRatingPage userInfo={userInfo} openLogin={openLogin} />} />

@@ -71,8 +71,8 @@ function App() {
 
     return (
         <HashRouter>
-            <Header userInfo={userInfo} handleLogin={handleLogin} handleLogout={handleLogout} isLoginOpen={isLoginOpen} openLogin={openLogin} closeLogin={closeLogin}/>
-            <AppRoutes userInfo={userInfo} openLogin={openLogin} />
+            <Header userInfo={userInfo} setUserInfo={setUserInfo} handleLogin={handleLogin} handleLogout={handleLogout} isLoginOpen={isLoginOpen} openLogin={openLogin} closeLogin={closeLogin}/>
+            <AppRoutes userInfo={userInfo} setUserInfo={setUserInfo} openLogin={openLogin} />
 
             <ToastContainer
                 position="bottom-center"   // 위치 (top-right, top-center, bottom-left 등)
