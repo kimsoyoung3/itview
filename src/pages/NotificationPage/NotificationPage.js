@@ -47,7 +47,7 @@ const NotificationPage = ({ userInfo, setUserInfo, openLogin }) => {
                     }));
                 }
             } catch (e) {
-                // navigate("/");
+                navigate("/");
             }
         }
 
