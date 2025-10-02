@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { BrowserRouter, HashRouter } from 'react-router-dom';
+import { HashRouter } from 'react-router-dom';
 import Header from './components/Header/Header';
 import AppRoutes from './routes/AppRoutes';
 import "./App.css"

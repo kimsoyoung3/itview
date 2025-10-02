@@ -66,12 +66,6 @@ const CommentPage = ({userInfo, openLogin}) => {
         console.log(page)
     }, [page]);
 
-    /*정렬 방식 변경*/
-    const handleOrderChange = (e) => {
-        /*new, old, rating, like, reply*/
-        setOrder(e.target.value);
-    };
-
     /*정렬 방식 변경 시 코멘트 다시 불러오기*/
     useEffect(() => {
         const fetchComments = async () => {
