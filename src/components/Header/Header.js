@@ -266,7 +266,10 @@ const Header = ({ userInfo, handleLogin, handleLogout, isLoginOpen, openLogin, c
                         {/* 로그인/회원정보 */}
                         {userInfo ? (
                             <div className="user-menu">
-                                <Link to="/notification"><i className="bi bi-bell-fill"></i></Link>
+                                <Link to="/notification">
+                                    소식
+                                    <span className="pc-red-dot"></span>
+                                </Link>
                                 <Link to={`/user/${userInfo.userId}`} className="login-button">마이페이지</Link>
                                 <button onClick={handleLogout} className="login-button">로그아웃</button>
                             </div>
@@ -316,11 +319,13 @@ const Header = ({ userInfo, handleLogin, handleLogout, isLoginOpen, openLogin, c
                                 <p className="mobile-menu-name">마이페이지</p>
                             </div>
 
-                            <div className="mobile-header-menu-list">
+                            <div className="mobile-header-menu-list mobile-header-menu-red-dot">
                                 <div>
                                     <Link to="/notification" className="login-button">
                                         <img className="mobile-menu-icon" src={`${process.env.PUBLIC_URL}/mobile-icon/mobile-bell.svg`} alt=""/>
                                     </Link>
+
+                                    <span className="red-dot"></span>
                                 </div>
                                 <p className="mobile-menu-name">소식</p>
                             </div>
