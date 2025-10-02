@@ -82,7 +82,7 @@
 
 .user-follow-info-btn>button {
     border: none;
-    background: #ffffff;
+    background: none;
     padding: 5px 10px;
     border-radius: 20px;
     font-size: 0.8rem;
@@ -101,4 +101,43 @@
 
 .user-follow-info-btn-follow:hover {
     background: #b7e8c7 !important;
+}
+
+/*태블릿 사이즈*/
+@media (max-width: 768px) {
+    .user-follow-page {
+        margin-top: 30px;
+        margin-bottom: 100px;
+    }
+
+    .user-follow-page .container {
+        max-width:95%;
+    }
+
+    .user-follow-info-btn>button:hover {
+        background: none;
+    }
+
+    .user-follow-info-btn-follow:hover {
+        background: #e6f5eb !important;
+    }
+}
+
+/*모바일 사이즈*/
+@media (max-width: 480px) {
+    .user-follow-page {
+        margin-top: 25px;
+    }
+
+    .user-follow-info-wrap>p:nth-of-type(1) {
+        width: 80%;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+        overflow: hidden;
+    }
+
+    .user-follow-info-wrap>p:nth-of-type(2) {
+        width: 80%;
+    }
+
 }

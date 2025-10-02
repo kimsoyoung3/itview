@@ -147,22 +147,10 @@
 
 /*태블릿 사이즈*/
 @media (max-width: 768px) {
-    .comment-page {
-        height: 100%;
-        margin-top: 24px;
-        margin-bottom: 50px;
-        max-width: 800px;
-    }
 }
 
 /*모바일 사이즈*/
 @media (max-width: 480px) {
-    .comment-page {
-        margin-top: 24px;
-        margin-bottom: 50px;
-        max-width: 800px;
-    }
-
     .content-next,
     .content-prev {
         display: none !important;

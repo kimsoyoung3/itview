@@ -202,18 +202,23 @@
     }
 
     .user-content-rating-page .container {
-        max-width: 95% !important;
+        max-width: 95% ;
     }
 
     .rating-page-content-list {
         grid-template-columns: repeat(5, 1fr);
     }
+
+    .rating-page-content-list-btn>button:hover {
+        background: none;
+    }
+
 }
 
 /*모바일 사이즈*/
 @media (max-width: 480px) {
     .user-content-rating-page {
-        margin-top: 20px;
+        margin-top: 25px;
     }
 
     .user-rating-page-select {

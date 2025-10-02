@@ -329,7 +329,7 @@
     .user-collection-add-page {
         margin-top: 35px;
         margin-bottom: 100px;
-        width: 100% !important;
+        width: 100%;
         padding: 0;
     }
 }
@@ -338,7 +338,7 @@
 @media (max-width: 480px) {
     .user-collection-add-page {
         margin-top: 0;
-        width: 100% !important;
+        width: 100%;
         padding: 20px 15px;
         margin-bottom: 60px;
     }

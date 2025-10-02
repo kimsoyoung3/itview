@@ -125,6 +125,10 @@
     .series-page-tab-more-btn {
         margin-bottom: 0;
     }
+
+    .series-page-tab-more-btn>button:hover {
+        background: none;
+    }
 }
 
 /*모바일 사이즈*/

@@ -61,18 +61,22 @@
     }
 
     .user-content-wish-page .container {
-        max-width: 95% !important;
+        max-width: 95%;
     }
 
     .user-wish-page-content-list {
         grid-template-columns: repeat(6, 1fr);
+    }
+
+    .wish-page-content-list-btn>button:hover {
+        background: none;
     }
 }
 
 /*모바일 사이즈*/
 @media (max-width: 480px) {
     .user-content-wish-page {
-        margin-top: 20px;
+        margin-top: 25px;
     }
 
     .user-wish-page-content-list {

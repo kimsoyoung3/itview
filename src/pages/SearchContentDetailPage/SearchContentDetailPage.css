@@ -50,7 +50,11 @@
     }
 
     .search-content-detail-page .container {
-        max-width: 95% !important;
+        max-width: 95%;
+    }
+
+    .search-content-more-btn>button:hover {
+        background: none;
     }
 
 }

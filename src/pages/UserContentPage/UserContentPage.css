@@ -47,13 +47,13 @@
     }
 
     .user-content-page .container {
-        max-width: 95% !important;
+        max-width: 95%;
     }
 }
 
 /*모바일 사이즈*/
 @media (max-width: 480px) {
     .user-content-page {
-        margin-top: 20px;
+        margin-top: 25px;
     }
 }

@@ -146,8 +146,8 @@ const UserDetailPage = ({ userInfo, openLogin }) => {
     }
 
     return (notFound ? <NotFound /> :
-        <div className="user-detail-page container">
-            <div className="user-detail-page-wrap">
+        <div className="user-detail-page">
+            <div className="user-detail-page-wrap container">
                 <div className="user-detail-info">
                     <div className="user-detail-info-profile">
                         <img src={userDetail?.userProfile.profile ? userDetail?.userProfile.profile : `${process.env.PUBLIC_URL}/user.png`} alt=""/>

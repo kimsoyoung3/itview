@@ -896,13 +896,45 @@
 /*태블릿 사이즈*/
 @media (max-width: 768px) {
     .detail .container {
-        max-width: 90% !important;
+        max-width: 95%;
     }
 
     .user-detail-page {
         margin-top: 20px;
         margin-bottom: 80px;
     }
+
+    .info-top-right>li>button:hover img {
+        transform: none;
+        transition: none;
+    }
+
+    .comment-content-btn:hover {
+        background: #22C55E;
+    }
+
+    .collection-list-modal-close-button:hover,
+    .collection-list-modal-content-btn:hover {
+        background: none;
+    }
+
+    .confirm-btn-group>button:hover {
+        background: none;
+    }
+
+    .my-comment-btn>button:hover {
+        background: none;
+    }
+
+    .credit-prev:hover,
+    .credit-next:hover,
+    .gallery-prev:hover,
+    .gallery-next:hover,
+    .video-prev:hover,
+    .video-next:hover {
+        background: rgba(0,0,0,0.3);
+    }
+
 }
 
 /*모바일 사이즈*/
