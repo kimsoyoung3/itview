@@ -311,7 +311,7 @@ public class CreditService {
 
     // 인물의 작품 참여 분야 조회
     public List<WorkDomainDTO> getWorkDomainsByPersonId(Integer personId) {
-        if (!creditRepository.existsById(personId)) {
+        if (!personRepository.existsById(personId)) {
             throw new NoSuchElementException("존재하지 않는 인물입니다");
         }
         return creditRepository.findWorkDomainsByPersonId(personId);
@@ -319,7 +319,7 @@ public class CreditService {
 
     // 분야별 페이징 조회
     public Page<WorkDTO> getWorks(Integer page, Integer personId, ContentType contentType, String department) {
-        if (!creditRepository.existsById(personId)) {
+        if (!personRepository.existsById(personId)) {
             throw new NoSuchElementException("존재하지 않는 인물입니다");
         }
         Pageable pageable = PageRequest.of(page - 1, 6);
