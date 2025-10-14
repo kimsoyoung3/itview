@@ -46,13 +46,7 @@
         }
         /* 선택된 인물에게만 테두리가 보이도록 클래스 수정 */
         .selected-person {
-            border: 2px solid #007bff;
-        }
-        /* 모든 버튼을 파란색으로 통일 */
-        .btn-primary, .btn-secondary, .btn-success {
-            background-color: #007bff;
-            border-color: #007bff;
-            color: white;
+            border: 2px solid #22c55e;
         }
     </style>
 </head>
@@ -153,7 +147,7 @@
             // '크레딧 추가' 버튼 클릭 시
             showFormBtn.on('click', () => {
                 resetForm();
-                creditFormSection.slideDown(); // ✅ slideDown 애니메이션 적용
+                creditFormSection.slideDown();
                 showFormBtn.hide();
                 personSearchInput.focus();
             });
@@ -161,7 +155,7 @@
             // '취소' 버튼 클릭 시
             cancelBtn.on('click', () => {
                 resetForm();
-                creditFormSection.slideUp(); // ✅ slideUp 애니메이션 적용
+                creditFormSection.slideUp();
                 showFormBtn.show();
             });
 
@@ -194,17 +188,17 @@
                             return;
                         }
                         const resultsHtml = data.map(person => `
-                            <div class="col-12 mb-3">
-                                <div class="person-item cursor-pointer" data-person-id="${person.id}" data-person-name="${person.name}" onclick="window.selectPerson(${person.id}, '${person.name}')">
-                                    <div class="person-photo-container">
-                                        <img src="${person.profile || '/images/default-profile.png'}" alt="${person.name}" class="person-photo">
-                                    </div>
-                                    <div class="person-info">
-                                        <span class="person-name">${person.name}</span>
-                                        <span class="person-role">${person.job || '직업 정보 없음'}</span>
-                                    </div>
+                        <div class="col-12 mb-3">
+                            <div class="person-item cursor-pointer" data-person-id="${person.id}" data-person-name="${person.name}" onclick="window.selectPerson(${person.id}, '${person.name}')">
+                                <div class="person-photo-container">
+                                    <img src="${person.profile || '/images/default-profile.png'}" alt="${person.name}" class="person-photo">
                                 </div>
-                            </div>`).join('');
+                                <div class="person-info">
+                                    <span class="person-name">${person.name}</span>
+                                    <span class="person-role">${person.job || '직업 정보 없음'}</span>
+                                </div>
+                            </div>
+                        </div>`).join('');
                         personSearchResults.html(resultsHtml);
                     },
                     error: function(jqXHR, textStatus, errorThrown) {
@@ -216,7 +210,7 @@
 
             window.selectPerson = (id, name) => {
                 personIdInput.val(id);
-                fieldsAfterSearch.slideDown(); // ✅ slideDown 애니메이션 적용
+                fieldsAfterSearch.slideDown();
                 departmentInput.focus();
 
                 // 검색 결과 목록에서 선택된 아이템만 강조
@@ -244,9 +238,12 @@
                 });
             });
 
+            /** 💥 [수정 완료] deleteCredit 함수: (외부 서비스 폼과 동일한 패턴 적용)
+             * event 객체를 받아서 함수 시작 부분에서 event.stopPropagation()을 호출하여 중복 이벤트 실행을 방지합니다.
+             */
             window.deleteCredit = (creditId, event) => {
+                event.stopPropagation(); // ⬅️💥 핵심 로직: 부모 요소의 클릭 이벤트 방지
                 if (!confirm('정말 삭제하시겠습니까?')) return;
-                event.stopPropagation();
 
                 $.ajax({
                     url: `/content/${contentId}/credit/delete`,
@@ -284,7 +281,7 @@
                 $(`.person-item[onclick*="editCredit(${creditId})"]`).addClass('selected-person');
 
                 fieldsAfterSearch.show();
-                creditFormSection.slideDown(); // ✅ slideDown 애니메이션 적용
+                creditFormSection.slideDown();
                 showFormBtn.hide();
                 departmentInput.focus();
             };
@@ -302,33 +299,38 @@
                 searchInputGroup.show();
             }
 
+            /**
+             * renderCreditList 함수:
+             * deleteCredit 함수에 event 객체를 전달하며, event.stopPropagation() 로직은 deleteCredit 함수 안에서 처리됩니다.
+             */
             function renderCreditList(credits) {
                 if (!credits || credits.length === 0) {
                     creditListContainer.html('<div class="col-12"><p class="text-center text-muted">등록된 크레딧이 없습니다.</p></div>');
                     return;
                 }
                 const creditHtml = credits.map(credit => `
-                    <div class="col-md-6 col-lg-4 mb-3">
-                        <div class="person-item cursor-pointer" onclick="window.editCredit(${credit.id})">
-                            <div class="person-photo-container">
-                                <img src="${credit.person?.profile || '/images/default-profile.png'}" alt="${credit.person.name}" class="person-photo">
-                                <button type="button" class="btn btn-sm btn-light position-absolute top-0 end-0 p-0"
-                                        style="width: 24px; height: 24px; line-height: 1; border-radius: 50%; display: flex; align-items: center; justify-content: center; transform: translate(50%, -50%);"
-                                        onclick="window.deleteCredit(${credit.id}, event)">
-                                    <i class="fas fa-times"></i>
-                                </button>
-                            </div>
-                            <div class="person-info">
-                                <span class="person-name">${credit.person.name}</span>
-                                <span class="person-role">${credit.department} - ${credit.role}</span>
-                            </div>
+                <div class="col-md-6 col-lg-4 mb-3">
+                    <div class="person-item cursor-pointer" onclick="window.editCredit(${credit.id})">
+                        <div class="person-photo-container">
+                            <img src="${credit.person?.profile || '/images/default-profile.png'}" alt="${credit.person.name}" class="person-photo">
+                            <button type="button" class="btn btn-sm btn-light position-absolute top-0 end-0 p-0"
+                                    style="width: 24px; height: 24px; line-height: 1; border-radius: 50%; display: flex; align-items: center; justify-content: center; transform: translate(50%, -50%);"
+
+                                    /* 💥 [최종] deleteCredit 함수에 event 객체만 전달 */
+                                    onclick="window.deleteCredit(${credit.id}, event)">
+                                <i class="fas fa-times"></i>
+                            </button>
                         </div>
-                    </div>`).join('');
+                        <div class="person-info">
+                            <span class="person-name">${credit.person.name}</span>
+                            <span class="person-role">${credit.department} - ${credit.role}</span>
+                        </div>
+                    </div>
+                </div>`).join('');
 
                 creditListContainer.html(creditHtml);
             }
         });
-    </script>
-</main>
+    </script></main>
 </body>
 </html>

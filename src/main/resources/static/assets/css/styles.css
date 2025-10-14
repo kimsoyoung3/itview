@@ -302,6 +302,50 @@ main > div.container:first-child {
   box-shadow: 0 0 0 0.25rem rgba(34, 197, 94, 0.25) !important;
 }
 
+/* 컬렉션 작품 항목 호버 색상을 녹색(#22c55e)으로 변경 */
+.content-link:hover {
+  color: #22c55e !important; /* !important를 사용하여 부트스트랩이나 다른 CSS보다 우선순위를 높임 */
+}
+
+/* 1. 비활성 탭 (nav-link:not(.active))의 글자색을 프로젝트 녹색(#22c55e)으로 변경 */
+.nav-tabs .nav-link:not(.active) {
+  color: #22c55e !important;
+}
+
+/* 2. 🚨 [수정] 비활성 탭 호버 시, 글자색을 약간 더 진한 녹색(#1eab52)으로 변경 */
+.nav-tabs .nav-link:not(.active):hover {
+  color: #1eab52 !important; /* 기본색(#22c55e)보다 약간 더 어두운 녹색 */
+}
+
+/* 텍스트 드래그(선택) 시 나타나는 하이라이트 색상을 녹색으로 변경 */
+::selection {
+  /* 선택된 텍스트의 배경색 (하이라이트 색상) */
+  background: #22c55e;
+
+  /* 선택된 텍스트의 글자색 (대비를 위해 흰색으로 설정) */
+  color: #ffffff;
+}
+
+/* 2. 폼 컨트롤(Input, Date, Textarea, Select) 포커스 색상 통일 */
+.form-control:focus,
+.form-select:focus {
+  /* 테두리 색상: 프로젝트 녹색 */
+  border-color: #22c55e !important;
+  /* 그림자 색상: 녹색 */
+  box-shadow: 0 0 0 0.25rem rgba(34, 197, 94, 0.25) !important;
+}
+
+/* 3. 라디오/체크박스 포커스 및 체크 색상 통일 */
+.form-check-input:focus {
+  border-color: #22c55e !important;
+  box-shadow: 0 0 0 0.25rem rgba(34, 197, 94, 0.25) !important;
+}
+
+.form-check-input:checked {
+  background-color: #22c55e !important;
+  border-color: #22c55e !important;
+}
+
 /*!
 * Start Bootstrap - SB Admin v7.0.7 (https://startbootstrap.com/template/sb-admin)
 * Copyright 2013-2023 Start Bootstrap
