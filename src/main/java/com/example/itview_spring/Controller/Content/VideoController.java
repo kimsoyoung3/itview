@@ -1,6 +1,7 @@
 package com.example.itview_spring.Controller.Content;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -47,6 +48,29 @@ public class VideoController {
             return ResponseEntity.ok(createdVideo);
         } catch (Exception e) {
             // 오류 발생 시 HTTP 500 상태 코드와 함께 오류 메시지 반환
+            return ResponseEntity.status(500).body(null);
+        }
+    }
+
+    /**
+     * 📌 영상 수정 (AJAX 요청 처리)
+     * 제목 및 URL 정보를 업데이트합니다.
+     */
+    @PutMapping("/content/{contentId}/video/{videoId}")
+    @ResponseBody
+    public ResponseEntity<VideoDTO> updateVideo(@PathVariable("videoId") Integer videoId,
+                                                @RequestBody VideoDTO videoDTO) {
+        try {
+            VideoDTO updatedVideo = videoService.updateVideo(videoId, videoDTO);
+            return ResponseEntity.ok(updatedVideo);
+        } catch (NoSuchElementException e) {
+            // 해당 영상이 존재하지 않을 경우
+            return ResponseEntity.notFound().build();
+        } catch (IllegalArgumentException e) {
+            // URL 유효성 검사 실패 시
+            return ResponseEntity.badRequest().body(null);
+        } catch (Exception e) {
+            // 기타 오류 발생 시
             return ResponseEntity.status(500).body(null);
         }
     }

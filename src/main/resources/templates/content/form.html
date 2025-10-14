@@ -11,59 +11,60 @@
 </head>
 <body>
 <main layout:fragment="content">
-    <div class="row mt-3 mb-3">
-        <div class="col-12 mx-auto" style="max-width: 600px;">
-            <h3 class="mt-4" th:text="${contentDTO.id != null} ? '콘텐츠 수정' : '콘텐츠 등록'"></h3>
-            <p class="mt-4" th:text="${contentDTO.id != null} ? '기존 콘텐츠를 수정합니다:' : '신규 콘텐츠를 등록합니다:'"></p>
+    <div class="container mt-3 mb-3">
+        <div class="row">
+            <div class="col-12 mx-auto" style="max-width: 600px;">
+                <h3 class="mt-4" th:text="${contentDTO.id != null} ? '콘텐츠 수정' : '콘텐츠 등록'"></h3>
+                <p class="mt-4" th:text="${contentDTO.id != null} ? '기존 콘텐츠를 수정합니다:' : '신규 콘텐츠를 등록합니다:'"></p>
 
-            <form th:action="${contentDTO.id != null} ? @{/content/{id}/update(id=${contentDTO.id})} : @{/content/register}"
-                  method="post" th:object="${contentDTO}">
+                <form th:action="${contentDTO.id != null} ? @{/content/{id}/update(id=${contentDTO.id})} : @{/content/register}"
+                      method="post" th:object="${contentDTO}">
 
-                <input type="hidden" th:if="${_csrf != null}" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
-                <input type="hidden" th:if="${contentDTO.id != null}" th:field="*{id}">
+                    <input type="hidden" th:if="${_csrf != null}" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+                    <input type="hidden" th:if="${contentDTO.id != null}" th:field="*{id}">
 
-                <div class="mb-3 mt-3">
-                    <label class="form-label">제목:</label>
-                    <input type="text" class="form-control" th:field="*{title}" required>
-                </div>
-
-                <div class="mb-3">
-                    <label class="form-label">콘텐츠 타입:</label>
-                    <div class="form-check form-check-inline">
-                        <input class="form-check-input" type="radio" th:field="*{contentType}" value="MOVIE" id="inlineRadio1" required>
-                        <label class="form-check-label" for="inlineRadio1">영화</label>
+                    <div class="mb-3 mt-3">
+                        <label class="form-label">제목:</label>
+                        <input type="text" class="form-control" th:field="*{title}" required>
                     </div>
-                    <div class="form-check form-check-inline">
-                        <input class="form-check-input" type="radio" th:field="*{contentType}" value="SERIES" id="inlineRadio2" required>
-                        <label class="form-check-label" for="inlineRadio2">시리즈</label>
-                    </div>
-                    <div class="form-check form-check-inline">
-                        <input class="form-check-input" type="radio" th:field="*{contentType}" value="BOOK" id="inlineRadio3" required>
-                        <label class="form-check-label" for="inlineRadio3">책</label>
-                    </div>
-                    <div class="form-check form-check-inline">
-                        <input class="form-check-input" type="radio" th:field="*{contentType}" value="WEBTOON" id="inlineRadio4" required>
-                        <label class="form-check-label" for="inlineRadio4">웹툰</label>
-                    </div>
-                    <div class="form-check form-check-inline">
-                        <input class="form-check-input" type="radio" th:field="*{contentType}" value="RECORD" id="inlineRadio5" required>
-                        <label class="form-check-label" for="inlineRadio5">음반</label>
-                    </div>
-                </div>
 
-                <div class="mb-3">
-                    <label class="form-label">공개일:</label>
-                    <input type="date" class="form-control"
-                           th:value="${releaseDateStr}"
-                           name="releaseDate"
-                           required>
-                </div>
+                    <div class="mb-3">
+                        <label class="form-label">콘텐츠 타입:</label>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" th:field="*{contentType}" value="MOVIE" id="inlineRadio1" required>
+                            <label class="form-check-label" for="inlineRadio1">영화</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" th:field="*{contentType}" value="SERIES" id="inlineRadio2" required>
+                            <label class="form-check-label" for="inlineRadio2">시리즈</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" th:field="*{contentType}" value="BOOK" id="inlineRadio3" required>
+                            <label class="form-check-label" for="inlineRadio3">책</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" th:field="*{contentType}" value="WEBTOON" id="inlineRadio4" required>
+                            <label class="form-check-label" for="inlineRadio4">웹툰</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" th:field="*{contentType}" value="RECORD" id="inlineRadio5" required>
+                            <label class="form-check-label" for="inlineRadio5">음반</label>
+                        </div>
+                    </div>
 
-                <div class="mb-3">
-                    <label class="form-label">포스터:</label>
+                    <div class="mb-3">
+                        <label class="form-label">공개일:</label>
+                        <input type="date" class="form-control"
+                               th:value="${releaseDateStr}"
+                               name="releaseDate"
+                               required>
+                    </div>
 
-                    <div id="posterImageArea"
-                         style="cursor: pointer;
+                    <div class="mb-3">
+                        <label class="form-label">포스터:</label>
+
+                        <div id="posterImageArea"
+                             style="cursor: pointer;
                                 width: 250px;
                                 height: 350px;
                                 display: flex;
@@ -73,79 +74,81 @@
                                 border-radius: 8px;
                                 box-shadow: 0 4px 8px rgba(0,0,0,0.1);">
 
-                        <img id="currentPoster"
-                             th:if="${contentDTO.poster != null}"
-                             th:src="${contentDTO.poster}"
-                             alt="포스터 이미지"
-                             style="max-width: 100%;
+                            <img id="currentPoster"
+                                 th:if="${contentDTO.poster != null}"
+                                 th:src="${contentDTO.poster}"
+                                 alt="포스터 이미지"
+                                 style="max-width: 100%;
                                     height: auto;
                                     object-fit: contain;
                                     border-radius: 8px;">
 
-                        <i id="defaultPosterIcon" th:unless="${contentDTO.poster != null}" class="fas fa-file-image" style="font-size: 6rem; color: #ccc;"></i>
+                            <i id="defaultPosterIcon" th:unless="${contentDTO.poster != null}" class="fas fa-file-image" style="font-size: 6rem; color: #ccc;"></i>
+                        </div>
+
+                        <input type="file" id="posterFile" class="form-control" accept="image/*" style="display: none;">
+
+                        <div id="uploadErrorMsgPoster" class="alert alert-danger mt-2" style="display: none;" role="alert"></div>
+
+                        <input type="hidden" id="posterUrl" th:field="*{poster}">
+                    </div>
+                    <div class="row">
+                        <div class="col-6 mb-3">
+                            <label class="form-label">국가:</label>
+                            <input type="text" class="form-control" th:field="*{nation}" required>
+                        </div>
+                        <div class="col-6 mb-3">
+                            <label class="form-label">분량:</label>
+                            <input type="text" class="form-control" th:field="*{duration}" required>
+                        </div>
                     </div>
 
-                    <input type="file" id="posterFile" class="form-control" accept="image/*" style="display: none;">
-
-                    <div id="uploadErrorMsgPoster" class="alert alert-danger mt-2" style="display: none;" role="alert"></div>
-
-                    <input type="hidden" id="posterUrl" th:field="*{poster}">
-                </div>
-                <div class="row">
-                    <div class="col-6 mb-3">
-                        <label class="form-label">국가:</label>
-                        <input type="text" class="form-control" th:field="*{nation}" required>
+                    <div class="row">
+                        <div class="col-6 mb-3">
+                            <label class="form-label">이용가 제한:</label>
+                            <select class="form-select" th:field="*{age}" required>
+                                <option value="전체 이용가">전체 이용가</option>
+                                <option value="12세">12세</option>
+                                <option value="15세">15세</option>
+                                <option value="18세">18세</option>
+                            </select>
+                        </div>
+                        <div class="col-6 mb-3">
+                            <label class="form-label" id="creatorLabel">감독 이름:</label>
+                            <input type="text" class="form-control" th:field="*{creatorName}">
+                        </div>
                     </div>
-                    <div class="col-6 mb-3">
-                        <label class="form-label">분량:</label>
-                        <input type="text" class="form-control" th:field="*{duration}" required>
-                    </div>
-                </div>
 
-                <div class="row">
-                    <div class="col-6 mb-3">
-                        <label class="form-label">이용가 제한:</label>
-                        <select class="form-select" th:field="*{age}" required>
-                            <option value="전체 이용가">전체 이용가</option>
-                            <option value="12세">12세</option>
-                            <option value="15세">15세</option>
-                            <option value="18세">18세</option>
+                    <div class="mb-3">
+                        <label class="form-label">설명:</label>
+                        <textarea class="form-control" th:field="*{description}" rows="5" maxlength="500" placeholder="최대 500자" required></textarea>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">연재처:</label>
+                        <select class="form-select" th:field="*{channelName}">
+                            <option value="">없음</option>
+                            <option value="NETFLIX">넷플릭스</option>
+                            <option value="DISNEY_PLUS">디즈니+</option>
+                            <option value="WAVE">웨이브</option>
+                            <option value="WATCHA">왓챠</option>
+                            <option value="TVN">tvN</option>
+                            <option value="APPLE_TV_PLUS">애플티비플러스</option>
+                            <option value="ALADIN">알라딘</option>
+                            <option value="YES24">예스24</option>
+                            <option value="KYOBO">교보문고</option>
+                            <option value="NAVER">네이버</option>
+                            <option value="KAKAO">카카오</option>
                         </select>
                     </div>
-                    <div class="col-6 mb-3">
-                        <label class="form-label" id="creatorLabel">감독 이름:</label>
-                        <input type="text" class="form-control" th:field="*{creatorName}">
+
+                    <div class="d-flex justify-content-end">
+                        <button type="submit" class="btn btn-primary" th:text="${contentDTO.id != null} ? '다음/수정' : '다음'"></button>
                     </div>
-                </div>
-
-                <div class="mb-3">
-                    <label class="form-label">설명:</label>
-                    <textarea class="form-control" th:field="*{description}" rows="5" maxlength="500" placeholder="최대 500자" required></textarea>
-                </div>
-
-                <div class="mb-3">
-                    <label class="form-label">연재처:</label>
-                    <select class="form-select" th:field="*{channelName}">
-                        <option value="">없음</option>
-                        <option value="NETFLIX">넷플릭스</option>
-                        <option value="DISNEY_PLUS">디즈니+</option>
-                        <option value="WAVE">웨이브</option>
-                        <option value="WATCHA">왓챠</option>
-                        <option value="TVN">tvN</option>
-                        <option value="APPLE_TV_PLUS">애플티비플러스</option>
-                        <option value="ALADIN">알라딘</option>
-                        <option value="YES24">예스24</option>
-                        <option value="KYOBO">교보문고</option>
-                        <option value="NAVER">네이버</option>
-                        <option value="KAKAO">카카오</option>
-                    </select>
-                </div>
-
-                <div class="d-flex justify-content-end">
-                    <button type="submit" class="btn btn-primary" th:text="${contentDTO.id != null} ? '다음/수정' : '다음'"></button>
-                </div>
-            </form>
+                </form>
+            </div>
         </div>
+
     </div>
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>

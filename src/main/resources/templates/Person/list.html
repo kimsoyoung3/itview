@@ -43,7 +43,8 @@
                 </p>
 
                 <div class="d-flex justify-content-end align-items-center mb-4">
-                    <div class="search-bar me-3">
+                    <a th:href="@{/person/register}" class="btn btn-primary me-3">등록</a>
+                    <div class="search-bar">
                         <form th:action="@{/person/list}" method="get">
                             <button type="submit" class="search-button">
                                 <i class="bi bi-search"></i>
@@ -55,7 +56,6 @@
                             />
                         </form>
                     </div>
-                    <a th:href="@{/person/register}" class="btn btn-primary">등록</a>
                 </div>
 
                 <table class="table table-hover table-custom-layout">

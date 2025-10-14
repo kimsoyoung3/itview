@@ -58,62 +58,65 @@
 </head>
 <body>
 <main layout:fragment="content">
-    <div class="row mt-3 mb-3">
-        <div class="col-12 mx-auto" style="max-width: 800px;">
-            <h3 class="mt-4" th:text="${contentId != null} ? '콘텐츠 수정' : '콘텐츠 등록'"></h3>
-            <p class="mt-4">콘텐츠에 참여한 인물을 등록합니다:</p>
+    <div class="container mt-3 mb-3">
+        <div class="row">
+            <div class="col-12 mx-auto" style="max-width: 800px;">
+                <h3 class="mt-4" th:text="${contentId != null} ? '콘텐츠 수정' : '콘텐츠 등록'"></h3>
+                <p class="mt-4">콘텐츠에 참여한 인물을 등록합니다:</p>
 
-            <div class="d-flex justify-content-start mt-4">
-                <button id="showFormBtn" class="btn btn-primary me-1">+ 크레딧 추가</button>
-            </div>
+                <div class="d-flex justify-content-start mt-4">
+                    <button id="showFormBtn" class="btn btn-primary me-1">+ 크레딧 추가</button>
+                </div>
 
-            <div id="creditFormSection" class="mt-4 p-4" style="display:none;">
-                <h5 id="formTitle" class="mb-3">크레딧 등록</h5>
-                <form id="creditForm" action="#" method="post">
-                    <input type="hidden" id="creditId" name="id">
-                    <input type="hidden" id="personId" name="person.id">
+                <div id="creditFormSection" class="mt-4 p-4" style="display:none;">
+                    <h5 id="formTitle" class="mb-3">크레딧 등록</h5>
+                    <form id="creditForm" action="#" method="post">
+                        <input type="hidden" id="creditId" name="id">
+                        <input type="hidden" id="personId" name="person.id">
 
-                    <div class="search-input-group mb-3">
-                        <label class="form-label">인물 검색</label>
-                        <div class="input-group">
-                            <input type="text" class="form-control" id="personSearchInput" placeholder="이름">
-                            <button class="btn btn-primary" type="button" id="personSearchBtn">검색</button>
+                        <div class="search-input-group mb-3">
+                            <label class="form-label">인물 검색</label>
+                            <div class="input-group">
+                                <input type="text" class="form-control" id="personSearchInput" placeholder="이름">
+                                <button class="btn btn-primary" type="button" id="personSearchBtn">검색</button>
+                            </div>
                         </div>
-                    </div>
-                    <div id="personSearchResults" class="row mb-3">
-                    </div>
-
-                    <div id="fieldsAfterSearch" style="display:none;">
-                        <div class="mb-3">
-                            <label class="form-label">부서:</label>
-                            <input type="text" class="form-control" id="departmentInput" name="department" required>
+                        <div id="personSearchResults" class="row mb-3">
                         </div>
-                        <div class="mb-3">
-                            <label class="form-label">역할:</label>
-                            <input type="text" class="form-control" id="roleInput" name="role" required>
+
+                        <div id="fieldsAfterSearch" style="display:none;">
+                            <div class="mb-3">
+                                <label class="form-label">부서:</label>
+                                <input type="text" class="form-control" id="departmentInput" name="department" required>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">역할:</label>
+                                <input type="text" class="form-control" id="roleInput" name="role" required>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">캐릭터 이름:</label>
+                                <input type="text" class="form-control" id="characterNameInput" name="characterName">
+                            </div>
                         </div>
-                        <div class="mb-3">
-                            <label class="form-label">캐릭터 이름:</label>
-                            <input type="text" class="form-control" id="characterNameInput" name="characterName">
+
+                        <div class="d-flex justify-content-end mt-4">
+                            <button type="submit" class="btn btn-primary me-1" id="saveCreditBtn">등록</button>
+                            <button type="button" class="btn btn-primary me-1" id="cancelBtn">취소</button>
                         </div>
-                    </div>
+                    </form>
+                </div>
 
-                    <div class="d-flex justify-content-end mt-4">
-                        <button type="submit" class="btn btn-primary me-1" id="saveCreditBtn">등록</button>
-                        <button type="button" class="btn btn-primary me-1" id="cancelBtn">취소</button>
-                    </div>
-                </form>
-            </div>
+                <hr class="mt-4">
+                <h5 class="mb-3">등록된 크레딧 목록</h5>
+                <div id="creditList" class="row">
+                </div>
 
-            <hr class="mt-4">
-            <h5 class="mb-3">등록된 크레딧 목록</h5>
-            <div id="creditList" class="row">
-            </div>
-
-            <div class="d-flex justify-content-end mt-4">
-                <a th:href="@{/content/{contentId}/gallery(contentId=${contentId})}" class="btn btn-primary" th:text="${contentId != null} ? '다음/수정' : '다음'"></a>
+                <div class="d-flex justify-content-end mt-4">
+                    <a th:href="@{/content/{contentId}/gallery(contentId=${contentId})}" class="btn btn-primary" th:text="${contentId != null} ? '다음/수정' : '다음'"></a>
+                </div>
             </div>
         </div>
+
     </div>
 
     <script th:inline="javascript">
