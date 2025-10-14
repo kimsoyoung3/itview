@@ -43,14 +43,18 @@
                 </p>
 
                 <div class="d-flex justify-content-end align-items-center mb-4">
-                    <form th:action="@{/person/list}" method="get" class="me-3">
-                        <div class="input-group">
-                            <input class="form-control" type="text" name="keyword" th:value="${keyword}" placeholder="인물 이름 검색" aria-label="인물 이름 검색" aria-describedby="btnPersonSearch" />
-                            <button class="btn btn-primary" id="btnPersonSearch" type="submit">
-                                <i class="fas fa-search"></i>
+                    <div class="search-bar me-3">
+                        <form th:action="@{/person/list}" method="get">
+                            <button type="submit" class="search-button">
+                                <i class="bi bi-search"></i>
                             </button>
-                        </div>
-                    </form>
+                            <input
+                                    type="text"
+                                    placeholder="검색어를 입력해주세요"  class="search-input" name="keyword"
+                                    th:value="${keyword}"
+                            />
+                        </form>
+                    </div>
                     <a th:href="@{/person/register}" class="btn btn-primary">등록</a>
                 </div>
 

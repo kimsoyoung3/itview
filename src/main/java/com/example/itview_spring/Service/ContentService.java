@@ -146,22 +146,21 @@ public class ContentService {
         ContentEntity contentEntity = contentRepository.findById(id)
                 .orElseThrow(() -> new NoSuchElementException("콘텐츠 ID가 유효하지 않습니다: " + id));
 
-        // --- 1. 포스터 URL 처리 (기존 로직 유지) ---
         String newPoster = dto.getPoster();
         String oldPoster = contentEntity.getPoster();
 
+        // 1. 기존 파일 삭제 로직 (유지)
         if (StringUtils.hasText(oldPoster) && !Objects.equals(oldPoster, newPoster)) {
-            // 기존 파일 삭제
             s3Uploader.deleteFile(oldPoster);
         }
-        contentEntity.setPoster(StringUtils.hasText(newPoster) ? newPoster : null);
-        // ------------------------------------------
 
-        // 2. ModelMapper를 사용하여 나머지 모든 필드를 복사
+        // 2. ModelMapper가 덮어쓰지 못하도록, DTO의 poster 값을 기존 엔티티 값으로 덮어쓴다.
+        //    (newPoster에 값이 없다면 oldPoster를, newPoster에 값이 있다면 newPoster를 사용)
+        String finalPosterToPersist = StringUtils.hasText(newPoster) ? newPoster : oldPoster;
+        dto.setPoster(finalPosterToPersist);
+
+        // 3. ModelMapper를 사용하여 모든 필드를 복사 (poster도 finalPosterToPersist로 설정됨)
         modelMapper.map(dto, contentEntity);
-
-        // 3. 포스터 URL을 다시 명시적으로 설정 (ModelMapper가 String poster 필드도 덮어쓰므로 안전 조치)
-        contentEntity.setPoster(StringUtils.hasText(newPoster) ? newPoster : null);
 
         // 4. 최종 저장
         contentRepository.save(contentEntity);
