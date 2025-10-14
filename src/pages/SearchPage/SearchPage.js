@@ -161,7 +161,98 @@ const SearchPage = ({userInfo, openLogin, type}) => {
                 {/*탭 내용*/}
                 <div className="search-page-tab-content-wrap">
                     {activeTab === "search-page-tab-btn1" && <div className="search-page-tab search-page-tab1">
-                        {contents?.movie?.length > 0 && (
+                        {(contents?.movie?.length > 0 ||
+                            contents?.series?.length > 0 ||
+                            contents?.book?.length > 0 ||
+                            contents?.webtoon?.length > 0 ||
+                            contents?.record?.length > 0) ? (
+                            <>
+                                {contents?.movie?.length > 0 && (
+                                    <div className="search-page-tab-content">
+                                        <div className="search-page-tab-content-title">
+                                            <p>영화</p>
+                                            <NavLink to={`/search/content?type=movie&keyword=${keyword}`}>더보기</NavLink>
+                                        </div>
+                                        <div className="search-page-tab-content-list">
+                                            {contents.movie.map(item => (
+                                                <div key={item.id}>
+                                                    <SearchContentEach searchData={item} />
+                                                </div>
+                                            ))}
+                                        </div>
+                                    </div>
+                                )}
+
+                                {contents?.series?.length > 0 && (
+                                    <div className="search-page-tab-content">
+                                        <div className="search-page-tab-content-title">
+                                            <p>시리즈</p>
+                                            <NavLink to={`/search/content?type=series&keyword=${keyword}`}>더보기</NavLink>
+                                        </div>
+                                        <div className="search-page-tab-content-list">
+                                            {contents.series.map(item => (
+                                                <div key={item.id}>
+                                                    <SearchContentEach searchData={item} />
+                                                </div>
+                                            ))}
+                                        </div>
+                                    </div>
+                                )}
+
+                                {contents?.book?.length > 0 && (
+                                    <div className="search-page-tab-content">
+                                        <div className="search-page-tab-content-title">
+                                            <p>책</p>
+                                            <NavLink to={`/search/content?type=book&keyword=${keyword}`}>더보기</NavLink>
+                                        </div>
+                                        <div className="search-page-tab-content-list">
+                                            {contents.book.map(item => (
+                                                <div key={item.id}>
+                                                    <SearchContentEach searchData={item} />
+                                                </div>
+                                            ))}
+                                        </div>
+                                    </div>
+                                )}
+
+                                {contents?.webtoon?.length > 0 && (
+                                    <div className="search-page-tab-content">
+                                        <div className="search-page-tab-content-title">
+                                            <p>웹툰</p>
+                                            <NavLink to={`/search/content?type=webtoon&keyword=${keyword}`}>더보기</NavLink>
+                                        </div>
+                                        <div className="search-page-tab-content-list">
+                                            {contents.webtoon.map(item => (
+                                                <div key={item.id}>
+                                                    <SearchContentEach searchData={item} />
+                                                </div>
+                                            ))}
+                                        </div>
+                                    </div>
+                                )}
+
+                                {contents?.record?.length > 0 && (
+                                    <div className="search-page-tab-content">
+                                        <div className="search-page-tab-content-title">
+                                            <p>음반</p>
+                                            <NavLink to={`/search/content?type=record&keyword=${keyword}`}>더보기</NavLink>
+                                        </div>
+                                        <div className="search-page-tab-content-list">
+                                            {contents.record.map(item => (
+                                                <div key={item.id}>
+                                                    <SearchContentEach searchData={item} />
+                                                </div>
+                                            ))}
+                                        </div>
+                                    </div>
+                                )}
+                            </>
+                        ) : (
+                            <p className="empty-message">검색 결과가 없습니다 :)</p>
+                        )
+                        }
+
+                        {/*{contents?.movie?.length > 0 && (
                             <div className="search-page-tab-content">
                                 <div className="search-page-tab-content-title">
                                     <p>영화</p>
@@ -239,7 +330,7 @@ const SearchPage = ({userInfo, openLogin, type}) => {
                                     )}
                                 </div>
                             </div>
-                        )}
+                        )}*/}
 
                     </div>}
 
