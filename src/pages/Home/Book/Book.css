@@ -40,6 +40,7 @@
     width: 100%;
     height: auto;
     margin-bottom: 5px;
+    border-radius: 5px;
 }
 
 .book-content-card-poster>img {
@@ -47,6 +48,7 @@
     aspect-ratio: 2 / 3;
     object-fit: cover;
     display: block;
+    border-radius: 5px;
 }
 
 .book-content-card>p .bi {

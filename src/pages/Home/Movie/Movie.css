@@ -40,12 +40,14 @@
     width: 100%;
     height: auto;
     margin-bottom: 5px;
+    border-radius: 5px;
 }
 
 .movie-content-card-poster>img {
     width: 100%;
     aspect-ratio: 2 / 3;
     object-fit: cover;
+    border-radius: 5px;
     display: block;
 }
 
