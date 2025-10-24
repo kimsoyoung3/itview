@@ -8,7 +8,7 @@ import ContentEach from "../../components/ContentEach/ContentEach";
 import ReplyCard from "../../components/ReplyCard/ReplyCard";
 
 const CollectionDetailPage = ({userInfo, openLogin}) => {
-    const navigator = useNavigate();
+    const navigate = useNavigate();
     const { id } = useParams();
 
     /* 상태: 컬렉션, 아이템, 댓글 */
@@ -73,7 +73,7 @@ const CollectionDetailPage = ({userInfo, openLogin}) => {
         try {
             await deleteCollection(id);
             toast("컬렉션이 삭제되었습니다.");
-            navigator("/user/" + userInfo.userId + "/collection");
+            navigate("/user/" + userInfo.userId + "/collection");
         } catch (e) {
             toast("컬렉션 삭제에 실패했습니다.");
         }
@@ -243,7 +243,7 @@ const CollectionDetailPage = ({userInfo, openLogin}) => {
                         </div>
                         <div className="user-collection-detail-btn-list-content">
                             <button onClick={() => {
-                                navigator.clipboard.writeText(window.location.href);
+                                navigator.clipboard.writeText(`${process.env.REACT_APP_API_URL}/#/collection/${collection.id}`);
                                 toast("URL이 복사되었습니다!");
                             }}>
                                 <i className="bi bi-share"/>

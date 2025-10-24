@@ -178,7 +178,7 @@ const UserDetailPage = ({ userInfo, setUserInfo, openLogin }) => {
 
                         <div className="user-detail-info-share">
                             <button onClick={() => {
-                                const url = "http://localhost:3000/user/" + userDetail?.userProfile.id;
+                                const url = `${process.env.REACT_APP_API_URL}/#/user/${userDetail?.userProfile.id}`;
                                 navigator.clipboard.writeText(url)
                                     .then(() => {
                                         toast("링크가 복사되었습니다.")
