@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="ko"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/mainlayout}">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IT VIEW 관리자 페이지</title>
+    <style>
+        /* 테이블 레이아웃을 고정하고, 전체 너비를 100%로 설정 */
+        .table-custom-layout {
+            table-layout: fixed;
+            width: 100%;
+        }
+
+        /* 모든 th와 td는 기본적으로 가운데 정렬 */
+        .table-custom-layout th,
+        .table-custom-layout td {
+            text-align: center;
+            word-wrap: break-word;
+            vertical-align: middle;
+        }
+
+        /* 제목 항목만 왼쪽 정렬하는 클래스 */
+        .text-start {
+            text-align: left;
+        }
+    </style>
+</head>
+<body>
+<main layout:fragment="content">
+    <div class="container mt-3 mb-3">
+        <div class="row">
+            <div class="col-12">
+                <h3 class="mt-4">코멘트 관리</h3>
+                <p class="mt-4" th:text="${user.nickname} + '님의 코멘트 목록입니다:'"></p>
+
+                <div class="d-flex align-items-center mb-4">
+                    <img th:if="${user.profile}" th:src="${user.profile}" alt="프로필"
+                         class="me-3"
+                         style="width: 80px; height: 80px; object-fit: cover;">
+
+                    <div th:unless="${user.profile}"
+                         style="height: 80px;">
+                    </div>
+
+                    <div>
+                        <h5 class="mb-0" th:text="${user.nickname}">닉네임</h5>
+                        <small class="text-muted" th:text="${user.email}">이메일주소</small>
+                    </div>
+                </div>
+
+                <table class="table table-hover table-custom-layout">
+                    <thead>
+                    <tr>
+                        <th style="width:60%;">내용</th>
+                        <th style="width:20%;">작성 시각</th>
+                        <th style="width:20%;">작업</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:if="${#lists.isEmpty(comments.content)}">
+                        <td colspan="3" class="text-center">작성된 코멘트가 없습니다.</td>
+                    </tr>
+                    <tr th:each="comment : ${comments.content}">
+                        <td class="text-start" th:text="${comment.text}"></td>
+                        <td th:text="${#temporals.format(comment.createdAt, 'yyyy-MM-dd HH:mm')}"></td>
+                        <td>
+                            <a th:href="@{${userpage} + '/#/comment/' + ${comment.id}}"
+                               class="btn btn-primary"
+                               target="_blank"
+                               rel="noopener noreferrer">이동</a>
+                            <form th:action="@{/comment/{id}(id=${comment.id})}"
+                                  method="post"
+                                  style="display:inline;"
+                                  onsubmit="return confirm('정말 삭제하시겠습니까?');">
+                                <input type="hidden" name="_method" value="DELETE"/>
+                                <input type="hidden" name="userId" th:value="${user.id}"/>
+                                <button type="submit" class="btn btn-primary">삭제</button>
+                            </form>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+                <div class="d-flex justify-content-center mt-3" th:if="${comments.totalPages >= 1}">
+                    <ul class="pagination">
+                        <li class="page-item" th:classappend="${startPage == 0} ? 'disabled'">
+                            <a class="page-link"
+                               th:href="@{/comment/{id}(id=${user.id}, page=0)}"
+                               aria-label="First">
+                                <span>&laquo;&laquo;</span>
+                            </a>
+                        </li>
+                        <li class="page-item" th:classappend="${startPage == 0} ? 'disabled'">
+                            <a class="page-link"
+                               th:href="@{/comment/{id}(id=${user.id}, page=${startPage - 1})}"
+                               aria-label="Previous">
+                                <span>&laquo;</span>
+                            </a>
+                        </li>
+                        <li class="page-item"
+                            th:each="i : ${#numbers.sequence(startPage, endPage)}"
+                            th:classappend="${i eq comments.number} ? 'active'">
+                            <a class="page-link"
+                               th:text="${i + 1}"
+                               th:href="@{/comment/{id}(id=${user.id}, page=${i})}">
+                            </a>
+                        </li>
+                        <li class="page-item" th:classappend="${endPage >= comments.totalPages - 1} ? 'disabled'">
+                            <a class="page-link"
+                               th:href="@{/comment/{id}(id=${user.id}, page=${endPage + 1})}"
+                               aria-label="Next">
+                                <span>&raquo;</span>
+                            </a>
+                        </li>
+                        <li class="page-item" th:classappend="${endPage >= comments.totalPages - 1} ? 'disabled'">
+                            <a class="page-link"
+                               th:href="@{/comment/{id}(id=${user.id}, page=${comments.totalPages - 1})}"
+                               aria-label="Last">
+                                <span>&raquo;&raquo;</span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+</body>
+</html>

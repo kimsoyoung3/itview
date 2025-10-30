@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="kr"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/mainlayout}">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IT VIEW 관리자 페이지</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <style>
+        /* (기존 스타일 유지) */
+        .btn-primary {
+            background-color: #007bff;
+            border-color: #007bff;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: #0056b3;
+            border-color: #0056b3;
+        }
+
+        .video-item {
+            width: 150px;
+            margin-right: 15px;
+            margin-bottom: 20px;
+            text-align: center;
+            position: relative;
+            cursor: pointer;
+        }
+
+        .video-thumbnail-container {
+            width: 100%;
+            height: 100px;
+            position: relative;
+            background-color: #f8f9fa;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            border: 1px solid #ccc;
+        }
+
+        .video-thumbnail-container img {
+            width: 100%;
+            height: auto;
+            object-fit: contain;
+        }
+
+        .video-item .delete-btn {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background-color: rgba(0, 0, 0, 0.6);
+            color: white;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.75rem;
+            cursor: pointer;
+            border: none;
+            padding: 0;
+            line-height: 1;
+        }
+
+        .video-title {
+            margin-top: 5px;
+            font-size: 0.9rem;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .video-container {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: flex-start;
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+        }
+
+        /* ✅ 수정 중인 항목에 파란색 테두리 추가 */
+        .selected-video {
+            border: 2px solid #22c55e;
+        }
+    </style>
+</head>
+<body>
+<main layout:fragment="content">
+    <div class="container mt-3 mb-3">
+        <div class="row">
+            <div class="col">
+                <h3 class="mt-4" th:text="${contentId != null} ? '콘텐츠 수정' : '콘텐츠 등록'"></h3>
+
+                <p class="mt-4">동영상을 등록합니다:</p>
+
+                <button class="btn btn-primary mb-3" type="button" id="showFormButton">
+                    + 추가
+                </button>
+
+                <div id="videoFormSection" style="display: none;">
+                    <h5 id="formTitle" class="mb-3">동영상 등록</h5>
+                    <input type="hidden" id="videoIdInput">
+                    <div class="mb-2">
+                        <label for="videoUrlInput" class="form-label">영상 링크</label>
+                        <input type="text" id="videoUrlInput" class="form-control" placeholder="유튜브 영상 링크를 입력하세요.">
+                    </div>
+                    <div class="mb-4">
+                        <label for="videoTitleInput" class="form-label">제목</label>
+                        <input type="text" id="videoTitleInput" class="form-control" placeholder="제목을 입력하세요.">
+                    </div>
+                    <div class="d-flex justify-content-end mb-4">
+                        <button class="btn btn-primary me-2" type="button" id="saveVideoButton">
+                            등록
+                        </button>
+                        <button class="btn btn-primary" type="button" id="cancelFormButton">
+                            취소
+                        </button>
+                    </div>
+                </div>
+
+                <hr>
+
+                <div class="video-container" id="videoContainer">
+                    <div th:each="video : ${videoList}"
+                         class="video-item"
+                         th:data-video-id="${video.id}"
+                         th:data-video-url="${video.url}"
+                         th:data-video-title="${video.title}"
+                         onclick="editVideoItem(this)">
+                        <div class="video-thumbnail-container">
+                            <img th:src="${video.image}" alt="동영상 썸네일">
+                            <button type="button" class="delete-btn" onclick="deleteVideoItem(this, event)">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        </div>
+                        <div class="video-title" th:text="${video.title}"></div>
+                    </div>
+                </div>
+
+                <div class="d-flex justify-content-end mt-5">
+                    <a th:href="@{/content/{contentId}/external(contentId=${contentId})}" class="btn btn-primary"
+                       th:text="${contentId != null} ? '다음/수정' : '다음'"></a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script th:inline="javascript">
+        /*<![CDATA[*/
+        const contentId = /*[[${contentId}]]*/ null;
+
+        /*]]>*/
+
+        function editVideoItem(item) {
+            const videoId = $(item).data('video-id');
+            const videoUrl = $(item).data('video-url');
+            const videoTitle = $(item).data('video-title');
+
+            const videoFormSection = $('#videoFormSection');
+            const videoUrlInput = $('#videoUrlInput');
+            const videoTitleInput = $('#videoTitleInput');
+            const saveVideoButton = $('#saveVideoButton');
+            const videoIdInput = $('#videoIdInput');
+            const formTitle = $('#formTitle');
+            const showFormButton = $('#showFormButton');
+
+            // 폼을 수정 모드로 설정
+            formTitle.text('동영상 수정');
+            videoIdInput.val(videoId);
+            videoUrlInput.val(videoUrl);
+            videoTitleInput.val(videoTitle);
+            saveVideoButton.text('수정');
+
+            // 폼을 보여줌
+            videoFormSection.slideDown();
+            showFormButton.hide();
+            videoUrlInput.focus();
+
+            // ✅ 모든 항목의 테두리 제거 후 선택된 항목에만 테두리 추가
+            $('.video-item').removeClass('selected-video');
+            $(item).addClass('selected-video');
+        };
+
+        function deleteVideoItem(buttonElement, event) {
+            event.stopPropagation();
+            const itemDiv = $(buttonElement).closest('.video-item');
+            const videoId = itemDiv.data('video-id');
+            const contentId = /*[[${contentId}]]*/ null;
+
+            if (confirm('정말 삭제하시겠습니까?')) {
+                $.ajax({
+                    url: `/content/${contentId}/video/${videoId}`,
+                    type: 'DELETE',
+                    success: function () {
+                        itemDiv.remove();
+                        // ✅ 삭제 후 폼 초기화
+                        resetForm();
+                    },
+                    error: function (jqXHR, textStatus, errorThrown) {
+                        console.error('영상 삭제 중 오류 발생:', textStatus, errorThrown);
+                        alert('영상 삭제 중 오류가 발생했습니다.');
+                    }
+                });
+            }
+        };
+
+        $(document).ready(function () {
+            const showFormButton = $('#showFormButton');
+            const videoFormSection = $('#videoFormSection');
+            const videoUrlInput = $('#videoUrlInput');
+            const videoTitleInput = $('#videoTitleInput');
+            const saveVideoButton = $('#saveVideoButton');
+            const cancelFormButton = $('#cancelFormButton');
+            const videoIdInput = $('#videoIdInput');
+            const formTitle = $('#formTitle');
+
+            // '추가' 버튼 클릭 시 폼을 보여줌
+            showFormButton.on('click', () => {
+                resetForm();
+                videoFormSection.slideDown();
+                showFormButton.hide();
+            });
+
+            // '취소' 버튼 클릭 시 폼을 숨김
+            cancelFormButton.on('click', () => {
+                resetForm();
+                videoFormSection.slideUp();
+                showFormButton.show();
+            });
+
+            // '등록/수정' 버튼 클릭 시
+            saveVideoButton.on('click', () => {
+                const videoId = videoIdInput.val();
+                const videoUrl = videoUrlInput.val();
+                const videoTitle = videoTitleInput.val();
+
+                if (!videoUrl || !videoTitle) {
+                    alert('모든 입력란을 채워주세요.');
+                    return;
+                }
+
+                const videoDTO = {
+                    id: videoId || null,
+                    url: videoUrl,
+                    title: videoTitle
+                };
+
+                const type = videoId ? 'PUT' : 'POST';
+                const url = videoId ? `/content/${contentId}/video/${videoId}` : `/content/${contentId}/video/register`;
+
+                $.ajax({
+                    url: url,
+                    type: type,
+                    contentType: 'application/json',
+                    data: JSON.stringify(videoDTO),
+                    success: function (response) {
+                        window.location.reload();
+                    },
+                    error: function (jqXHR, textStatus, errorThrown) {
+                        console.error('영상 저장 중 오류 발생:', textStatus, errorThrown);
+                        alert('영상 저장 중 오류가 발생했습니다.');
+                    }
+                });
+            });
+
+            // 폼 초기화 함수
+            function resetForm() {
+                formTitle.text('동영상 등록');
+                videoIdInput.val('');
+                videoUrlInput.val('');
+                videoTitleInput.val('');
+                saveVideoButton.text('등록');
+                $('.video-item').removeClass('selected-video'); // ✅ 모든 테두리 제거
+            }
+        });
+    </script>
+</main>
+</body>
+</html>

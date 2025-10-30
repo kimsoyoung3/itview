@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="kr"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/mainlayout}">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IT VIEW 관리자 페이지</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <style>
+        /* 버튼 스타일 */
+        .btn-primary { background-color: #007bff; border-color: #007bff; color: white; }
+        .btn-primary:hover { background-color: #0056b3; border-color: #0056b3; }
+        /* 갤러리 썸네일 스타일 */
+        .gallery-item { width: 100px; height: 100px; border: 1px solid #ccc; display: flex; align-items: center; justify-content: center; position: relative; margin-right: 10px; margin-bottom: 10px; background-color: #f8f9fa; }
+        .gallery-item img { max-width: 100%; max-height: 100%; object-fit: contain; }
+        .gallery-item .delete-btn { position: absolute; top: -5px; right: -5px; background-color: rgba(0, 0, 0, 0.6); color: white; border-radius: 50%; width: 20px; height: 20px; display: flex; align-items: center; justify-content: center; font-size: 0.75rem; cursor: pointer; border: none; padding: 0; line-height: 1; }
+        .add-image-btn { width: 100px; height: 100px; border: 1px dashed #ccc; display: flex; align-items: center; justify-content: center; font-size: 2rem; color: #ccc; cursor: pointer; margin-right: 10px; margin-bottom: 10px; background-color: #fff; }
+        .add-image-btn:hover { background-color: #e9ecef; }
+        #fileInput { display: none; }
+        .gallery-container { display: flex; flex-wrap: wrap; align-items: flex-start; }
+    </style>
+</head>
+<body>
+<main layout:fragment="content">
+    <div class="container mt-3 mb-3">
+        <div class="row">
+            <div class="col">
+                <h3 class="mt-4" th:text="${contentId != null} ? '콘텐츠 수정' : '콘텐츠 등록'"></h3>
+
+                <p class="mt-4">갤러리를 등록합니다:</p>
+                <div class="gallery-container">
+                    <input type="hidden" th:if="${_csrf != null}" name="_csrf" th:value="${_csrf.token}"/>
+
+                    <div th:each="gallery : ${galleryList}" class="gallery-item" th:data-gallery-id="${gallery.id}"
+                         th:data-photo-url="${gallery.photo}">
+                        <img th:src="${gallery.photo}" alt="갤러리 이미지">
+                        <button type="button" class="delete-btn" onclick="deleteGalleryItem(this)">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+
+                    <div class="add-image-btn" id="addImageBtn">
+                        <i class="fas fa-plus"></i>
+                    </div>
+                    <input type="file" id="fileInput" accept="image/*" multiple>
+                </div>
+
+                <div id="uploadErrorMsg" class="alert alert-danger mt-2" style="display: none;" role="alert"></div>
+
+                <div class="d-flex justify-content-end mt-5">
+                    <a th:href="@{/content/{contentId}/video(contentId=${contentId})}" class="btn btn-primary"
+                       th:text="${contentId != null} ? '다음/수정' : '다음'"></a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script th:inline="javascript">
+        /*<![CDATA[*/
+        const contentId = /*[[${contentId}]]*/ null;
+        /*]]>*/
+
+        // DOM 요소를 전역 변수처럼 사용하여 접근성을 높임
+        const errorMsgDiv = $('#uploadErrorMsg');
+
+        // ⭐ 에러 메시지 초기화 함수 (personform 스타일) ⭐
+        function clearError() {
+            errorMsgDiv.hide().empty();
+        }
+
+        // CSRF 토큰을 가져오는 함수 (personform 스타일)
+        function getCsrfToken() {
+            return $('input[name="_csrf"]').val();
+        }
+
+        // 갤러리 아이템 삭제 함수를 전역에서 분리합니다.
+        window.deleteGalleryItem = function (buttonElement) {
+            const itemDiv = $(buttonElement).closest('.gallery-item');
+            const galleryId = itemDiv.data('gallery-id');
+
+            clearError();
+
+            // 🚨 [수정된 부분] confirm() 로직 추가
+            if (!confirm('정말 삭제하시겠습니까?')) {
+                return; // 사용자가 '취소'를 누르면 여기서 함수 종료
+            }
+            // 🚨 -----------------------------
+
+            if (galleryId) {
+                deleteGalleryFromDB(itemDiv, galleryId);
+            } else {
+                // DB에 저장되지 않은 새 파일일 경우
+                itemDiv.remove();
+            }
+        };
+
+        // DB에 저장된 갤러리 아이템을 삭제하는 AJAX 함수
+        window.deleteGalleryFromDB = function (itemDiv, galleryId) {
+            const token = getCsrfToken();
+
+            $.ajax({
+                url: `/content/${contentId}/gallery/${galleryId}`,
+                type: 'DELETE',
+                headers: { 'X-CSRF-TOKEN': token },
+                success: function () {
+                    itemDiv.remove();
+                },
+                error: function (jqXHR) {
+                    let errorMessage = '갤러리 삭제 중 알 수 없는 오류가 발생했습니다.';
+
+                    try {
+                        const response = jqXHR.responseJSON;
+                        if (response && response.message) {
+                            errorMessage = response.message;
+                        }
+                    } catch (e) {}
+
+                    errorMsgDiv.text(`삭제 실패: ${errorMessage}`).show();
+                }
+            });
+        }
+
+        $(document).ready(function () {
+            const addImageBtn = $('#addImageBtn');
+            const fileInput = $('#fileInput');
+
+            // '+' 버튼 클릭 시 파일 선택창 열기
+            addImageBtn.on('click', () => {
+                fileInput.click();
+            });
+
+            // 파일 선택 시 처리
+            fileInput.on('change', function (event) {
+                const files = event.target.files;
+
+                clearError();
+
+                if (files.length > 0) {
+                    processAndUploadFiles(files);
+                }
+                // 파일 인풋 초기화
+                $(this).val('');
+            });
+
+            // 파일 업로드 및 썸네일 표시
+            function processAndUploadFiles(files) {
+                const token = getCsrfToken();
+
+                for (let i = 0; i < files.length; i++) {
+                    const file = files[i];
+                    const formData = new FormData();
+                    formData.append('file', file);
+
+                    // S3에 단일 파일 업로드 요청
+                    $.ajax({
+                        url: `/content/${contentId}/gallery/upload-image`,
+                        type: 'POST',
+                        data: formData,
+                        headers: { 'X-CSRF-TOKEN': token },
+                        processData: false,
+                        contentType: false,
+                        success: function (response) {
+                            appendGalleryItemToDOM(response);
+                        },
+                        error: function (jqXHR) { // ⭐ 에러 렌더링 적용 ⭐
+                            let errorMessage = '파일 업로드 중 알 수 없는 오류가 발생했습니다.';
+
+                            try {
+                                const response = jqXHR.responseJSON;
+                                if (response && response.message) {
+                                    errorMessage = response.message;
+                                }
+                            } catch (e) {}
+
+                            errorMsgDiv.text(`업로드 실패: ${errorMessage}`).show();
+                        }
+                    });
+                }
+            }
+
+            // DOM에 갤러리 아이템 추가
+            function appendGalleryItemToDOM(item) {
+                const galleryContainer = $('.gallery-container');
+                const galleryItemHtml = `
+                    <div class="gallery-item" data-gallery-id="${item.id}" data-photo-url="${item.photo}">
+                        <img src="${item.photo}" alt="갤러리 이미지">
+                        <button type="button" class="delete-btn" onclick="deleteGalleryItem(this)">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                `;
+                $(galleryItemHtml).insertBefore(galleryContainer.find('.add-image-btn'));
+            }
+        });
+    </script>
+</main>
+</body>
+</html>

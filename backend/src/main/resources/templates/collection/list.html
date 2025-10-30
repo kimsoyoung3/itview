@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="ko"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/mainlayout}">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IT VIEW 관리자 페이지</title>
+    <style>
+        .table-custom-layout {
+            table-layout: fixed;
+            width: 100%;
+        }
+
+        .table-custom-layout th,
+        .table-custom-layout td {
+            text-align: center;
+            word-wrap: break-word;
+            vertical-align: middle;
+        }
+
+        .text-start {
+            text-align: left;
+        }
+
+        .clickable-row {
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+<main layout:fragment="content">
+    <div class="container mt-3 mb-3">
+        <div class="row">
+            <div class="col-12">
+                <h3 class="mt-4">컬렉션 목록</h3>
+                <p class="mt-4" th:text="${(keyword == null or #strings.isEmpty(keyword))
+                    ? '현재 등록된 컬렉션 목록입니다:'
+                    : keyword + '에 대한 검색 결과입니다.'}">
+                    현재 등록된 컬렉션 목록입니다:
+                </p>
+
+                <div class="d-flex justify-content-end align-items-center mb-4">
+                    <div class="search-bar"> <form th:action="@{/collection/list}" method="get">
+                        <button type="submit" class="search-button">
+                            <i class="bi bi-search"></i>
+                        </button>
+                        <input
+                                type="text"
+                                placeholder="검색어를 입력해주세요"
+                                class="search-input" name="keyword"
+                                th:value="${keyword}"
+                        />
+                    </form>
+                    </div>
+                </div>
+
+                <table class="table table-hover table-custom-layout">
+                    <thead>
+                    <tr>
+                        <th style="width:60%;">컬렉션 제목</th>
+                        <th style="width:20%;">유저</th>
+                        <th style="width:20%;">작업</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:if="${collections.content.isEmpty()}">
+                        <td colspan="3" class="text-center">컬렉션이 없습니다.</td>
+                    </tr>
+                    <tr th:each="collection : ${collections.content}"
+                        class="clickable-row"
+                        th:onclick="|window.location.href='@{/collection/{id}(id=${collection.id})}'|">
+                        <td class="text-start" th:text="${collection.title}">컬렉션 제목</td>
+                        <td th:text="${collection.user.nickname}">유저이름</td>
+                        <td>
+                            <a th:href="@{/collection/{id}/update(id=${collection.id})}"
+                               class="btn btn-primary"
+                               onclick="event.stopPropagation();">수정</a>
+                            <form th:action="@{/collections/{id}(id=${collection.id})}"
+                                  method="post"
+                                  style="display:inline;"
+                                  onsubmit="return confirm('정말 삭제하시겠습니까?');">
+                                <input type="hidden" name="_method" value="DELETE"/>
+                                <button type="submit" class="btn btn-primary" onclick="event.stopPropagation();">삭제</button>
+                            </form>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+
+                <div class="d-flex justify-content-center mt-3" th:if="${collections.totalPages > 0}">
+                    <ul class="pagination">
+                        <li class="page-item" th:classappend="${startPage == 0} ? 'disabled'">
+                            <a class="page-link"
+                               th:href="@{/collection/list(page=0, keyword=${keyword})}"
+                               aria-label="First">
+                                <span>&laquo;&laquo;</span>
+                            </a>
+                        </li>
+                        <li class="page-item" th:classappend="${startPage == 0} ? 'disabled'">
+                            <a class="page-link"
+                               th:href="@{/collection/list(page=${startPage - 1}, keyword=${keyword})}"
+                               aria-label="Previous">
+                                <span>&laquo;</span>
+                            </a>
+                        </li>
+
+                        <li class="page-item"
+                            th:each="i : ${#numbers.sequence(startPage, endPage)}"
+                            th:classappend="${i eq collections.number} ? 'active'">
+                            <a class="page-link"
+                               th:text="${i + 1}"
+                               th:href="@{/collection/list(page=${i}, keyword=${keyword})}">
+                            </a>
+                        </li>
+
+                        <li class="page-item" th:classappend="${endPage >= collections.totalPages - 1} ? 'disabled'">
+                            <a class="page-link"
+                               th:href="@{/collection/list(page=${endPage + 1}, keyword=${keyword})}"
+                               aria-label="Next">
+                                <span>&raquo;</span>
+                            </a>
+                        </li>
+                        <li class="page-item" th:classappend="${endPage >= collections.totalPages - 1} ? 'disabled'">
+                            <a class="page-link"
+                               th:href="@{/collection/list(page=${collections.totalPages - 1}, keyword=${keyword})}"
+                               aria-label="Last">
+                                <span>&raquo;&raquo;</span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+</body>
+</html>

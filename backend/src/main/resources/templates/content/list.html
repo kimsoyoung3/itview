@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="ko"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/mainlayout}">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IT VIEW 관리자 페이지</title>
+    <style>
+        /* 테이블 레이아웃을 고정하고, 전체 너비를 100%로 설정 */
+        .table-custom-layout {
+            table-layout: fixed;
+            width: 100%;
+        }
+
+        /* 모든 th와 td는 기본적으로 가운데 정렬 */
+        .table-custom-layout th,
+        .table-custom-layout td {
+            text-align: center;
+            word-wrap: break-word;
+            vertical-align: middle; /* 세로 가운데 정렬 추가 */
+        }
+
+        /* 제목 항목만 왼쪽 정렬하는 클래스 */
+        .text-start {
+            text-align: left;
+        }
+
+        .clickable-row {
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+<main layout:fragment="content">
+    <div class="container mt-3 mb-3">
+        <div class="row">
+            <div class="col-12">
+                <h3 class="mt-4">콘텐츠 목록</h3>
+
+                <p class="mt-4" th:text="${(keyword == null or #strings.isEmpty(keyword))
+                    ? '현재 등록한 콘텐츠 목록입니다:'
+                    : keyword + '에 대한 검색 결과입니다.'}">
+                    현재 등록한 콘텐츠 목록입니다:
+                </p>
+
+                <div class="d-flex justify-content-end align-items-center mb-4">
+                    <a th:href="@{/content/register}" type="button" class="btn btn-primary me-3">등록</a>
+
+                    <div class="search-bar">
+                        <form th:action="@{/content/list}" method="get">
+                            <button type="submit" class="search-button">
+                                <i class="bi bi-search"></i>
+                            </button>
+                            <input
+                                    type="text"
+                                    placeholder="검색어를 입력해주세요"
+                                    class="search-input" name="keyword"
+                                    th:value="${keyword}"
+                            />
+                        </form>
+                    </div>
+                </div>
+
+                <table class="table table-hover table-custom-layout">
+                    <thead>
+                    <tr>
+                        <th style="width:60%;">콘텐츠제목</th>
+                        <th style="width:20%;">콘텐츠타입</th>
+                        <th style="width:20%;">작업</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:if="${contentDTOS.content.isEmpty()}">
+                        <td colspan="3" class="text-center">데이터가 없습니다.</td>
+                    </tr>
+
+                    <tr th:each="data:${contentDTOS.content}"
+                        class="clickable-row"
+                        th:onclick="|window.location.href='@{/content/detail(id=${data.id})}'|">
+                        <td class="text-start" th:text="${data.title}">영화</td>
+                        <td th:text="${data.contentType.getDescription()}">타입</td>
+                        <td>
+                            <a th:href="@{/content/{id}/update(id=${data.id})}"
+                               class="btn btn-primary"
+                               onclick="event.stopPropagation();">수정</a>
+
+                            <a th:href="@{/content/delete(id=${data.id})}"
+                               class="btn btn-primary"
+                               onclick="event.stopPropagation(); return confirm('정말 삭제하시겠습니까?');">삭제</a>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+
+                <div class="d-flex justify-content-center mt-3" th:if="${contentDTOS.totalPages >= 1}">
+                    <ul class="pagination">
+                        <li class="page-item" th:classappend="${startPage == 0} ? 'disabled'">
+                            <a class="page-link" th:href="@{/content/list(page=0, keyword=${keyword})}">
+                                <span>&laquo;&laquo;</span>
+                            </a>
+                        </li>
+
+                        <li class="page-item" th:classappend="${startPage == 0} ? 'disabled'">
+                            <a class="page-link" th:href="@{/content/list(page=${startPage - 1}, keyword=${keyword})}">
+                                <span>&laquo;</span>
+                            </a>
+                        </li>
+
+                        <li class="page-item"
+                            th:each="pageNum : ${#numbers.sequence(startPage, endPage)}"
+                            th:classappend="${pageNum == contentDTOS.number} ? 'active'">
+                            <a class="page-link"
+                               th:text="${pageNum + 1}"
+                               th:href="@{/content/list(page=${pageNum}, keyword=${keyword})}">
+                            </a>
+                        </li>
+
+                        <li class="page-item" th:classappend="${endPage >= contentDTOS.totalPages - 1} ? 'disabled'">
+                            <a class="page-link" th:href="@{/content/list(page=${endPage + 1}, keyword=${keyword})}">
+                                <span>&raquo;</span>
+                            </a>
+                        </li>
+
+                        <li class="page-item" th:classappend="${endPage >= contentDTOS.totalPages - 1} ? 'disabled'">
+                            <a class="page-link" th:href="@{/content/list(page=${contentDTOS.totalPages - 1}, keyword=${keyword})}">
+                                <span>&raquo;&raquo;</span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+</body>
+</html>

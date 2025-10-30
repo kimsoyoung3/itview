@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="kr"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/mainlayout}">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IT VIEW 관리자 페이지</title>
+</head>
+<body>
+<main layout:fragment="content">
+    <div class="container mt-3 mb-3">
+        <div class="row">
+            <div class="col-12 mx-auto" style="max-width: 600px;">
+                <h3 class="mt-4" th:text="${contentDTO.id != null} ? '콘텐츠 수정' : '콘텐츠 등록'"></h3>
+                <p class="mt-4">콘텐츠의 장르를 선택해주세요:</p>
+
+                <form th:action="@{/content/{contentId}/genre(contentId=${contentId})}" method="post">
+                    <div class="mb-3">
+                        <label class="form-label">장르 선택</label>
+                        <div class="row">
+                            <div class="col-4" th:each="genre : ${allGenres}">
+                                <div class="form-check">
+                                    <input type="checkbox" name="genres"
+                                           th:id="${'genre-' + genre.name()}"
+                                           th:value="${genre.name()}"
+                                           th:checked="${selectedGenres != null and selectedGenres.contains(genre.name())}"/>
+
+                                    <label class="form-check-label"
+                                           th:for="${'genre-' + genre.name()}"
+                                           th:text="${genreTranslations[genre.name()]}">장르명</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="d-flex justify-content-end">
+                        <button type="submit" class="btn btn-primary" th:text="${contentDTO.id != null} ? '다음/수정' : '다음'"></button>
+                    </div>
+                </form>
+
+            </div>
+        </div>
+
+    </div>
+
+
+</main>
+</body>
+</html>

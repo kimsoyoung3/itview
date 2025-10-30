@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="ko"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/mainlayout}">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IT VIEW 관리자 페이지</title>
+</head>
+<body>
+<main layout:fragment="content">
+    <div class="container mt-3 mb-3">
+        <div class="row">
+            <div class="col-12 mx-auto" style="max-width: 600px;">
+                <h3 class="mt-4">컬렉션 수정</h3>
+                <p class="mt-4">컬렉션 내용</p>
+
+                <form th:action="@{'/collection/' + ${collectionId} + '/update'}"
+                      th:object="${adminCollectionDTO}"
+                      method="post">
+
+                    <input type="hidden" name="_method" value="put"/>
+
+                    <input type="hidden" th:if="${_csrf != null}"
+                           th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="mb-2 row">
+                                <div class="col-3"><strong>컬렉션 이름</strong></div>
+                                <div class="col">
+                                    <input type="text"
+                                           class="form-control"
+                                           id="title"
+                                           th:field="*{title}">
+                                </div>
+                            </div>
+
+                            <div class="mb-2 row">
+                                <div class="col-3"><strong>컬렉션 설명</strong></div>
+                                <div class="col">
+                                    <div class="input-group">
+                                    <textarea class="form-control"
+                                              id="description"
+                                              rows="3"
+                                              th:field="*{description}"
+                                              readonly></textarea>
+                                        <button type="button" class="btn btn-primary" id="deleteDescriptionBtn"
+                                                onclick="deleteDescription()">삭제
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="text-end mt-4">
+                        <button type="submit" class="btn btn-primary">수정</button>
+                        <a th:href="@{'/collection/' + ${collectionId}}"
+                           class="btn btn-primary">취소</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        function deleteDescription() {
+            if (confirm("정말 컬렉션 설명을 삭제하시겠습니까?")) {
+                document.getElementById('description').value = '';
+                document.getElementById('deleteDescriptionBtn').style.display = 'none';
+            }
+        }
+    </script>
+</main>
+</body>
+</html>

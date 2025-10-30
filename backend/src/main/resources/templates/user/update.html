@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="ko"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      layout:decorate="~{layouts/mainlayout}">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IT VIEW 관리자 페이지</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+</head>
+<body>
+<main layout:fragment="content">
+    <div class="container mt-3 mb-3">
+        <div class="row">
+            <div class="col-12 mx-auto" style="max-width: 600px;">
+                <h3 class="mt-4">유저 수정</h3>
+                <p class="mt-4">유저 내용</p>
+
+                <form th:action="@{/user/{id}(id=${user.id})}" th:object="${user}" method="post">
+                    <input type="hidden" th:if="${_csrf != null}" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+
+                    <div id="imageContainer"
+                         class="justify-content-center mb-4 position-relative image-wrapper"
+                         th:classappend="${user.profile} ? 'd-flex' : 'd-none'"
+                         style="width:250px; height:250px; margin: 0 auto;
+                            border-radius: 50%; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">
+
+                        <img th:src="${user.profile}" alt="프로필" id="profileImage"
+                             style="max-width:100%; max-height:100%; object-fit:cover; border-radius: 50%;">
+
+                        <button type="button" class="btn btn-sm btn-light position-absolute top-0 end-0 p-0" id="deleteProfileBtn"
+                                style="width: 24px; height: 24px; line-height: 1; border-radius: 50%; display: flex; align-items: center; justify-content: center;"
+                                onclick="hideProfileAndButton(event)">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+
+                    <div id="profilePlaceholder"
+                         class="align-items-center mb-4 text-center"
+                         th:classappend="${user.profile} ? 'd-none' : 'd-flex justify-content-center'"
+                         style="width:250px; height:250px; margin: 0 auto;
+                            background-color: #f0f0f0; border-radius: 50%;
+                            box-shadow: 0 4px 8px rgba(0,0,0,0.1); color: #888;
+                            word-break: keep-all;">
+                        <div class="w-100">프로필 이미지 없음</div>
+                    </div>
+
+                    <input type="hidden" name="profile" th:value="${user.profile}" id="profileHiddenInput">
+
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="mb-2 row">
+                                <div class="col-3"><strong>닉네임</strong></div>
+                                <div class="col">
+                                    <input type="text" class="form-control" th:field="*{nickname}">
+                                </div>
+                            </div>
+
+                            <div class="mb-2 row">
+                                <div class="col-3"><strong>자기소개</strong></div>
+                                <div class="col">
+                                    <div class="input-group">
+                                        <textarea class="form-control" rows="3" th:field="*{introduction}" readonly></textarea>
+                                        <button type="button" class="btn btn-primary" id="deleteIntroBtn" onclick="deleteIntroduction()">삭제</button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="mb-2 row" th:if="${showRoleEdit}">
+                                <div class="col-3"><strong>역할</strong></div>
+                                <div class="col">
+                                    <div class="form-check form-check-inline">
+                                        <input class="form-check-input" type="radio" th:field="*{role}" id="userRole" value="USER">
+                                        <label class="form-check-label" for="userRole">유저</label>
+                                    </div>
+                                    <div class="form-check form-check-inline">
+                                        <input class="form-check-input" type="radio" th:field="*{role}" id="adminRole" value="ADMIN">
+                                        <label class="form-check-label" for="adminRole">관리자</label>
+                                    </div>
+                                    <div class="form-check form-check-inline">
+                                        <input class="form-check-input" type="radio" th:field="*{role}" id="superAdminRole" value="SUPER_ADMIN" disabled>
+                                        <label class="form-check-label" for="superAdminRole">최고 관리자</label>
+                                    </div>
+                                    <input type="hidden" name="role" th:if="*{role == 'SUPER_ADMIN'}" th:value="*{role}">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="text-end mt-4">
+                        <button type="submit" class="btn btn-primary">수정</button>
+                        <a th:href="@{/user/{id}(id=${user.id})}" class="btn btn-primary">취소</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        function hideProfileAndButton(event) {
+            event.preventDefault();
+            event.stopPropagation();
+
+            const imageContainer = document.getElementById('imageContainer');
+            const placeholder = document.getElementById('profilePlaceholder');
+
+            // 이미지 컨테이너 숨기기
+            if (imageContainer) {
+                imageContainer.classList.remove('d-flex');
+                imageContainer.classList.add('d-none');
+            }
+
+            // 플레이스홀더 보이기
+            if (placeholder) {
+                placeholder.classList.remove('d-none');
+                placeholder.classList.add('d-flex');
+            }
+
+            // Hidden input 값을 비웁니다.
+            document.getElementById('profileHiddenInput').value = '';
+        }
+
+        function deleteIntroduction() {
+            if (confirm("정말 자기소개를 삭제하시겠습니까?")) {
+                document.querySelector('[name="introduction"]').value = '';
+
+                const deleteIntroBtn = document.getElementById('deleteIntroBtn');
+                if (deleteIntroBtn) {
+                    deleteIntroBtn.style.display = 'none';
+                }
+            }
+        }
+    </script>
+</main>
+</body>
+</html>
