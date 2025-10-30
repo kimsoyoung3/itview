@@ -1,0 +1,61 @@
+.user-rating-page {
+    margin-top: 114px;
+    width: 100%;
+}
+
+.user-rating-page-wrap {
+    max-width: 800px;
+}
+
+.user-rating-page-wrap>h1 {
+    font-size: 1.5rem;
+    font-weight: bold;
+    margin-bottom: 20px;
+}
+
+.rating-list {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+}
+
+.rating-list>li {
+    width: 100%;
+    padding: 8px 0;
+    font-size: 1.2rem;
+    font-weight: 600;
+    border-bottom: 1px solid #eeeeee;
+}
+
+.rating-list>li>a {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.rating-list>li>a>span {
+    font-size: 0.9rem;
+    color: #888888;
+}
+
+/*태블릿 사이즈*/
+@media (max-width: 768px) {
+    .user-rating-page {
+        margin-top: 30px;
+        margin-bottom: 100px;
+    }
+
+    .user-rating-page .container {
+        max-width: 95% !important;
+    }
+}
+
+/*모바일 사이즈*/
+@media (max-width: 480px) {
+    .user-rating-page {
+        margin-top: 20px;
+        margin-bottom: 80px;
+    }
+}
+

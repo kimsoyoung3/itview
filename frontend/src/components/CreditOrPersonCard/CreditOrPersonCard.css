@@ -1,0 +1,94 @@
+/*크레딧카드 스타일*/
+.credit-card {
+    flex: 0 0 calc(25% - 20px); /* 한 줄에 4개 (100% / 4 - gap) */
+    box-sizing: border-box;
+    height: 100%;
+}
+
+.credit-card-inner {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.like-page-person-content .credit-card-inner {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    text-align: center;
+}
+
+.credit-card-image {
+    width: 50px;
+    height: 50px;
+    flex-shrink: 0;
+}
+
+.like-page-person-content .credit-card-image{
+    width: 100px;
+    height: 100px;
+    flex-shrink: 0;
+}
+
+.credit-card-image>img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    border-radius: 4px;
+    object-fit: cover;
+}
+
+.credit-card-info {
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    position: relative;
+}
+
+.like-page-person-content .credit-card-info {
+    width: inherit;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+}
+
+.like-page-person-content .credit-card-info::after {
+    display: none;
+}
+
+.credit-card-info::after {
+    content: "";
+    position: absolute;
+    bottom: 0; /* credit-inner 전체 밑 */
+    left: 0;
+    width: 100%;
+    height: 1px;
+    background-color: #eee;
+    /* 이미지 높이만큼 아래로 내리기 */
+    transform: translateY(10px);
+    pointer-events: none;
+}
+
+.credit-card-info>li>span {
+    font-size: 0.8rem;
+    font-weight: 400;
+    color: #888888;
+}
+
+.credit-card-info>li:nth-of-type(2) {
+    font-size: 0.8rem;
+    font-weight: 500;
+    color: #888888;
+    white-space: nowrap;
+}
+
+/*모바일 사이즈*/
+@media (max-width: 480px) {
+    .credit-card {
+        flex: 0 0 100%; /* 한 줄에 4개 (100% / 4 - gap) */
+        box-sizing: border-box;
+        height: 100%;
+    }
+}

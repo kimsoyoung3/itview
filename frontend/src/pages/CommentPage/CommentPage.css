@@ -1,0 +1,48 @@
+.comment-page {
+    margin-top: 114px;
+    width: 100%;
+}
+
+.comment-page-wrap {
+    max-width: 800px;
+}
+
+.comment-page-title {
+    font-size: 1.5rem;
+    font-weight: bold;
+    margin-bottom: 20px;
+}
+
+.comment-page-select-wrap {
+    display: flex;
+    justify-content: end;
+    margin-top: 20px;
+}
+
+.comment-page-select-trigger>div {
+    width: 15px;
+}
+
+.comment-page-select-trigger>div>img {
+    display: block;
+    width: 100%;
+}
+
+/*태블릿 사이즈*/
+@media (max-width: 768px) {
+    .comment-page {
+        margin-top: 30px;
+        margin-bottom: 80px;
+    }
+
+    .comment-page .container {
+        max-width: 95%;
+    }
+}
+
+/*모바일 사이즈*/
+@media (max-width: 480px) {
+    .comment-page {
+        margin-top: 24px;
+    }
+}

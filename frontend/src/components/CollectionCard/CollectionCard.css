@@ -1,0 +1,120 @@
+.collection-card {
+    width: 100%;
+    border: 1px solid #d9d9d9;
+    border-radius: 8px;
+    margin: 20px 0;
+    overflow: hidden;
+}
+
+.collection-card-wrap {
+    width: 100%;
+    display: block;
+}
+
+.collection-card-bg {
+    width: 100%;
+    height: auto; /* 내용에 맞춰 자동 */
+    min-height: 150px;
+    aspect-ratio: 16/9;
+    position: relative;
+    overflow: hidden;
+}
+
+.collection-card-bg-shadow {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    z-index: 10;
+    background: linear-gradient(
+            to bottom,
+            rgba(0, 0, 0, 0.3) 25%,
+            rgba(0, 0, 0, 0.5) 50%,
+            rgba(0, 0, 0, 0.7) 100%
+    );
+}
+
+.stacked-poster-wrapper {
+    position: absolute;
+    width: 40%; /* 통일된 포스터 너비 */
+    top: 0;
+    bottom: 0; /* 부모 높이에 맞춰 늘어나도록 */ /* 통일된 포스터 높이 */
+}
+
+.stacked-poster-wrapper img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* 크기 통일 + 이미지 잘림 방지 */
+}
+
+.collection-card-info {
+    width: 100%;
+    padding: 0 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: absolute;
+    bottom: 20px;
+    z-index: 15;
+}
+
+.collection-card-profile {
+    color: #ffffff;
+    z-index: 10;
+    display: inline-flex; /* inline-flex로 block처럼 쓰면서 flex 가능 */
+    align-items: center;
+    gap: 10px;
+}
+
+.collection-card-profile-image {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+}
+
+.collection-card-profile-image>img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 50%;
+}
+
+.collection-card-profile>p {
+    margin-bottom: 0;
+    font-size: 0.9rem;
+}
+
+.collection-card-item-count {
+    width: 25px;
+    height: 25px;
+    color: #ffffff;
+    border-radius: 50%;
+    background-color: black;
+    text-align: center;
+    box-sizing: border-box;
+    line-height: 25px;
+}
+
+.collection-card-item-count>p {
+    margin-bottom: 0;
+    font-size: 0.8rem;
+    box-sizing: border-box;
+    line-height: 1;
+}
+
+.collection-card-title {
+    padding: 15px 20px;
+}
+
+.collection-card-title>h1 {
+    font-size: 1.2rem;
+    font-weight: bold;
+    border-bottom: 1px solid #d9d9d9;
+    padding-bottom: 10px;
+}
+
+.collection-card-title>span {
+    font-size: 0.8rem;
+    color: #888888;
+}

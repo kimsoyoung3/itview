@@ -1,0 +1,34 @@
+/* 전체 레이아웃 초기화 */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+li {
+  list-style: none;
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+body {
+  font-family: "Pretendard Variable", Pretendard, "Noto Sans KR", "Malgun Gothic", sans-serif;
+  height: 100%;
+}
+
+
+.Toastify__toast {
+  width: max-content !important;
+  padding: 8px 20px !important;
+  min-height: 0 !important;
+  background-color: #22C55E !important;
+  color: #ffffff !important;
+  margin-bottom: 0 !important;
+}
+
+.Toastify__close-button {
+  display: none !important;
+}

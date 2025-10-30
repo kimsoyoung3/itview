@@ -1,0 +1,61 @@
+.home {
+    width: 100%;
+    margin-top: 94px;
+}
+
+.ad-card-list {
+    display: flex;
+    gap: 20px;
+    overflow-x: auto; /* 모바일 드래그 가능 */
+    scroll-snap-type: x mandatory; /* 카드 단위 스냅 */
+}
+
+.ad-card-list > * {
+    flex: 0 0 calc((100% - 40px) / 3); /* PC: gap 20px * (3-1) */
+    box-sizing: border-box;
+    scroll-snap-align: start; /* 카드 시작 지점에 맞춰 멈춤 */
+}
+
+/*컨텐츠*/
+.home-content {
+    width: 100%;
+    margin-top: 50px;
+}
+
+.home-content-title {
+    font-size: 1.3rem;
+    font-weight: bold;
+    margin-bottom: 20px;
+}
+
+/*태블릿 사이즈*/
+@media (max-width: 768px) {
+    .home {
+        margin-top: 30px;
+        margin-bottom: 100px;
+    }
+
+    .home .container {
+        max-width: 95%;
+    }
+
+    .ad-card-list > * {
+        flex: 0 0 calc((100% - 20px) / 2); /* gap 20px * (2-1) */
+    }
+
+    .ad-card-list::-webkit-scrollbar {
+        display: none;
+    }
+}
+
+/*모바일 사이즈*/
+@media (max-width: 480px) {
+    .home {
+        margin-top: 20px;
+    }
+
+    .ad-card-list > * {
+        flex: 0 0 100%;
+    }
+
+}

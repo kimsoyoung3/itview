@@ -1,0 +1,247 @@
+.search-page {
+    margin-top: 74px;
+}
+
+.search-result {
+    background: #eeeeee;
+}
+
+.search-result>p {
+    margin-bottom: 0;
+    color: #888888;
+    padding: 8px 12px;
+}
+
+.search-page-tab-title-wrap {
+    display: flex;
+    align-items: center;
+    border-bottom: 1px solid #d9d9d9;
+    margin-top: 15px;
+}
+
+.search-page-tab-btn {
+    padding: 5px 15px;
+    font-size: 0.9rem;
+    color: #555555;
+    cursor: pointer;
+}
+
+.search-page-tab-btn.active {
+    color: #000000;
+    border-bottom: 1px solid #000000;
+}
+
+.search-page-tab {
+    margin: 20px 0;
+}
+
+/*콘텐츠 탭*/
+.search-page-tab-content {
+    border-bottom: 1px solid #d9d9d9;
+    padding-bottom: 25px;
+    margin: 20px 0;
+}
+
+.search-page-tab-content-title {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.search-page-tab-content-title>p {
+    font-size: 1.3rem;
+    color: #555555;
+    font-weight: bold;
+    margin-bottom: 0;
+}
+
+.search-page-tab-content-title>a {
+    font-size: 0.7rem;
+    color: #555555;
+    font-weight: 500;
+}
+
+.search-page-tab-content-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    overflow: hidden;
+}
+
+.search-page-tab-content-list>div {
+    width: calc(100% / 3 - 15px);
+}
+
+/*인물 탭*/
+.search-page-tab-person {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 20px;
+}
+
+.search-page-tab-person>div {
+    width: calc(50% - 10px);
+}
+
+.search-page-tab-more-btn {
+    text-align: center;
+    margin-top: 30px;
+}
+
+.search-page-tab-more-btn>button {
+    border: 1px solid #888888;
+    background: none;
+    color: #555555;
+    padding: 5px 20px;
+    border-radius: 5px;
+    font-weight: 600;
+    font-size: 0.9rem;
+}
+
+.search-page-tab-more-btn>button:hover {
+    background: #d9d9d9;
+}
+
+/*컬렉션 탭*/
+.search-page-tab-collection {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+}
+
+.search-page-tab-collection>div {
+    width: calc(100% / 3 - 15px);
+}
+
+/*유저 탭*/
+.search-page-tab-user {
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+}
+
+.search-page-tab-user-profile-wrap {
+    width: calc(100% / 2 - 10px);
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.search-page-tab-user-profile {
+    width: 60px;
+    height: 60px;
+    flex-shrink: 0;
+    border-radius: 50%;
+}
+
+.search-page-tab-user-profile>img {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.search-page-tab-user-info {
+    position: relative;
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.search-page-tab-user-info::before {
+    content: "";
+    width: 100%;
+    height: 1px;
+    background-color: #eeeeee;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    transform: translateY(10px);
+}
+
+.search-page-tab-user-info-wrap>p {
+    margin-bottom: 0;
+    font-weight: 500;
+}
+
+.search-page-tab-user-info-wrap>p:nth-of-type(2) {
+    font-weight: 400;
+    color: #888888;
+    font-size: 0.9rem;
+}
+
+.search-page-tab-user-info-btn>button {
+    border: none;
+    background: #ffffff;
+    padding: 4px 8px;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    color: #555555;
+}
+
+.search-page-tab-user-info-btn>button:hover {
+    background: #eeeeee;
+}
+
+.search-page-tab-btn-follow {
+    color: #22c55e !important;
+    background: #e6f5eb !important;
+}
+
+.search-page-tab-btn-follow:hover {
+    background: #b7e8c7 !important;
+}
+
+/*태블릿 사이즈*/
+@media (max-width: 768px) {
+    .search-page {
+        margin-top: 0;
+        margin-bottom: 80px;
+    }
+
+    .search-page .container {
+        max-width: 95%;
+    }
+
+    .search-result>p {
+        padding: 12px 15px;
+    }
+
+    .search-page-tab-more-btn>button:hover {
+        background: none;
+    }
+
+    .search-page-tab-collection>div {
+        width: calc(100% / 2 - 15px);
+    }
+
+    .search-page-tab-collection .collection-card {
+        margin-top:  0;
+    }
+}
+
+/*모바일 사이즈*/
+@media (max-width: 480px) {
+    .search-page-tab-content-list>div {
+        width: 100%;
+    }
+
+    .search-page-tab-person>div {
+        width: 100%;
+    }
+
+    .search-page-tab-user-profile-wrap {
+        width: 100%;
+    }
+
+    .search-page-tab-collection>div {
+        width: 100%;
+    }
+
+    .search-page-tab-collection {
+        gap: 0;
+    }
+}

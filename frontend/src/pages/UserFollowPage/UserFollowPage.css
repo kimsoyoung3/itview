@@ -1,0 +1,143 @@
+.user-follow-page {
+    margin-top: 114px;
+    width: 100%;
+}
+
+.user-follow-page-wrap {
+    max-width: 700px;
+}
+
+.user-follow-page-wrap>h1 {
+    font-size: 1.5rem;
+    font-weight: bold;
+    margin-bottom: 30px;
+}
+
+.user-follow-content-list {
+    width: 100%;
+}
+
+.user-follow-content-wrap {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+.user-follow-profile {
+    width: 60px;
+    height: 60px;
+    flex-shrink: 0;
+    border-radius: 50%;
+}
+
+.user-follow-profile>img {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.user-follow-info {
+    position: relative;
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.user-follow-info::before {
+    content: "";
+    width: 100%;
+    height: 1px;
+    background-color: #eeeeee;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    transform: translateY(15px);
+}
+
+.user-follow-info-wrap>p {
+    margin-bottom: 0;
+    font-weight: 500;
+}
+
+.user-follow-info-wrap {
+    width: 100%;
+}
+
+.user-follow-info-wrap>p:nth-of-type(2) {
+    font-weight: 400;
+    color: #888888;
+    font-size: 0.9rem;
+    width: 95%;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+}
+
+.user-follow-info-btn {
+    flex-shrink: 0;
+}
+
+.user-follow-info-btn>button {
+    border: none;
+    background: none;
+    padding: 5px 10px;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    color: #555555;
+    font-weight: 500;
+}
+
+.user-follow-info-btn>button:hover {
+    background: #eeeeee;
+}
+
+.user-follow-info-btn-follow {
+    color: #22c55e !important;
+    background: #e6f5eb !important;
+}
+
+.user-follow-info-btn-follow:hover {
+    background: #b7e8c7 !important;
+}
+
+/*태블릿 사이즈*/
+@media (max-width: 768px) {
+    .user-follow-page {
+        margin-top: 30px;
+        margin-bottom: 100px;
+    }
+
+    .user-follow-page .container {
+        max-width:95%;
+    }
+
+    .user-follow-info-btn>button:hover {
+        background: none;
+    }
+
+    .user-follow-info-btn-follow:hover {
+        background: #e6f5eb !important;
+    }
+}
+
+/*모바일 사이즈*/
+@media (max-width: 480px) {
+    .user-follow-page {
+        margin-top: 25px;
+    }
+
+    .user-follow-info-wrap>p:nth-of-type(1) {
+        width: 80%;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+        overflow: hidden;
+    }
+
+    .user-follow-info-wrap>p:nth-of-type(2) {
+        width: 80%;
+    }
+
+}

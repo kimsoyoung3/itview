@@ -1,0 +1,118 @@
+.user-comment-page {
+    margin-top: 114px;
+    width: 100%;
+}
+
+.user-comment-page-wrap {
+    max-width: 800px;
+}
+
+.user-comment-page-wrap>h1 {
+    font-size: 1.5rem;
+    font-weight: bold;
+    margin-bottom: 30px;
+}
+
+.user-comment-tab-title {
+    display: flex;
+    justify-content: space-between;
+}
+
+.user-comment-tab-title {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    text-align: center;
+    width: 100%;
+    cursor: pointer;
+    position: relative;
+    border-bottom: 1px solid #eee;
+}
+
+.comment-page-tab-btn {
+    flex: 1;
+    text-align: center;
+    padding: 8px 0;
+    cursor: pointer;
+    color: #888;
+    font-weight: bold;
+    font-size: 0.8rem;
+    margin-bottom: 5px;
+    padding-bottom: 5px;
+}
+
+.comment-page-tab-btn.active {
+    color: black;
+}
+
+.comment-tab-indicator {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    height: 2px;
+    background: #555;
+    transition: transform 0.3s ease, width 0.3s ease;
+}
+
+.user-comment-page-select-box {
+    width: 100%;
+    display: flex;
+    justify-content: right;
+    margin: 20px 0;
+}
+
+.user-comment-page-select {
+    width: 300px;
+    border-radius: 0;
+    padding: 10px;
+    border-color: #d9d9d9;
+}
+
+.comment-page-tab>p {
+    text-align: center;
+    margin-top: 100px;
+    color: #555555;
+}
+
+.comment-page-tab-btn-box {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+
+.comment-page-tab-content-btn {
+    border: 1px solid #888888;
+    background: none;
+    color: #555555;
+    padding: 5px 20px;
+    border-radius: 5px;
+    font-weight: 600;
+    font-size: 0.9rem;
+}
+
+.comment-page-tab-content-btn:hover {
+    background: #d9d9d9;
+}
+
+/*태블릿 사이즈*/
+@media (max-width: 768px) {
+    .user-comment-page {
+        margin-top: 30px;
+        margin-bottom: 100px;
+    }
+
+    .user-comment-page .container {
+        max-width: 95%;
+    }
+
+    .comment-page-tab-content-btn:hover {
+        background: none;
+    }
+}
+
+/*모바일 사이즈*/
+@media (max-width: 480px) {
+    .user-comment-page {
+        margin-top: 25px;
+    }
+}

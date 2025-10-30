@@ -1,0 +1,100 @@
+.user-like-page {
+    margin-top: 114px;
+    width: 100%;
+}
+
+.user-like-page-wrap {
+    max-width: 700px;
+
+}
+
+.user-like-page-wrap>h1 {
+    font-size: 1.5rem;
+    font-weight: bold;
+    margin-bottom: 30px;
+}
+
+.user-like-title {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    text-align: center;
+    width: 100%;
+    cursor: pointer;
+    position: relative;
+    border-bottom: 1px solid #eeeeee;
+}
+
+.like-page-tab-btn {
+    flex: 1;
+    text-align: center;
+    cursor: pointer;
+    color: #888888;
+    font-weight: bold;
+    font-size: 0.8rem;
+    padding: 5px 0;
+}
+
+.like-page-tab-btn.active {
+    color: black;
+}
+
+.like-tab-indicator {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    height: 2px;
+    background: #555555;
+    transition: transform 0.3s ease, width 0.3s ease;
+}
+
+.like-page-person-content {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr); /* 4등분 */
+    gap: 10px;
+    margin-top: 20px;
+}
+
+.like-page-content-btn {
+    display: flex;
+    justify-content: center;
+    margin: 20px 0;
+}
+
+.like-page-content-btn>button {
+    border: 1px solid #888888;
+    background: none;
+    color: #555555;
+    padding: 5px 20px;
+    border-radius: 5px;
+    font-weight: 600;
+    font-size: 0.9rem;
+}
+
+.like-page-content-btn>button:hover {
+    background: #d9d9d9;
+}
+
+.like-page-content {
+    margin-top: 20px;
+}
+
+/*태블릿 사이즈*/
+@media (max-width: 768px) {
+    .user-like-page {
+        margin-top: 30px;
+        margin-bottom: 100px;
+    }
+
+    .user-like-page .container {
+        max-width: 95% !important;
+    }
+}
+
+/*모바일 사이즈*/
+@media (max-width: 480px) {
+    .user-like-page {
+        margin-top: 20px;
+        margin-bottom: 80px;
+    }
+}
